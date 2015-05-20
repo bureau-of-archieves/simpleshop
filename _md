@@ -1,0 +1,41 @@
+Todo list
+
+enable simpleshop.js to support minification.
+
+get rid of picture data in json
+
+refresh
+
+allow combobox to return null value.
+
+
+
+========================================================================================
+search by id validation
+
+
+
+Architecture
+========================================================================================
+
+
+Create a mvn webapp
+========================================================================================
+mvn archetype:generate -DarchetypeArtifactId=maven-archetype-webapp
+
+Refer to: 
+http://maven.apache.org/guides/introduction/introduction-to-archetypes.html
+
+Then add a folder named "java" for code.
+
+
+POM Heirachy
+========================================================================================
+Refer to:
+http://maven.apache.org/guides/introduction/introduction-to-the-pom.html
+
+
+
+
+
+
