@@ -1,0 +1,206 @@
+html {
+    overflow-y: scroll;
+}
+
+.arrow-up {
+    margin-top: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    cursor: pointer;
+    border-bottom: 10px solid #262626;
+}
+
+.arrow-down {
+    margin-top: 5px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    cursor: pointer;
+    border-top: 10px solid #262626;
+}
+
+.arrow-right {
+    margin-right: 5px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    cursor: pointer;
+    border-left: 10px solid #262626;
+}
+
+.arrow-left {
+    margin-right: 5px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    cursor: pointer;
+    border-right: 10px solid #262626;
+}
+
+.well-bright {
+    background-color: #b9dcc8;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+    padding-left: 1em;
+}
+
+.page-body {
+    margin: 2em 0.5em;
+}
+
+.visibility-hidden {
+    visibility: hidden;
+}
+
+.page-header a:hover,.page-header a:focus {
+    text-decoration: none;
+
+}
+
+.hide-children>*:not(.display){
+    display: none;
+}
+
+.display~.no-display-predecessor {
+    display: none;
+}
+
+.page-header small {
+    color: #555;
+}
+
+.page-header small:hover {
+    position: relative;
+    left: -1px;
+    top: -1px;
+    text-shadow: #aaa 0.07em 0.04em 0.02em;
+}
+
+.input-group .input-group-addon .glyphicon
+{
+    padding-left: 0;
+}
+
+.field-label {
+    font-weight: normal;
+    font-size: 1.2em;
+}
+
+
+#linkRequests{
+    position: fixed;
+    right: 1em;
+    bottom: 1em;
+    width: 20em;
+}
+
+#linkRequests li{
+    background-color: floralwhite;
+}
+
+.field-label input {
+    border-style:  none;
+    cursor: pointer !important;
+    color: darkblue;
+    margin-left: 0;
+}
+
+
+.ui-datepicker.ui-widget{
+    z-index: 100 !important;
+}
+
+.bg-info {
+    padding: 1.5em;
+}
+
+.details-field {
+    padding-bottom: 3px;
+}
+.details-field .row{
+    border-left: 0.2em solid crimson;
+
+}
+
+.margin-top-1em {
+    margin-top: 1em;
+}
+
+.padding-top-1em {
+    padding-top: 1em;
+}
+
+input.ng-valid ~ .pattern-validation {
+    display: none;
+}
+
+.view {
+    padding:0.1em;
+}
+
+.dropdown-menu li.ng-scope{
+    width:15em;
+}
+
+.dropdown-menu li.ng-scope a {
+    overflow: hidden;
+    border-top: 1px solid #ccc;
+    padding-right:5px;
+}
+
+
+.dropdown-menu li.ng-scope span {
+    float: left;
+}
+
+
+.dropdown-menu li.ng-scope span.glyphicon {
+    float:right;
+    margin-left:0.8em;
+}
+
+
+.dropdown-menu li.ng-scope span.glyphicon:hover {
+    text-shadow: 0.2em 0.1em 0.3em #777;
+    position: relative;
+    left: -0.2em;
+    top: -0.1em;
+    border-radius:0.5em;
+
+}
+
+.viewport {
+    background-color: #222;
+    border: 2px solid blue;
+}
+
+.scrolling {
+    font-size: 1.8em;
+    padding: 0 3em;
+    -webkit-transform: rotateX(45deg);
+    transform: rotateX(45deg);
+    height: 10em;
+    overflow: hidden;
+}
+
+.scrolling div {
+    color: #FFD801;
+    font-family: Arial;
+    position: relative;
+}
+
+.panel-heading .glyphicon {
+    font-size: 1.3em;
+}
+
+.details-child-list{
+    padding-left:0;
+    padding-right:0;
+}
