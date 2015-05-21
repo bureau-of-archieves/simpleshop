@@ -93,14 +93,6 @@ html {
     font-size: 1.2em;
 }
 
-
-#linkRequests{
-    position: fixed;
-    right: 1em;
-    bottom: 1em;
-    width: 20em;
-}
-
 #linkRequests li{
     background-color: floralwhite;
 }

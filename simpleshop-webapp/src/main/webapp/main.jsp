@@ -85,22 +85,14 @@
 
     <main class="row">
 
-        <section class="col-xs-12 col-md-8">
-
+        <section class="col-xs-12">
             <div class="row">
                 <section style="min-height: 60em" id="resultSection" class="col-xs-12 hide-children">
+                    <%--views--%>
                     <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
                         There is no open view.
                     </div>
                 </section>
-            </div>
-
-        </section>
-
-        <%--sidebar--%>
-        <section class="col-xs-12 col-md-4 hide-children">
-            <div class="alert alert-info display no-display-predecessor" role="alert">
-                There is no notification.
             </div>
         </section>
 
