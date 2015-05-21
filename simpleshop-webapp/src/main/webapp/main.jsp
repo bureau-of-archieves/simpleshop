@@ -39,6 +39,13 @@
 
                     <ul role="menu" class="dropdown-menu">
 
+                        <li> <a href="javascript:void(0);">Customer</a></li>
+                        <li> <a href="javascript:void(0);">Employee</a></li>
+                        <li> <a href="javascript:void(0);">Order</a></li>
+                        <li> <a href="javascript:void(0);">Product</a></li>
+                        <li> <a href="javascript:void(0);">Shipper</a></li>
+                        <li> <a href="javascript:void(0);">Supplier</a></li>
+
                     </ul>
                 </li>
 
