@@ -17,6 +17,8 @@
         <module>simpleshop-dto</module>
         <module>simpleshop-common</module>
         <module>simpleshop-domain</module>
+        <module>simpleshop-service</module>
+        <module>simpleshop-data</module>
     </modules>
 
     <properties>
