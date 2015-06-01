@@ -11,5 +11,67 @@
 
     <artifactId>simpleshop-service</artifactId>
 
+    <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-dto</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-data</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-data</artifactId>
+            <version>${version.simpleshop}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-domain</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-compiler</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+        </dependency>
+
+    </dependencies>
 </project>

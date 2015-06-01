@@ -11,5 +11,15 @@
 
     <artifactId>simpleshop-dto</artifactId>
 
+     <dependencies>
+         <dependency>
+             <groupId>zhy2002</groupId>
+             <artifactId>simpleshop-domain</artifactId>
+         </dependency>
 
+         <dependency>
+             <groupId>zhy2002</groupId>
+             <artifactId>simpleshop-data</artifactId>
+         </dependency>
+     </dependencies>
 </project>

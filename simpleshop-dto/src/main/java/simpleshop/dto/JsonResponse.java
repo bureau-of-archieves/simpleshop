@@ -5,23 +5,23 @@ import java.util.TreeMap;
 
 public class JsonResponse<T> {
 
-    private String type;//content type: e.g. model
-    private String name;//content name e.g. customer
+    private String status;//content type: e.g. model
+    private String description;//content name e.g. customer
     private T content;
     private Map<String, Object> tags; //additional information about the model
 
-    public JsonResponse(String type, String name, T content){
-        this.type = type;
-        this.name = name;
+    public JsonResponse(String status, String description, T content){
+        this.status = status;
+        this.description = description;
         this.content = content;
     }
 
     public String getType() {
-        return type;
+        return status;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 
     public T getContent() {
