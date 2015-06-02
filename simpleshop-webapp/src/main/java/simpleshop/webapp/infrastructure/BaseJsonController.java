@@ -3,6 +3,8 @@ package simpleshop.webapp.infrastructure;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import simpleshop.common.StringUtils;
+import simpleshop.dto.JsonResponse;
 
 /**
  * The base controller for all controllers that return json data.
@@ -13,37 +15,14 @@ import org.springframework.validation.ObjectError;
 
 public abstract class BaseJsonController {
 
-//    protected String outputJson(Model model, Object content, String[] excludedFields) {
-//        if (excludedFields == null)
-//            excludedFields = StringUtils.emptyArray();
-//
-//        //populate model tags for single model
-//        if(!(content instanceof DataTransferObject)){
-//            content = new DataTransferObject<>(content);
-//        }
-//
-//        DataTransferObject<?> dataTransferObject = (DataTransferObject<?>)content;
-//        Object domainObject = dataTransferObject.getDomainObject();
-//        if (domainObject != null) {
-//            if(!dataTransferObject.getTags().containsKey("modelName")){
-//                Class<?> contentClass = DomainUtils.getProxiedClass(domainObject);
-//                if(Iterable.class.isAssignableFrom(contentClass)){
-//                    for(Object item : (Iterable)domainObject){
-//                        if(item != null){
-//                            contentClass = DomainUtils.getProxiedClass(item);
-//                            break;
-//                        }
-//                    }
-//                }
-//                dataTransferObject.getTags().put("modelName", contentClass.getSimpleName());
-//            }
-//        }
-//
-//
-//        model.addAttribute("content", content);
-//        model.addAttribute("excludedFields", excludedFields);
-//        return "json"; //call the json view.
-//    }
+    protected String outputJson(Model model, JsonResponse<?> response, String[] excludedFields) {
+        if (excludedFields == null)
+            excludedFields = StringUtils.emptyArray();
+
+        model.addAttribute("content", response);
+        model.addAttribute("excludedFields", excludedFields);
+        return "json"; //call the json view.
+    }
 
 
 //    protected <T> JsonResult<T> saveModel(T model, ModelService<T, ?> modelService, BindingResult bindingResult){

@@ -5,6 +5,7 @@ import simpleshop.common.*;
 import simpleshop.data.metadata.*;
 import simpleshop.data.util.*;
 import simpleshop.domain.metadata.*;
+import simpleshop.domain.model.*;
 import simpleshop.service.*;
 
 import javax.annotation.PostConstruct;
@@ -22,12 +23,26 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
     private final Class<?>[] classes;
     private Map<String, ModelMetadata> metadataMap;
 
-    public MetadataServiceImpl(Class<?>[] classes){
-        this.classes = classes;
+    public MetadataServiceImpl() {
+
+        this.classes = new Class<?>[]{
+                Category.class,
+                Contact.class,
+                Country.class,
+                Customer.class,
+                Employee.class,
+                ExchangeRate.class,
+                Order.class,
+                Product.class,
+                Shipper.class,
+                Suburb.class,
+                Supplier.class
+        };
+
     }
 
     @PostConstruct
-    public void init(){
+    public void init() {
         metadataMap = DomainUtils.createModelMetadataMap(classes);
     }
 
@@ -38,7 +53,7 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
 
     @Override
     public ModelMetadata get(String modelName) {
-        if(metadataMap.containsKey(modelName))
+        if (metadataMap.containsKey(modelName))
             return metadataMap.get(modelName);
         return null;
     }
@@ -48,33 +63,33 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
      */
     @Override
     public String extractItemText(Object domainObject) {
-        if(domainObject == null)
+        if (domainObject == null)
             return null;
 
         TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for(Method method : domainObject.getClass().getMethods()){
-            if(!ReflectionUtils.isPublicInstanceGetter(method))
+        for (Method method : domainObject.getClass().getMethods()) {
+            if (!ReflectionUtils.isPublicInstanceGetter(method))
                 continue;
 
             ItemText text = method.getAnnotation(ItemText.class);
-            if(text == null)
+            if (text == null)
                 continue;
 
             try {
                 Object value = method.invoke(domainObject);
-                if(value != null){
-                    treeMap.put(text.order() * 2 + 1,text.separator());
+                if (value != null) {
+                    treeMap.put(text.order() * 2 + 1, text.separator());
                     treeMap.put(text.order() * 2 + 2, value.toString());
                 }
-            }catch (IllegalAccessException | InvocationTargetException ex){
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
         }
 
         String result = "";
-        for (Integer key : treeMap.keySet()){
-            if(key % 2 == 1){ //separator
-                if(result.length() > 0)
+        for (Integer key : treeMap.keySet()) {
+            if (key % 2 == 1) { //separator
+                if (result.length() > 0)
                     result += treeMap.get(key);
             } else {
                 result += treeMap.get(key);
@@ -88,33 +103,33 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
      */
     @Override
     public String extractItemValue(Object domainObject) {
-        if(domainObject == null)
+        if (domainObject == null)
             return null;
 
         TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for(Method method : domainObject.getClass().getMethods()){
-            if(!ReflectionUtils.isPublicInstanceGetter(method))
+        for (Method method : domainObject.getClass().getMethods()) {
+            if (!ReflectionUtils.isPublicInstanceGetter(method))
                 continue;
 
             ItemValue text = method.getAnnotation(ItemValue.class);
-            if(text == null)
+            if (text == null)
                 continue;
 
             try {
                 Object value = method.invoke(domainObject);
-                if(value != null){
-                    treeMap.put(text.order() * 2 + 1,text.separator());
+                if (value != null) {
+                    treeMap.put(text.order() * 2 + 1, text.separator());
                     treeMap.put(text.order() * 2 + 2, value.toString());
                 }
-            }catch (IllegalAccessException | InvocationTargetException ex){
+            } catch (IllegalAccessException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
         }
 
         String result = "";
-        for (Integer key : treeMap.keySet()){
-            if(key % 2 == 1){ //separator
-                if(result.length() > 0)
+        for (Integer key : treeMap.keySet()) {
+            if (key % 2 == 1) { //separator
+                if (result.length() > 0)
                     result += treeMap.get(key);
             } else {
                 result += treeMap.get(key);

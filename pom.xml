@@ -76,6 +76,12 @@
                 <version>1.0-SNAPSHOT</version>
             </dependency>
 
+            <dependency>
+                <groupId>zhy2002</groupId>
+                <artifactId>simpleshop-service</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
             <!--framework-->
             <dependency>
                 <groupId>org.springframework</groupId>

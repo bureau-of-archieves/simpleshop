@@ -5,6 +5,9 @@ import java.util.TreeMap;
 
 public class JsonResponse<T> {
 
+    public static final String STATUS_OK = "OK";
+    public static final String STATUS_ERROR = "ERROR";
+
     private String status;//content type: e.g. model
     private String description;//content name e.g. customer
     private T content;
@@ -16,7 +19,7 @@ public class JsonResponse<T> {
         this.content = content;
     }
 
-    public String getType() {
+    public String getStatus() {
         return status;
     }
 
