@@ -48,15 +48,15 @@ public abstract class BaseJsonController {
 //        return response;
 //    }
 //
-//    protected String getBindingErrorMessage(BindingResult bindingResult){
-//        StringBuilder stringBuilder = new StringBuilder();
-//        for(ObjectError error : bindingResult.getAllErrors()){
-//            stringBuilder.append(error.getObjectName());
-//            stringBuilder.append(":");
-//            stringBuilder.append(error.getDefaultMessage());
-//            stringBuilder.append("\r\n");
-//        }
-//        return stringBuilder.toString();
-//    }
+    protected String getBindingErrorMessage(BindingResult bindingResult){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(ObjectError error : bindingResult.getAllErrors()){
+            stringBuilder.append(error.getObjectName());
+            stringBuilder.append(":");
+            stringBuilder.append(error.getDefaultMessage());
+            stringBuilder.append("\r\n");
+        }
+        return stringBuilder.toString();
+    }
 
 }

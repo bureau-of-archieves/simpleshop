@@ -1,0 +1,106 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: JOHNZ
+  Date: 5/06/2015
+  Time: 4:26 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>Json service test page</title>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.css">
+
+    <style type="text/css" >
+        .container .row {
+            margin-top: 1em;
+        }
+
+        .big_block {
+            width: 90%;
+        }
+
+    </style>
+</head>
+<body>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"><label for="url">Request Url:</label></div>
+        <div class="col-md-10">
+           <span id="url_prefix"></span> <input id="url">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2"><label for="content">Post Data:</label></div>
+        <div class="col-md-10" >
+            <textarea id="content" class="big_block" rows="12"></textarea>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-offset-2 col-md-10">
+            <button id="submit" >Submit</button>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <div class="row">
+        <div class="col-md-2">Response:</div>
+        <div  class="col-md-10">
+            <pre id="result" class="big_block"></pre>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.js"></script>
+<script type="text/javascript">
+    $(function(){
+
+        var url_prefix = "http://localhost:8080/json/";
+        $("#url_prefix").html(url_prefix);
+        var display_response = function(data){
+            $("#result").text(JSON.stringify(data));
+        };
+
+        var report_error = function(jqXHR, textStatus){
+          alert("Request failed: " + textStatus);
+        };
+
+        $("#submit").click(function(){
+
+
+            var url = $("#url").val();
+            if(!url){
+                alert("Type in url.");
+                return;
+            }
+            url = url_prefix + url;
+
+            var content = $("#content").val();
+
+            var ajax_options = {
+            };
+
+            if(content){ //post
+                ajax_options.method = "POST";
+                ajax_options.contentType = "application/json";
+                ajax_options.data = content;
+            }
+
+            $.ajax(url, ajax_options)
+                    .done(display_response)
+                    .fail(report_error)
+                    .always(function(){
+
+                    });
+
+        });
+
+    });
+</script>
+</body>
+</html>
