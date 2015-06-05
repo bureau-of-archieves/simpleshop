@@ -12,7 +12,7 @@ public aspect HibernateJacksonAnnotations {
 
     //how to write type patterns in AJ: https://eclipse.org/aspectj/doc/released/progguide/semantics-pointcuts.html#type-patterns
 
-    declare @type: quickshop.domain.model..*: @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"}, ignoreUnknown = true);
-    declare @type: quickshop.domain.model..*: @JsonFilter("propNameFilter");
+    declare @type: simpleshop.domain.model..*: @JsonIgnoreProperties(value = {"hibernateLazyInitializer", "handler", "fieldHandler"}, ignoreUnknown = true);
+    declare @type: simpleshop.domain.model..*: @JsonFilter("propNameFilter");
 
 }

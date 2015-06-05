@@ -6,6 +6,7 @@ import simpleshop.data.metadata.*;
 import simpleshop.data.util.*;
 import simpleshop.domain.metadata.*;
 import simpleshop.domain.model.*;
+import simpleshop.dto.CustomerSearch;
 import simpleshop.service.*;
 
 import javax.annotation.PostConstruct;
@@ -36,7 +37,8 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
                 Product.class,
                 Shipper.class,
                 Suburb.class,
-                Supplier.class
+                Supplier.class,
+                CustomerSearch.class
         };
 
     }
