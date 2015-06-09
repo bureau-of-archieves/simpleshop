@@ -63,11 +63,11 @@
         var url_prefix = "http://localhost:8080/json/";
         $("#url_prefix").html(url_prefix);
         var display_response = function(data){
-            $("#result").text(JSON.stringify(data));
+            $("#result").text(JSON.stringify(data, null, 4));
         };
 
         var report_error = function(jqXHR, textStatus){
-          alert("Request failed: " + textStatus);
+          alert("Request failed: " + textStatus + "\r\n" + jqXHR.statusText);
         };
 
         $("#submit").click(function(){
@@ -87,8 +87,15 @@
 
             if(content){ //post
                 ajax_options.method = "POST";
+                ajax_options.dataType = "json";
                 ajax_options.contentType = "application/json";
-                ajax_options.data = content;
+                try {
+                    content = $.parseJSON(content);
+                } catch(err){
+                    alert(err);
+                    return;
+                }
+                ajax_options.data = JSON.stringify(content);
             }
 
             $.ajax(url, ajax_options)

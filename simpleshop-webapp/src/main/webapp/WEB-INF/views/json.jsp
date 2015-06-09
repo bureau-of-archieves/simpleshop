@@ -1,4 +1,4 @@
-<%@ page import="simpleshop.data.infrastructure.JsonConverter"%>
+<%@ page import="simpleshop.common.JsonConverter"%>
 
 <%@ page contentType="application/json;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" %>
 <%

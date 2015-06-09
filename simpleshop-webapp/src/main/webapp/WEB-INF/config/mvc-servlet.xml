@@ -21,6 +21,25 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
-    <mvc:annotation-driven />
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <property name="objectMapper">
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
+                        <property name="filters">
+                            <bean class="simpleshop.common.JsonConverter" factory-method="createSerializeAllExceptFilterProvider">
+                                <constructor-arg>
+                                    <array value-type="java.lang.String" />
+                                </constructor-arg>
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
 
 </beans>
