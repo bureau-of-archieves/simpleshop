@@ -72,6 +72,8 @@
                     <ul role="menu" class="dropdown-menu">
                         <li><a>About</a>
                         </li>
+                        <li><a href="json.jsp">Test</a>
+                        </li>
                     </ul>
                 </li>
             </ul>

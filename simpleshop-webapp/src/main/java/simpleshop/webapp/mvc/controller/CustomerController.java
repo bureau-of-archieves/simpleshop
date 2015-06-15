@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -43,4 +44,17 @@ public class CustomerController extends BaseJsonController {
         JsonResponse<Customer> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, customerService.create());
         return super.outputJson(model,response , customerService.ignoredJsonProperties());
     }
+
+    @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
+    public String customerDetails(@PathVariable int id, Model model) {
+        Customer customer = customerService.getById(id);
+        JsonResponse<Customer> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, customer);
+        return super.outputJson(model, response, customerService.ignoredJsonProperties());
+    }
+
+//    @RequestMapping(value = "/customer/save", method = RequestMethod.POST, consumes = "application/json")
+//    public String customerSave(@Valid @RequestBody final Customer customer,Model model,  BindingResult bindingResult) {
+//        JsonResult<?> result =  saveModel(customer, customerService, bindingResult);
+//        return super.outputJson(model, result, customerService.ignoredJsonProperties());
+//    }
 }
