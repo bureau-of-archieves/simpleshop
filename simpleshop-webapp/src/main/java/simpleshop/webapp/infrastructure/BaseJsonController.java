@@ -5,6 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import simpleshop.common.StringUtils;
 import simpleshop.dto.JsonResponse;
+import simpleshop.service.ModelService;
 
 /**
  * The base controller for all controllers that return json data.
@@ -24,33 +25,9 @@ public abstract class BaseJsonController {
         return "json"; //call the json view.
     }
 
-
-//    protected <T> JsonResult<T> saveModel(T model, ModelService<T, ?> modelService, BindingResult bindingResult){
-//        JsonResult<T> response = new JsonResult<T>(null);
-//        response.setOperation("save");
-//
-//        //handle binding errors
-//        if (bindingResult.hasErrors()) {
-//            response.setStatus("validation_error");
-//            response.setDescription(getBindingErrorMessage(bindingResult));
-//        } else {
-//            //handle service error
-//            try{
-//            modelService.save(model);
-//                response.setStatus("success");
-//            }catch (Throwable ex){
-//                response.setStatus("failed");
-//                response.setDescription(ex.getMessage());
-//            }
-//            response.setDomainObject(model); //id is set for new object, some other properties could change as well.
-//        }
-//
-//        return response;
-//    }
-//
-    protected String getBindingErrorMessage(BindingResult bindingResult){
+    protected String getBindingErrorMessage(BindingResult bindingResult) {
         StringBuilder stringBuilder = new StringBuilder();
-        for(ObjectError error : bindingResult.getAllErrors()){
+        for (ObjectError error : bindingResult.getAllErrors()) {
             stringBuilder.append(error.getObjectName());
             stringBuilder.append(":");
             stringBuilder.append(error.getDefaultMessage());
@@ -58,5 +35,25 @@ public abstract class BaseJsonController {
         }
         return stringBuilder.toString();
     }
+
+
+    protected <T> JsonResponse<T> saveModel(T model, ModelService<T, ?> modelService, BindingResult bindingResult) {
+        JsonResponse<T> response;
+
+        //handle binding errors
+        if (bindingResult.hasErrors()) {
+            response = new JsonResponse<>(JsonResponse.STATUS_ERROR, getBindingErrorMessage(bindingResult), model);
+        } else {
+            //handle service error
+            try {
+                modelService.save(model);
+                response = new JsonResponse<>(JsonResponse.STATUS_OK, null, model);
+            } catch (Throwable ex) {
+                response = new JsonResponse<>(JsonResponse.STATUS_ERROR, ex.getMessage(), model);
+            }
+        }
+        return response;
+    }
+
 
 }

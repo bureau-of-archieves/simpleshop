@@ -30,8 +30,8 @@ public class CustomerController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/customer/search", method = RequestMethod.POST, consumes = "application/json")
-    public String customerSearch(@Valid @RequestBody final CustomerSearch customerSearch, Model model, BindingResult bindingResult){
-        if(bindingResult.hasErrors())
+    public String customerSearch(@Valid @RequestBody final CustomerSearch customerSearch, Model model, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
             throw new RuntimeException(getBindingErrorMessage(bindingResult));
 
         Iterable<Customer> result = customerService.search(customerSearch);
@@ -42,7 +42,7 @@ public class CustomerController extends BaseJsonController {
     @RequestMapping(value = "/customer/new", method = RequestMethod.GET)
     public String customerCreate(Model model) {
         JsonResponse<Customer> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, customerService.create());
-        return super.outputJson(model,response , customerService.ignoredJsonProperties());
+        return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
@@ -52,9 +52,9 @@ public class CustomerController extends BaseJsonController {
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 
-//    @RequestMapping(value = "/customer/save", method = RequestMethod.POST, consumes = "application/json")
-//    public String customerSave(@Valid @RequestBody final Customer customer,Model model,  BindingResult bindingResult) {
-//        JsonResult<?> result =  saveModel(customer, customerService, bindingResult);
-//        return super.outputJson(model, result, customerService.ignoredJsonProperties());
-//    }
+    @RequestMapping(value = "/customer/save", method = RequestMethod.POST, consumes = "application/json")
+    public String customerSave(@Valid @RequestBody final Customer customer,Model model,  BindingResult bindingResult) {
+        JsonResponse<Customer>  response =  saveModel(customer, customerService, bindingResult);
+        return super.outputJson(model, response, customerService.ignoredJsonProperties());
+    }
 }
