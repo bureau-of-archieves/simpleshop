@@ -7,6 +7,8 @@ import simpleshop.common.StringUtils;
 import simpleshop.dto.JsonResponse;
 import simpleshop.service.ModelService;
 
+import java.io.Serializable;
+
 /**
  * The base controller for all controllers that return json data.
  * User: JOHNZ
@@ -55,5 +57,34 @@ public abstract class BaseJsonController {
         return response;
     }
 
+    protected <T> JsonResponse<T> modelDetails(Serializable id, ModelService<T, ?> modelService){
+        T domainObject = modelService.getById(id);
+        JsonResponse<T> response;
+        if(domainObject != null){
+            response = new JsonResponse<>(JsonResponse.STATUS_OK, null, domainObject);
+        } else {
+            response = new JsonResponse<>(JsonResponse.STATUS_ERROR, "Not found (id=" + id + ").", null);
+        }
+        return response;
+    }
+
+    protected <S, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult){
+        if (bindingResult.hasErrors())
+            return new JsonResponse<>(JsonResponse.STATUS_OK, getBindingErrorMessage(bindingResult), null);
+
+        Iterable<T> result = modelService.search(criteria);
+        return new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
+    }
+
+    protected <T> JsonResponse<Serializable> deleteModel(Serializable id, ModelService<T, ?> modelService){
+        JsonResponse<Serializable> response;
+        try {
+            modelService.delete(id);
+            response = new JsonResponse<>(JsonResponse.STATUS_OK, null, id);
+        } catch (Exception ex){
+            response = new JsonResponse<>(JsonResponse.STATUS_ERROR, ex.getMessage(), null);
+        }
+        return response;
+    }
 
 }

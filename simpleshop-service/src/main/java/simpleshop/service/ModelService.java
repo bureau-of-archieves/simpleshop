@@ -26,6 +26,12 @@ public interface ModelService<T, S> extends BaseService {
     public void save(@NotNull T model);
 
     /**
+     * Delete a model by id.
+     * @param id id of the object.
+     */
+    public void delete(Serializable id);
+
+    /**
      * [convention:modelId]All model classes have 1 and only 1 id property, and it's type is not composite. Domain classes with composite id is understood as a n-way relationship.
      * Get a model instance by its id.
      * @param id id.

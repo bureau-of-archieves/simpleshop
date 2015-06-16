@@ -15,6 +15,7 @@ import simpleshop.service.CustomerService;
 import simpleshop.webapp.infrastructure.BaseJsonController;
 
 import javax.validation.Valid;
+import java.io.Serializable;
 
 @Controller
 @RequestMapping(produces = "application/json")
@@ -31,11 +32,7 @@ public class CustomerController extends BaseJsonController {
 
     @RequestMapping(value = "/customer/search", method = RequestMethod.POST, consumes = "application/json")
     public String customerSearch(@Valid @RequestBody final CustomerSearch customerSearch, Model model, BindingResult bindingResult) {
-        if (bindingResult.hasErrors())
-            throw new RuntimeException(getBindingErrorMessage(bindingResult));
-
-        Iterable<Customer> result = customerService.search(customerSearch);
-        JsonResponse<Iterable<Customer>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
+        JsonResponse<Iterable<Customer>> response = modelSearch(customerSearch, customerService, bindingResult);
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 
@@ -47,8 +44,7 @@ public class CustomerController extends BaseJsonController {
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
     public String customerDetails(@PathVariable int id, Model model) {
-        Customer customer = customerService.getById(id);
-        JsonResponse<Customer> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, customer);
+        JsonResponse<Customer> response = modelDetails(id, customerService);
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 
@@ -56,5 +52,11 @@ public class CustomerController extends BaseJsonController {
     public String customerSave(@Valid @RequestBody final Customer customer,Model model,  BindingResult bindingResult) {
         JsonResponse<Customer>  response =  saveModel(customer, customerService, bindingResult);
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
+    }
+
+    @RequestMapping(value = "/customer/delete", method = RequestMethod.POST, consumes = "application/json")
+    public String customerSave(@Valid @RequestBody final int id, Model model) {
+        JsonResponse<Serializable> response = deleteModel(id, customerService);
+        return super.outputJson(model, response, null);
     }
 }

@@ -133,6 +133,14 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
         getModelDAO().save(model);
     }
 
+    @Transactional
+    @Override
+    public void delete(Serializable id){
+        ModelDAO<T> modelDAO = getModelDAO();
+        T domainObject = modelDAO.load(id);
+        getModelDAO().delete(domainObject);
+    }
+
     /**
      * The dummy implementation for models that do not support keyword search.
      * @param keywords keywords.
