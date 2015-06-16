@@ -1,4 +1,4 @@
-package simpleshop.service;
+package simpleshop.service.infrastructure;
 
 import simpleshop.data.PageInfo;
 

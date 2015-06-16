@@ -1,4 +1,4 @@
-package simpleshop.data.impl;
+package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Hibernate;
 import org.hibernate.Query;
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import simpleshop.common.StringUtils;
-import simpleshop.data.BaseDAO;
+import simpleshop.data.infrastructure.BaseDAO;
 import simpleshop.data.PageInfo;
 
 import javax.persistence.ManyToMany;

@@ -1,13 +1,14 @@
 package simpleshop.service;
 
 import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.service.infrastructure.BaseService;
 
 import java.util.Map;
 
 /**
  * Created by JOHNZ on 1/06/2015.
  */
-public interface MetadataService extends BaseService{
+public interface MetadataService extends BaseService {
 
     /**
      * Get all metadata of the sponge domain models.

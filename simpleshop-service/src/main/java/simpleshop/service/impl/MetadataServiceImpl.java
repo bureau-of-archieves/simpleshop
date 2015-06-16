@@ -8,6 +8,7 @@ import simpleshop.domain.metadata.*;
 import simpleshop.domain.model.*;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.service.*;
+import simpleshop.service.infrastructure.impl.BaseServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;

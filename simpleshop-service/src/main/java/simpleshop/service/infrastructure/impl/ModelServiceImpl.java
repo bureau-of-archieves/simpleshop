@@ -1,4 +1,4 @@
-package simpleshop.service.impl;
+package simpleshop.service.infrastructure.impl;
 
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import simpleshop.common.PropertyReflector;
 import simpleshop.common.StringUtils;
-import simpleshop.data.ModelDAO;
+import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.util.DomainUtils;
 import simpleshop.dto.ModelSearch;
 import simpleshop.service.MetadataService;
-import simpleshop.service.ModelService;
+import simpleshop.service.infrastructure.ModelService;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;

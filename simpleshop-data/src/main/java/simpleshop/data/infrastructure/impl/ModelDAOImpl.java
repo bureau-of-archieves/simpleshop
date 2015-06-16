@@ -1,4 +1,4 @@
-package simpleshop.data.impl;
+package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
@@ -7,7 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import simpleshop.Constants;
 import simpleshop.common.StringUtils;
-import simpleshop.data.ModelDAO;
+import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SortInfo;
 import simpleshop.data.metadata.*;

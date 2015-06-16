@@ -1,4 +1,4 @@
-package simpleshop.data;
+package simpleshop.data.infrastructure;
 
 /**
  * Common operations that all DAOs support.

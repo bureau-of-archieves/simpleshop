@@ -1,5 +1,6 @@
-package simpleshop.data;
+package simpleshop.data.infrastructure;
 
+import simpleshop.data.PageInfo;
 import simpleshop.data.metadata.ModelMetadata;
 
 import java.io.Serializable;

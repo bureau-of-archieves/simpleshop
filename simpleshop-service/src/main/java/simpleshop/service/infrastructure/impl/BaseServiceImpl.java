@@ -1,7 +1,7 @@
-package simpleshop.service.impl;
+package simpleshop.service.infrastructure.impl;
 
 import org.springframework.stereotype.Service;
-import simpleshop.service.BaseService;
+import simpleshop.service.infrastructure.BaseService;
 
 
 @Service

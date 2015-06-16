@@ -1,4 +1,4 @@
-package simpleshop.service;
+package simpleshop.service.infrastructure;
 
 /**
  * The base class of all services.

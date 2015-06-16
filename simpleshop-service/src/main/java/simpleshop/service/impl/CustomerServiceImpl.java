@@ -3,10 +3,11 @@ package simpleshop.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simpleshop.data.CustomerDAO;
-import simpleshop.data.ModelDAO;
+import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Customer;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.service.CustomerService;
+import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
 public class CustomerServiceImpl extends ModelServiceImpl<Customer, CustomerSearch> implements CustomerService {

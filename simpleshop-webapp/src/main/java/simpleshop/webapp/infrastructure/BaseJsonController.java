@@ -5,7 +5,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import simpleshop.common.StringUtils;
 import simpleshop.dto.JsonResponse;
-import simpleshop.service.ModelService;
+import simpleshop.service.infrastructure.ModelService;
 
 import java.io.Serializable;
 

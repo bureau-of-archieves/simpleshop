@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import simpleshop.common.StringUtils;
 import simpleshop.data.CustomerDAO;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.impl.ModelDAOImpl;
 import simpleshop.domain.model.Customer;
 
 import java.io.Serializable;
