@@ -102,7 +102,7 @@ public final class StringUtils {
         return Character.toUpperCase(simpleName.charAt(0)) + simpleName.substring(1);
     }
 
-    private static String[] EMPTY_STRING_ARRAY;
+    private static final String[] EMPTY_STRING_ARRAY = {};
 
     public static String[] emptyArray(){
         return EMPTY_STRING_ARRAY;

@@ -1,17 +1,22 @@
 package simpleshop.common;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by ZHY on 24/01/2015.
+ * Util methods for collections.
  */
 public final class CollectionUtils {
 
     private CollectionUtils(){}
 
+    /**
+     * Array to unmodifiable list.
+     * @param values an array.
+     * @param <T> type of array element.
+     * @return unmodifiable list.
+     */
     public static <T> List<T> unmodifiableList(T[] values){
         return Collections.unmodifiableList(Arrays.asList(values));
     }

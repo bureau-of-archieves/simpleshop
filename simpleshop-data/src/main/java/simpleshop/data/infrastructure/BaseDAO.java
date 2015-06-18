@@ -6,17 +6,17 @@ package simpleshop.data.infrastructure;
  */
 public interface BaseDAO {
 
-    public void detach(Object domainObject);
+    void detach(Object domainObject);
 
-    public void initialize(Object domainObject);
+    void initialize(Object domainObject);
 
-    public boolean isInitialized(Object domainObject);
+    boolean isInitialized(Object domainObject);
 
-    public void setSessionDefaultReadonly(boolean isReadonly);
+    void setSessionDefaultReadonly(boolean isReadonly);
 
-    public boolean isSessionDefaultReadonly();
+    boolean isSessionDefaultReadonly();
 
-    public void sessionFlush();
+    void sessionFlush();
 
-    public void evict(Object domainObject);
+    void evict(Object domainObject);
 }

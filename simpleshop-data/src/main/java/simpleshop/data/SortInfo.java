@@ -48,9 +48,8 @@ public class SortInfo implements Serializable {
 
         if (ascending != sortInfo.ascending) return false;
         if (!alias.equals(sortInfo.alias)) return false;
-        if (!property.equals(sortInfo.property)) return false;
+        return property.equals(sortInfo.property);
 
-        return true;
     }
 
     @Override

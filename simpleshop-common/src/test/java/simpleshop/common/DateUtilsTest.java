@@ -17,7 +17,7 @@ import static org.junit.Assert.*;
 public class DateUtilsTest {
 
     @Test
-    public void createDateTest(){
+    public void createDate_DateOrderTest(){
 
         Date date1 = DateUtils.createDate(2011, 2, 21);
         Date date2 = DateUtils.createDate(2012, 9, 13);

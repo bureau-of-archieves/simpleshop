@@ -67,7 +67,7 @@ public class ReflectionUtilsTest {
         }
     }
 
-    private static interface MyStream extends Stream{
+    private interface MyStream extends Stream{
     }
 
     @Test

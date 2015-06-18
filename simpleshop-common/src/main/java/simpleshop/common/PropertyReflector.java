@@ -127,18 +127,18 @@ public class PropertyReflector {
     }
 
     //find the metadata class of the target class
-    public static interface ClassLocator {
+    public interface ClassLocator {
 
-        public Class<?> find(Object target);
+        Class<?> find(Object target);
     }
 
-    public static enum InspectionResult {
+    public enum InspectionResult {
         CONTINUE,
         BYPASS,
         ABORT
     }
 
-    public static interface PropertyValueListener {
+    public interface PropertyValueListener {
 
         /**
          * This method is call for all public getter values accessed.
@@ -149,6 +149,6 @@ public class PropertyReflector {
          * @param index of the property value is a collection, index is the index of the value. index == -1 for non-collection property values.
          * @return indicate whether to stop, continue or bypass the inspection process.
          */
-        public InspectionResult visit(Object target, Method getter, Object value, Throwable exception, int index);
+        InspectionResult visit(Object target, Method getter, Object value, Throwable exception, int index);
     }
 }

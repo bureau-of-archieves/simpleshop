@@ -64,9 +64,8 @@ public class Country implements Comparable<Country>{
 
         Country country = (Country) o;
 
-        if (!countryCode.equals(country.countryCode)) return false;
+        return countryCode.equals(country.countryCode);
 
-        return true;
     }
 
     @Override

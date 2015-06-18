@@ -59,10 +59,8 @@ public class PageInfo implements Serializable{
         if (pageIndex != pageInfo.pageIndex) return false;
         if (pageSize != pageInfo.pageSize) return false;
 
-        if (!ListUtils.isEqualList(sortInfoList,pageInfo.sortInfoList ))
-            return false;
+        return ListUtils.isEqualList(sortInfoList, pageInfo.sortInfoList);
 
-        return true;
     }
 
     @Override

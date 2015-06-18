@@ -468,7 +468,7 @@
         if(lastIndex + suffix.length == src.length)
             return true;
         return false;
-    }
+    };
 
     var camelNameToSpacedName = function (str) {
         var result = [];
@@ -482,7 +482,7 @@
             }
         }
         return result.join('');
-    }
+    };
 
     //endregion
 

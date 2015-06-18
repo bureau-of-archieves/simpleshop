@@ -48,7 +48,7 @@ public @interface AliasDeclaration {
         AliasDeclaration[] value();
     }
 
-    public static final class Comparator implements java.util.Comparator<AliasDeclaration> {
+    final class Comparator implements java.util.Comparator<AliasDeclaration> {
 
         @Override
         public int compare(AliasDeclaration o1, AliasDeclaration o2) {

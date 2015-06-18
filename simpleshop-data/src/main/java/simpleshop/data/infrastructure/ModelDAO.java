@@ -11,15 +11,15 @@ import java.util.List;
  */
 public interface ModelDAO<T> extends BaseDAO{
 
-    public T load(Serializable id);
+    T load(Serializable id);
 
-    public T get(Serializable id);
+    T get(Serializable id);
 
-    public void save(T domainObject);
+    void save(T domainObject);
 
-    public void delete(T domainObject);
+    void delete(T domainObject);
 
-    public List<T> search(ModelMetadata searchMetadata, ModelMetadata modelMetadata, PageInfo searchObject);
+    List<T> search(ModelMetadata searchMetadata, ModelMetadata modelMetadata, PageInfo searchObject);
 
-    public List<T> quickSearch(String keywords, PageInfo pageInfo);
+    List<T> quickSearch(String keywords, PageInfo pageInfo);
 }

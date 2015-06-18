@@ -80,7 +80,7 @@ public final class ReflectionUtils {
 
          if(returnType == String.class || returnType == BigDecimal.class || returnType == Integer.class || returnType == Boolean.class || returnType == Character.class) {
              try {
-                 return (T)returnType.getConstructor(new Class[]{String.class}).newInstance(s);
+                 return returnType.getConstructor(new Class[]{String.class}).newInstance(s);
              } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
                  throw new RuntimeException(ex);
              }

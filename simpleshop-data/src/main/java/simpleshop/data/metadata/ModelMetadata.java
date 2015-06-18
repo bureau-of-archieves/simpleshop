@@ -87,7 +87,7 @@ public class ModelMetadata {
         this.modelClass = modelClass;
     }
 
-    public static enum ModelType{
+    public enum ModelType{
 
         DOMAIN, DTO, LOOKUP, EMBEDDED
     }

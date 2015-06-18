@@ -31,7 +31,7 @@ public @interface PropertyFilter {
 
     boolean negate() default false;
 
-    public static enum Operator{
+    enum Operator{
         LIKE, EQUAL, GREATER, LESS, IN, IS_NULL
     }
 
@@ -48,7 +48,7 @@ public @interface PropertyFilter {
         PropertyFilter[] value();
     }
 
-    public static final class Comparator implements java.util.Comparator<PropertyFilter> {
+    final class Comparator implements java.util.Comparator<PropertyFilter> {
 
         @Override
         public int compare(PropertyFilter p1, PropertyFilter p2) {

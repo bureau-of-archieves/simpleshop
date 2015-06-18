@@ -185,7 +185,7 @@
             return true;
 
         return viewType.indexOf(parentViewType + "_") == 0;
-    }
+    };
 
     var findViewDetails = function (viewId) {
         for (var key in viewMap) {
