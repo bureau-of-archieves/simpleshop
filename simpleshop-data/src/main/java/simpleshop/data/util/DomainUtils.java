@@ -1,5 +1,6 @@
 package simpleshop.data.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.collection.internal.PersistentBag;
 import org.hibernate.collection.internal.PersistentSet;
 import org.hibernate.validator.constraints.URL;
@@ -13,8 +14,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.ConcurrentMap;
 
 public final class DomainUtils {
 
@@ -48,9 +51,8 @@ public final class DomainUtils {
      * This method can only be called once in MetadataServiceImpl constructor.
      *
      * @param classes all model classes, this is only know in service layer, as data layer does not depend on dto.
-     * @return unmodifiable map for concurrent access.
      */
-    public static Map<String, ModelMetadata> createModelMetadataMap(Class<?>[] classes) {
+    public static void createModelMetadataMap(Class<?>[] classes) {
 
         if (modelMetadataMap != null)
             throw new UnsupportedOperationException("DomainUtils.createModelMetadataMap(Class<?>[]) can only be called once.");
@@ -61,7 +63,7 @@ public final class DomainUtils {
             ModelMetadata modelMetadata = createModelMetadata(clazz);
             metadataMap.put(modelName, modelMetadata);
         }
-        modelMetadataMap = Collections.unmodifiableMap(metadataMap);
+        modelMetadataMap = Collections.unmodifiableMap(metadataMap);//for thread safety
 
         for (String modelName : modelMetadataMap.keySet()) {
 
@@ -82,6 +84,13 @@ public final class DomainUtils {
                 }
             }
         }
+    }
+
+    /**
+     * Get the domain and dto metadata.
+     * @return unmodifiable map for concurrent access.
+     */
+    public static Map<String, ModelMetadata> getModelMetadata(){
         return modelMetadataMap;
     }
 
@@ -146,6 +155,14 @@ public final class DomainUtils {
             modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
         }
 
+        JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class);
+        Set<String> ignoredProperties = new TreeSet<>();
+        if(jsonIgnoreProperties != null){
+           for(String prop : jsonIgnoreProperties.value()){
+               ignoredProperties.add(prop);
+           }
+        }
+
         //set property metadata
         Map<String, PropertyMetadata> propertyMap = new TreeMap<>();
         Set<String> noneSummaryProperties = new HashSet<>();
@@ -155,6 +172,9 @@ public final class DomainUtils {
                 continue;
 
             PropertyMetadata propertyMetadata = extraPropertyMetadata(method);
+            if(ignoredProperties.contains(propertyMetadata.getPropertyName()))
+                continue;
+
             propertyMap.put(propertyMetadata.getPropertyName(), propertyMetadata);
             if(!propertyMetadata.isSummaryProperty() && !propertyMetadata.isIdProperty()){
                 noneSummaryProperties.add(propertyMetadata.getPropertyName());
@@ -312,6 +332,88 @@ public final class DomainUtils {
             propertyFilters.sort(new PropertyFilter.Comparator());
             propertyMetadata.setPropertyFilters(Collections.unmodifiableList(propertyFilters));
         }
+    }
+
+    /**
+     * Extract the properties marked as @ItemText.
+     * @param domainObject the domain object used as a select item.
+     * @return Item text for the object.
+     */
+    public static String extractItemText(Object domainObject) {
+        if (domainObject == null)
+            return null;
+
+        TreeMap<Integer, String> treeMap = new TreeMap<>();
+        for (Method method : domainObject.getClass().getMethods()) {
+            if (!ReflectionUtils.isPublicInstanceGetter(method))
+                continue;
+
+            ItemText text = method.getAnnotation(ItemText.class);
+            if (text == null)
+                continue;
+
+            try {
+                Object value = method.invoke(domainObject);
+                if (value != null) {
+                    treeMap.put(text.order() * 2 + 1, text.separator());
+                    treeMap.put(text.order() * 2 + 2, value.toString());
+                }
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        String result = "";
+        for (Integer key : treeMap.keySet()) {
+            if (key % 2 == 1) { //separator
+                if (result.length() > 0)
+                    result += treeMap.get(key);
+            } else {
+                result += treeMap.get(key);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Extract the properties marked as @ItemValue.
+     * @param domainObject the domain object used as a select item.
+     * @return Item value for the object.
+     */
+    public static String extractItemValue(Object domainObject) {
+        if (domainObject == null)
+            return null;
+
+        TreeMap<Integer, String> treeMap = new TreeMap<>();
+        for (Method method : domainObject.getClass().getMethods()) {
+            if (!ReflectionUtils.isPublicInstanceGetter(method))
+                continue;
+
+            ItemValue text = method.getAnnotation(ItemValue.class);
+            if (text == null)
+                continue;
+
+            try {
+                Object value = method.invoke(domainObject);
+                if (value != null) {
+                    treeMap.put(text.order() * 2 + 1, text.separator());
+                    treeMap.put(text.order() * 2 + 2, value.toString());
+                }
+            } catch (IllegalAccessException | InvocationTargetException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        String result = "";
+        for (Integer key : treeMap.keySet()) {
+            if (key % 2 == 1) { //separator
+                if (result.length() > 0)
+                    result += treeMap.get(key);
+            } else {
+                result += treeMap.get(key);
+            }
+        }
+        return result;
     }
 
 }

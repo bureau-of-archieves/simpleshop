@@ -23,7 +23,6 @@ import java.util.TreeMap;
 public class MetadataServiceImpl extends BaseServiceImpl implements MetadataService {
 
     private final Class<?>[] classes;
-    private Map<String, ModelMetadata> metadataMap;
 
     public MetadataServiceImpl() {
 
@@ -46,98 +45,18 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
 
     @PostConstruct
     public void init() {
-        metadataMap = DomainUtils.createModelMetadataMap(classes);
+        DomainUtils.createModelMetadataMap(classes);
     }
 
     @Override
-    public Map<String, ModelMetadata> get() {
-        return metadataMap;
+    public Map<String, ModelMetadata> getMetadata() {
+        return DomainUtils.getModelMetadata();
     }
 
     @Override
-    public ModelMetadata get(String modelName) {
-        if (metadataMap.containsKey(modelName))
-            return metadataMap.get(modelName);
-        return null;
+    public ModelMetadata getMetadata(String modelName) {
+        return DomainUtils.getModelMetadata(modelName);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String extractItemText(Object domainObject) {
-        if (domainObject == null)
-            return null;
 
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for (Method method : domainObject.getClass().getMethods()) {
-            if (!ReflectionUtils.isPublicInstanceGetter(method))
-                continue;
-
-            ItemText text = method.getAnnotation(ItemText.class);
-            if (text == null)
-                continue;
-
-            try {
-                Object value = method.invoke(domainObject);
-                if (value != null) {
-                    treeMap.put(text.order() * 2 + 1, text.separator());
-                    treeMap.put(text.order() * 2 + 2, value.toString());
-                }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        String result = "";
-        for (Integer key : treeMap.keySet()) {
-            if (key % 2 == 1) { //separator
-                if (result.length() > 0)
-                    result += treeMap.get(key);
-            } else {
-                result += treeMap.get(key);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String extractItemValue(Object domainObject) {
-        if (domainObject == null)
-            return null;
-
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for (Method method : domainObject.getClass().getMethods()) {
-            if (!ReflectionUtils.isPublicInstanceGetter(method))
-                continue;
-
-            ItemValue text = method.getAnnotation(ItemValue.class);
-            if (text == null)
-                continue;
-
-            try {
-                Object value = method.invoke(domainObject);
-                if (value != null) {
-                    treeMap.put(text.order() * 2 + 1, text.separator());
-                    treeMap.put(text.order() * 2 + 2, value.toString());
-                }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        String result = "";
-        for (Integer key : treeMap.keySet()) {
-            if (key % 2 == 1) { //separator
-                if (result.length() > 0)
-                    result += treeMap.get(key);
-            } else {
-                result += treeMap.get(key);
-            }
-        }
-        return result;
-    }
 }

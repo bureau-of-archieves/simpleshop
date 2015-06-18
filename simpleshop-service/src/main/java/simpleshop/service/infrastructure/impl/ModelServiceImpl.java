@@ -114,12 +114,12 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
     @Transactional(readOnly = true)
     protected @NotNull List<T> daoSearch(S searchParams){
         String searchModelName = searchParams.getClass().getSimpleName();
-        ModelMetadata metadata = metadataService.get(searchModelName);
+        ModelMetadata metadata = metadataService.getMetadata(searchModelName);
         if(metadata == null)
             throw new RuntimeException("Cannot find metadata for searchParams: " + searchModelName);
 
         String modelName = searchModelName.replace("Search", "");
-        ModelMetadata modelMetadata = metadataService.get(modelName);
+        ModelMetadata modelMetadata = metadataService.getMetadata(modelName);
         return getModelDAO().search(metadata, modelMetadata, searchParams);
     }
 
