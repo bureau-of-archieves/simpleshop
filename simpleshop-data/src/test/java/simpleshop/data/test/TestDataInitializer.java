@@ -4,9 +4,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import simpleshop.domain.model.Contact;
 import simpleshop.domain.model.Country;
 import simpleshop.domain.model.Customer;
+import simpleshop.domain.model.Suburb;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -16,8 +18,12 @@ import java.util.List;
  */
 public class TestDataInitializer {
 
-    @Autowired
+
     private SessionFactory sessionFactory;
+
+    public void setSessionFactory(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @PostConstruct
     public void init(){
@@ -28,10 +34,15 @@ public class TestDataInitializer {
             createCountry("AUS", "Australia", "AUD", session);
             createCountry("USA", "United States", "USD", session);
             createCountry("CHN", "China", "CNY", session);
+
             createCustomer("Bill Gates", "CEO", session);
             createCustomer("Microsoft", "Bill Gates", session);
             createCustomer("Google", "Larry Page", session);
-            deleteRambo(session);
+
+            createSuburb("Wollongong", null, "NSW", "2500", "AUS", session);
+            createSuburb("Figtree", null, "NSW", "2525", "AUS", session);
+            createSuburb("Gwynneville", null, "NSW", "2500", "AUS", session);
+            createSuburb("Keiraville", null, "NSW", "2500", "AUS", session);
 
             session.getTransaction().commit();
         }catch(Throwable ex){
@@ -40,6 +51,21 @@ public class TestDataInitializer {
         }finally {
             if(session != null)
                 session.close();
+        }
+    }
+
+    private void createSuburb(String name, String city, String state, String postcode, String countryCode, Session session){
+        List<Suburb> result = getSuburbListByName(name, session);
+        if(result.size() == 0){
+            Suburb suburb = new Suburb();
+            suburb.setSuburb(name);
+            suburb.setState(state);
+            suburb.setCity(city);
+            suburb.setPostcode(postcode);
+            Country country = new Country();
+            country.setCountryCode(countryCode);
+            suburb.setCountry(country);
+            session.save(suburb);
         }
     }
 
@@ -54,11 +80,9 @@ public class TestDataInitializer {
         }
     }
 
-    private void deleteRambo(Session session) {
-        List<Customer> result = getCustomerListByName("Rambo", session);
-        for(Customer customer : result){
-            session.delete(customer);
-        }
+    @SuppressWarnings("unchecked")
+    private List<Suburb> getSuburbListByName(String name, Session session){
+        return session.createCriteria(Suburb.class).add(Restrictions.eq("suburb", name)).list();
     }
 
     @SuppressWarnings("unchecked")

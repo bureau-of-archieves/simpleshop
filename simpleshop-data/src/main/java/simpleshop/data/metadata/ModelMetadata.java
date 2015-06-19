@@ -31,12 +31,15 @@ public class ModelMetadata {
     public PropertyMetadata getPropertyMetadata(String path){
         String[] parts = path.split("\\.");
         ModelMetadata modelMetadata = this;
-        PropertyMetadata PropertyMetadata = null;
+        PropertyMetadata propertyMetadata = null;
         for(int i=0; i< parts.length; i++){
-            PropertyMetadata = modelMetadata.getPropertyMetadataMap().get(parts[i]);
-            modelMetadata = PropertyMetadata.getReturnTypeMetadata();
+            propertyMetadata = modelMetadata.getPropertyMetadataMap().get(parts[i]);
+            if(propertyMetadata == null){
+                propertyMetadata = new PropertyMetadata();
+            }
+            modelMetadata = propertyMetadata.getReturnTypeMetadata();
         }
-        return PropertyMetadata;
+        return propertyMetadata;
     }
 
     public Set<String> getNoneSummaryProperties() {

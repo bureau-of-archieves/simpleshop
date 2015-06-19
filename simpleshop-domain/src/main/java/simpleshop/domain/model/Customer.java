@@ -3,6 +3,7 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.*;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.Icon;
+import simpleshop.domain.metadata.ItemValue;
 import simpleshop.domain.metadata.Summary;
 
 import javax.persistence.*;

@@ -19,6 +19,14 @@ public class Country implements Comparable<Country>{
     private String name;
     private String currencySymbol;
 
+    public Country(){
+
+    }
+
+    public Country(String countryCode){
+        setCountryCode(countryCode);
+    }
+
     @Id
     @Column(name = "country_code", length = 3, nullable = false, updatable = false)
     @NotNull

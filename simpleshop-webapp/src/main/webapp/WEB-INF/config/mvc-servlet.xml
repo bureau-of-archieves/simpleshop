@@ -13,7 +13,7 @@
 
     <import resource="classpath:spring-simpleshop-service.xml" />
 
-    <context:component-scan base-package="simpleshop.webapp.mvc" />
+    <context:component-scan base-package="simpleshop.webapp.mvc.controller" />
 
     <!-- Resolves views selected for rendering by @Controllers to .jsp resources in the /WEB-INF/views directory-->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
@@ -39,7 +39,5 @@
             </bean>
         </mvc:message-converters>
     </mvc:annotation-driven>
-
-
 
 </beans>

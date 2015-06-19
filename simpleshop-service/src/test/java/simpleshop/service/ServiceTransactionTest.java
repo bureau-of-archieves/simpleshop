@@ -1,7 +1,7 @@
 package simpleshop.service;
 
 import org.springframework.test.context.ContextConfiguration;
-import simpleshop.data.TransactionalTest;
+import simpleshop.data.test.TransactionalTest;
 
 
 /**

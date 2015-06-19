@@ -3,15 +3,23 @@ package simpleshop.data;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import simpleshop.Constants;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.metadata.PropertyFilter;
+import simpleshop.data.test.TestConstants;
+import simpleshop.data.test.TransactionalTest;
 import simpleshop.data.util.DomainUtils;
-import simpleshop.domain.model.Contact;
-import simpleshop.domain.model.Customer;
+import simpleshop.domain.model.*;
+import simpleshop.domain.model.component.Address;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class CustomerDAOImplTest extends TransactionalTest {
@@ -23,30 +31,37 @@ public class CustomerDAOImplTest extends TransactionalTest {
     private static ModelMetadata customerMetadata;
 
     @BeforeClass
-    public static void init(){
+    public static void init() {
         customerMetadata = DomainUtils.createModelMetadata(Customer.class);
         searchMetadata = DomainUtils.createModelMetadata(MyCustomerSearch.class);
         customerMetadata.getPropertyMetadataMap().get("contact").setReturnTypeMetadata(DomainUtils.createModelMetadata(Contact.class));
     }
 
     @Test
-    public void getTest(){
+    public void getTest() {
         Customer customer = customerDAO.get(0x7FFFFFFF);
         assertNull(customer);
     }
 
     @Test
-    public void loadTest(){
+    public void loadTest() {
         Customer customer = new Customer();
         customer.setContact(new Contact());
-        customer.getContact().setName("Rambo");
-        customer.getContact().getContactNumbers().put("phone", "119");
+        customer.getContact().setName(TestConstants.RAMBO);
+        customer.getContact().getContactNumbers().put(ContactNumberType.HOME_PHONE.name(), TestConstants.HOME_PHONE_NUMBER_2);
         customerDAO.save(customer);
         customerDAO.evict(customer);
         customer = customerDAO.load(customer.getId());
 
+        assertNotNull(customer.getContact());
+        assertEquals(TestConstants.RAMBO, customer.getContact().getName());
+        assertNotNull(customer.getContact().getContactNumbers());
+        assertEquals(TestConstants.HOME_PHONE_NUMBER_2, customer.getContact().getContactNumbers().get(ContactNumberType.HOME_PHONE.name()));
+
         ReflectionUtils.setProperty(customer, "contact.contactName", "John Rambo");
         assertEquals("John Rambo", customer.getContact().getContactName());
+
+        customerDAO.delete(customer);
     }
 
     @AliasDeclaration(propertyName = "contact", aliasName = "ct")
@@ -85,7 +100,7 @@ public class CustomerDAOImplTest extends TransactionalTest {
     }
 
     @Test
-    public void searchTest(){
+    public void searchTest() {
         MyCustomerSearch searchParameters = new MyCustomerSearch();
         searchParameters.setName("Bill Gates");
         List<Customer> customerList = customerDAO.search(searchMetadata, customerMetadata, searchParameters);
@@ -106,13 +121,13 @@ public class CustomerDAOImplTest extends TransactionalTest {
         searchParameters.setNameOrContactName("Bill Gates");
         customerList = customerDAO.search(searchMetadata, customerMetadata, searchParameters);
         assertTrue(customerList.size() >= 2);
-        for(Customer customer : customerList){
+        for (Customer customer : customerList) {
             assertTrue("Bill Gates".equals(customer.getContact().getName()) || "Bill Gates".equals(customer.getContact().getContactName()));
         }
     }
 
     @Test
-    public void searchPagingTest(){
+    public void searchPagingTest() {
         MyCustomerSearch customerSearch = new MyCustomerSearch();
         customerSearch.setSortInfoList(new ArrayList<>());
         SortInfo sortInfo = new SortInfo();
@@ -137,6 +152,40 @@ public class CustomerDAOImplTest extends TransactionalTest {
         assertTrue(customerList.size() == 2);
     }
 
+    @Test
+    public void quickSearchTest(){
+        List<Customer> customers = customerDAO.quickSearch("Bill", new PageInfo());
+        assertTrue(customers.size() > 0);
 
+        customers = customerDAO.quickSearch(TestConstants.NO_ONE_HAS_THIS_NAME, new PageInfo());
+        assertTrue(customers.size() == 0);
+    }
+
+    @Test
+    public void createAndDeleteTest() {
+        Integer customerId = createTestMan1();
+
+        Customer customer = customerDAO.load(customerId);
+
+        assertNotNull(customer.getContact());
+        assertEquals(TestConstants.TEST_MAN_1_NAME, customer.getContact().getName());
+
+        assertNotNull(customer.getContact().getAddress());
+        assertNotNull(TestConstants.MAGIC_STREET_1, customer.getContact().getAddress().getAddressLine1());
+        customerDAO.delete(customer);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private Integer createTestMan1(){
+        Customer customer = new Customer();
+        customer.setContact(new Contact());
+        customer.getContact().setName(TestConstants.TEST_MAN_1_NAME);
+        customer.getContact().setContactNumbers(new HashMap<>());
+        Address address = new Address();
+        address.setAddressLine1(TestConstants.MAGIC_STREET_1);
+        customer.getContact().setAddress(address);
+        customerDAO.save(customer);
+        return customer.getId();
+    }
 
 }

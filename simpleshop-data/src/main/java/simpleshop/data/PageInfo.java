@@ -19,6 +19,11 @@ public class PageInfo implements Serializable{
         pageSize = Constants.DEFAULT_PAGE_SIZE;
     }
 
+    /**
+     * Data structure that contains how to apply paging to a search result.
+     * @param pageIndex 0 based index.
+     * @param pageSize items in a page.
+     */
     public PageInfo(int pageIndex, int pageSize){
         setPageIndex(pageIndex);
         setPageSize(pageSize);

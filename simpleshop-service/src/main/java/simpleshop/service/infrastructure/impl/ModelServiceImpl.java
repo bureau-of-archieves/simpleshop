@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Base model service class.
@@ -188,7 +189,7 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
                     //go into initialised object only
                     if (Hibernate.isInitialized(value)) {
                         if (value != null) { //exclude primitives and java types.
-                            if (value.getClass().getPackage() == null || value.getClass().getPackage().getName().startsWith("java."))
+                            if (value.getClass().getPackage() == null || value.getClass().getPackage().getName().startsWith("java.") || value instanceof Map)
                                 return PropertyReflector.InspectionResult.BYPASS; //bypass system types
                         }
                         return PropertyReflector.InspectionResult.CONTINUE;

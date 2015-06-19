@@ -1,5 +1,7 @@
 package simpleshop.domain.model.component;
 
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import simpleshop.Constants;
 import simpleshop.domain.model.Suburb;
 

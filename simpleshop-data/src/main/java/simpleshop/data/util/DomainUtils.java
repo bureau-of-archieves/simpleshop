@@ -77,13 +77,27 @@ public final class DomainUtils {
 
             //set returnTypeMetadata
             for (String fieldName : modelMetadata.getPropertyMetadataMap().keySet()) {
-                PropertyMetadata PropertyMetadata = modelMetadata.getPropertyMetadataMap().get(fieldName);
-                String possibleModelName = PropertyMetadata.getPropertyType();
+                PropertyMetadata propertyMetadata = modelMetadata.getPropertyMetadataMap().get(fieldName);
+                String possibleModelName = propertyMetadata.getPropertyType();
                 if (metadataMap.containsKey(possibleModelName)) {
-                    PropertyMetadata.setReturnTypeMetadata(metadataMap.get(possibleModelName));
+                    propertyMetadata.setReturnTypeMetadata(metadataMap.get(possibleModelName));
+                } else {
+                    if(Collection.class.isAssignableFrom( propertyMetadata.getGetter().getReturnType())){
+                        //create collection return type metadata
+                        generateCollectionReturnTypeMetadata(propertyMetadata);
+                    }
                 }
             }
         }
+    }
+
+    private static void generateCollectionReturnTypeMetadata(PropertyMetadata propertyMetadata) {
+        ModelMetadata metadata = new ModelMetadata();
+        Class<?> returnType = propertyMetadata.getGetter().getReturnType();
+        metadata.setName(returnType.getSimpleName());
+        //todo annotate indices type and elements type both default to String
+
+        propertyMetadata.setReturnTypeMetadata(metadata);
     }
 
     /**

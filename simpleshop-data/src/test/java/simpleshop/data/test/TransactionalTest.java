@@ -1,4 +1,4 @@
-package simpleshop.data;
+package simpleshop.data.test;
 
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
