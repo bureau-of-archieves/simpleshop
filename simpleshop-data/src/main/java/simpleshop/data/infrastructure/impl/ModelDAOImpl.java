@@ -58,19 +58,20 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         createAliases(aliases, aliasDeclarations);
 
         //add criteria from each search parameter
-        String currentAlias = null;
         List<Criterion> propertyCriteria = new ArrayList<>(); //expressions for OR clause
         for(PropertyMetadata propertyMetadata : searchMetadata.getPropertyMetadataMap().values()){
+
+            //get or filters
             List<PropertyFilter> propertyFilters = propertyMetadata.getPropertyFilters();
             if(propertyFilters == null)
                 continue;
 
+            //get property value
             Object value = org.springframework.util.ReflectionUtils.invokeMethod(propertyMetadata.getGetter(), searchObject);
             if(value == null)
                 continue;
 
-            propertyCriteria.clear();
-            for(PropertyFilter propertyFilter : propertyFilters) {
+            for(PropertyFilter propertyFilter : propertyFilters) {//create criteria
 
                 //get property name
                 String propertyName = propertyFilter.property();
@@ -80,17 +81,16 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                 //get property type
                 String fullPropertyPath = getFullPropertyPath(aliasDeclarations, propertyName, propertyFilter.alias());
                 PropertyMetadata targetPropertyMetadata = modelMetadata.getPropertyMetadata(fullPropertyPath);
-                Class<?> targetType = targetPropertyMetadata.getGetter().getReturnType();
+                Class<?> targetType = targetPropertyMetadata.getReturnType();
 
                 //add
-                Criterion criterion = createCriterion(propertyName, propertyFilter.operator(), targetType, value, propertyFilter.negate());
-                if (currentAlias != null && !currentAlias.equals(propertyFilter.alias())){
-                    addCriteria(aliases.get(propertyFilter.alias()), propertyCriteria);
-                }
-                currentAlias = propertyFilter.alias();
+                String alias = createAssociationPath(aliases, propertyFilter.alias(), propertyName);
+                String lastPart = propertyName.substring(propertyName.lastIndexOf('.') + 1);
+                Criterion criterion = createCriterion((StringUtils.isNullOrEmpty(alias) ? "" : alias + ".") + lastPart, propertyFilter.operator(), targetType, value, propertyFilter.negate());
                 propertyCriteria.add(criterion);
             }
-            addCriteria(aliases.get(currentAlias), propertyCriteria);
+            addCriteria(criteria, propertyCriteria);
+            propertyCriteria.clear();
         }
 
         if(searchObject.getSortInfoList() != null){
@@ -105,6 +105,23 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         }
 
         return criteria.list();
+    }
+
+    private String createAssociationPath(Hashtable<String, Criteria> aliases, String alias, String propertyName) {
+
+        Criteria parentCriteria = aliases.get(alias);
+        String[] parts = propertyName.split("\\.");
+
+        for(int i=0; i<parts.length - 1; i++){
+            String subAlias = alias + "_9_" + parts[i];
+            if(!aliases.contains(subAlias)){
+                aliases.put(subAlias, parentCriteria.createCriteria(parts[i], subAlias));
+            }
+            alias = subAlias;
+            parentCriteria = aliases.get(subAlias);
+        }
+
+        return alias;
     }
 
     @SuppressWarnings("unchecked")
@@ -134,7 +151,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         if(aliasDeclarations != null)
             for(AliasDeclaration aliasDeclaration1 : aliasDeclarations){
                 Criteria parentCriteria = aliases.get(aliasDeclaration1.parentAlias());
-                Criteria childCriteria = parentCriteria.createCriteria(aliasDeclaration1.propertyName(), aliasDeclaration1.joinType());
+                Criteria childCriteria = parentCriteria.createCriteria(aliasDeclaration1.propertyName(), aliasDeclaration1.aliasName(), aliasDeclaration1.joinType());
                 if(aliases.get(aliasDeclaration1.aliasName()) != null)
                     throw new RuntimeException("Alias '" + aliasDeclaration1.aliasName() + "' is already defined.");
                 aliases.put(aliasDeclaration1.aliasName(), childCriteria);
@@ -179,6 +196,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
     }
 
     private Criterion createCriterion(String propertyName, PropertyFilter.Operator operator, Class<?> targetType, Object value, boolean negate) {
+        //todo change negate=true op= less than => >=
         Criterion criterion;
         Object parsedObject;
         switch (operator){

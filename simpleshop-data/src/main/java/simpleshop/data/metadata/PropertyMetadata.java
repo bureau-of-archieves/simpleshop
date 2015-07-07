@@ -11,7 +11,7 @@ import java.util.List;
  * Date: 20/10/14
  * Time: 2:19 PM
  */
-@JsonIgnoreProperties({"getter", "returnTypeMetadata", "propertyFilters"})
+@JsonIgnoreProperties({"getter", "returnType", "returnTypeMetadata", "propertyFilters"})
 public class PropertyMetadata {
 
     /**
@@ -109,6 +109,7 @@ public class PropertyMetadata {
     //the properties below are not sent to the client side.
 
     private Method getter;
+    private Class<?> returnType;
     private  ModelMetadata returnTypeMetadata;
     private List<PropertyFilter> propertyFilters;
 
@@ -278,5 +279,19 @@ public class PropertyMetadata {
 
     public void setMaxExclusive(boolean maxExclusive) {
         this.maxExclusive = maxExclusive;
+    }
+
+    public Class<?> getReturnType(){
+        if(getGetter() != null)
+            return getGetter().getReturnType();
+
+        if(getReturnTypeMetadata() != null)
+            return getReturnTypeMetadata().getModelClass();
+
+        return returnType;
+    }
+
+    public void setReturnType(Class<?> returnType) {
+        this.returnType = returnType;
     }
 }

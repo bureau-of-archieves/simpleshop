@@ -82,22 +82,58 @@ public final class DomainUtils {
                 if (metadataMap.containsKey(possibleModelName)) {
                     propertyMetadata.setReturnTypeMetadata(metadataMap.get(possibleModelName));
                 } else {
-                    if(Collection.class.isAssignableFrom( propertyMetadata.getGetter().getReturnType())){
+                    Class<?> returnType = propertyMetadata.getGetter().getReturnType();
+                    if(Iterable.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)){
                         //create collection return type metadata
-                        generateCollectionReturnTypeMetadata(propertyMetadata);
+                        generateCollectionReturnTypeMetadata(propertyMetadata, metadataMap);
                     }
                 }
             }
         }
     }
 
-    private static void generateCollectionReturnTypeMetadata(PropertyMetadata propertyMetadata) {
+    private static void generateCollectionReturnTypeMetadata(PropertyMetadata propertyMetadata, HashMap<String, ModelMetadata> metadataMap) {
         ModelMetadata metadata = new ModelMetadata();
         Class<?> returnType = propertyMetadata.getGetter().getReturnType();
         metadata.setName(returnType.getSimpleName());
-        //todo annotate indices type and elements type both default to String
+        metadata.setModelClass(returnType);
+        metadata.setType(ModelMetadata.ModelType.COLLECTION);
+        Map<String, PropertyMetadata> propertyMetadataMap = new HashMap<>();
+        metadata.setSearchable(false);
+        metadata.setPropertyMetadataMap(propertyMetadataMap);
+
+        //COLLECTION_ELEMENTS = "elements";
+        PropertyMetadata elementsProperty = new PropertyMetadata();
+        elementsProperty.setPropertyName("elements");
+        if(propertyMetadata.getGetter() != null){
+            ValueClass valueClass = propertyMetadata.getGetter().getAnnotation(ValueClass.class);
+            if(valueClass != null){
+                elementsProperty.setReturnType(valueClass.value());
+            }
+        }
+        if(elementsProperty.getReturnType() == null){
+            elementsProperty.setReturnType(Object.class);
+        }
+        propertyMetadataMap.put("elements", elementsProperty);
+
+        //COLLECTION_SIZE = "size";
+        PropertyMetadata sizeProperty = new PropertyMetadata();
+        sizeProperty.setPropertyName("size");
+        sizeProperty.setReturnType(Integer.class);
+        propertyMetadataMap.put("size", sizeProperty);
 
         propertyMetadata.setReturnTypeMetadata(metadata);
+
+        /*
+            todo other properties to create.
+
+	        COLLECTION_INDICES = "indices";
+	        COLLECTION_MAX_INDEX = "maxIndex";
+	        COLLECTION_MIN_INDEX = "minIndex";
+	        COLLECTION_MAX_ELEMENT = "maxElement";
+	        COLLECTION_MIN_ELEMENT = "minElement";
+	        COLLECTION_INDEX = "index";
+        */
     }
 
     /**

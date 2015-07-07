@@ -28,15 +28,14 @@ public class ModelMetadata {
         this.PropertyMetadataMap = PropertyMetadataMap;
     }
 
-    public PropertyMetadata getPropertyMetadata(String path){
+    public PropertyMetadata getPropertyMetadata(String path) {
         String[] parts = path.split("\\.");
         ModelMetadata modelMetadata = this;
         PropertyMetadata propertyMetadata = null;
-        for(int i=0; i< parts.length; i++){
+        for (int i = 0; i < parts.length; i++) {
+            if (modelMetadata == null)
+                throw new RuntimeException("Failed to reflect property path: " + path);
             propertyMetadata = modelMetadata.getPropertyMetadataMap().get(parts[i]);
-            if(propertyMetadata == null){
-                propertyMetadata = new PropertyMetadata();
-            }
             modelMetadata = propertyMetadata.getReturnTypeMetadata();
         }
         return propertyMetadata;
@@ -90,9 +89,9 @@ public class ModelMetadata {
         this.modelClass = modelClass;
     }
 
-    public enum ModelType{
+    public enum ModelType {
 
-        DOMAIN, DTO, LOOKUP, EMBEDDED
+        DOMAIN, DTO, LOOKUP, EMBEDDED, COLLECTION
     }
 
     public List<AliasDeclaration> getAliasDeclarations() {

@@ -5,6 +5,7 @@ import simpleshop.Constants;
 import simpleshop.domain.metadata.ItemText;
 import simpleshop.domain.metadata.ItemValue;
 import simpleshop.domain.metadata.Summary;
+import simpleshop.domain.metadata.ValueClass;
 import simpleshop.domain.model.component.Address;
 
 import javax.persistence.*;
@@ -66,6 +67,8 @@ public class Contact {
     @MapKeyColumn(name = "contact_type")
     @Column(name = "contact_number")
     @BatchSize(size = Constants.BATCH_SIZE)
+    @MapKeyClass(String.class)
+    @ValueClass()
     public Map<String, String> getContactNumbers() {
         return contactNumbers;
     }

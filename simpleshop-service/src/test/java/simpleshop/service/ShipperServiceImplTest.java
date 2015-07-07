@@ -1,5 +1,10 @@
 package simpleshop.service;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -15,13 +20,15 @@ import simpleshop.domain.model.Shipper;
 import simpleshop.domain.model.Suburb;
 import simpleshop.domain.model.component.Address;
 import simpleshop.dto.ShipperSearch;
+
 import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
  * Test <code>MetadataServiceImpl</code> methods.
  */
-public class ShipperServiceImplTest extends ServiceTransactionTest  {
+public class ShipperServiceImplTest extends ServiceTransactionTest {
 
     @Autowired
     private ShipperService shipperService;
@@ -30,12 +37,12 @@ public class ShipperServiceImplTest extends ServiceTransactionTest  {
     private SuburbDAO suburbDAO;
 
     @Test
-    public void searchTest(){
+    public void searchTest() {
         List<Suburb> suburbs = suburbDAO.quickSearch("", new PageInfo());
         createShipper(TestConstants.SHIPPER_NAME_1, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_1, TestConstants.MAGIC_STREET_1, suburbs.get(0));
         createShipper(TestConstants.SHIPPER_NAME_2, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_1, suburbs.get(1));
 
-        for(int i=0; i< 10; i++){
+        for (int i = 0; i < 10; i++) {
             createShipper(TestConstants.RAMBO + i, ContactNumberType.WORK_PHONE.name(), i % 2 == 1 ? TestConstants.HOME_PHONE_NUMBER_1 : TestConstants.HOME_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_2, suburbs.get(1));
         }
 
@@ -55,16 +62,35 @@ public class ShipperServiceImplTest extends ServiceTransactionTest  {
         assertTrue(shippers.size() == 5);
     }
 
+    @Autowired
+    SessionFactory sessionFactory;
+
+    @Test
+    public void searchTest2() {
+        Session session = sessionFactory.openSession();
+        session.getTransaction().begin();
+
+        Criteria criteria = session.createCriteria(Shipper.class);
+        Criteria ct = criteria.createCriteria("contact", "ct");
+        Criteria cn = ct.createCriteria("contactNumbers", "cn");
+        Criterion criterion = Restrictions.like("cn.elements", TestConstants.WORK_PHONE_NUMBER_1);
+        criteria.add(criterion);
+        List result = criteria.list();
+        System.out.println(result.size());
+        session.getTransaction().commit();
+        session.close();
+    }
+
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         List<Shipper> shippers = shipperService.quickSearch("", new PageInfo());
-        for(Shipper shipper : shippers){
+        for (Shipper shipper : shippers) {
             shipperService.delete(shipper.getId());
         }
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private Shipper createShipper(String name, String contactKey, String contactNumber, String addressLine, Suburb suburb){
+    private Shipper createShipper(String name, String contactKey, String contactNumber, String addressLine, Suburb suburb) {
         Shipper shipper = new Shipper();
         shipper.setContact(new Contact());
         shipper.getContact().setName(name);
