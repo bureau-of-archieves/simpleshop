@@ -136,30 +136,30 @@ input.ng-valid ~ .pattern-validation {
 .view {
     padding:0.1em;
 }
-       /*
-.dropdown-menu li.ng-scope{
+
+.dropdown-menu.result li.ng-scope{
     width:15em;
 }
 
-.dropdown-menu li.ng-scope a {
+.dropdown-menu.result li.ng-scope a {
     overflow: hidden;
     border-top: 1px solid #ccc;
     padding-right:5px;
 }
 
 
-.dropdown-menu li.ng-scope span {
+.dropdown-menu.result li.ng-scope span {
     float: left;
 }
 
 
-.dropdown-menu li.ng-scope span.glyphicon {
+.dropdown-menu.result li.ng-scope span.glyphicon {
     float:right;
     margin-left:0.8em;
 }
 
 
-.dropdown-menu li.ng-scope span.glyphicon:hover {
+.dropdown-menu.result li.ng-scope span.glyphicon:hover {
     text-shadow: 0.2em 0.1em 0.3em #777;
     position: relative;
     left: -0.2em;
@@ -167,7 +167,6 @@ input.ng-valid ~ .pattern-validation {
     border-radius:0.5em;
 
 }
-*/
 
 .viewport {
     background-color: #222;

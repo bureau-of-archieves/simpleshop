@@ -1,3 +1,4 @@
+<%@include file="WEB-INF/_header.jspf"%>
 <!DOCTYPE html>
 <html data-ng-app="spongeApp" data-ng-controller="spongeController">
 <head>
@@ -39,23 +40,34 @@
 
                     <ul role="menu" class="dropdown-menu">
                         <li data-ng-repeat="item in menu">
-                            <a href="javascript:void(0);">{{item.name}}</a>
+                            <a href="#" class="icon"
+                               data-spg-search="{{item.name}}" >
+                                <ctrl:icon value="{{item.icon}}" />&nbsp; {{item.name}} </a>
                         </li>
                     </ul>
                 </li>
 
-                <li class="dropdown" >
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
-                        Results <span class="caret"></span>
+                <li class="dropdown result" data-ng-show="getViewIds().length">
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Results <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
 
                         <li>
                             <a href="javascript:void(0);">
-                                <span>Close All</span>
+                                <span data-ng-click="closeOthers('')">Close All</span>
                             </a>
                         </li>
 
+                        <li class="ng-scope" data-ng-repeat="resultName in getViewIds()">
+                            <a class="ng-binding result-menu-item" href="javascript:void(0);">
+                                <span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span>
+                                    <span class="glyphicon glyphicon-remove-circle"
+                                          data-ng-click="closeResult(resultName);$event.stopPropagation();"
+                                          title="Close"></span>
+                                    <span class="glyphicon glyphicon-asterisk" data-ng-click="closeOthers(resultName)"
+                                          title="Close Others"></span>
+                            </a>
+                        </li>
 
                     </ul>
                 </li>

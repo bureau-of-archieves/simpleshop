@@ -79,8 +79,7 @@
         };
 
         //page elements
-        this.noSearchViewElementId = "noSearchViewMessage"; //id of the message element which is shown where there is search view in the search view section.
-        this.noViewElementId = "noResultMessage"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
+        this.noViewElementId = "messageNoView"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
         this.headerElementId = "pageHeader"; //header element id, the header is fix positioned.
     })();
 
@@ -433,11 +432,7 @@
                 if (existingViewDetails) { //replacing existing view
                     nextElement = $(existingViewDetails.viewElements).last().next();
                 } else {
-                    if (viewName.contains("-search")) {
-                        nextElement = $("#" + site.noSearchViewElementId);
-                    } else {
-                        nextElement = $("#" + site.noViewElementId);
-                    }
+                    nextElement = $("#" + site.noViewElementId);
                 }
                 if (!nextElement) {
                     return createPromise("Could not determine the insert position for the view being created.");
@@ -514,7 +509,9 @@
                     });
             };
 
-            return beginOp(operationKey).then(operation);
+            return beginOp(operationKey).fail(function(){
+                showDialog("Cannot begin operation.");
+            }).then(operation);
         };
 
         var save = function (viewId) {

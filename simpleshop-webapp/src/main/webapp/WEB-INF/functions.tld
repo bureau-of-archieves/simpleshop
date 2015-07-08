@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+    <tlib-version>1.0</tlib-version>
+    <short-name>spongef</short-name>
+    <uri>sponge/functions</uri>
+    <function>
+        <name>md</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.util.Map getMetadata()</function-signature>
+    </function>
+    <function>
+        <name>fmd</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>simpleshop.data.metadata.PropertyMetadata getMetadata(java.lang.String, java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>parseModelId</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.Object parseModelId(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>validateViewId</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>void validateViewId(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>friendlyToCamel</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String friendlyNameToCamelName(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>friendlyModelNameFromUrl</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String friendlyModelNameFromUrl(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>parseId</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.Integer parseId(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>viewTypeFromUrl</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String viewTypeFromUrl(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>viewNameFromUrl</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String viewNameFromUrl(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>htmlEncodeSingleQuote</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String htmlEncodeSingleQuote(java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <name>push</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.Object
+            push(simpleshop.webapp.util.ViewValueStackBean,java.lang.String,java.lang.Object)
+        </function-signature>
+    </function>
+    <function>
+        <name>peek</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.Object peek(simpleshop.webapp.util.ViewValueStackBean,java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>pop</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.Object pop(simpleshop.webapp.util.ViewValueStackBean,java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>_push</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>void _push(simpleshop.webapp.util.ViewValueStackBean,java.lang.String,java.lang.Object)
+        </function-signature>
+    </function>
+    <function>
+        <name>_pop</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>void _pop(simpleshop.webapp.util.ViewValueStackBean,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>deNull</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.Object deNull(java.lang.Object,java.lang.Object)</function-signature>
+    </function>
+    <function>
+        <name>emptyStr</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String toEmptyString(java.lang.Object)</function-signature>
+    </function>
+    <function>
+        <name>firstCharUpper</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String firstCharUpper(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>firstCharLower</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String firstCharLower(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>camelToFriendly</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String camelNameToFriendlyName(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>camelToUrl</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String camelNameToUrlName(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>pascalNameToUrlName</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String pascalNameToUrlName(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>concat</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String concat(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>concat3</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String concat(java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>fid</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String getFieldId(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>error</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>void raiseError(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>format</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String format(java.lang.String,java.lang.Object)</function-signature>
+    </function>
+</taglib>

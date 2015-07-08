@@ -1,8 +1,5 @@
 package simpleshop.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public final class StringUtils {
 
@@ -255,6 +252,28 @@ public final class StringUtils {
         return stringBuilder.toString();
     }
 
+    public static String pascalNameToUrlName(String camelName){
+        if(isNullOrEmpty(camelName))
+            return camelName;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for(int i=0; i<camelName.length();i++){
+            char ch = camelName.charAt(i);
+            if(i == 0){
+                stringBuilder.append(Character.toLowerCase(ch));
+                continue;
+            }
+            if(Character.isUpperCase(ch)){
+                stringBuilder.append('_');
+                stringBuilder.append(Character.toLowerCase(ch));
+            } else {
+                stringBuilder.append(ch);
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     /**
      * Convert from friendly name to pascal name, which is concatenated capitalised words.
      * @param name
@@ -276,5 +295,26 @@ public final class StringUtils {
 
         return param.replaceAll("-", "");
     }
+
+    /**
+     * If obj is null, returns null, else returns empty string.
+     * @param obj any object.
+     * @return empty string if obj is not null.
+     */
+    public static String toEmptyString(Object obj){
+        if(obj   == null)
+            return null;
+        return "";
+    }
+
+
+    public static String concat(String str1, String str2){
+        return str1 + str2;
+    }
+
+    public static String concat(String str1, String str2, String str3){
+        return str1 + str2 + str3;
+    }
+
 
 }
