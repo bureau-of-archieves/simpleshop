@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html data-ng-app="spongeApp" data-ng-controller="spongeController">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SimpleShop Web App</title>
+    <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
     <link rel="icon" href="img/site.ico" type="image/x-icon"/>
@@ -38,14 +38,9 @@
                     </a>
 
                     <ul role="menu" class="dropdown-menu">
-
-                        <li> <a href="javascript:void(0);">Customer</a></li>
-                        <li> <a href="javascript:void(0);">Employee</a></li>
-                        <li> <a href="javascript:void(0);">Order</a></li>
-                        <li> <a href="javascript:void(0);">Product</a></li>
-                        <li> <a href="javascript:void(0);">Shipper</a></li>
-                        <li> <a href="javascript:void(0);">Supplier</a></li>
-
+                        <li data-ng-repeat="item in menu">
+                            <a href="javascript:void(0);">{{item.name}}</a>
+                        </li>
                     </ul>
                 </li>
 
@@ -125,7 +120,7 @@
 <script src="js/angular.js"></script>
 <script src="js/jquery-ui.js"></script>
 <script src="js/zcl.js"></script>
-<script src="js/site.js"></script>
+<script src="js/sponge.js"></script>
 
 <%--page initialization script--%>
 <script>

@@ -7,9 +7,14 @@
     /**
      * All references to UI layer element id or url are defined in this object.
      */
-    var site = new (function(){
-        var jsonPath = "/quickshop/json/"; //the root path for json related operations, e.g. save object, refresh object or search.
-        var viewPath = "ng/quickshop/"; //the root path of all views
+    var site = new (function () {
+        var jsonPath = "json/"; //the root path for json related operations, e.g. save object, refresh object or search.
+        var viewPath = "ng/"; //the root path of all views
+
+
+        this.metadataUrl = function () {
+            return jsonPath + "metadata";
+        };
 
         /**
          * Construct the url to get a single model in json format.
@@ -17,9 +22,9 @@
          * @param modelId Pass false in modelId to get the json of a new model, which contains all defaults.
          * @returns {string}
          */
-        this.modelJsonUrl = function(modelName, modelId){
+        this.modelJsonUrl = function (modelName, modelId) {
             var url = jsonPath + zcl.pascalNameToUrlName(modelName) + "/";
-            url  += modelId || "new";
+            url += modelId || "new";
             return url;
         };
 
@@ -30,7 +35,7 @@
          * @param modelName model type in url naming.
          * @returns {string}
          */
-        this.searchJsonUrl = function(modelName) {
+        this.searchJsonUrl = function (modelName) {
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/search";
         };
 
@@ -39,7 +44,7 @@
          * @param modelName
          * @returns {string}
          */
-        this.saveUrl = function(modelName) {
+        this.saveUrl = function (modelName) {
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/save";
         };
 
@@ -48,7 +53,7 @@
          * @param listName
          * @returns {string}
          */
-        this.listJsonUrl = function(listName){
+        this.listJsonUrl = function (listName) {
             return jsonPath + zcl.pascalNameToUrlName(listName);
         };
 
@@ -60,21 +65,21 @@
          * edit -> modelId
          * list -> incremental id
          */
-        this.viewUrl = function(viewName, instanceId, params){
+        this.viewUrl = function (viewName, instanceId, params) {
             var viewUrl = viewPath + viewName + ".jsp";
             var viewId = viewName;
-            if(instanceId)
+            if (instanceId)
                 viewId += "-" + instanceId;
 
             viewUrl += "?viewId=" + viewId;
-            if(params) {
-                viewUrl +=  "&" + $.param(params);
+            if (params) {
+                viewUrl += "&" + $.param(params);
             }
             return viewUrl;
         };
 
         //page elements
-        this. noSearchViewElementId = "noSearchViewMessage"; //id of the message element which is shown where there is search view in the search view section.
+        this.noSearchViewElementId = "noSearchViewMessage"; //id of the message element which is shown where there is search view in the search view section.
         this.noViewElementId = "noResultMessage"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
         this.headerElementId = "pageHeader"; //header element id, the header is fix positioned.
     })();
@@ -86,7 +91,7 @@
      */
     var viewMap = {};
 
-    //region util functions - these are specific to the quickshop ui layer. Generic ones should be added to zcl.js.
+    //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
 
     /**
      * Scroll to an element.
@@ -104,7 +109,7 @@
 
     /**
      * Set if an element is visible.
-     * There are a few different different techniques used to set element visibility in quickshop, this method consider them all.
+     * There are a few different different techniques used to set element visibility in sponge, this method consider them all.
      * @param id
      * @param show true to show.
      * @returns {boolean} true if the operation is successful.
@@ -180,8 +185,8 @@
      * @param parentViewType string.
      * @returns {boolean}
      */
-    var isSubtypeOf = function(viewType, parentViewType){
-        if(viewType == parentViewType)
+    var isSubtypeOf = function (viewType, parentViewType) {
+        if (viewType == parentViewType)
             return true;
 
         return viewType.indexOf(parentViewType + "_") == 0;
@@ -197,39 +202,39 @@
         return null;
     };
 
-    var getBodyScope = function(){
+    var getBodyScope = function () {
         return $("#" + site.noViewElementId).scope();
     };
 
     //endregion
 
-    var quickshopApp = angular.module("quickshopApp", [], null);
+    var spongeApp = angular.module("spongeApp", [], null);
 
     //region filters
 
-    quickshopApp.filter("status", function () {
+    spongeApp.filter("status", function () {
         return function (input) {
             return input == 'A' ? "Active" : "Inactive";
         };
     });
 
-    quickshopApp.filter('yn', function () {
+    spongeApp.filter('yn', function () {
         return function (input) {
             return input == 'Y' ? '\u2713' : '\u2718';
         };
     });
 
-    quickshopApp.filter('phone', function () {
+    spongeApp.filter('phone', function () {
         return function (input) {
             return input;
         };
     });
 
-    quickshopApp.filter('url', function () {
+    spongeApp.filter('url', function () {
         return function (input) {
-            if(input){
+            if (input) {
                 var index = input.toString().indexOf("#");
-                if(index >= 0){
+                if (index >= 0) {
                     return input.substring(index + 1, input.length - 1);
                 }
             }
@@ -237,11 +242,11 @@
         };
     });
 
-    quickshopApp.filter('url_label', function () {
+    spongeApp.filter('url_label', function () {
         return function (input) {
-            if(input){
+            if (input) {
                 var index = input.toString().indexOf("#");
-                if(index >0){
+                if (index > 0) {
                     return input.substring(0, index);
                 }
             }
@@ -249,25 +254,25 @@
         };
     });
 
-    quickshopApp.filter('yesno', function () {
+    spongeApp.filter('yesno', function () {
         return function (input) {
             return input == 'Y' ? 'Yes' : 'No';
         };
     });
 
-    quickshopApp.filter('na', function () {
+    spongeApp.filter('na', function () {
         return function (input) {
             return input != null ? input : 'N/A';
         };
     });
 
-    quickshopApp.filter('percent', function () {
+    spongeApp.filter('percent', function () {
         return function (input) {
             return input != null ? input + "%" : 'N/A';
         };
     });
 
-    quickshopApp.filter('pascal', function () {
+    spongeApp.filter('pascal', function () {
         return function (input) {
             var values = input.replace(/-/g, ' ').split();
             for (var i = 0; i < values.length; i++) {
@@ -282,7 +287,7 @@
 
     //region service
 
-    quickshopApp.factory("quickshopService", ["$compile", "$rootScope", function ($compile, $rootScope) {
+    spongeApp.factory("spongeService", ["$compile", "$rootScope", function ($compile, $rootScope) {
 
         /**
          * All operations fired on the client side must execute beginOp and endOp in pair with the same token.
@@ -325,10 +330,10 @@
          * @returns {string}
          */
         var generateViewId = function (viewName, instanceId, returnInstanceId) {
-            if(instanceId)
+            if (instanceId)
                 return returnInstanceId ? instanceId : viewName + "-" + instanceId;
 
-            if(viewName.indexOf("-search") > 0)
+            if (viewName.indexOf("-search") > 0)
                 return returnInstanceId ? null : viewName;
 
             //those are not identified by instanceId use an instance sequence number
@@ -341,11 +346,11 @@
         };
 
         var defaultGetViewOption = {
-            removeExisting : false,
-            viewKeyPrefix : "",
-            instanceIdInViewKey : true,
-            viewTypeInViewKey : false,
-            modelInViewKey : true
+            removeExisting: false,
+            viewKeyPrefix: "",
+            instanceIdInViewKey: true,
+            viewTypeInViewKey: false,
+            modelInViewKey: true
         };
 
         /**
@@ -365,37 +370,37 @@
 
             //calculate viewKey; two views have the same key if they display the same content and therefore one has to close for the other to open.
             var viewKeyObject = {
-                viewKeyPrefix : getViewOptions.viewKeyPrefix,
+                viewKeyPrefix: getViewOptions.viewKeyPrefix,
                 modelName: modelName
             };
-            if(getViewOptions.modelInViewKey && model){
+            if (getViewOptions.modelInViewKey && model) {
                 viewKeyObject.model = model;
             }
-            if(getViewOptions.instanceIdInViewKey && instanceId){
+            if (getViewOptions.instanceIdInViewKey && instanceId) {
                 viewKeyObject.instanceId = instanceId = instanceId || generateViewId(viewName, instanceId, true); //require instance id to be generated here
             }
-            if(getViewOptions.viewTypeInViewKey){
+            if (getViewOptions.viewTypeInViewKey) {
                 viewKeyObject.viewType = viewType;
             }
             var viewKey = JSON.stringify(viewKeyObject);
 
             var existingViewDetails = viewMap[viewKey];
             var viewId = null;
-            if(existingViewDetails){
+            if (existingViewDetails) {
                 viewId = existingViewDetails.viewId;
-                if(!getViewOptions.removeExisting){
+                if (!getViewOptions.removeExisting) {
 
                     display(viewId, true);
                     scrollTo(viewId);
 
-                    if(existingViewDetails.viewType != viewType){
+                    if (existingViewDetails.viewType != viewType) {
                         return createPromise(zcl.formatObject("The content of view '{0}' is already being displayed.", [viewType]));
                     }
                     return createPromise(null);
                 }
             }
 
-            if(!viewId){
+            if (!viewId) {
                 viewId = generateViewId(viewName, instanceId);
             }
             var viewUrl = site.viewUrl(viewName, instanceId, params);
@@ -419,13 +424,13 @@
                     }
                 }
                 json = $.trim(json);
-                if(!json){
+                if (!json) {
                     return createPromise("Could not extract the model from the view html.");
                 }
 
                 //workout next sibling
                 var nextElement = null;
-                if(existingViewDetails){ //replacing existing view
+                if (existingViewDetails) { //replacing existing view
                     nextElement = $(existingViewDetails.viewElements).last().next();
                 } else {
                     if (viewName.contains("-search")) {
@@ -434,20 +439,29 @@
                         nextElement = $("#" + site.noViewElementId);
                     }
                 }
-                if(!nextElement){
+                if (!nextElement) {
                     return createPromise("Could not determine the insert position for the view being created.");
                 }
 
                 //insert element
                 var newModel = JSON.parse(json);
-                var newViewDetails = {viewId: viewId, viewName: viewName, modelName: modelName, viewType: viewType, params: params, model: newModel, viewElements: elements, getViewOptions : getViewOptions};
+                var newViewDetails = {
+                    viewId: viewId,
+                    viewName: viewName,
+                    modelName: modelName,
+                    viewType: viewType,
+                    params: params,
+                    model: newModel,
+                    viewElements: elements,
+                    getViewOptions: getViewOptions
+                };
                 if (existingViewDetails) {
                     $(existingViewDetails.viewElements).remove();
                 }
                 viewMap[viewKey] = newViewDetails;
 
                 var parentScope = $(nextElement).parent().scope();
-                try{
+                try {
                     safeApply(parentScope, function () {
                         try {
                             nextElement.before(elements);
@@ -458,7 +472,7 @@
                             throw ex;
                         }
                     });
-                } catch(ex){
+                } catch (ex) {
                     return createPromise("View compilation failed:" + ex);
                 }
 
@@ -496,8 +510,8 @@
                         return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
                     }
                 ).always(function () {
-                    return endOp(operationKey);
-                });
+                        return endOp(operationKey);
+                    });
             };
 
             return beginOp(operationKey).then(operation);
@@ -577,21 +591,21 @@
 
         /**
          * Close a view.
-        */
+         */
         var close = function (viewId) {
             var allViews = $(".view.display");
             var viewCount = allViews.size();
             var index = 0;
-            for(; index  <viewCount; index++){
-                if(allViews.get(index).id == viewId)
+            for (; index < viewCount; index++) {
+                if (allViews.get(index).id == viewId)
                     break;
             }
-            if(index == viewCount)
+            if (index == viewCount)
                 throw "Cannot find view " + viewId;
 
             var element = $(allViews.get(index));
             var gotoView = null;
-            if(index == viewCount - 1 && viewCount > 1){
+            if (index == viewCount - 1 && viewCount > 1) {
                 gotoView = $(allViews.get(index - 1));
             }
 
@@ -601,7 +615,7 @@
                     delete viewMap[viewDetails.key];
             });
             element.remove();
-            if(gotoView){
+            if (gotoView) {
                 scrollTo(gotoView.attr("id"));
             }
             return createPromise(null);
@@ -686,14 +700,14 @@
     /**
      * This directive enables an element to open a search view for a model when clicked.
      */
-    quickshopApp.directive("spgSearch", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgSearch", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
 
                 $(element).click(function ($event) {
                     var modelName = attrs["spgSearch"];
-                    quickshopService.getView(modelName, "search", null, null, null, {viewTypeInViewKey:true})
+                    spongeService.getView(modelName, "search", null, null, null, {viewTypeInViewKey: true})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -706,14 +720,14 @@
     /**
      * This directive enables an element to open a create view for a model when clicked.
      */
-    quickshopApp.directive("spgCreate", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgCreate", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
 
                 $(element).click(function ($event) {
                     var modelName = attrs["spgCreate"];
-                    quickshopService.getView(modelName, "create", null, null, null, {viewTypeInViewKey : true})
+                    spongeService.getView(modelName, "create", null, null, null, {viewTypeInViewKey: true})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -726,7 +740,7 @@
     /**
      * Annotate an element so that when clicked the update view of a model is opened and its details view closed (if one is open)..
      */
-    quickshopApp.directive("spgUpdate", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgUpdate", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -734,7 +748,7 @@
                 $(element).click(function ($event) {
                     var args = JSON.parse(attrs["spgUpdate"]);
                     var modelId = args["modelId"];
-                    quickshopService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting : true})
+                    spongeService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting: true})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -747,7 +761,7 @@
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
-    quickshopApp.directive("spgDetails", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgDetails", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -757,19 +771,19 @@
                     var modelName = args["modelName"];
                     var modelId = args["modelId"];
 
-                    if(typeof modelId == "string"){
-                        if(modelId.substring(0,1) == "#"){
+                    if (typeof modelId == "string") {
+                        if (modelId.substring(0, 1) == "#") {
                             modelId = $(modelId).val();
                             modelId = parseInt(modelId);
-                            if(isNaN(modelId)){
+                            if (isNaN(modelId)) {
                                 modelId = zcl.subStrBeforeFirst($(args["modelId"]).val(), '-', true);
                             }
                         }
                     }
-                    if(!modelId)
+                    if (!modelId)
                         return;
 
-                    quickshopService.getView(modelName, "details", modelId, {modelId: modelId}, null, {removeExisting : true})
+                    spongeService.getView(modelName, "details", modelId, {modelId: modelId}, null, {removeExisting: true})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -782,7 +796,7 @@
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
-    quickshopApp.directive("spgList", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgList", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -791,7 +805,7 @@
                     var args = JSON.parse(attrs["spgList"]);
                     var modelName = args["modelName"];
 
-                    quickshopService.getView(modelName, "list", null, null, args["criteria"], {instanceIdInViewKey : true})
+                    spongeService.getView(modelName, "list", null, null, args["criteria"], {instanceIdInViewKey: true})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -800,7 +814,7 @@
         };
     }]);
 
-    quickshopApp.directive("spgSave", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgSave", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -813,7 +827,7 @@
                     }
 
                     var viewId = attrs["spgSave"];
-                    quickshopService.save(viewId)
+                    spongeService.save(viewId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -827,7 +841,7 @@
     /**
      * Can refresh update., details and list
      */
-    quickshopApp.directive("spgRefresh", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgRefresh", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -838,7 +852,7 @@
 
                 $(element).click(function () {
 
-                    quickshopService.refresh(viewId)
+                    spongeService.refresh(viewId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -849,7 +863,7 @@
         };
     }]);
 
-    quickshopApp.directive("spgCancel", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgCancel", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -861,7 +875,7 @@
                             return false;
                     }
 
-                    quickshopService.cancel(attrs["spgCancel"])
+                    spongeService.cancel(attrs["spgCancel"])
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -872,7 +886,7 @@
         };
     }]);
 
-    quickshopApp.directive("spgClose", ["quickshopService", function (quickshopService) {
+    spongeApp.directive("spgClose", ["spongeService", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -882,7 +896,7 @@
 
                 $(element).click(function () {
                     var nextElement = $("#" + targetId).next();
-                    quickshopService.close(targetId)
+                    spongeService.close(targetId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -894,7 +908,7 @@
     }]);
 
     //data-spg-show="show_element_id"
-    quickshopApp.directive("spgShow", function () {
+    spongeApp.directive("spgShow", function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -906,7 +920,7 @@
         };
     });
 
-    quickshopApp.directive("spgDate", ["$filter", function ($filter) {
+    spongeApp.directive("spgDate", ["$filter", function ($filter) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -916,14 +930,14 @@
 
                 var dateParser = function (value) {
                     var result = Date.parse(value);
-                    if(isNaN(result))
+                    if (isNaN(result))
                         return value;
                     return result;
                 };
 
-                var dateFormatter = function(value){
-                    var result = $filter('date')(value,format);
-                    if(result)
+                var dateFormatter = function (value) {
+                    var result = $filter('date')(value, format);
+                    if (result)
                         return result;
                     return value;
                 };
@@ -935,7 +949,7 @@
     }]);
 
     //data-spg-hide="hide_element_id"
-    quickshopApp.directive("spgHide", function () {
+    spongeApp.directive("spgHide", function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -952,7 +966,7 @@
     });
 
     //data-spg-toTop
-    quickshopApp.directive("spgToTop", function () {
+    spongeApp.directive("spgToTop", function () {
         return {
             restrict: 'A',
             link: function (scope, element) {
@@ -965,7 +979,7 @@
     });
 
     //data-spg-new-scope
-    quickshopApp.directive("spgNewScope", function () {
+    spongeApp.directive("spgNewScope", function () {
         return {
             restrict: 'A',
             scope: true
@@ -973,7 +987,7 @@
     });
 
     //data-toggle
-    quickshopApp.directive("spgToggle", function () {
+    spongeApp.directive("spgToggle", function () {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -992,7 +1006,7 @@
     });
 
     //todo review spgCombo
-    quickshopApp.directive("spgCombo", function (quickshopService) {
+    spongeApp.directive("spgCombo", function (spongeService) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -1061,8 +1075,8 @@
                     input.select();
                 });
 
-                ngModel.$render = function(){
-                    if(scope.ngModel.$viewValue){
+                ngModel.$render = function () {
+                    if (scope.ngModel.$viewValue) {
                         var format = config["displayFormat"];
                         var text = scope.$eval(format);
                         input.val(text);
@@ -1075,7 +1089,7 @@
                     scope.loadingList = false;
                     scope.comboList = [];
                     input.data("pending-change-handler", null);
-                    if(scope.$$phase != "$digest" && scope.$$phase != "$apply")
+                    if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
                         scope.$digest();
                 };
 
@@ -1100,13 +1114,13 @@
     });
 
     //todo reivew this directive
-    quickshopApp.directive("spgBeginLinkRequest", function (quickshopService) {
+    spongeApp.directive("spgBeginLinkRequest", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 var targetId = attrs["spgBeginLinkRequest"];
                 $(element).click(function () {
-                    quickshopService.beginLinkRequest(targetId)
+                    spongeService.beginLinkRequest(targetId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1117,13 +1131,13 @@
     });
 
     //todo reivew this directive
-    quickshopApp.directive("spgCancelLinkRequest", function (quickshopService) {
+    spongeApp.directive("spgCancelLinkRequest", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 var targetId = attrs["spgCancelLinkRequest"];
                 $(element).click(function () {
-                    quickshopService.cancelLinkRequest(targetId)
+                    spongeService.cancelLinkRequest(targetId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1134,7 +1148,7 @@
     });
 
     //todo reivew this directive
-    quickshopApp.directive("spgEndLinkRequest", function (quickshopService) {
+    spongeApp.directive("spgEndLinkRequest", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element) {
@@ -1144,7 +1158,7 @@
                         targetId = scope.linkRequests[0].sourceFieldId;
                     }
 
-                    quickshopService.endLinkRequest(element, targetId)
+                    spongeService.endLinkRequest(element, targetId)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1154,7 +1168,7 @@
         };
     });
 
-    quickshopApp.directive("spgMin", function (quickshopService) {
+    spongeApp.directive("spgMin", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element) {
@@ -1163,7 +1177,7 @@
         };
     });
 
-    quickshopApp.directive("spgMax", function (quickshopService) {
+    spongeApp.directive("spgMax", function (spongeService) {
         return {
             restrict: 'A',
             link: function (scope, element) {
@@ -1174,9 +1188,43 @@
 
     //endregion
 
+
+    //region methods
+
+    var showDialog = function (msg) {
+        alert(msg);
+    };
+
+    //load application metadata which sponge.js depends on.
+    var loadMetadata = function ($scope, $http) {
+        $http.get(site.metadataUrl()).success(function (data, status, headers) {
+
+            var metadata = data.content;
+            $scope.metadata = metadata;
+
+            var menu = [];
+            for(var modelName in metadata){
+                var model = metadata[modelName];
+                if(model.searchable){
+                    menu.push(model);
+                }
+            }
+            menu.sort(function(m1, m2){
+                return m1.name.localeCompare(m2.name);
+            });
+
+            $scope.menu = menu;
+
+        }).error(function (data, status, headers) {
+            showDialog('Failed to load application metadata, please retry later. Error:' + status);
+        });
+    };
+
+    //endregion
+
     //region controllers
 
-    quickshopApp.controller("quickshopController", ["$scope", "quickshopService", function ($scope, quickshopService) {
+    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", function ($scope, $http, spongeService) {
 
         $scope.linkRequests = []; //need to select an model to complete the operation.
 
@@ -1184,14 +1232,16 @@
 
         $scope.scrollTo = scrollTo;
 
+        loadMetadata($scope, $http);
+
         $scope.closeResult = function (resultName) {
-            quickshopService.close(resultName);
+            spongeService.close(resultName);
         };
 
-        $scope.getViewIds = function(){
+        $scope.getViewIds = function () {
             var result = [];
             var keys = zcl.getOwnProperties(viewMap);
-            for(var i=0; i<keys.length; i++){
+            for (var i = 0; i < keys.length; i++) {
                 var key = keys[i];
                 result.push(viewMap[key].viewId);
             }
@@ -1199,9 +1249,9 @@
             return result;
         };
 
-        $scope.hasClass = function(id, className){
+        $scope.hasClass = function (id, className) {
             var element = $("#" + id);
-            if(element.size() == 0)
+            if (element.size() == 0)
                 return false;
 
             return element.hasClass(className);
@@ -1212,13 +1262,13 @@
             for (var i = 0; i < resultNames.length; i++) {
                 var otherName = resultNames[i];
                 if (otherName != resultName)
-                    quickshopService.close(otherName);
+                    spongeService.close(otherName);
             }
         };
 
     }]);
 
-    quickshopApp.controller("viewController", ["$scope", "$element", function ($scope, $element) {
+    spongeApp.controller("viewController", ["$scope", "$element", function ($scope, $element) {
 
         var id = $element.attr("id");
         var forms = $element.find("form");
@@ -1229,7 +1279,7 @@
         $scope.reset = function () {
             $scope.model = angular.copy($scope.master);
             forms.each(function (index, form) {
-                if($scope[form.name]){
+                if ($scope[form.name]) {
                     $scope[form.name].$setPristine();
                 }
             });
@@ -1240,15 +1290,15 @@
             return !angular.equals($scope.master, $scope.model);
         };
 
-        $scope.addToCollection = function(collection, key){
+        $scope.addToCollection = function (collection, key) {
             var prototype = viewDetails.model.tags[key];
             collection.push(angular.copy(prototype));
         };
 
-        $scope.removeFromCollection = function(collection, item){
-            if(collection && item){
+        $scope.removeFromCollection = function (collection, item) {
+            if (collection && item) {
                 var index = collection.indexOf(item);
-                if(index >= 0){
+                if (index >= 0) {
                     collection.splice(index, 1);
                 }
             }

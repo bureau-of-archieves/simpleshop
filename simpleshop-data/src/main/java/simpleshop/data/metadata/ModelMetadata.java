@@ -7,18 +7,19 @@ import java.util.Map;
 import java.util.Set;
 
 
-@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "searchable"})
+@JsonIgnoreProperties({"modelClass", "aliasDeclarations"})
 public class ModelMetadata {
 
     private String name;
     private String icon;
     private ModelType type;
+    private boolean searchable = false;
     private Map<String, PropertyMetadata> PropertyMetadataMap;
     private Set<String> noneSummaryProperties;
 
     private List<AliasDeclaration> aliasDeclarations;
     private Class<?> modelClass;
-    private boolean searchable = false;
+
 
     public Map<String, PropertyMetadata> getPropertyMetadataMap() {
         return PropertyMetadataMap;
