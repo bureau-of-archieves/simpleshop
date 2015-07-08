@@ -196,34 +196,51 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
     }
 
     private Criterion createCriterion(String propertyName, PropertyFilter.Operator operator, Class<?> targetType, Object value, boolean negate) {
-        //todo change negate=true op= less than => >=
         Criterion criterion;
         Object parsedObject;
         switch (operator){
             case LIKE:
                 String pattern = StringUtils.wrapLikeKeywords(value.toString());
                 criterion = Restrictions.like(propertyName, pattern);
+                if(negate) {
+                    criterion = Restrictions.not(criterion);
+                }
                 break;
             case IN:
                 Object[] values = value.toString().split(",");
                 for(int i=0; i<values.length;i++)
                     values[i] = simpleshop.common.ReflectionUtils.parseObject(values[i],targetType);
                 criterion = Restrictions.in(propertyName, values);
+                if(negate) {
+                    criterion = Restrictions.not(criterion);
+                }
                 break;
             case EQUAL:
-                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value,targetType);
-                criterion = Restrictions.eq(propertyName, parsedObject);
+                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
+                if(negate){
+                    criterion = Restrictions.ne(propertyName, parsedObject);
+                } else {
+                    criterion = Restrictions.eq(propertyName, parsedObject);
+                }
                 break;
             case GREATER:
-                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value,targetType);
-                criterion = Restrictions.gt(propertyName, parsedObject);
+                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
+                if(negate){
+                    criterion = Restrictions.le(propertyName, parsedObject);
+                } else {
+                    criterion = Restrictions.gt(propertyName, parsedObject);
+                }
                 break;
             case LESS:
-                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value,targetType);
-                criterion = Restrictions.lt(propertyName, parsedObject);
+                parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
+                if(negate){
+                    criterion = Restrictions.ge(propertyName, parsedObject);
+                } else {
+                    criterion = Restrictions.lt(propertyName, parsedObject);
+                }
                 break;
             case IS_NULL:
-                if(Objects.equals("false", value) )
+                if(Objects.equals("false", value) ^ negate)
                     criterion = Restrictions.isNull(propertyName);
                 else
                     criterion = Restrictions.isNotNull(propertyName);
@@ -231,8 +248,6 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
             default:
                 throw new IllegalArgumentException("operator");
         }
-        if(negate)
-            criterion = Restrictions.not(criterion);
         return criterion;
     }
 

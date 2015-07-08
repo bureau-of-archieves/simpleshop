@@ -43,4 +43,7 @@
 
     <tx:annotation-driven/>
 
+    <!--
+    <bean id="conversionService" class="org.springframework.core.convert.support.DefaultConversionService" />
+    -->
 </beans>
