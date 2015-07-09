@@ -65,15 +65,10 @@
          * edit -> modelId
          * list -> incremental id
          */
-        this.viewUrl = function (viewName, instanceId, params) {
+        this.viewUrl = function (viewName, params) {
             var viewUrl = viewPath + viewName + ".jsp";
-            var viewId = viewName;
-            if (instanceId)
-                viewId += "-" + instanceId;
-
-            viewUrl += "?viewId=" + viewId;
             if (params) {
-                viewUrl += "&" + $.param(params);
+                viewUrl += "?" + $.param(params);
             }
             return viewUrl;
         };
@@ -402,7 +397,7 @@
             if (!viewId) {
                 viewId = generateViewId(viewName, instanceId);
             }
-            var viewUrl = site.viewUrl(viewName, instanceId, params);
+            var viewUrl = site.viewUrl(viewName, params);
 
             /**
              * Create the view from the view html returned from the server.
@@ -1002,7 +997,6 @@
         };
     });
 
-    //todo review spgCombo
     spongeApp.directive("spgCombo", function (spongeService) {
         return {
             restrict: 'A',

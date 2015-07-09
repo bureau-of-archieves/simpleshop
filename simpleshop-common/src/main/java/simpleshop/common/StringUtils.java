@@ -163,6 +163,13 @@ public final class StringUtils {
         return stringBuilder.toString();
     }
 
+    public static String camelNameToPascalName(String camelName){
+        if(isNullOrEmpty(camelName))
+            return camelName;
+
+        return camelName.substring(0, 1).toUpperCase() + camelName.substring(1);
+    }
+
     /**
      * Extract model name in friendly model name format from url.
      * Url pattern is: model_name-view_type.jsp

@@ -122,6 +122,11 @@
         <function-signature>java.lang.String camelNameToFriendlyName(java.lang.String)</function-signature>
     </function>
     <function>
+        <name>camelToPascal</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String camelNameToPascalName(java.lang.String)</function-signature>
+    </function>
+    <function>
         <name>camelToUrl</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String camelNameToUrlName(java.lang.String)</function-signature>

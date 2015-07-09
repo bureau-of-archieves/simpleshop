@@ -255,6 +255,9 @@ public class PropertyMetadata {
 
     public void setReturnTypeMetadata(ModelMetadata returnTypeMetadata) {
         this.returnTypeMetadata = returnTypeMetadata;
+        if(returnTypeMetadata != null && this.displayFormat == null){
+            this.displayFormat = returnTypeMetadata.getDisplayFormat();
+        }
     }
 
     public List<PropertyFilter> getPropertyFilters() {

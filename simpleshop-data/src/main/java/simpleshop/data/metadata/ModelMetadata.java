@@ -14,12 +14,12 @@ public class ModelMetadata {
     private String icon;
     private ModelType type;
     private boolean searchable = false;
+    private String displayFormat;   //how to convert to string using pipelined ajs filters.
     private Map<String, PropertyMetadata> PropertyMetadataMap;
     private Set<String> noneSummaryProperties;
 
     private List<AliasDeclaration> aliasDeclarations;
     private Class<?> modelClass;
-
 
     public Map<String, PropertyMetadata> getPropertyMetadataMap() {
         return PropertyMetadataMap;
@@ -66,14 +66,6 @@ public class ModelMetadata {
         this.name = name;
     }
 
-    public ModelType getType() {
-        return type;
-    }
-
-    public void setType(ModelType type) {
-        this.type = type;
-    }
-
     public boolean isSearchable() {
         return searchable;
     }
@@ -82,8 +74,24 @@ public class ModelMetadata {
         this.searchable = searchable;
     }
 
+    public String getDisplayFormat() {
+        return displayFormat;
+    }
+
+    public void setDisplayFormat(String displayFormat) {
+        this.displayFormat = displayFormat;
+    }
+
     public Class<?> getModelClass() {
         return modelClass;
+    }
+
+    public ModelType getType() {
+        return type;
+    }
+
+    public void setType(ModelType type) {
+        this.type = type;
     }
 
     public void setModelClass(Class<?> modelClass) {
