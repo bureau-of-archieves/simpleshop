@@ -40,11 +40,13 @@
 
 <div id="${id}" class="view display ${col}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
      data-ng-controller="${controller}Controller">
+
     ${f:_push(stack, "_parentId", id)}
+
     <div class="panel ${panelClass} ${cssClass}">
         <div class="panel-heading">
             <c:if test="${not empty icon}">
-                <ctrl:icon value="${icon}"/>
+                <ctrl:icon value="${icon}"/> &nbsp;
             </c:if>
             <span class="title-text">${title}</span>
 
@@ -81,5 +83,7 @@
             <jsp:doBody/>
         </div>
     </div>
+
     ${f:_pop(stack, "_parentId")}
+
 </div>

@@ -16,15 +16,18 @@
     ${f:_push(stack, "_friendlyModelName", friendlyModelName)}
     ${f:_push(stack, "_viewId", viewId)}
 
-    <t:view-frame id="${viewId}" title="${friendlyModelName}" icon="${f:md().get[targetModelName].icon}" removable="false" hideRefresh="true" panelClass="panel-primary" >
+    <t:view-frame id="${viewId}" title="${friendlyModelName}" icon="${f:smd(targetModelName).icon}" removable="false" hideRefresh="true" panelClass="panel-primary" >
         <ctrl:form name="${viewId}-form">
 
             <jsp:doBody/>
 
             <div class="form-group">
-                <div class="col-sm-offset-3 col-sm-9">
+                <div class="col-sm-offset-3 col-sm-2">
                     <button type="submit" class="btn btn-primary"
                             data-spg-list='{"modelName":"${targetModelName}", "criteria": {{model}}}'>Search</button>
+                </div>
+                <div class="col-sm-7">
+                    <button type="reset" class="btn btn-primary" >Reset</button>
                 </div>
             </div>
         </ctrl:form>

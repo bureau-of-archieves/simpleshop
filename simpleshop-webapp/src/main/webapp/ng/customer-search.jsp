@@ -2,7 +2,11 @@
 
 
 <t:page>
-    <n:customer-search />
+    <t:view-search>
+        <ctrl:editField path="name"/>
+        <ctrl:editField path="address"/>
+    </t:view-search>
+
     <script>
         <c:import url="/json/customer/search" />
     </script>

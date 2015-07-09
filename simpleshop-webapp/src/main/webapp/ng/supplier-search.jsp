@@ -2,7 +2,11 @@
 
 
 <t:page>
-    <n:supplier-search />
+    <t:view-search>
+        <ctrl:editField    path="companyName"/>
+        <ctrl:editField    path="contactName"/>
+        <ctrl:editField    path="city"/>
+    </t:view-search>
 
     <script>
         <c:import url="/json/supplier/search" />

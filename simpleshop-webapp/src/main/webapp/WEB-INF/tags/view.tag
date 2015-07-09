@@ -4,9 +4,8 @@
 
 <%--the model type name in space-separated, capitailised words, e.g. Member Account--%>
 <c:set var="friendlyModelName" value="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" />
-
 <%--the model name--%>
-<c:set var="modelName" value="${f:friendlyToCamel(friendlyModelName)}" />
+<c:set var="modelName" value="${f:friendlyToPascal(friendlyModelName)}" />
 <%--view type, e.g. search, details, list, create, update--%>
 <c:set var="viewType" value="${f:viewTypeFromUrl(pageContext.request.requestURL)}" />
 

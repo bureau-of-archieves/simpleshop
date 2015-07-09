@@ -5,32 +5,28 @@
 <%@attribute name="modelName" required="false" %>
 <%@attribute name="label" required="false" %>
 <%@attribute name="parentId" required="false" %>
-
 <%@attribute name="id" required="false" %>
 
 
 <c:if test="${empty modelName}" >
     <c:set var="modelName" value="${f:peek(stack, '_modelName')}" />
 </c:if>
-
 <c:if test="${base == null}" >
     <c:set var="base" value="${f:peek(stack, '_base')}" />
 </c:if>
-
 <c:if test="${empty parentId}" >
     <c:set var="parentId" value="${f:peek(stack, '_parentId')}" />
 </c:if>
-
 <c:if test="${empty label}">
     <c:set var="label" value="${f:fmd(modelName, path).label}" />
 </c:if>
-
 <c:if test="${empty id}">
     <c:set var="id" value="${f:fid(parentId, path)}" />
 </c:if>
 
+
 <%--field metadata--%>
-<c:set var="fieldType" value="${f:fmd(modelName, path).fieldType}" />
+<c:set var="propertyType" value="${f:fmd(modelName, path).propertyType}" />
 <c:set var="minLength" value="${f:fmd(modelName, path).minLength}" />
 <c:set var="maxLength" value="${f:fmd(modelName, path).maxLength}" />
 <c:set var="required" value="${f:fmd(modelName, path).required}" />
@@ -39,7 +35,7 @@
 <c:set var="pattern" value="${f:fmd(modelName, path).inputFormat}" />
 
 <c:set var="directive" value="" />
-<c:if test="${fieldType == 'Date'}">
+<c:if test="${propertyType == 'Date'}">
     <c:set var="directive" value="data-spg-date='yyyy-MM-dd'" />
 </c:if>
 
@@ -64,13 +60,13 @@
             <c:if test="${required}"> <p data-ng-show="${fieldRef}.$error.required">Required</p> </c:if>
             <c:if test="${not empty pattern}">
             <c:choose>
-                <c:when test="${fieldType == 'BigDecimal'}">
+                <c:when test="${propertyType == 'BigDecimal'}">
                     <p data-ng-show="${fieldRef}.$error.pattern">Not a valid decimal.</p>
                 </c:when>
-                <c:when test="${fieldType == 'Integer'}">
+                <c:when test="${propertyType == 'Integer'}">
                     <p data-ng-show="${fieldRef}.$error.pattern">Not a valid integer.</p>
                 </c:when>
-                <c:when test="${fieldType == 'Date'}">
+                <c:when test="${propertyType == 'Date'}">
                     <p data-ng-show="${fieldRef}.$error.pattern">Not a valid date.</p>
                 </c:when>
                 <c:otherwise>

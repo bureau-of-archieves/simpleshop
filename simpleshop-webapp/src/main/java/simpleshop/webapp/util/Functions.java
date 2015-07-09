@@ -97,6 +97,10 @@ public class Functions {
         return springBean.metadataService.getMetadata();
     }
 
+    public static ModelMetadata getMetadata(String modelName){
+        return springBean.metadataService.getMetadata().get(modelName);
+    }
+
     public static PropertyMetadata getMetadata(String modelName, String propertyName){
 
         propertyName = StringUtils.subStrB4(propertyName, ".");

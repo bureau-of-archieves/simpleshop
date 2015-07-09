@@ -7,7 +7,12 @@
     <function>
         <name>md</name>
         <function-class>simpleshop.webapp.util.Functions</function-class>
-        <function-signature>java.util.Map getMetadata()</function-signature>
+        <function-signature>java.util.Map&lt;java.lang.String,simpleshop.data.metadata.ModelMetadata&gt; getMetadata()</function-signature>
+    </function>
+    <function>
+        <name>smd</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>simpleshop.data.metadata.ModelMetadata getMetadata(java.lang.String)</function-signature>
     </function>
     <function>
         <name>fmd</name>
@@ -29,6 +34,11 @@
         <name>friendlyToCamel</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String friendlyNameToCamelName(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>friendlyToPascal</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String friendlyNameToPascalName(java.lang.String)</function-signature>
     </function>
     <function>
         <name>friendlyModelNameFromUrl</name>

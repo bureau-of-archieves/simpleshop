@@ -18,7 +18,7 @@
 </c:if>
 
 <c:if test="${empty targetModelName}">
-    <c:set var="targetModelName" value="${f:firstCharLower(f:fmd(modelName, path).fieldType)}" />
+    <c:set var="targetModelName" value="${f:firstCharLower(f:fmd(modelName, path).propertyType)}" />
 </c:if>
 
 <c:if test="${empty label}">

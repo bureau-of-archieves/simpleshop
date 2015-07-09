@@ -2,7 +2,8 @@
 
 
 <t:page>
-    <n:shipper-search />
+    <ctrl:editField path="companyName"/>
+    <ctrl:editField path="phone"/>
 
     <script>
         <c:import url="/json/shipper/search" />

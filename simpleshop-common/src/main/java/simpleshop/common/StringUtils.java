@@ -165,6 +165,7 @@ public final class StringUtils {
 
     /**
      * Extract model name in friendly model name format from url.
+     * Url pattern is: model_name-view_type.jsp
      * @param url url of a view.
      * @return friendly model name of the view.
      */
