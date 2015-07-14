@@ -9,7 +9,9 @@
         http://www.springframework.org/schema/tx
         http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <ctx:component-scan base-package="simpleshop"/>
+    <ctx:component-scan base-package="simpleshop">
+        <ctx:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </ctx:component-scan>
     <ctx:annotation-config/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -41,7 +43,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <tx:annotation-driven/>
+    <tx:annotation-driven />
 
     <!--
     <bean id="conversionService" class="org.springframework.core.convert.support.DefaultConversionService" />

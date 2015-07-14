@@ -57,7 +57,7 @@
 </c:if>
 
 <%--model update is totally controlled by data-spg-combo directive--%>
-<div class="form-group" data-ng-model="${fieldRef}" data-ng-model-options="{updateOn:''}" data-spg-combo='{"targetModelName":"${targetModelName}", "displayFormat":"${displayFormat}"}' >
+<div class="form-group" data-ng-model="${fieldRef}" data-ng-model-options="{updateOn:''}" data-spg-combo='{"targetModelName":"${targetModelName}", "displayFormat":"${fieldRef} ${f:htmlEncodeSingleQuote(displayFormat)}"}' >
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
 
     <div class="col-sm-9">
@@ -70,10 +70,9 @@
         </div>
         </c:if>
         <div class="combo-list" data-ng-show="showList" style="position:relative;" >
-            <br>
-            <br>
-            <img  data-ng-show="loadingList" style="width:1.5em; height:1.5em;" src="${pageContext.request.contextPath}img/loading.gif" alt="Loading list...">
-            <ol  class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em;">
+
+            <ol class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em; list-style-type: none">
+                <li data-ng-show="loadingList" class="list-group-item display" > <img  style="width:5em;" src="${pageContext.request.contextPath}img/loading.gif" alt="Loading list..."></li>
                 <li data-ng-repeat="comboItem in comboList" class="list-group-item display" data-ng-click="updateView(comboItem)"><a href="javascript:void(0);">
                     {{comboItem ${displayFormat}}}</a>
                 </li>

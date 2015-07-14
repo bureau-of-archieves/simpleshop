@@ -182,6 +182,12 @@ public final class DomainUtils {
             modelMetadata.setIcon(icon.value());
         }
 
+        //set display format
+        DisplayFormat displayFormat = clazz.getAnnotation(DisplayFormat.class);
+        if(displayFormat != null){
+            modelMetadata.setDisplayFormat(displayFormat.value());
+        }
+
         //set alias annotations
         Stack<Class<?>> classes = new Stack<>();
         Class<?> superClass = clazz;

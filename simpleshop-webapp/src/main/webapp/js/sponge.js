@@ -54,7 +54,7 @@
          * @returns {string}
          */
         this.listJsonUrl = function (listName) {
-            return jsonPath + zcl.pascalNameToUrlName(listName);
+            return jsonPath + zcl.pascalNameToUrlName(listName) + "/list";
         };
 
         /**
@@ -274,6 +274,27 @@
                 values[i] = values[i].toString().replace(/_/g, ' ');
             }
             return values.join(' ');
+        };
+    });
+
+    spongeApp.filter('concat', function () {
+        return function () {
+            var input = arguments[0];
+            var result = "";
+            var prevIsProp = false;
+            for(var i=1; i<arguments.length; i++){
+                var prop = arguments[i];
+                if(prop in input){
+                    if(prevIsProp)
+                        result += " ";
+                    result += input[prop];
+                    prevIsProp = true;
+                } else {
+                    result += prop;
+                    prevIsProp = false;
+                }
+            }
+            return result;
         };
     });
 
@@ -1029,9 +1050,9 @@
                     if (promise) {
                         promise.abort();
                     }
-                    var model = {listName: config["targetModelName"], keywords: text};
+                    var model = {keywords: text};
                     var data = JSON.stringify(model);
-                    promise = $.ajax(site.jsonPath + "list", {
+                    promise = $.ajax(site.listJsonUrl(config["targetModelName"]), {
                         type: "POST",
                         data: data,
                         contentType: "application/json",
@@ -1040,8 +1061,8 @@
                     input.data("pending-list-request", promise);
 
                     promise.done(function (data) {
-                        if (data) {
-                            scope.comboList = data;
+                        if (data && data.content) {
+                            scope.comboList = data.content;
                         } else {
                             scope.comboList = [];
                         }
@@ -1061,11 +1082,6 @@
                     ngModel.$setValidity(config.validationErrorKey, true);
                 };
 
-                input.focus(function () {
-                    ngModel.$setTouched();
-                    input.select();
-                });
-
                 ngModel.$render = function () {
                     if (scope.ngModel.$viewValue) {
                         var format = config["displayFormat"];
@@ -1084,8 +1100,13 @@
                         scope.$digest();
                 };
 
+                input.focus(function () {
+                    ngModel.$setTouched();
+                    input.select();
+                });
+
                 input.blur(function () {
-                    setTimeout(closeComboList, 500);
+                    setTimeout(closeComboList, config.delay);
                 });
 
                 input.keypress(function (event) {
