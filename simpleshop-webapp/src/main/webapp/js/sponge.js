@@ -565,12 +565,12 @@
                     });
 
                 var saveSuccess = function (response) {
-                    if (response["status"] == "success") {
+                    if (response["status"] == "OK") {
 
                         if (response["description"]) {
                             scope.$apply(function () {
-                                scope["model"] = response["domainObject"];
-                                viewDetails.model = response["domainObject"];
+                                scope["model"] = response["content"];
+                                viewDetails.model = response["content"];
                             });
                         }
                         return cancel(viewId);
@@ -596,7 +596,7 @@
          * @returns {*}
          */
         var cancel = function (viewId) { //always from create or update back to details
-            var scope = angular.element("#" + viewId).scope();
+            //var scope = angular.element("#" + viewId).scope();
 
             var viewDetails = findViewDetails(viewId);
             var modelName = viewDetails.modelName;
@@ -1305,7 +1305,7 @@
         var forms = $element.find("form");
         var viewDetails = findViewDetails(id);
         $scope.hideBody = false;
-        $scope.master = viewDetails.model["domainObject"];
+        $scope.master = viewDetails.model["content"];
 
         $scope.reset = function () {
             $scope.model = angular.copy($scope.master);
@@ -1318,7 +1318,7 @@
 
         $scope.isUnchanged = function () {
 
-            return !angular.equals($scope.master, $scope.model);
+            return angular.equals($scope.master, $scope.model);
         };
 
         $scope.addToCollection = function (collection, key) {
