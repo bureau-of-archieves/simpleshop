@@ -3,7 +3,7 @@
 
 <t:page>
     <t:view-list>
-        <ctrl:summaryList modelId="{{item.customerId | json}}">
+        <ctrl:summaryList modelId="{{item.id | json}}">
             {{item.contact.name}}
         </ctrl:summaryList>
     </t:view-list>
