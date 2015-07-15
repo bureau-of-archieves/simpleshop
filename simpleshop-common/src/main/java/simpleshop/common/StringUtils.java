@@ -1,6 +1,8 @@
 package simpleshop.common;
 
 
+import java.util.UUID;
+
 public final class StringUtils {
 
     private StringUtils(){}
@@ -111,6 +113,10 @@ public final class StringUtils {
 
     public static boolean endWith(String name, String s) {
         return !(name == null || s == null) && name.endsWith(s);
+    }
+
+    public static String uuid(){
+        return UUID.randomUUID().toString();
     }
 
     //endregion

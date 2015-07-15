@@ -8,10 +8,12 @@
 ${f:_push(stack, "_base", "model.")}
 ${f:_push(stack, "_colPrefix", "col-sm-")}
 
-
 <jsp:doBody/>
-
 
 ${f:_pop(stack, "_base")}
 ${f:_pop(stack, "_colPrefix")}
+<c:if test="${not empty f:peek(stack, '_replace_id_marker')}" >
+    <replace-id-marker>${f:peek(stack, "_replace_id_marker")}</replace-id-marker>
+</c:if>
+
 

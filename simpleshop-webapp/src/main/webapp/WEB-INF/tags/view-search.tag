@@ -24,7 +24,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-2">
                     <button type="submit" class="btn btn-primary"
-                            data-spg-list='{"modelName":"${targetModelName}", "criteria": {{model}}}'>Search</button>
+                            data-spg-list='{"modelName":"${targetModelName}", "criteriaPath": "${f:subStrBetweenLastAndFirst(f:peek(stack, "_base"), ".", ".")}"}'>Search</button>
                 </div>
                 <div class="col-sm-7">
                     <button type="reset" class="btn btn-primary" >Reset</button>

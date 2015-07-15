@@ -427,6 +427,20 @@
              */
             var createView = function (viewHtml) {
 
+                if(!viewHtml){
+                    viewHtml = "";
+                }
+
+                var markerIndex = viewHtml.lastIndexOf("<replace-id-marker>");
+                if(markerIndex >=0){
+                    var marker = viewHtml.substr(markerIndex);
+                    viewHtml = viewHtml.substring(0, markerIndex);
+                    var contentEndIndex = marker.lastIndexOf("<");
+                    marker = marker.substring(19, contentEndIndex).trim();
+                    if(marker)
+                        viewHtml = viewHtml.replace(marker, viewId);
+                }
+
                 var elements = $.parseHTML(viewHtml, null, true);
 
                 //separate view and model
@@ -438,6 +452,7 @@
                         break;
                     }
                 }
+
                 json = $.trim(json);
                 if (!json) {
                     return createPromise("Could not extract the model from the view html.");
@@ -817,8 +832,12 @@
                 $(element).click(function ($event) {
                     var args = JSON.parse(attrs["spgList"]);
                     var modelName = args["modelName"];
+                    var criteria = scope[args["criteriaPath"]];
+                    if(!criteria){
+                        criteria = {};
+                    }
 
-                    spongeService.getView(modelName, "list", null, null, args["criteria"], {instanceIdInViewKey: true})
+                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true})
                         .fail(function (error) {
                             reportError(error);
                         });

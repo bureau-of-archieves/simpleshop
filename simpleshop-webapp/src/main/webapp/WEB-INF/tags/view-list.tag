@@ -1,13 +1,11 @@
 <%@include file="_header.tag"%>
-<%--list view base tag.--%>
-<%@attribute name="viewId" %>
 
+<c:set var="viewId" value="&${f:uuid()};"/>
 <t:view>
-    <c:if test="${empty viewId}">
-        <c:set var="viewId" value="${f:peek(stack, '_viewId')}"/>
-    </c:if>
+    ${f:_push(stack, "_viewId", viewId)}
+    ${f:_push(stack, "_replace_id_marker", viewId)}
 
-    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(viewId)}" >
+    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" >
         <jsp:attribute name="header">
 
         </jsp:attribute>
@@ -15,4 +13,6 @@
             <jsp:doBody/>
         </jsp:body>
     </t:view-frame>
+
+    ${f:_pop(stack, "_viewId")}
 </t:view>

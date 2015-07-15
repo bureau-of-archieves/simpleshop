@@ -1,5 +1,7 @@
 package simpleshop.webapp.util;
 
+import org.h2.value.ValueUuid;
+import org.hibernate.id.GUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simpleshop.common.StringUtils;
@@ -11,6 +13,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -142,4 +145,5 @@ public class Functions {
     public static String format(String message, Object arg) {
         return String.format(message, arg);
     }
+
 }
