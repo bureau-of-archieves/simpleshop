@@ -6,6 +6,9 @@ import simpleshop.data.metadata.*;
 import simpleshop.data.util.*;
 import simpleshop.domain.metadata.*;
 import simpleshop.domain.model.*;
+import simpleshop.domain.model.component.Address;
+import simpleshop.domain.model.component.OrderItem;
+import simpleshop.domain.model.component.ProductSupplier;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.dto.ShipperSearch;
 import simpleshop.dto.SupplierSearch;
@@ -42,7 +45,10 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
                 Supplier.class,
                 CustomerSearch.class,
                 ShipperSearch.class,
-                SupplierSearch.class
+                SupplierSearch.class,
+                Address.class,
+                OrderItem.class,
+                ProductSupplier.class
         };
 
     }

@@ -13,9 +13,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Created by ZHY on 10/01/2015.
- */
 @Entity
 @Table(name = "contacts")
 public class Contact {

@@ -27,7 +27,7 @@
                             data-spg-list='{"modelName":"${targetModelName}", "criteriaPath": "${f:subStrBetweenLastAndFirst(f:peek(stack, "_base"), ".", ".")}"}'>Search</button>
                 </div>
                 <div class="col-sm-7">
-                    <button type="reset" class="btn btn-primary" >Reset</button>
+                    <button type="button" class="btn btn-primary" data-ng-click="reset()" >Reset</button>
                 </div>
             </div>
         </ctrl:form>

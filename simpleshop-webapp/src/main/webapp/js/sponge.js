@@ -438,7 +438,7 @@
                     var contentEndIndex = marker.lastIndexOf("<");
                     marker = marker.substring(19, contentEndIndex).trim();
                     if(marker)
-                        viewHtml = viewHtml.replace(marker, viewId);
+                        viewHtml = viewHtml.replace(new RegExp(marker,"g"), viewId);
                 }
 
                 var elements = $.parseHTML(viewHtml, null, true);
