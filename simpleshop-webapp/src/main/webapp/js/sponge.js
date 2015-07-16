@@ -187,17 +187,50 @@
     };
 
     var findViewDetails = function (viewId) {
-        for (var key in viewMap) {
-            if (viewMap[key].viewId == viewId) {
-                return viewMap[key];
-            }
+        var key = findViewKey(viewId);
+        if(key){
+            return viewMap[key];
         }
-
         return null;
     };
 
+    var findViewKey = function(viewId) {
+        var ownProperties = zcl.getOwnProperties(viewMap);
+        for(var i=0; i<ownProperties.length; i++){
+            var key = ownProperties[i];
+            var viewDetails = viewMap[key];
+            if (viewDetails && viewDetails.viewId == viewId) {
+                return key;
+            }
+        }
+        return null;
+    };
+
+    /**
+     * Get the scope of html body, which is the rootscope.
+     * @returns {*|jQuery}
+     */
     var getBodyScope = function () {
         return $("#" + site.noViewElementId).scope();
+    };
+
+    /**
+     * The element to go to when a view is closed.
+     * @param targetElement the element to be closed.
+     */
+    var goBackElementId = function(targetElement){
+        var gotoId = "";
+        var nextElement = targetElement.next();
+        if(nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId){
+            gotoId = nextElement.attr("id");
+        }
+        if(!gotoId){
+            var prevElement = targetElement.prev();
+            if(prevElement && prevElement.length == 1){
+                gotoId = prevElement.attr("id");
+            }
+        }
+        return gotoId;
     };
 
     //endregion
@@ -362,7 +395,6 @@
 
         var defaultGetViewOption = {
             removeExisting: false,
-            viewKeyPrefix: "",
             instanceIdInViewKey: true,
             viewTypeInViewKey: false,
             modelInViewKey: true
@@ -384,19 +416,10 @@
             var viewName = zcl.pascalNameToUrlName(modelName) + "-" + viewType;
 
             //calculate viewKey; two views have the same key if they display the same content and therefore one has to close for the other to open.
-            var viewKeyObject = {
-                viewKeyPrefix: getViewOptions.viewKeyPrefix,
-                modelName: modelName
-            };
-            if (getViewOptions.modelInViewKey && model) {
-                viewKeyObject.model = model;
-            }
-            if (getViewOptions.instanceIdInViewKey && instanceId) {
-                viewKeyObject.instanceId = instanceId = instanceId || generateViewId(viewName, instanceId, true); //require instance id to be generated here
-            }
-            if (getViewOptions.viewTypeInViewKey) {
-                viewKeyObject.viewType = viewType;
-            }
+            var viewKeyObject = [modelName];
+            viewKeyObject.push(getViewOptions.viewTypeInViewKey ? viewType : null);
+            viewKeyObject.push(getViewOptions.instanceIdInViewKey && instanceId ? instanceId : null);
+            viewKeyObject.push(getViewOptions.modelInViewKey && model ? model : null);
             var viewKey = JSON.stringify(viewKeyObject);
 
             var existingViewDetails = viewMap[viewKey];
@@ -621,31 +644,13 @@
          * Close a view.
          */
         var close = function (viewId) {
-            var allViews = $(".view.display");
-            var viewCount = allViews.size();
-            var index = 0;
-            for (; index < viewCount; index++) {
-                if (allViews.get(index).id == viewId)
-                    break;
-            }
-            if (index == viewCount)
-                throw "Cannot find view " + viewId;
-
-            var element = $(allViews.get(index));
-            var gotoView = null;
-            if (index == viewCount - 1 && viewCount > 1) {
-                gotoView = $(allViews.get(index - 1));
-            }
 
             safeApply(getBodyScope(), function () {
-                var viewDetails = findViewDetails(viewId);
-                if (viewDetails)
-                    delete viewMap[viewDetails.key];
+                var viewKey = findViewKey(viewId);
+                if (viewKey)
+                    delete viewMap[viewKey];
             });
-            element.remove();
-            if (gotoView) {
-                scrollTo(gotoView.attr("id"));
-            }
+            $("#" + viewId).remove();
             return createPromise(null);
         };
 
@@ -927,12 +932,15 @@
                     return;
 
                 $(element).click(function () {
-                    var nextElement = $("#" + targetId).next();
+                    var targetElement = $("#" + targetId);
+                    var gotoId = goBackElementId(targetElement);
                     spongeService.close(targetId)
+                        .done(function(){
+                            scrollTo(gotoId);
+                        })
                         .fail(function (error) {
                             reportError(error);
                         });
-                    scrollTo(nextElement.attr("id"));
                     return false;
                 });
             }
@@ -988,9 +996,13 @@
                 var targetId = attrs["spgHide"];
 
                 $(element).click(function () {
-                    var nextElement = $("#" + targetId).next();
-                    scrollTo(nextElement.attr("id"));
-                    return display(targetId, false);
+                    var targetElement = $("#" + targetId);
+                    var gotoId = goBackElementId(targetElement);
+                    if(display(targetId, false)){
+                        scrollTo(gotoId);
+                        return true;
+                    }
+                    return false;
                 });
 
             }
