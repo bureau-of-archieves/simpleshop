@@ -92,6 +92,10 @@
      * @param id
      */
     var scrollTo = function (id) {
+        if(!id){ //scroll to top
+             window.location.href = "#";
+        }
+
         var elem = document.getElementById(id);
         if (!elem)
             return;
@@ -425,14 +429,13 @@
             var existingViewDetails = viewMap[viewKey];
             var viewId = null;
             if (existingViewDetails) {
-                viewId = existingViewDetails.viewId;
                 if (!getViewOptions.removeExisting) {
-
+                    viewId = existingViewDetails.viewId;
                     display(viewId, true);
                     scrollTo(viewId);
 
                     if (existingViewDetails.viewType != viewType) {
-                        return createPromise(zcl.formatObject("The content of view '{0}' is already being displayed.", [viewType]));
+                        return createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
                     }
                     return createPromise(null);
                 }
@@ -495,10 +498,12 @@
                 //insert element
                 var newModel = JSON.parse(json);
                 var newViewDetails = {
+                    viewKey: viewKey,
                     viewId: viewId,
                     viewName: viewName,
                     modelName: modelName,
                     viewType: viewType,
+                    instanceId: instanceId,
                     params: params,
                     model: newModel,
                     viewElements: elements,
@@ -575,7 +580,7 @@
             var scope = angular.element("#" + viewId).scope();
             var model = scope["model"];
             var data = JSON.stringify(model);
-            var operationKey = "save-" + viewId;
+            var operationKey = "save-" + viewId; //todo operation key should be the view key
 
             var saveModel = function () {
 
@@ -1015,7 +1020,7 @@
             restrict: 'A',
             link: function (scope, element) {
                 $(element).click(function () {
-                    scrollTo(site.headerElementId);
+                    scrollTo("");
                     return false;
                 });
             }
