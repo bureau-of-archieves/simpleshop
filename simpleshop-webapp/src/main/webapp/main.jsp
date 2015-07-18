@@ -126,6 +126,14 @@
 
 </div>
 
+<%--link requests--%>
+<ul id="notification_list" class="nav nav-pills nav-stacked">
+    <li data-ng-show="operationLocks.length" style="background-color: transparent">
+        <img class="pull-right" src="img/progress.gif" alt="progress indicator">
+    </li>
+</ul>
+
+
 <%--scripts--%>
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>

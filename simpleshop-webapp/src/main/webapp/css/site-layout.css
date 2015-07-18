@@ -93,7 +93,14 @@ html {
     font-size: 1.2em;
 }
 
-#linkRequests li{
+#notification_list {
+    position: fixed;
+    right: 1em;
+    bottom: 1em;
+    width: 20em;
+}
+
+#notification_list li{
     background-color: floralwhite;
 }
 
