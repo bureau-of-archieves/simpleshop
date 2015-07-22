@@ -3,7 +3,7 @@
 <t:page>
     <t:view-details>
         <d:contact-details path="contact" />
-        <ctrl:detailsField path="stock" />
+        <ctrl:detailsField path="stock" displayFormat="yesno" />
     </t:view-details>
     <script>
         <c:import url="/json/customer/${param.modelId}" />

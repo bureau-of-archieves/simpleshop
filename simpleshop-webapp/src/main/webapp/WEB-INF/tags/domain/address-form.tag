@@ -9,7 +9,7 @@ ${f:_push(stack, '_modelName', modelName)}
 
 <ctrl:editField path="addressLine1" />
 <ctrl:editField path="addressLine2" />
-<ctrl:editField path="suburb" />
+<ctrl:editCombo path="suburb" />
 
 ${f:_pop(stack, '_base')}
 ${f:_pop(stack, '_modelName')}

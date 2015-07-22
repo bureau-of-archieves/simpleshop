@@ -303,6 +303,15 @@
         };
     });
 
+    spongeApp.filter('prefix', function () {
+        return function (input, pref) {
+            if(input){
+                return pref + input;
+            }
+            return "";
+        };
+    });
+
     spongeApp.filter('pascal', function () {
         return function (input) {
             var values = input.replace(/-/g, ' ').split();
@@ -628,8 +637,8 @@
 
             var viewDetails = findViewDetails(viewId);
             var modelName = viewDetails.modelName;
-            var viewName = viewDetails.viewName;
-            if (isSubtypeOf(viewName, "create"))
+            var viewType = viewDetails.viewType;
+            if (isSubtypeOf(viewType, "create"))
                 return close(viewId);
 
             return getView(modelName, "details" + viewDetails.viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
