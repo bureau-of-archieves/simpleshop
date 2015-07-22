@@ -137,7 +137,7 @@
             }
         }
 
-        return false;
+        return true;
     };
 
     /**
@@ -307,6 +307,15 @@
         return function (input, pref) {
             if(input){
                 return pref + input;
+            }
+            return "";
+        };
+    });
+
+    spongeApp.filter('suffix', function () {
+        return function (input, suff) {
+            if(input){
+                return input + suff;
             }
             return "";
         };
@@ -841,6 +850,40 @@
     }]);
 
     /**
+     * Annotate an element so that when clicked the object is deleted.
+     * If successful then will also delete first .list-group-item abcestor.
+     */
+    spongeApp.directive("spgDelete", ["spongeService", function (spongeService) {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+
+                $(element).click(function ($event) {
+                    $event.stopPropagation();
+                    var args = JSON.parse(attrs["spgDelete"]);
+                    var modelName = args["modelName"];
+                    var modelId = args["modelId"];
+
+                    if (typeof modelId == "string") {
+                        if (modelId.substring(0, 1) == "#") {
+                            modelId = $(modelId).val();
+                            modelId = parseInt(modelId);
+                            if (isNaN(modelId)) {
+                                modelId = zcl.subStrBeforeFirst($(args["modelId"]).val(), '-', true);
+                            }
+                        }
+                    }
+                    if (!modelId)
+                        return;
+
+                    alert("Deletion is not implemented yet!");
+                    //TODO delete promise
+                });
+            }
+        };
+    }]);
+
+    /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
     spongeApp.directive("spgList", ["spongeService", function (spongeService) {
@@ -961,6 +1004,29 @@
         };
     }]);
 
+    //data-spg-hide="hide_element_id"
+    spongeApp.directive("spgHide", function () {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var targetId = attrs["spgHide"];
+                if (!targetId)
+                    return;
+
+                $(element).click(function () {
+                    var targetElement = $("#" + targetId);
+                    var gotoId = goBackElementId(targetElement);
+                    if(display(targetId, false)){
+                        scrollTo(gotoId);
+                        return true;
+                    }
+                    return false;
+                });
+
+            }
+        };
+    });
+
     //data-spg-show="show_element_id"
     spongeApp.directive("spgShow", function () {
         return {
@@ -1001,27 +1067,6 @@
             }
         };
     }]);
-
-    //data-spg-hide="hide_element_id"
-    spongeApp.directive("spgHide", function () {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var targetId = attrs["spgHide"];
-
-                $(element).click(function () {
-                    var targetElement = $("#" + targetId);
-                    var gotoId = goBackElementId(targetElement);
-                    if(display(targetId, false)){
-                        scrollTo(gotoId);
-                        return true;
-                    }
-                    return false;
-                });
-
-            }
-        };
-    });
 
     //data-spg-toTop
     spongeApp.directive("spgToTop", function () {

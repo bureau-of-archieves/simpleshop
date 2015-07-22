@@ -4,7 +4,7 @@
 <t:page>
     <t:view-list>
         <ctrl:summaryList modelId="{{item.id | json}}">
-            {{item.contact.name}}
+            {{item.contact.name}} {{item.contact.contactName | prefix:'(' | suffix: ')'}}
         </ctrl:summaryList>
     </t:view-list>
     <script>
