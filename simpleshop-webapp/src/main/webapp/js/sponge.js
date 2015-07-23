@@ -224,12 +224,12 @@
      */
     var goBackElementId = function(targetElement){
         var gotoId = "";
-        var nextElement = targetElement.next();
+        var nextElement = targetElement.next(".display");
         if(nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId){
             gotoId = nextElement.attr("id");
         }
         if(!gotoId){
-            var prevElement = targetElement.prev();
+            var prevElement = targetElement.prev(".display");
             if(prevElement && prevElement.length == 1){
                 gotoId = prevElement.attr("id");
             }
