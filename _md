@@ -1,11 +1,17 @@
 Todo list
 
-enable sponge.js to support minification.
-
-get rid of picture data in json
-
+paging
+sorting
 refresh
+deletion
+input/display of contact numbers
+object link
+Add to / remove from association collection
+check for change before close
 
+
+enable sponge.js to support minification.
+get rid of picture data in json
 allow combobox to return null value.
 
 
