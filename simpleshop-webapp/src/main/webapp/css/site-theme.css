@@ -67,3 +67,8 @@ input.ng-invalid.ng-dirty {
         box-shadow:         inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
     }
 }
+
+.input-group > .selectpicker {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}

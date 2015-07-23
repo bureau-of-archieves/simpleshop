@@ -1378,6 +1378,16 @@
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
 
+        if(isSubtypeOf(viewDetails.viewType, "list")){
+            $scope.previousEnabled = function(){
+              return "disabled";
+            };
+
+            $scope.nextEnabled = function(){
+                return "disabled";//todo implement
+            };
+        }
+
         $scope.reset = function () {
             $scope.model = angular.copy($scope.master);
             forms.each(function (index, form) {

@@ -203,3 +203,7 @@ input.ng-valid ~ .pattern-validation {
     padding-left:0;
     padding-right:0;
 }
+
+.pager{
+    margin-top: 0;
+}
