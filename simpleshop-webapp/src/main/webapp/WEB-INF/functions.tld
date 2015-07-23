@@ -122,6 +122,11 @@
         <function-signature>java.lang.String subStrBetweenLastAndFirst(java.lang.String,java.lang.String,java.lang.String)</function-signature>
     </function>
     <function>
+        <name>subStrB4Last</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>java.lang.String subStrB4Last(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
         <name>uuid</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String uuid()</function-signature>

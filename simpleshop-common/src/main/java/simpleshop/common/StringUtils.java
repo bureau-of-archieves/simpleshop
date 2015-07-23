@@ -36,6 +36,23 @@ public final class StringUtils {
     }
 
     /**
+     * Returns the part of master before the last separator. Returns the whole string if separator is not found.
+     * @param master the string.
+     * @param separator separator is not included in the return value.
+     * @return the part of master before the first separator.
+     */
+    public static String subStrB4Last(String master, String  separator){
+        if(master == null || master.length() == 0 || separator == null || separator.length() == 0)
+            return master;
+
+        int index = master.lastIndexOf(separator);
+        if(index == -1)
+            return master;
+
+        return master.substring(0, index);
+    }
+
+    /**
      * Replace the single quote character with the corresponding html entity.
      * @param src string that could contain single quote.
      * @return replaced string.

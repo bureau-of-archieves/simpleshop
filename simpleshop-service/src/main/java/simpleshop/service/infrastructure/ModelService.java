@@ -1,6 +1,7 @@
 package simpleshop.service.infrastructure;
 
 import simpleshop.data.PageInfo;
+import simpleshop.dto.ModelSearch;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.List;
 /**
  * A set of methods shared by all model services.
  */
-public interface ModelService<T, S> extends BaseService {
+public interface ModelService<T, S extends ModelSearch> extends BaseService {
 
     /**
      * [convention:defaults]the default values of a new model is set in the create method of its service class.

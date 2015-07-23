@@ -21,10 +21,11 @@
 
             <jsp:doBody/>
 
+            <c:set var="criteriaPath" value="${f:subStrB4Last(f:peek(stack, \"_base\"), \".\"\)}" />
             <div class="form-group">
                 <div class="col-sm-offset-3 col-sm-2">
                     <button type="submit" class="btn btn-primary"
-                            data-spg-list='{"modelName":"${targetModelName}", "criteriaPath": "${f:subStrBetweenLastAndFirst(f:peek(stack, "_base"), ".", ".")}"}'>Search</button>
+                            data-spg-list='{"modelName":"${targetModelName}", "criteriaPath": "${criteriaPath}'>Search</button>
                 </div>
                 <div class="col-sm-7">
                     <button type="button" class="btn btn-primary" data-ng-click="reset()" >Reset</button>

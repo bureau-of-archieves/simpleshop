@@ -5,9 +5,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import simpleshop.common.StringUtils;
 import simpleshop.dto.JsonResponse;
+import simpleshop.dto.ModelSearch;
 import simpleshop.service.infrastructure.ModelService;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * The base controller for all controllers that return json data.
@@ -68,12 +70,25 @@ public abstract class BaseJsonController {
         return response;
     }
 
-    protected <S, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult){
+    protected <S extends ModelSearch, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult){
         if (bindingResult.hasErrors())
             return new JsonResponse<>(JsonResponse.STATUS_OK, getBindingErrorMessage(bindingResult), null);
 
-        Iterable<T> result = modelService.search(criteria);
-        return new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
+        int actualPageSize = criteria.getPageSize();
+        criteria.setPageSize(actualPageSize + 1); //retrieve one more to decide if there is next page
+        List<T> result = modelService.search(criteria);
+
+        //todo set previous / next disabled here
+        JsonResponse<Iterable<T>> response =  new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
+        if(criteria.getPageIndex() > 0){
+            response.getTags().put("prevPage", true);
+        }
+        if(result.size() > actualPageSize){
+            response.getTags().put("nextPage", true);
+            result.remove(result.size() - 1);
+        }
+
+        return response;
     }
 
     protected <T> JsonResponse<Serializable> deleteModel(Serializable id, ModelService<T, ?> modelService){
