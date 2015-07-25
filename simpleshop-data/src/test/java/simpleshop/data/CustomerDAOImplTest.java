@@ -1,11 +1,11 @@
 package simpleshop.data;
 
+import org.hamcrest.Matcher;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import simpleshop.Constants;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.ModelMetadata;
@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class CustomerDAOImplTest extends TransactionalTest {
 
@@ -138,14 +140,16 @@ public class CustomerDAOImplTest extends TransactionalTest {
 
         List<Customer> customerList = customerDAO.search(searchMetadata, customerMetadata, customerSearch);
         assertTrue(customerList.size() >= 3);
-        assertTrue(customerList.get(0).getContact().getName().compareTo(customerList.get(1).getContact().getName()) >= 0);
-        assertTrue(customerList.get(1).getContact().getName().compareTo(customerList.get(2).getContact().getName()) >= 0);
+        for(int i=1; i<customerList.size(); i++){
+            assertThat(customerList.get(i-1).getContact().getName().toLowerCase(), greaterThanOrEqualTo(customerList.get(i).getContact().getName().toLowerCase()));
+        }
 
         sortInfo.setAscending(true);
         customerList = customerDAO.search(searchMetadata, customerMetadata, customerSearch);
         assertTrue(customerList.size() >= 3);
-        assertTrue(customerList.get(0).getContact().getName().compareTo(customerList.get(1).getContact().getName()) <= 0);
-        assertTrue(customerList.get(1).getContact().getName().compareTo(customerList.get(2).getContact().getName()) <= 0);
+        for(int i=1; i<customerList.size(); i++){
+            assertThat(customerList.get(i-1).getContact().getName().toLowerCase(), lessThanOrEqualTo(customerList.get(i).getContact().getName().toLowerCase()));
+        }
 
         customerSearch.setPageSize(2);
         customerList = customerDAO.search(searchMetadata, customerMetadata, customerSearch);

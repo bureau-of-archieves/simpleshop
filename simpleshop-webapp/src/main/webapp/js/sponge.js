@@ -944,9 +944,13 @@
                 if (!viewId)
                     return;
 
-                $(element).click(function () {
+                var args = JSON.parse(attrs["spgRefresh"]);
 
-                    spongeService.refresh(viewId)
+                $(element).click(function ($event) {
+
+                    $event.preventDefault();
+
+                    spongeService.refresh(viewId, args)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1380,11 +1384,17 @@
 
         if(isSubtypeOf(viewDetails.viewType, "list")){
             $scope.previousEnabled = function(){
-              return "disabled";
+                var viewDetails = findViewDetails(id);
+                if(viewDetails.model["tags"]["prevPage"])
+                    return "";
+                return "disabled";
             };
 
             $scope.nextEnabled = function(){
-                return "disabled";//todo implement
+                var viewDetails = findViewDetails(id);
+                if(viewDetails.model["tags"]["nextPage"])
+                    return "";
+                return "disabled";
             };
         }
 

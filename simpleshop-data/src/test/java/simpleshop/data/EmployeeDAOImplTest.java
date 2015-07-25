@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import simpleshop.Constants;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
@@ -63,7 +64,7 @@ public class EmployeeDAOImplTest extends TransactionalTest {
        }
 
         List<Employee> result = employeeDAO.quickSearch("Employee", new PageInfo());
-        assertEquals(10, result.size());
+        assertEquals(Constants.DEFAULT_PAGE_SIZE, result.size());
 
         List<Employee> top5Result = employeeDAO.quickSearch("Employee", new PageInfo(0, 5));
         assertEquals(5, top5Result.size());

@@ -88,6 +88,7 @@ public abstract class BaseJsonController {
             result.remove(result.size() - 1);
         }
 
+        response.getTags().put("page", criteria.getPageIndex());
         return response;
     }
 
