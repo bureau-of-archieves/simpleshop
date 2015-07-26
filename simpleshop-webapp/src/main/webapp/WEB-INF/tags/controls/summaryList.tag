@@ -52,8 +52,8 @@
     <div class="${f:peek(stack, "_colPrefix")}3">
         <nav>
             <ul class="pager">
-                <li class="previous {{previousEnabled()}}" ><a href="#" data-spg-refresh='{"pageDelta":-1}'><span aria-hidden="true">&larr;</span> Older</a></li>
-                <li class="next {{nextEnabled()}}" ><a href="#" data-spg-refresh='{"pageDelta":1}'>Newer <span aria-hidden="true">&rarr;</span></a></li>
+                <li class="previous {{previousEnabled()}}" ><a href="#" data-spg-refresh='{"viewId":"${f:peek(stack, "_viewId")}","pageDelta":-1}'><span aria-hidden="true">&larr;</span> Older</a></li>
+                <li class="next {{nextEnabled()}}" >        <a href="#" data-spg-refresh='{"viewId":"${f:peek(stack, "_viewId")}","pageDelta":1}' >Newer <span aria-hidden="true">&rarr;</span></a></li>
             </ul>
         </nav>
     </div>

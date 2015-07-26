@@ -11,11 +11,6 @@
         var jsonPath = "json/"; //the root path for json related operations, e.g. save object, refresh object or search.
         var viewPath = "ng/"; //the root path of all views
 
-
-        this.metadataUrl = function () {
-            return jsonPath + "metadata";
-        };
-
         /**
          * Construct the url to get a single model in json format.
          * @param modelName will be converted to url model name, e.g. 'customer_group'.
@@ -71,6 +66,14 @@
                 viewUrl += "?" + $.param(params);
             }
             return viewUrl;
+        };
+
+        /**
+         * Get the url of the metadata service.
+         * @returns {string} the url to get all model metadata.
+         */
+        this.metadataUrl = function () {
+            return jsonPath + "metadata";
         };
 
         //page elements
@@ -523,6 +526,7 @@
                     viewType: viewType,
                     instanceId: instanceId,
                     params: params,
+                    postData: model,
                     model: newModel,
                     viewElements: elements,
                     getViewOptions: getViewOptions
@@ -583,7 +587,7 @@
                     }
                 ).always(function () {
                         return endOp(operationKey);
-                    });
+                });
             };
 
             return beginOp(operationKey).fail(function(){
@@ -654,13 +658,68 @@
         };
 
 
-        var refresh = function (elementId) {
-            var element = $("#" + elementId);
+        var refresh = function (viewId, args) {
+            var element = $("#" + viewId);
             if (element.size() == 0)
                 return createPromise(null);
 
-            //todo
-            return createPromise("Not implemented");
+            if(!args){
+                args = {};
+            }
+            var viewDetails =findViewDetails(viewId);
+            var jsonUrl = null;
+
+            var viewType = viewDetails.viewType;
+            if(isSubtypeOf(viewType, "list")){
+                jsonUrl = site.searchJsonUrl(viewDetails.modelName);
+            } else{
+                jsonUrl = site.modelJsonUrl(viewDetails.modelName, viewDetails.instanceId);
+            }
+            var operationKey = "refresh-" + viewId;
+            var model = viewDetails.postData;
+            if(args["pageDelta"]){
+                model["pageIndex"] += args["pageDelta"];
+            }
+
+            var operation = function () {
+                var ajaxPromise;
+                if (model) { //need to post
+                    ajaxPromise = $.ajax(
+                        jsonUrl,
+                        {
+                            type: "POST",
+                            data: JSON.stringify(model),
+                            contentType: "application/json",
+                            dataType: "json"
+                        }
+                    );
+                } else {
+                    ajaxPromise = $.get(jsonUrl);
+                }
+
+                return ajaxPromise.then(
+                    //refresh result
+                    function(json){
+                        safeApply(getBodyScope(), function(){
+                            viewDetails.model = json;
+                            viewDetails.scope.master = viewDetails.model["content"];
+                            viewDetails.scope.reset();
+                        });
+                        return createPromise(null);
+                    },
+                    function (jqXHR, textStatus) {
+                        return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
+                    }
+                ).always(function () {
+                        return endOp(operationKey);
+                });
+            };
+
+            return beginOp(operationKey).fail(function(){
+                showDialog("Cannot begin operation.");
+            }).then(operation);
+
+
         };
 
         /**
@@ -940,15 +999,16 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                var viewId = attrs["spgRefresh"];
+                var args = JSON.parse(attrs["spgRefresh"]);
+                var viewId = args["viewId"];
                 if (!viewId)
                     return;
-
-                var args = JSON.parse(attrs["spgRefresh"]);
 
                 $(element).click(function ($event) {
 
                     $event.preventDefault();
+                    if($(this).parent().hasClass("disabled"))
+                        return false;
 
                     spongeService.refresh(viewId, args)
                         .fail(function (error) {
@@ -1379,6 +1439,7 @@
         var id = $element.attr("id");
         var forms = $element.find("form");
         var viewDetails = findViewDetails(id);
+        viewDetails.scope = $scope;
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
 

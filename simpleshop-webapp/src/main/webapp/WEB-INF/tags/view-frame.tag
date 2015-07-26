@@ -73,7 +73,7 @@
 
             <c:if test="${not hideRefresh}">
                 <ctrl:icon value="repeat" cssClass="cursor-pointer" alignRight="true">
-                    <jsp:attribute name="attributes"> data-spg-refresh="${id}" </jsp:attribute>
+                    <jsp:attribute name="attributes"> data-spg-refresh='{"viewId":"${id}"}' </jsp:attribute>
                 </ctrl:icon>
             </c:if>
 
