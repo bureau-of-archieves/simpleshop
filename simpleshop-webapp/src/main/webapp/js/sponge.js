@@ -39,26 +39,23 @@
          * @param modelName
          * @returns {string}
          */
-        this.saveUrl = function (modelName) {
+        this.saveJsonUrl = function (modelName) {
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/save";
         };
 
         /**
-         * Get a list which is cached in the application (via LookupService).
-         * @param listName
-         * @returns {string}
+         * If a model supports quick search (or keyword search, such as in a autocomplete), the controller will support the list operation.
+         * @param modelName specify what type of model we want to retrieve.
+         * @returns {string} the url to post to.
          */
-        this.listJsonUrl = function (listName) {
-            return jsonPath + zcl.pascalNameToUrlName(listName) + "/list";
+        this.listJsonUrl = function (modelName) {
+            return jsonPath + zcl.pascalNameToUrlName(modelName) + "/list";
         };
 
         /**
          * Construct the url to access a view.
          * @param viewName full view name as in the view jsp file.
-         * @param viewId meaning of this depends on view name:
-         * details -> modelId
-         * edit -> modelId
-         * list -> incremental id
+         * @param params query string parameters in an object.
          */
         this.viewUrl = function (viewName, params) {
             var viewUrl = viewPath + viewName + ".jsp";
@@ -76,19 +73,22 @@
             return jsonPath + "metadata";
         };
 
-        //page elements
+        //page element dependencies
         this.noViewElementId = "messageNoView"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
         this.headerElementId = "pageHeader"; //header element id, the header is fix positioned.
     })();
 
     /**
-     * A map from view hash to viewId and view elements.
-     * strHash -> {viewId:1234,viewElements:[...]}.
-     * @type {{}}
+     * A map from view key to viewDetails.
+     * A view key is a unique code of a set of content. It concisely indicate what content is being displayed in the view.The same content can only be displayed in one view at a time.
+     *A viewDetails object is compound object which contains all backing data of a view.
+     * @type {{}} the global view details map.
      */
     var viewMap = {};
 
     //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
+
+    var headerHeight = $("#" + site.headerElementId).height(); //header is fix positioned
 
     /**
      * Scroll to an element.
@@ -104,8 +104,7 @@
             return;
 
         window.location.href = "#" + id;
-        var headerHeight = $("#" + site.headerElementId).height(); //header is fix positioned
-        window.scrollBy(0, -headerHeight);
+        window.scrollBy(0, -headerHeight); //header is fixed positioned
     };
 
     /**
@@ -173,15 +172,17 @@
 
     /**
      * Report an error.This is usually called on the endOp promise.
+     * //todo use js message prompt instead of alert
      * @param error error object.
      */
     var reportError = function (error) {
         if (error)
-            alert(error); //todo use js message prompt instead of alert
+            alert(error);
     };
 
     /**
      * Check if a viewType is a subtype of parentViewType.
+     * Example: sub-list type -> list_detailed
      * @param viewType string.
      * @param parentViewType string.
      * @returns {boolean}
@@ -193,6 +194,11 @@
         return viewType.indexOf(parentViewType + "_") == 0;
     };
 
+    /**
+     * Find the view details of a view.
+     * @param viewId
+     * @returns {*} returns null if viewId does not exist or is already disposed.
+     */
     var findViewDetails = function (viewId) {
         var key = findViewKey(viewId);
         if(key){
@@ -201,6 +207,11 @@
         return null;
     };
 
+    /**
+     * Find the view key by viewId. Logically this finds the content being displayed by the view.
+     * @param viewId
+     * @returns {*}
+     */
     var findViewKey = function(viewId) {
         var ownProperties = zcl.getOwnProperties(viewMap);
         for(var i=0; i<ownProperties.length; i++){
@@ -214,7 +225,7 @@
     };
 
     /**
-     * Get the scope of html body, which is the rootscope.
+     * Get the scope at the view section level, which is the parent scope of all view scopes.
      * @returns {*|jQuery}
      */
     var getBodyScope = function () {
@@ -324,17 +335,25 @@
         };
     });
 
+    /**
+     * Transform text into pascal casing.
+     * E.g. test-details_view -> Test Details View
+     */
     spongeApp.filter('pascal', function () {
         return function (input) {
-            var values = input.replace(/-/g, ' ').split();
+            var values = input.replace(/[-_]/g, ' ').split(' ');
             for (var i = 0; i < values.length; i++) {
                 values[i] = zcl.firstCharUpper(values[i]);
-                values[i] = values[i].toString().replace(/_/g, ' ');
             }
             return values.join(' ');
         };
     });
 
+    /**
+     * Concatenate the property values of an object.
+     * e.g. {{customer | concat:"firstName":" ":"lastName"}} outputs:
+     * John Zhang
+     */
     spongeApp.filter('concat', function () {
         return function () {
             var input = arguments[0];
@@ -357,6 +376,8 @@
     });
 
     //endregion
+
+    //todo review from here.
 
     //region service
 
@@ -591,14 +612,14 @@
             };
 
             return beginOp(operationKey).fail(function(){
-                showDialog("Cannot begin operation.");
+                reportError("Cannot begin operation.");
             }).then(operation);
         };
 
         var save = function (viewId) {
 
             var viewDetails = findViewDetails(viewId);
-            var url = site.saveUrl(viewDetails.modelName);
+            var url = site.saveJsonUrl(viewDetails.modelName);
             var scope = angular.element("#" + viewId).scope();
             var model = scope["model"];
             var data = JSON.stringify(model);
@@ -716,7 +737,7 @@
             };
 
             return beginOp(operationKey).fail(function(){
-                showDialog("Cannot begin operation.");
+                reportError("Cannot begin operation.");
             }).then(operation);
 
 
@@ -1354,40 +1375,6 @@
 
     //endregion
 
-
-    //region methods
-
-    var showDialog = function (msg) {
-        alert(msg);
-    };
-
-    //load application metadata which sponge.js depends on.
-    var loadMetadata = function ($scope, $http) {
-        $http.get(site.metadataUrl()).success(function (data, status, headers) {
-
-            var metadata = data.content;
-            $scope.metadata = metadata;
-
-            var menu = [];
-            for(var modelName in metadata){
-                var model = metadata[modelName];
-                if(model.searchable){
-                    menu.push(model);
-                }
-            }
-            menu.sort(function(m1, m2){
-                return m1.name.localeCompare(m2.name);
-            });
-
-            $scope.menu = menu;
-
-        }).error(function (data, status, headers) {
-            showDialog('Failed to load application metadata, please retry later. Error:' + status);
-        });
-    };
-
-    //endregion
-
     //region controllers
 
     spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", function ($scope, $http, spongeService) {
@@ -1398,7 +1385,33 @@
 
         $scope.scrollTo = scrollTo;
 
-        loadMetadata($scope, $http);
+        /**
+         * load application metadata which sponge.js depends on.
+         */
+        $scope.loadMetadata = function () {
+            $http.get(site.metadataUrl()).success(function (data, status, headers) {
+
+                //init metadata
+                var metadata = data.content;
+                $scope.metadata = metadata;
+
+                //init menu
+                var menu = [];
+                for(var modelName in metadata){
+                    var model = metadata[modelName];
+                    if(model["searchable"]){
+                        menu.push(model);
+                    }
+                }
+                menu.sort(function(m1, m2){
+                    return m1.name.localeCompare(m2.name);
+                });
+                $scope.menu = menu;
+
+            }).error(function (data, status, headers) {
+                reportError('Failed to load application metadata, please retry later. Error:' + status);
+            });
+        };
 
         $scope.closeResult = function (resultName) {
             spongeService.close(resultName);
@@ -1431,6 +1444,8 @@
                     spongeService.close(otherName);
             }
         };
+
+        $scope.loadMetadata();
 
     }]);
 
