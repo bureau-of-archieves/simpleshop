@@ -646,48 +646,53 @@
                 });
         };
 
+        /**
+         * Save the backing model of a view.
+         * @param viewId specify which view.
+         * @returns {*}
+         */
         var save = function (viewId) {
 
             var viewDetails = findViewDetails(viewId);
-            var url = site.saveJsonUrl(viewDetails.modelName);
-            var scope = angular.element("#" + viewId).scope();
-            var model = scope["model"];
-            var data = JSON.stringify(model);
-            var operationKey = "save-" + viewId; //todo operation key should be the view key
+            var scope = viewDetails.scope;
 
-            var saveModel = function () {
+            var createRequest = function (url ,data) {
 
-                var savePromise = $.ajax(url,
+                return $.ajax(url,
                     {
                         type: "POST",
                         data: data,
                         contentType: "application/json",
                         dataType: "json"
                     });
-
-                var saveSuccess = function (response) {
-                    if (response["status"] == "OK") {
-
-                        if (response["description"]) {
-                            scope.$apply(function () {
-                                scope["model"] = response["content"];
-                                viewDetails.model = response["content"];
-                            });
-                        }
-                        return cancel(viewId);
-                    }
-                    return createPromise(response["description"]);
-                };
-
-                return savePromise
-                    .then(saveSuccess)
-                    .always(function () {
-                        endOp(operationKey);
-                    });
             };
 
-            return beginOp(operationKey).then(saveModel);
+            var saveSuccess = function (response) {
+                if (response["status"] == "OK") {
 
+                    if (response["description"]) {
+                        scope.$apply(function () {
+                            scope["model"] = response["content"];
+                            viewDetails.model = response["content"];
+                        });
+                    }
+                    return cancel(viewId);
+                }
+                return createPromise(response["description"]);
+            };
+
+            var operationKey = "save-" + viewId;
+            var url = site.saveJsonUrl(viewDetails.modelName);
+            var data = JSON.stringify(scope["model"]);
+            return beginOp(operationKey).then(
+                function(){
+                   return createRequest(url, data)
+                       .then(saveSuccess)
+                       .always(function () {
+                            endOp(operationKey);
+                       });
+                }
+            );
         };
 
         /**
@@ -696,7 +701,8 @@
          * @param viewId
          * @returns {*}
          */
-        var cancel = function (viewId) { //always from create or update back to details
+        var cancel = function (viewId) {
+        //always from create or update back to details
             //var scope = angular.element("#" + viewId).scope();
 
             var viewDetails = findViewDetails(viewId);
@@ -708,31 +714,37 @@
             return getView(modelName, "details" + viewDetails.viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
         };
 
+        /**
+         * Refresh the content of a view.
+         * @param viewId the view to refresh.
+         * @param pageDelta if the model is a list then when refresh we can change the page index.
+         * @returns {*}
+         */
+        var refresh = function (viewId, pageDelta) {
 
-        var refresh = function (viewId, args) {
             var element = $("#" + viewId);
             if (element.size() == 0)
                 return createPromise(null);
 
-            if(!args){
-                args = {};
-            }
             var viewDetails =findViewDetails(viewId);
-            var jsonUrl = null;
 
+            //get the url to retrieve json data.
+            var jsonUrl = null;
             var viewType = viewDetails.viewType;
             if(isSubtypeOf(viewType, "list")){
                 jsonUrl = site.searchJsonUrl(viewDetails.modelName);
             } else{
                 jsonUrl = site.modelJsonUrl(viewDetails.modelName, viewDetails.instanceId);
             }
+
+            //change the page.
             var operationKey = "refresh-" + viewId;
             var model = viewDetails.postData;
-            if(args["pageDelta"]){
-                model["pageIndex"] += args["pageDelta"];
+            if(pageDelta){
+                model["pageIndex"] += pageDelta;
             }
 
-            var operation = function () {
+            var createRequest = function (jsonUrl, model) {
                 var ajaxPromise;
                 if (model) { //need to post
                     ajaxPromise = $.ajax(
@@ -747,10 +759,15 @@
                 } else {
                     ajaxPromise = $.get(jsonUrl);
                 }
+                return ajaxPromise;
+            };
 
-                return ajaxPromise.then(
-                    //refresh result
+            return beginOp(operationKey).fail(function(){
+                reportError("Cannot begin operation.");
+            }).then(function(){
+                return createRequest(jsonUrl, model).then(
                     function(json){
+                        //refresh result
                         safeApply(getBodyScope(), function(){
                             viewDetails.model = json;
                             viewDetails.scope.master = viewDetails.model["content"];
@@ -759,18 +776,12 @@
                         return createPromise(null);
                     },
                     function (jqXHR, textStatus) {
-                        return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
+                        return createPromise("Failed to refresh view " + viewId + ": " + textStatus);
                     }
                 ).always(function () {
                         return endOp(operationKey);
                 });
-            };
-
-            return beginOp(operationKey).fail(function(){
-                reportError("Cannot begin operation.");
-            }).then(operation);
-
-
+            });
         };
 
         /**
@@ -1061,7 +1072,7 @@
                     if($(this).parent().hasClass("disabled"))
                         return false;
 
-                    spongeService.refresh(viewId, args)
+                    spongeService.refresh(viewId, args["pageDelta"])
                         .fail(function (error) {
                             reportError(error);
                         });
