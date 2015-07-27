@@ -251,6 +251,17 @@
         return gotoId;
     };
 
+
+    /**
+     * Defines the relationship between viewName and modelName and viewType.
+     * @param modelName the model name.
+     * @param viewType the full view type.
+     * @returns {string} the view name.
+     */
+    var getViewName = function(modelName, viewType){
+        return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
+    };
+
     //endregion
 
     var spongeApp = angular.module("spongeApp", [], null);
@@ -377,11 +388,9 @@
 
     //endregion
 
-    //todo review from here.
-
     //region service
 
-    spongeApp.factory("spongeService", ["$compile", "$rootScope", function ($compile, $rootScope) {
+    spongeApp.factory("spongeService", ["$compile", function ($compile) {
 
         /**
          * All operations fired on the client side must execute beginOp and endOp in pair with the same token.
@@ -408,7 +417,7 @@
             var bodyScope = getBodyScope();
             var index = $.inArray(token, bodyScope.operationLocks);
             if (index < 0)
-                return createPromise("Operation " + token + " is not in progress.");
+                return createPromise("Operation '" + token + "' is not in progress.");
 
             safeApply(bodyScope, function () {
                 bodyScope.operationLocks.splice(index, 1);
@@ -417,18 +426,19 @@
         };
 
         var sequenceNumbers = {};
+
         /**
          * Generate the unique id for a view.
          * @param viewName
          * @param instanceId
          * @returns {string}
          */
-        var generateViewId = function (viewName, instanceId, returnInstanceId) {
+        var generateViewId = function (viewName, instanceId) {
             if (instanceId)
-                return returnInstanceId ? instanceId : viewName + "-" + instanceId;
+                return viewName + "-" + instanceId;
 
             if (viewName.indexOf("-search") > 0)
-                return returnInstanceId ? null : viewName;
+                return viewName;
 
             //those are not identified by instanceId use an instance sequence number
             if (!sequenceNumbers[viewName]) {
@@ -436,14 +446,89 @@
             }
             sequenceNumbers[viewName]++;
 
-            return returnInstanceId ? sequenceNumbers[viewName] : viewName + "-" + sequenceNumbers[viewName];
+            return viewName + "-" + sequenceNumbers[viewName];
         };
 
         var defaultGetViewOption = {
-            removeExisting: false,
-            instanceIdInViewKey: true,
-            viewTypeInViewKey: false,
-            modelInViewKey: true
+            removeExisting: false, //if the same content (view key) is already being display, true -> go the view; false -> close the view and continue to open the new view.
+            instanceIdInViewKey: true,//whether instance id is a part of view key - e.g. list views have client-side generated sequence number as instance id which does not describe the content of the view.
+            viewTypeInViewKey: false,//whether or not to put view type in the view key - e.g. true for search view and different search views show different content.
+            postDataInViewKey: true //whether the data posted to the server to retrieve this view identifies the content of the view.
+        };
+
+        /**
+         * Create a view key. A view key is an identifier of the content displayed in a view.
+         * @param modelName dependant component.
+         * @param viewType dependant component.
+         * @param instanceId dependant component.
+         * @param postData dependant component.
+         * @param getViewOptions get view options.
+         */
+        var createViewKey = function(modelName, viewType, instanceId, postData, getViewOptions) {
+            //calculate viewKey; two views have the same key if they display the same content and therefore one has to close for the other to open.
+            var viewKeyObject = [modelName];
+            viewKeyObject.push(getViewOptions.viewTypeInViewKey ? viewType : null);
+            viewKeyObject.push(getViewOptions.instanceIdInViewKey && instanceId ? instanceId : null);
+            viewKeyObject.push(getViewOptions.postDataInViewKey && postData ? postData : null);
+            return JSON.stringify(viewKeyObject);
+        };
+
+        /**
+         * Parse the html returned by from the server.
+         * The html string will be parsed into a set of dom elements and a data object.
+         * @param viewHtml view html returned from the server.
+         * @param viewId view id generated on the client side. View id is always created on the client side.
+         * @returns {*} constructed dom elements and the data object to bind to.
+         */
+        var parseViewHtml = function(viewHtml, viewId){
+            if(!viewHtml){
+                viewHtml = "";
+            }
+
+            //handle view id.
+            var markerIndex = viewHtml.lastIndexOf("<replace-id-marker>");
+            if(markerIndex >=0){
+                var marker = viewHtml.substr(markerIndex);
+                viewHtml = viewHtml.substring(0, markerIndex);
+                var contentEndIndex = marker.lastIndexOf("<");
+                marker = marker.substring(19, contentEndIndex).trim();
+                if(marker)
+                    viewHtml = viewHtml.replace(new RegExp(marker,"g"), viewId);
+            }
+
+            var elements = $.parseHTML(viewHtml, null, true);
+
+            //separate view and model
+            var json = null;
+            for (var i = elements.length - 1; i >= 0; i--) {
+                if (elements[i] && elements[i].tagName == "SCRIPT") {
+                    json = elements[i].innerHTML;
+                    elements.splice(i, 1);//remove last script tag
+                    break;
+                }
+            }
+
+            json = $.trim(json);
+            var newModel = json ? JSON.parse(json) : {};
+            return {domElements : elements, dataObject: newModel};
+        };
+
+        /**
+         * After the view is successfully created, initialise the view elements.
+         * @param viewDetails whose view is to be initialised.
+         */
+        var initViewElements = function(viewDetails){
+
+            var elements = viewDetails.viewElements;
+
+            //jquery initialization for the view
+            $(elements).find("ul.nav.nav-tabs").makeTab();
+            $(elements).find(".date-picker").each(function (index, element) {//make datepickers
+                var input = $(element);
+                var dateFormat = "yy-mm-dd";//todo need to work out a solution - problem is datepicker date format and angularjs date format is not consistent. input.data("spg-date");
+                input.datepicker({dateFormat: dateFormat});
+            });
+
         };
 
         /**
@@ -459,110 +544,73 @@
         var getView = function (modelName, viewType, instanceId, params, model, getViewOptions) {
 
             getViewOptions = $.extend($.extend({}, defaultGetViewOption), getViewOptions);
-            var viewName = zcl.pascalNameToUrlName(modelName) + "-" + viewType;
+            var viewName = getViewName(modelName, viewType);
+            var viewKey = createViewKey(modelName, viewType, instanceId, model, getViewOptions);
 
-            //calculate viewKey; two views have the same key if they display the same content and therefore one has to close for the other to open.
-            var viewKeyObject = [modelName];
-            viewKeyObject.push(getViewOptions.viewTypeInViewKey ? viewType : null);
-            viewKeyObject.push(getViewOptions.instanceIdInViewKey && instanceId ? instanceId : null);
-            viewKeyObject.push(getViewOptions.modelInViewKey && model ? model : null);
-            var viewKey = JSON.stringify(viewKeyObject);
-
-            var existingViewDetails = viewMap[viewKey];
+            //check for existing view
             var viewId = null;
-            if (existingViewDetails) {
-                if (!getViewOptions.removeExisting) {
-                    viewId = existingViewDetails.viewId;
-                    display(viewId, true);
-                    scrollTo(viewId);
+            var existingViewDetails = viewMap[viewKey];
+            if (!getViewOptions.removeExisting && existingViewDetails) {
 
-                    if (existingViewDetails.viewType != viewType) {
-                        return createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
-                    }
-                    return createPromise(null);
-                }
+                viewId = existingViewDetails.viewId;
+                display(viewId, true);
+                scrollTo(viewId);
+                return existingViewDetails.viewType == viewType ? createPromise(null) : createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
             }
 
             if (!viewId) {
                 viewId = generateViewId(viewName, instanceId);
             }
             var viewUrl = site.viewUrl(viewName, params);
+            var operationKey = "get-" + viewId;
 
-            /**
-             * Create the view from the view html returned from the server.
-             * @param viewHtml
-             * @returns {*}
-             */
+            var createRequest = function () {
+                if (model) { //need to post
+                    return $.ajax(
+                        viewUrl,
+                        {
+                            type: "POST",
+                            data: JSON.stringify(model),
+                            contentType: "application/json",
+                            dataType: "html"
+                        }
+                    );
+                } else {
+                    return $.get(viewUrl);
+                }
+            };
+
             var createView = function (viewHtml) {
 
-                if(!viewHtml){
-                    viewHtml = "";
-                }
+                var parseResult = parseViewHtml(viewHtml, viewId);
 
-                var markerIndex = viewHtml.lastIndexOf("<replace-id-marker>");
-                if(markerIndex >=0){
-                    var marker = viewHtml.substr(markerIndex);
-                    viewHtml = viewHtml.substring(0, markerIndex);
-                    var contentEndIndex = marker.lastIndexOf("<");
-                    marker = marker.substring(19, contentEndIndex).trim();
-                    if(marker)
-                        viewHtml = viewHtml.replace(new RegExp(marker,"g"), viewId);
-                }
-
-                var elements = $.parseHTML(viewHtml, null, true);
-
-                //separate view and model
-                var json = null;
-                for (var i = elements.length - 1; i >= 0; i--) {
-                    if (elements[i] && elements[i].tagName == "SCRIPT") {
-                        json = elements[i].innerHTML;
-                        elements.splice(i, 1);//remove last script tag
-                        break;
-                    }
-                }
-
-                json = $.trim(json);
-                if (!json) {
-                    return createPromise("Could not extract the model from the view html.");
-                }
-
-                //workout next sibling
-                var nextElement = null;
-                if (existingViewDetails) { //replacing existing view
-                    nextElement = $(existingViewDetails.viewElements).last().next();
-                } else {
-                    nextElement = $("#" + site.noViewElementId);
-                }
+                var nextElement = existingViewDetails ? $(existingViewDetails.viewElements).last().next() : $("#" + site.noViewElementId);
                 if (!nextElement) {
                     return createPromise("Could not determine the insert position for the view being created.");
                 }
 
-                //insert element
-                var newModel = JSON.parse(json);
-                var newViewDetails = {
+                if (existingViewDetails) { //remove old view
+                    $(existingViewDetails.viewElements).remove();
+                }
+                viewMap[viewKey] = { //set newViewDetails
                     viewKey: viewKey,
                     viewId: viewId,
-                    viewName: viewName,
                     modelName: modelName,
                     viewType: viewType,
                     instanceId: instanceId,
                     params: params,
                     postData: model,
-                    model: newModel,
-                    viewElements: elements,
+                    model: parseResult.dataObject,
+                    viewElements: parseResult.domElements,
                     getViewOptions: getViewOptions
                 };
-                if (existingViewDetails) {
-                    $(existingViewDetails.viewElements).remove();
-                }
-                viewMap[viewKey] = newViewDetails;
 
-                var parentScope = $(nextElement).parent().scope();
+                var parentScope = getBodyScope();
                 try {
                     safeApply(parentScope, function () {
                         try {
-                            nextElement.before(elements);
-                            $compile(elements)(parentScope);
+                            nextElement.before(parseResult.domElements);
+                            $compile(parseResult.domElements)(parentScope);
                         }
                         catch (ex) {
                             delete viewMap[viewKey];
@@ -573,47 +621,29 @@
                     return createPromise("View compilation failed:" + ex);
                 }
 
-                //jquery initialization for the view
-                $(elements).find("ul.nav.nav-tabs").makeTab();
-                $(elements).find(".date-picker").each(function (index, element) {//make datepickers
-                    var input = $(element);
-                    var dateFormat = "yy-mm-dd";//todo need to work out a solution - problem is datepicker date format and angularjs date format is not consistent. input.data("spg-date");
-                    input.datepicker({dateFormat: dateFormat});
-                });
+                initViewElements(viewMap[viewKey]);
                 scrollTo(viewId);
                 return createPromise(null);
             };
 
-            var operationKey = "get-" + viewId;
-            var operation = function () {
-                var ajaxPromise;
-                if (model) { //need to post
-                    ajaxPromise = $.ajax(
-                        viewUrl,
-                        {
-                            type: "POST",
-                            data: JSON.stringify(model),
-                            contentType: "application/json",
-                            dataType: "html"
-                        }
-                    );
-                } else {
-                    ajaxPromise = $.get(viewUrl);
-                }
-
-                return ajaxPromise.then(
-                    createView,
-                    function (jqXHR, textStatus) {
-                        return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
-                    }
-                ).always(function () {
-                        return endOp(operationKey);
-                });
+            var createViewFailure = function (jqXHR, textStatus) {
+                return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
             };
 
-            return beginOp(operationKey).fail(function(){
-                reportError("Cannot begin operation.");
-            }).then(operation);
+            return beginOp(operationKey)
+                .fail(function(){
+                    reportError("Cannot begin operation.");
+                })
+                .then(function(){
+                    return createRequest().then(
+                        createView,
+                        createViewFailure
+                    ).always(
+                        function () {
+                            return endOp(operationKey);
+                        }
+                    );
+                });
         };
 
         var save = function (viewId) {
