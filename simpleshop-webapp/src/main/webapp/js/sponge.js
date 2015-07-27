@@ -1143,6 +1143,7 @@
                     var targetElement = $("#" + targetId);
                     var gotoId = goBackElementId(targetElement);
                     if(display(targetId, false)){
+                        safeApply(getBodyScope(), function(){});
                         scrollTo(gotoId);
                         return true;
                     }

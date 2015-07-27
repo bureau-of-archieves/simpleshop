@@ -52,7 +52,7 @@
                     </a>
                     <ul role="menu" class="dropdown-menu">
 
-                        <li>
+                        <li style="width:15em">
                             <a href="javascript:void(0);">
                                 <span data-ng-click="closeOthers('')">Close All</span>
                             </a>
@@ -60,12 +60,14 @@
 
                         <li class="ng-scope" data-ng-repeat="resultName in getViewIds()">
                             <a class="ng-binding result-menu-item" href="javascript:void(0);">
-                                <span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span>
-                                    <span class="glyphicon glyphicon-remove-circle"
-                                          data-ng-click="closeResult(resultName);$event.stopPropagation();"
-                                          title="Close"></span>
-                                    <span class="glyphicon glyphicon-asterisk" data-ng-click="closeOthers(resultName)"
-                                          title="Close Others"></span>
+
+                                <div class="row">
+                                    <div class="col-sm-9"><span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span></div>
+                                    <div class="col-sm-1">
+                                        <span class="glyphicon glyphicon-asterisk" data-ng-click="closeOthers(resultName)" title="Close Others"></span>&nbsp;
+                                        <span class="glyphicon glyphicon-remove-circle" data-ng-click="closeResult(resultName);$event.stopPropagation();" title="Close"></span>
+                                    </div>
+                                </div>
                             </a>
                         </li>
 

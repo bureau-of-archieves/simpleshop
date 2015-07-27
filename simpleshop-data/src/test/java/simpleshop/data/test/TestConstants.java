@@ -18,7 +18,7 @@ public class TestConstants {
     public static final String RAMBO = "Rambo";
     public static final String SUBURB_AUS_1 = "Hurstville";
     public static final String SUBURB_AUS_1_POSTCODE = "2200";
-    public static final String SHIPPER_NAME_1 = "FedEx";
+    public static final String SHIPPER_NAME_1 = "FedEx xxx";
     public static final String SHIPPER_NAME_2 = "AusPost";
 
 }
