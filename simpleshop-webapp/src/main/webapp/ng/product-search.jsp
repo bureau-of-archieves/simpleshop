@@ -2,9 +2,11 @@
 
 
 <t:page>
-    <ctrl:editField    path="idList"/>
-    <ctrl:editField    path="namePattern"/>
-    <ctrl:editCheckbox path="inStock"/>
+
+
+    <t:view-search>
+
+    </t:view-search>
 
     <script>
         <c:import url="/json/product/search" />

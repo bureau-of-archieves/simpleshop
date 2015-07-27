@@ -1463,7 +1463,10 @@
             var keys = zcl.getOwnProperties(viewMap);
             for (var i = 0; i < keys.length; i++) {
                 var key = keys[i];
-                result.push(viewMap[key].viewId);
+                var viewId = viewMap[key].viewId;
+                var display = $("#" + viewId).css("display");
+                if(display && display != "none" && display != "hidden")
+                    result.push(viewId);
             }
 
             return result;

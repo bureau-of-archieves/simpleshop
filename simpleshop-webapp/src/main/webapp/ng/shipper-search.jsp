@@ -2,8 +2,12 @@
 
 
 <t:page>
-    <ctrl:editField path="companyName"/>
-    <ctrl:editField path="phone"/>
+    <t:view-search>
+        <ctrl:editField path="name"/>
+        <ctrl:editField path="contactNumber"/>
+        <ctrl:editField path="address"/>
+        <ctrl:editCombo path="suburb" />
+    </t:view-search>
 
     <script>
         <c:import url="/json/shipper/search" />

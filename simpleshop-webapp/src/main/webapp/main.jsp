@@ -48,7 +48,7 @@
                 </li>
 
                 <li class="dropdown result" data-ng-show="getViewIds().length">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Results <span class="caret"></span>
+                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Views <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
 

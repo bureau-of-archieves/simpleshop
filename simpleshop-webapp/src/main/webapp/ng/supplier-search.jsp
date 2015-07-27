@@ -3,9 +3,10 @@
 
 <t:page>
     <t:view-search>
-        <ctrl:editField    path="companyName"/>
-        <ctrl:editField    path="contactName"/>
-        <ctrl:editField    path="city"/>
+        <ctrl:editField path="name"/>
+        <ctrl:editField path="contactNumber"/>
+        <ctrl:editField path="address"/>
+        <ctrl:editCombo path="suburb" />
     </t:view-search>
 
     <script>
