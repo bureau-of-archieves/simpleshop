@@ -9,9 +9,12 @@ import simpleshop.domain.model.Contact;
 import simpleshop.domain.model.Country;
 import simpleshop.domain.model.Customer;
 import simpleshop.domain.model.Suburb;
+import simpleshop.domain.model.component.Address;
 
 import javax.annotation.PostConstruct;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Ensure test data is present.
@@ -35,7 +38,11 @@ public class TestDataInitializer {
             createCountry("USA", "United States", "USD", session);
             createCountry("CHN", "China", "CNY", session);
 
-            createCustomer("Bill Gates", "CEO", session);
+            Map<String, String> billContacts = new HashMap<>();
+            billContacts.put("Work Phone", "987654321");
+            billContacts.put("Home Phone", "22 9384711");
+            billContacts.put("Email", "bill@microsoft.com");
+            createCustomer("Bill Gates", "CEO", billContacts, null, session);
             createCustomer("Microsoft", "Bill Gates", session);
             createCustomer("Google", "Larry Page", session);
 
@@ -69,13 +76,19 @@ public class TestDataInitializer {
         }
     }
 
-    private void createCustomer(String name, String contactName, Session session) {
+    private void createCustomer(String name, String contactName, Session session){
+        createCustomer(name, contactName, null, null, session);
+    }
+
+    private void createCustomer(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
         List<Customer> result = getCustomerListByName(name, session);
         if(result.size() == 0){
             Customer customer = new Customer();
             customer.setContact(new Contact());
             customer.getContact().setName(name);
             customer.getContact().setContactName(contactName);
+            customer.getContact().setContactNumbers(contactNumbers);
+            customer.getContact().setAddress(address);
             session.save(customer);
         }
     }

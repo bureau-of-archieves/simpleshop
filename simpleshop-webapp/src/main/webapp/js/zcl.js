@@ -470,7 +470,7 @@
         return false;
     };
 
-    var camelNameToSpacedName = function (str) {
+    zcl.camelNameToSpacedName = function (str) {
         var result = [];
         for (var i = 0; i < str.length; i++) {
             var ch = str.charAt(i);
@@ -482,6 +482,25 @@
             }
         }
         return result.join('');
+    };
+
+    zcl.objectToKeyValuePair = function(obj, compareFn){
+        var properties = zcl.getOwnProperties(obj);
+        var result = [];
+        for(var i=0; i<properties.length; i++) {
+            var prop = properties[i];
+            var value = obj[prop];
+            result.push({key:prop, value:value});
+        }
+
+        if(!compareFn){
+            compareFn = function(a, b) {
+                return (a.key< b.key?-1:(a.key> b.key?1:0));
+            };
+        }
+        result.sort(compareFn);
+
+        return result;
     };
 
     //endregion

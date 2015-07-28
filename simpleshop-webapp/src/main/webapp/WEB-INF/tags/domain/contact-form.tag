@@ -11,6 +11,7 @@ ${f:_push(stack, '_modelName', modelName)}
 <ctrl:editField path="name" />
 <ctrl:editField path="contactName" />
 <d:address-form path="address" />
+<ctrl:editMap path="contactNumbers" />
 <ctrl:editField path="note" />
 
 ${f:_pop(stack, '_base')}

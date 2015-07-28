@@ -12,5 +12,7 @@ ${f:_push(stack, '_modelName', modelName)}
 <ctrl:detailsField path="name" />
 <d:address-details path="address" />
 
+<ctrl:mapDetails path="contactNumbers" />
+
 ${f:_pop(stack, '_base')}
 ${f:_pop(stack, '_modelName')}
