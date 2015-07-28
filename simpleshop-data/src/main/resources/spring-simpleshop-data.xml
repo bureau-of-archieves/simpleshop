@@ -16,7 +16,7 @@
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
-        <property name="url" value="jdbc:h2:file:./data/simpleshop;create=true;IGNORECASE=TRUE"/>
+        <property name="url" value="jdbc:h2:file:d:/data/simpleshop;create=true;IGNORECASE=TRUE"/>
         <property name="username" value="dbo"/>
         <property name="password" value=""/>
     </bean>

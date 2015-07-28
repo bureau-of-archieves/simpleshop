@@ -1547,6 +1547,33 @@
             }
         };
 
+        $scope.addToMap = function(map, editorId){
+            var newKey = $(editorId + " .add_entry").val();
+            if(!newKey){
+                newKey = "";
+            }
+            if(newKey in map){
+                //todo go to the value field
+                var entries = $(editorId + " .entries .form-group");
+                for(var i=0; i<entries.size(); i++){
+                    var entry = $(entries.get(i));
+                   if(entry.find("label").text() == newKey){
+                       entry.find("input").focus();
+                       break;
+                   }
+                }
+                return;
+            }
+
+            map[newKey] = "";
+        };
+
+        $scope.removeFromMap = function(map, key, editorId){
+            if(key in map){
+                delete map[key];
+            }
+        };
+
         $scope.reset();
     }]);
 

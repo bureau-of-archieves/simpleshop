@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cascade;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.ItemText;
 import simpleshop.domain.metadata.ItemValue;
@@ -10,6 +11,7 @@ import simpleshop.domain.model.component.Address;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -20,7 +22,7 @@ public class Contact {
     private Integer id;
     private String name;
     private String contactName;
-    private Map<String, String> contactNumbers = new TreeMap<>();
+    private Map<String, String> contactNumbers = new HashMap<>();
     private Address address = new Address();
     private String note;
 
@@ -59,13 +61,12 @@ public class Contact {
     }
 
     @Summary
-    @ElementCollection
+    @ValueClass()
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @MapKeyClass(String.class)
     @CollectionTable(name = "contact_numbers", joinColumns=@JoinColumn(name="contact_id"))
     @MapKeyColumn(name = "contact_type")
     @Column(name = "contact_number")
-    @BatchSize(size = Constants.BATCH_SIZE)
-    @MapKeyClass(String.class)
-    @ValueClass()
     public Map<String, String> getContactNumbers() {
         return contactNumbers;
     }

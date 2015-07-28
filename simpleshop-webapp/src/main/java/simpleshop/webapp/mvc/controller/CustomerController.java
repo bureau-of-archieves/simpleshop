@@ -47,9 +47,14 @@ public class CustomerController extends BaseJsonController {
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
     public String customerDetails(@PathVariable int id, Model model) {
         JsonResponse<Customer> response = modelDetails(id, customerService);
-        Map<String, String> map = new HashMap<>();
-        map.put("Phone", "1122342");
-        response.getContent().getContact().setContactNumbers(map);
+
+        //todo remove this test code
+        if(response.getContent().getContact().getContactNumbers() == null){
+            Map<String, String> map = new HashMap<>();
+            map.put("Phone", "1122342");
+            response.getContent().getContact().setContactNumbers(map);
+        }
+
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 
