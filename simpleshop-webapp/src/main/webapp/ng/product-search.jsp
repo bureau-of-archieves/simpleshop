@@ -5,7 +5,7 @@
 
 
     <t:view-search>
-
+        <ctrl:editField path="name"/>
     </t:view-search>
 
     <script>

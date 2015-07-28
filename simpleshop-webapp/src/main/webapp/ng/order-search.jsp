@@ -3,8 +3,7 @@
 
 <t:page>
     <t:view-search>
-
-
+        <ctrl:editField path="shipName"/>
 
     </t:view-search>
 

@@ -1,12 +1,12 @@
 package simpleshop.service;
 
+import org.aspectj.lang.annotation.Before;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -81,6 +81,7 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
         session.close();
     }
 
+    @org.junit.Before
     @After
     public void cleanUp() {
         List<Shipper> shippers = shipperService.quickSearch("", new PageInfo());

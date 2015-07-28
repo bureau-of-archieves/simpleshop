@@ -1548,12 +1548,13 @@
         };
 
         $scope.addToMap = function(map, editorId){
-            var newKey = $(editorId + " .add_entry").val();
+            var keyInput = $(editorId + " .add_entry");
+            var newKey = keyInput.val();
             if(!newKey){
-                newKey = "";
+                keyInput.focus();
+                return;
             }
             if(newKey in map){
-                //todo go to the value field
                 var entries = $(editorId + " .entries .form-group");
                 for(var i=0; i<entries.size(); i++){
                     var entry = $(entries.get(i));
