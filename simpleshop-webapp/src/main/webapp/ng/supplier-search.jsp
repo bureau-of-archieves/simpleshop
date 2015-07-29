@@ -10,6 +10,6 @@
     </t:view-search>
 
     <script>
-        <c:import url="/json/supplier/search" />
+        <c:import url="/json/${f:urlModelNameFromUrl(pageContext.request.requestURL)}/search" />
     </script>
 </t:page>

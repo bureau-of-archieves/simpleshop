@@ -203,12 +203,7 @@ public final class StringUtils {
         if(url == null)
             return null;
 
-        int lastSlash = url.lastIndexOf('/');
-        int lastDash = url.lastIndexOf('-');
-        if(lastDash == -1)
-            lastDash = url.length();
-
-        String[] parts = url.substring(lastSlash + 1, lastDash).split("_");
+        String[] parts = urlNameFromUrl(url).split("_");
         String result = "";
         for(String part : parts){
             if(part.length() == 0)
@@ -218,6 +213,23 @@ public final class StringUtils {
             result += part.substring(0, 1).toUpperCase() + part.substring(1);
         }
         return result;
+    }
+
+    /**
+     * Extract model name from url.
+     * @param url url of a ng view page.
+     * @return model name in url name format.
+     */
+    public static String urlNameFromUrl(String url){
+        if(url == null)
+            return null;
+
+        int lastSlash = url.lastIndexOf('/');
+        int lastDash = url.lastIndexOf('-');
+        if(lastDash == -1)
+            lastDash = url.length();
+
+        return url.substring(lastSlash + 1, lastDash);
     }
 
     /**
