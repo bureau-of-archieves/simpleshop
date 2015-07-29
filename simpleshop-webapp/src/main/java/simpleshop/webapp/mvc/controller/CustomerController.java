@@ -16,8 +16,6 @@ import simpleshop.webapp.infrastructure.BaseJsonController;
 
 import javax.validation.Valid;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @Controller
 @RequestMapping(produces = "application/json")
@@ -47,14 +45,6 @@ public class CustomerController extends BaseJsonController {
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
     public String customerDetails(@PathVariable int id, Model model) {
         JsonResponse<Customer> response = modelDetails(id, customerService);
-
-        //todo remove this test code
-        if(response.getContent().getContact().getContactNumbers() == null){
-            Map<String, String> map = new HashMap<>();
-            map.put("Phone", "1122342");
-            response.getContent().getContact().setContactNumbers(map);
-        }
-
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 

@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
 public class Supplier {
 
     private Integer id;
-    private Contact contact;
-    private Boolean stock;
+    private Contact contact  = new Contact();
+    private Boolean stock = Boolean.FALSE;
 
     @Id
     @GeneratedValue
@@ -31,7 +31,7 @@ public class Supplier {
 
     @Summary
     @ManyToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
     @NotNull
     public Contact getContact() {

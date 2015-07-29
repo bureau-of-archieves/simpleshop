@@ -22,7 +22,7 @@ import java.util.List;
 public class Customer {
 
     private Integer id;
-    private Contact contact;
+    private Contact contact = new Contact();
     private List<Order> orders = new ArrayList<>();
     private Boolean stock = Boolean.FALSE;
 

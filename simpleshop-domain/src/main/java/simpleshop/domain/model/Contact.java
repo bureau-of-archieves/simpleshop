@@ -1,7 +1,5 @@
 package simpleshop.domain.model;
 
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cascade;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.ItemText;
 import simpleshop.domain.metadata.ItemValue;
@@ -13,7 +11,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 @Entity
 @Table(name = "contacts")

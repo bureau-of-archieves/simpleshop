@@ -1506,14 +1506,14 @@
         if(isSubtypeOf(viewDetails.viewType, "list")){
             $scope.previousEnabled = function(){
                 var viewDetails = findViewDetails(id);
-                if(viewDetails.model["tags"]["prevPage"])
+                if(viewDetails && viewDetails.model["tags"]["prevPage"])
                     return "";
                 return "disabled";
             };
 
             $scope.nextEnabled = function(){
                 var viewDetails = findViewDetails(id);
-                if(viewDetails.model["tags"]["nextPage"])
+                if(viewDetails && viewDetails.model["tags"]["nextPage"])
                     return "";
                 return "disabled";
             };

@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 public class Shipper {
 
     private Integer id;
-    private Contact contact;
+    private Contact contact = new Contact();
 
     @Id
     @GeneratedValue
@@ -29,7 +29,7 @@ public class Shipper {
 
     @Summary
     @ManyToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
     @NotNull
     public Contact getContact() {

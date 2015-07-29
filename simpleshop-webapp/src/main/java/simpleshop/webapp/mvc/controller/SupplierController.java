@@ -49,7 +49,7 @@ public class SupplierController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/supplier/save", method = RequestMethod.POST, consumes = "application/json")
-    public String supplierSave(@Valid @RequestBody final Supplier supplier,Model model,  BindingResult bindingResult) {
+    public String supplierSave(@Valid @RequestBody final Supplier supplier, Model model,  BindingResult bindingResult) {
         JsonResponse<Supplier>  response =  saveModel(supplier, supplierService, bindingResult);
         return super.outputJson(model, response, supplierService.ignoredJsonProperties());
     }
