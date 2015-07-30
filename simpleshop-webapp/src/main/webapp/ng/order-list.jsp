@@ -4,7 +4,7 @@
 <t:page>
     <t:view-list>
         <ctrl:summaryList modelId="{{item.id | json}}">
-            {{item.contact.name}} {{item.contact.contactName | prefix:'(' | suffix: ')'}}
+            {{item.customer.contact.name}} On {{item.orderDate | date : 'yyyy-MM-dd' | na}}
         </ctrl:summaryList>
     </t:view-list>
     <script>

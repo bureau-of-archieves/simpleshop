@@ -16,7 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "customers")
 @Icon("road")
-@DisplayFormat("interpolate:\"{{id}} - {{contact.name}} {{contact.contactName | prefix:'(' | suffix:')'}}\"")
+@DisplayFormat("concat:'id':' - ':'contact.name'")
 public class Customer {
 
     private Integer id;

@@ -2,8 +2,14 @@
 
 <t:page>
     <t:view-details>
-        <d:contact-details path="shipName" />
-        <d:contact-details path="orderDate" />
+        <ctrl:modelLink path="customer">
+            {{targetObject.id}} - {{targetObject.contact.name}}
+        </ctrl:modelLink>
+        <ctrl:modelLink path="employee" >
+            {{targetObject.id}} - {{targetObject.contact.name}}
+        </ctrl:modelLink>
+        <ctrl:detailsField path="shipName" />
+        <ctrl:detailsField path="orderDate" />
         <ctrl:detailsField path="requiredDate" />
     </t:view-details>
     <script>

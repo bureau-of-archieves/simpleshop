@@ -292,12 +292,13 @@ public final class DomainUtils {
         }
     }
 
-    private static void setDisplayFormat(PropertyMetadata PropertyMetadata, Method method) {
+    private static void setDisplayFormat(PropertyMetadata propertyMetadata, Method method) {
         DisplayFormat displayFormatAnnotation = method.getAnnotation(DisplayFormat.class);
-        if (displayFormatAnnotation != null)
-            PropertyMetadata.setDisplayFormat(displayFormatAnnotation.value());
-        if(PropertyMetadata.getDisplayFormat() == null && "Date".equals(PropertyMetadata.getPropertyType())){
-            PropertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd'");
+        if (displayFormatAnnotation != null){
+            propertyMetadata.setDisplayFormat(StringUtils.ngEscape(displayFormatAnnotation.value()));
+        }
+        if(propertyMetadata.getDisplayFormat() == null && "Date".equals(propertyMetadata.getPropertyType())){
+            propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd'");
         }
     }
 

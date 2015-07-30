@@ -359,5 +359,18 @@ public final class StringUtils {
         return str1 + str2 + str3;
     }
 
+    public static String ngEscape(String value) {
+        if(isNullOrEmpty(value))
+            return value;
 
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i=0; i<value.length(); i++){
+            char ch = value.charAt(i);
+            if(ch == '{' || ch == '}'){
+                stringBuilder.append('\\');
+            }
+            stringBuilder.append(ch);
+        }
+        return stringBuilder.toString();
+    }
 }
