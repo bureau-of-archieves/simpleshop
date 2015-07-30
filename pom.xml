@@ -19,13 +19,14 @@
         <module>simpleshop-domain</module>
         <module>simpleshop-service</module>
         <module>simpleshop-data</module>
+        <module>sponge-maven-plugin</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--this is declared for internal dependencies, must match project version-->
-        <version.simpleshop>1.0-SNAPSHOT</version.simpleshop>
+        <version.simpleshop>${project.version}</version.simpleshop>
 
         <!--Java EE 7 web profile, see http://en.wikipedia.org/wiki/Java_EE_version_history -->
         <version.jdk>1.7.0_45</version.jdk>
@@ -56,31 +57,38 @@
             <dependency>
                 <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-dto</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-common</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-domain</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-data</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-service</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>zhy2002.sponge</groupId>
+                <artifactId>sponge-maven-plugin</artifactId>
+                <version>${project.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <!--framework-->
@@ -346,6 +354,18 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
                     <version>2.6</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-plugin-plugin</artifactId>
+                    <version>3.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>zhy2002.sponge</groupId>
+                    <artifactId>sponge-maven-plugin</artifactId>
+                    <version>${project.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
