@@ -1226,7 +1226,7 @@
     //data-spg-new-scope
     spongeApp.directive("spgNewScope", function () {
         return {
-            restrict: 'A',
+            restrict: 'AE',
             scope: true
         };
     });
@@ -1357,7 +1357,7 @@
         };
     });
 
-    //todo reivew this directive
+    //todo review this directive
     spongeApp.directive("spgBeginLinkRequest", function (spongeService) {
         return {
             restrict: 'A',

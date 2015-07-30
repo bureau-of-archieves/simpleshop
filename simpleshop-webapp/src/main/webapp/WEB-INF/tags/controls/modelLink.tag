@@ -30,7 +30,7 @@
 
 <c:set var="fieldRef" value="${base}${path}"/>
 
-<div class="col-sm-6 details-field">
+<div class="col-sm-6 details-field" data-spg-new-scope>
 
     <div class="row">
         <div class="col-sm-5"><label> ${label}</label></div>
