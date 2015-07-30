@@ -372,10 +372,12 @@
             var prevIsProp = false;
             for(var i=1; i<arguments.length; i++){
                 var prop = arguments[i];
-                if(prop in input){
+                var val = zcl.getProp(input, prop);
+
+                if(!angular.isUndefined(val)){
                     if(prevIsProp)
                         result += " ";
-                    result += input[prop];
+                    result += val;
                     prevIsProp = true;
                 } else {
                     result += prop;
@@ -385,6 +387,19 @@
             return result;
         };
     });
+
+    /**
+     * Transform input object into a formatted string.
+     */
+    spongeApp.filter('interpolate', ['$interpolate', function ($interpolate) {
+        return function (input, pattern) {
+            if(!pattern)
+                return "";
+
+            var exp = $interpolate(pattern);
+            return exp(input);
+        };
+    }]);
 
     //endregion
 

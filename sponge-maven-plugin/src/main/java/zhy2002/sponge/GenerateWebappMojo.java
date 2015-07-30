@@ -7,11 +7,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 /**
  * Sponge code generation plugin.
  */
-@Mojo( name = "testPlugin")
-public class SpongeMojo extends AbstractMojo {
+@Mojo( name = "webapp")
+public class GenerateWebappMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException
     {
-        getLog().info( "Hello from sponge-maven-plugin." );
+        getLog().info( "Generating webapp source code..." );
     }
 }

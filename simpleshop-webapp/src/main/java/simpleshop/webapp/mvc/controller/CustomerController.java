@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import simpleshop.domain.model.Customer;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.dto.JsonResponse;
+import simpleshop.dto.ModelQuickSearch;
 import simpleshop.service.CustomerService;
 import simpleshop.webapp.infrastructure.BaseJsonController;
 
@@ -57,6 +58,12 @@ public class CustomerController extends BaseJsonController {
     @RequestMapping(value = "/customer/delete", method = RequestMethod.POST, consumes = "application/json")
     public String customerSave(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, customerService);
+        return super.outputJson(model, response, null);
+    }
+
+    @RequestMapping(value = "/customer/list", method = RequestMethod.POST, consumes = "application/json")
+    public String suburbList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
+        JsonResponse<Iterable<Customer>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,customerService.quickSearch(quickSearch.getKeywords(), quickSearch));
         return super.outputJson(model, response, null);
     }
 }

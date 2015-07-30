@@ -40,6 +40,7 @@
         <version.hibernate>4.3.6.Final</version.hibernate>
         <version.hibernate-validator>5.1.1.Final</version.hibernate-validator>
         <version.jpa21>1.0.0.Final</version.jpa21>
+        <version.rythm>1.0.1</version.rythm>
 
         <version.h2>1.4.185</version.h2>
         <version.dozer>5.4.0</version.dozer>
@@ -268,6 +269,12 @@
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-all</artifactId>
                 <version>${version.hamcrest}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.rythmengine</groupId>
+                <artifactId>rythm-engine</artifactId>
+                <version>${version.rythm}</version>
             </dependency>
 
 

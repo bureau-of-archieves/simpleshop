@@ -1,10 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.*;
-import simpleshop.domain.metadata.Description;
-import simpleshop.domain.metadata.Icon;
-import simpleshop.domain.metadata.ItemValue;
-import simpleshop.domain.metadata.Summary;
+import simpleshop.domain.metadata.*;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -19,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "customers")
 @Icon("road")
+@DisplayFormat("interpolate:\"{{id}} - {{contact.name}} {{contact.contactName | prefix:'(' | suffix:')'}}\"")
 public class Customer {
 
     private Integer id;

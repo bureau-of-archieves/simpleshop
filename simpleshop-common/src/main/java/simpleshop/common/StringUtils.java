@@ -61,7 +61,7 @@ public final class StringUtils {
         if(src == null)
             return null;
 
-        return src.replaceAll("'", "&#39;");
+        return src.replaceAll("'", "&#39;").replaceAll("\"", "\\\\\"").replaceAll("\"", "&#34;");
     }
 
     /**

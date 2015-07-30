@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import simpleshop.domain.model.Supplier;
+import simpleshop.dto.ModelQuickSearch;
 import simpleshop.dto.SupplierSearch;
 import simpleshop.dto.JsonResponse;
 import simpleshop.service.SupplierService;
@@ -57,6 +58,12 @@ public class SupplierController extends BaseJsonController {
     @RequestMapping(value = "/supplier/delete", method = RequestMethod.POST, consumes = "application/json")
     public String supplierSave(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, supplierService);
+        return super.outputJson(model, response, null);
+    }
+
+    @RequestMapping(value = "/supplier/list", method = RequestMethod.POST, consumes = "application/json")
+    public String suburbList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
+        JsonResponse<Iterable<Supplier>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,supplierService.quickSearch(quickSearch.getKeywords(), quickSearch));
         return super.outputJson(model, response, null);
     }
 }

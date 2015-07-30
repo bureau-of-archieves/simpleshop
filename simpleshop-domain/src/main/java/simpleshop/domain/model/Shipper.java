@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.Cascade;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.metadata.Summary;
 
@@ -11,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "shippers")
 @Icon("plane")
+@DisplayFormat("concat:'id':' - ':'contact.name'")
 public class Shipper {
 
     private Integer id;

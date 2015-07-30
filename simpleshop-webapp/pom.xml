@@ -88,11 +88,6 @@
             <artifactId>jstl</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>zhy2002.sponge</groupId>
-            <artifactId>sponge-maven-plugin</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -107,11 +102,10 @@
                 <artifactId>sponge-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>testPlugin</goal>
+                            <goal>webapp</goal>
                         </goals>
-
                     </execution>
                 </executions>
             </plugin>

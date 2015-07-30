@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.Cascade;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.metadata.Summary;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "employees")
 @Icon("flash")
+@DisplayFormat("concat:'id':' - ':'contact.name'")
 public class Employee {
 
     private Integer id;
