@@ -11,6 +11,7 @@ import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,13 @@ public class Order {
     private Integer id;
     private Customer customer;
     private Employee employee;
-    private Date orderDate;
-    private Date requiredDate;
+    private LocalDateTime orderDate;
+    private LocalDateTime requiredDate;
     private List<OrderItem> orderItems = new ArrayList<>();
 
     //order result
     private Shipper shipper;
-    private Date shippedDate;
+    private LocalDateTime shippedDate;
     private Integer numberOfParcels;
     private BigDecimal freight;
     private String shipName;
@@ -70,20 +71,20 @@ public class Order {
     }
 
     @Column(name = "order_date")
-    public Date getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(Date orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 
     @Column(name = "required_date")
-    public Date getRequiredDate() {
+    public LocalDateTime getRequiredDate() {
         return requiredDate;
     }
 
-    public void setRequiredDate(Date requiredDate) {
+    public void setRequiredDate(LocalDateTime requiredDate) {
         this.requiredDate = requiredDate;
     }
 
@@ -112,11 +113,11 @@ public class Order {
     }
 
     @Column(name = "shipped_date")
-    public Date getShippedDate() {
+    public LocalDateTime getShippedDate() {
         return shippedDate;
     }
 
-    public void setShippedDate(Date shippedDate) {
+    public void setShippedDate(LocalDateTime shippedDate) {
         this.shippedDate = shippedDate;
     }
 

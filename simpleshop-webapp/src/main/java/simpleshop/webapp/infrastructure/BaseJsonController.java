@@ -29,7 +29,7 @@ public abstract class BaseJsonController {
         return "json"; //call the json view.
     }
 
-    protected String getBindingErrorMessage(BindingResult bindingResult) {
+    public static String getBindingErrorMessage(BindingResult bindingResult) {
         StringBuilder stringBuilder = new StringBuilder();
         for (ObjectError error : bindingResult.getAllErrors()) {
             stringBuilder.append(error.getObjectName());
@@ -45,7 +45,7 @@ public abstract class BaseJsonController {
         JsonResponse<T> response;
 
         //handle binding errors
-        if (bindingResult.hasErrors()) {
+        if (bindingResult != null && bindingResult.hasErrors()) {
             response = new JsonResponse<>(JsonResponse.STATUS_ERROR, getBindingErrorMessage(bindingResult), model);
         } else {
             //handle service error
@@ -71,8 +71,8 @@ public abstract class BaseJsonController {
     }
 
     protected <S extends ModelSearch, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult){
-        if (bindingResult.hasErrors())
-            return new JsonResponse<>(JsonResponse.STATUS_OK, getBindingErrorMessage(bindingResult), null);
+        if (bindingResult != null && bindingResult.hasErrors())
+            return new JsonResponse<>(JsonResponse.STATUS_ERROR, getBindingErrorMessage(bindingResult), null);
 
         int actualPageSize = criteria.getPageSize();
         criteria.setPageSize(actualPageSize + 1); //retrieve one more to decide if there is next page

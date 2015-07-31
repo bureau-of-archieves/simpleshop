@@ -31,8 +31,8 @@ public class OrderController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/order/search", method = RequestMethod.POST, consumes = "application/json")
-    public String orderSearch(@Valid @RequestBody final OrderSearch orderSearch, Model model, BindingResult bindingResult) {
-        JsonResponse<Iterable<Order>> response = modelSearch(orderSearch, orderService, bindingResult);
+    public String orderSearch(@Valid @RequestBody final OrderSearch orderSearch, Model model) {
+        JsonResponse<Iterable<Order>> response = modelSearch(orderSearch, orderService, null);
         return super.outputJson(model, response, orderService.ignoredJsonProperties());
     }
 
@@ -49,8 +49,8 @@ public class OrderController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/order/save", method = RequestMethod.POST, consumes = "application/json")
-    public String orderSave(@Valid @RequestBody final Order order,Model model,  BindingResult bindingResult) {
-        JsonResponse<Order>  response =  saveModel(order, orderService, bindingResult);
+    public String orderSave(@Valid @RequestBody final Order order,Model model) {
+        JsonResponse<Order>  response =  saveModel(order, orderService, null);
         return super.outputJson(model, response, orderService.ignoredJsonProperties());
     }
 
