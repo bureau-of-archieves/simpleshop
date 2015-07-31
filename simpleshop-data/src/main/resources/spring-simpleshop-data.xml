@@ -14,6 +14,12 @@
     </ctx:component-scan>
     <ctx:annotation-config/>
 
+    <bean id="objectMapper" class="simpleshop.common.ObjectMapperFactory" factory-method="create" />
+
+    <bean id="jsonConverter" class="simpleshop.common.JsonConverter" >
+        <property name="objectMapper" ref="objectMapper" />
+    </bean>
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:file:d:/data/simpleshop;create=true;IGNORECASE=TRUE"/>

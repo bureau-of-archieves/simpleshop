@@ -3,7 +3,7 @@
 
 <t:page>
     <t:view-update>
-        <d:customer-form />
+        <d:order-form />
     </t:view-update>
 
     <script>

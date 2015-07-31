@@ -16,6 +16,7 @@ import simpleshop.webapp.infrastructure.BaseJsonController;
 
 import javax.validation.Valid;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Controller
 @RequestMapping( produces = "application/json")
@@ -45,6 +46,9 @@ public class OrderController extends BaseJsonController {
     @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
     public String orderDetails(@PathVariable int id, Model model) {
         JsonResponse<Order> response = modelDetails(id, orderService);
+
+        response.getContent().setOrderDate(LocalDateTime.now());
+
         return super.outputJson(model, response, orderService.ignoredJsonProperties());
     }
 

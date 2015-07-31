@@ -297,8 +297,13 @@ public final class DomainUtils {
         if (displayFormatAnnotation != null){
             propertyMetadata.setDisplayFormat(StringUtils.ngEscape(displayFormatAnnotation.value()));
         }
-        if(propertyMetadata.getDisplayFormat() == null && "Date".equals(propertyMetadata.getPropertyType())){
-            propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd'");
+        if(propertyMetadata.getDisplayFormat() == null){
+
+            if(propertyMetadata.getPropertyType().endsWith("Date")){
+                propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd'");
+            } else if(propertyMetadata.getPropertyType().endsWith("DateTime")){
+                propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd hh:mm:ss'");
+            }
         }
     }
 
