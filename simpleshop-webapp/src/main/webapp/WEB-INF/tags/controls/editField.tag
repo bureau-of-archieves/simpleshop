@@ -37,7 +37,7 @@
 <c:set var="pattern" value="${f:fmd(modelName, path).inputFormat}" />
 
 <c:set var="directive" value="" />
-<c:if test="${propertyType == 'Date'}">
+<c:if test="${propertyType.endsWith('Date')}">
     <c:set var="directive" value="data-spg-date='yyyy-MM-dd'" />
 </c:if>
 
