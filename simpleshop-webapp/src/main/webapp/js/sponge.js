@@ -1319,6 +1319,8 @@
                         var format = config["displayFormat"];
                         var text = scope.$eval(format);
                         input.val(text);
+                    } else {
+                        input.val(null);
                     }
                 };
 
