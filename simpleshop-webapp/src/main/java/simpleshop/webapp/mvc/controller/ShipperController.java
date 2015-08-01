@@ -56,7 +56,7 @@ public class ShipperController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/shipper/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String shipperSave(@Valid @RequestBody final int id, Model model) {
+    public String shipperDelete(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, shipperService);
         return super.outputJson(model, response, null);
     }

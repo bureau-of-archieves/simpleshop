@@ -44,6 +44,15 @@
         };
 
         /**
+         * Construct a url for a model name what you can use to delete a model with a 'POST'.
+         * @param modelName
+         * @returns {string}
+         */
+        this.deleteJsonUrl = function (modelName) {
+            return jsonPath + zcl.pascalNameToUrlName(modelName) + "/delete";
+        };
+
+        /**
          * If a model supports quick search (or keyword search, such as in a autocomplete), the controller will support the list operation.
          * @param modelName specify what type of model we want to retrieve.
          * @returns {string} the url to post to.
@@ -260,6 +269,29 @@
      */
     var getViewName = function(modelName, viewType){
         return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
+    };
+
+    /**
+     * Resolve the real model id from the input.
+     * @param modelId could be an id selector of the input field which contains the model id.
+     * @returns {*} model id resolved.
+     */
+    var resolveModelId = function(modelId){
+        if(!modelId)
+            return modelId;
+
+        if (typeof modelId == "string") {
+            if (modelId.substring(0, 1) == "#") {
+                var input = $(modelId);
+                modelId = input.val();
+                modelId = parseInt(modelId);
+                if (isNaN(modelId)) {
+                    modelId = zcl.subStrBeforeFirst(input.val(), '-', true);
+                }
+            }
+        }
+
+        return modelId;
     };
 
     //endregion
@@ -662,6 +694,23 @@
         };
 
         /**
+         * Create a json post request.
+         * @param url
+         * @param data json object.
+         * @returns {*}
+         */
+        var createJsonPostRequest = function (url ,data) {
+
+            return $.ajax(url,
+                {
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    contentType: "application/json",
+                    dataType: "json"
+                });
+        };
+
+        /**
          * Save the backing model of a view.
          * @param viewId specify which view.
          * @returns {*}
@@ -670,17 +719,6 @@
 
             var viewDetails = findViewDetails(viewId);
             var scope = viewDetails.scope;
-
-            var createRequest = function (url ,data) {
-
-                return $.ajax(url,
-                    {
-                        type: "POST",
-                        data: data,
-                        contentType: "application/json",
-                        dataType: "json"
-                    });
-            };
 
             var saveSuccess = function (response) {
                 if (response["status"] == "OK") {
@@ -698,14 +736,59 @@
 
             var operationKey = "save-" + viewId;
             var url = site.saveJsonUrl(viewDetails.modelName);
-            var data = JSON.stringify(scope["model"]);
             return beginOp(operationKey).then(
                 function(){
-                   return createRequest(url, data)
+                   return createJsonPostRequest(url, scope["model"])
                        .then(saveSuccess)
                        .always(function () {
                             endOp(operationKey);
                        });
+                }
+            );
+        };
+
+        var remove = function(modelName, modelId, viewId){
+
+            if(!viewId)
+                return createPromise("View Id is not passed.");
+
+            var deleteSuccess = function(response){
+                if (response["status"] == "OK") {
+                    var viewDetails = findViewDetails(viewId);
+                    var scope = viewDetails.scope;
+                    var content = scope["model"];
+                    if(angular.isArray(content)){
+                        var deleted = -1;
+                        for(var i=0; i<content.length; i++){
+                            if(content[i]["id"] == modelId){
+                                deleted = i;
+                                break;
+                            }
+                        }
+                        if(deleted >= 0){
+                            safeApply(scope, function(){
+                                content.splice(deleted, 1);
+                            });
+                        }
+                        return createPromise(null);
+                    } else {
+                        return cancel(viewId, true);
+                    }
+
+                }
+                return createPromise(response["description"]);
+
+            };
+
+            var operationKey = "delete-" + viewId;
+            var url = site.deleteJsonUrl(modelName);
+            return beginOp(operationKey).then(
+                function(){
+                    return createJsonPostRequest(url, modelId)
+                        .then(deleteSuccess)
+                        .always(function () {
+                            endOp(operationKey);
+                        });
                 }
             );
         };
@@ -716,14 +799,12 @@
          * @param viewId
          * @returns {*}
          */
-        var cancel = function (viewId) {
-        //always from create or update back to details
-            //var scope = angular.element("#" + viewId).scope();
+        var cancel = function (viewId, noOpenAnother) {
 
             var viewDetails = findViewDetails(viewId);
             var modelName = viewDetails.modelName;
             var viewType = viewDetails.viewType;
-            if (isSubtypeOf(viewType, "create"))
+            if (isSubtypeOf(viewType, "create") || noOpenAnother)
                 return close(viewId);
 
             return getView(modelName, "details" + viewDetails.viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
@@ -874,6 +955,7 @@
         return {
             getView: getView,
             save: save,
+            remove : remove,
             cancel: cancel,
             refresh: refresh,
             close: close,
@@ -994,26 +1076,20 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                $(element).click(function ($event) {
+                var jqElem = $(element);
+                jqElem.click(function ($event) {
                     $event.stopPropagation();
                     var args = JSON.parse(attrs["spgDelete"]);
                     var modelName = args["modelName"];
                     var modelId = args["modelId"];
-
-                    if (typeof modelId == "string") {
-                        if (modelId.substring(0, 1) == "#") {
-                            modelId = $(modelId).val();
-                            modelId = parseInt(modelId);
-                            if (isNaN(modelId)) {
-                                modelId = zcl.subStrBeforeFirst($(args["modelId"]).val(), '-', true);
-                            }
-                        }
-                    }
+                    modelId = resolveModelId(modelId);
                     if (!modelId)
                         return;
 
-                    alert("Deletion is not implemented yet!");
-                    //TODO delete promise
+                    spongeService.remove(modelName, modelId, jqElem.closest(".view").attr("id"))
+                        .fail(function (error) {
+                            reportError(error);
+                        });
                 });
             }
         };

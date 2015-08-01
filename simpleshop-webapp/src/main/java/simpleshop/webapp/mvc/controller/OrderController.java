@@ -59,7 +59,7 @@ public class OrderController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/order/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String orderSave(@Valid @RequestBody final int id, Model model) {
+    public String orderDelete(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, orderService);
         return super.outputJson(model, response, null);
     }

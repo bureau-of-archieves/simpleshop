@@ -55,7 +55,7 @@ public class ProductController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/product/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String productSave(@Valid @RequestBody final int id, Model model) {
+    public String productDelete(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, productService);
         return super.outputJson(model, response, null);
     }

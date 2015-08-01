@@ -56,7 +56,7 @@ public class SupplierController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/supplier/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String supplierSave(@Valid @RequestBody final int id, Model model) {
+    public String supplierDelete(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, supplierService);
         return super.outputJson(model, response, null);
     }

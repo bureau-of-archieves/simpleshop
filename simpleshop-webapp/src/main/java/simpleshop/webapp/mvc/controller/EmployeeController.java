@@ -56,7 +56,7 @@ public class EmployeeController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/employee/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String employeeSave(@Valid @RequestBody final int id, Model model) {
+    public String employeeDelete(@Valid @RequestBody final int id, Model model) {
         JsonResponse<Serializable> response = deleteModel(id, employeeService);
         return super.outputJson(model, response, null);
     }

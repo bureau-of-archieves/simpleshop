@@ -10,8 +10,11 @@ import org.apache.maven.plugins.annotations.Mojo;
 @Mojo( name = "webapp")
 public class GenerateWebappMojo extends AbstractMojo {
 
+
     public void execute() throws MojoExecutionException
     {
         getLog().info( "Generating webapp source code..." );
+
+
     }
 }
