@@ -1359,6 +1359,22 @@
         };
     });
 
+    //http://stackoverflow.com/questions/25344368/angular-ng-model-empty-strings-should-be-null
+    spongeApp.directive('spgNoEmptyString', function () {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ctrl) {
+                ctrl.$parsers.push(function(viewValue) {
+                    if(viewValue == "") {
+                        return null;
+                    }
+                    return viewValue;
+                });
+            }
+        };
+    });
+
     //todo review this directive
     spongeApp.directive("spgBeginLinkRequest", function (spongeService) {
         return {

@@ -6,7 +6,7 @@
 <%@attribute name="label" required="false" %>
 <%@attribute name="parentId" required="false" %>
 <%@attribute name="id" required="false" %>
-
+<%@attribute name="emptyStringAllowed" required="false" type="java.lang.Boolean" %>
 
 <c:if test="${empty modelName}" >
     <c:set var="modelName" value="${f:peek(stack, '_modelName')}" />
@@ -23,7 +23,9 @@
 <c:if test="${empty id}">
     <c:set var="id" value="${f:fid(parentId, path)}" />
 </c:if>
-
+<c:if test="${empty emptyStringAllowed}">
+    <c:set var="emptyStringAllowed" value="false" />
+</c:if>
 
 <%--field metadata--%>
 <c:set var="propertyType" value="${f:fmd(modelName, path).propertyType}" />
@@ -44,8 +46,12 @@
 
     <div class="col-sm-9">
         <input id="${id}" type="text" class="form-control" name="${path}"
+
             data-ng-model="${base}${path}"
+
             ${directive}
+
+            <c:if test="${not emptyStringAllowed}"> data-spg-no-empty-string </c:if>
             <c:if test="${not empty minLength}"> data-ng-minlength="${minLength}" </c:if>
             <c:if test="${not empty maxLength}"> data-ng-maxlength="${maxLength}" </c:if>
             <c:if test="${required}"> data-ng-required="true" </c:if>
