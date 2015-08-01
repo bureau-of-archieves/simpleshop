@@ -32,31 +32,13 @@
 
 <c:set var="fieldRef" value="${base}${path}"/>
 
-
-<%--<div class="row" data-ng-repeat="">--%>
-<%--data-ng-repeat="${itemName} in ${fieldRef}" data-ng-form="${id}-form">--%>
-<%--<div class="panel-body">--%>
-<%--<dl class="dl-horizontal">--%>
-<%--${f:emptyStr(f:push(stack, "_base", f:concat(itemName, '.')))}--%>
-<%--${f:emptyStr(f:push(stack, "_modelName", childModelName))}--%>
-<%--${f:emptyStr(f:push(stack, "_parentId", id))}--%>
-<%--<jsp:doBody/>--%>
-<%--${f:emptyStr(f:pop(stack, "_base"))}--%>
-<%--${f:emptyStr(f:pop(stack, "_modelName"))}--%>
-<%--${f:emptyStr(f:pop(stack, "_parentId"))}--%>
-<%--</dl>--%>
-<%--<button type="submit" class="btn btn-primary" data-ng-click="removeFromCollection(${fieldRef}, ${itemName})">Remove</button>--%>
-<%--</div>--%>
-<%--</div>--%>
-
-
 <div id="${id}" class="form-group">
     <label class="col-sm-3 control-label">${label}</label>
 
     <div class="col-sm-9">
 
         <div class="input-group">
-            <input type="text" class="form-control add_entry" aria-label="Add">
+            <input type="text" class="form-control add_entry" aria-label="Add" data-spg-enter-to-click="span.glyphicon-plus">
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-plus cursor-pointer"
                       data-ng-click="addToMap(${fieldRef}, '#${id}')"></span>

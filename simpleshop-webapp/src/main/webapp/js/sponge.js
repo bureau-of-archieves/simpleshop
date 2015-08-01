@@ -1360,6 +1360,9 @@
     });
 
     //http://stackoverflow.com/questions/25344368/angular-ng-model-empty-strings-should-be-null
+    /**
+     * Use on an input element. If the input is empty string, convert it to a null value.
+     */
     spongeApp.directive('spgNoEmptyString', function () {
         return {
             restrict: 'A',
@@ -1370,6 +1373,31 @@
                         return null;
                     }
                     return viewValue;
+                });
+            }
+        };
+    });
+
+    /**
+     * If enter key is pressed on this element, call the click event of another element.
+     */
+    spongeApp.directive('spgEnterToClick', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, elem, attrs, ctrl) {
+                var selector = attrs["spgEnterToClick"];
+                if(!selector)
+                    return;
+
+                var jqElem = $(elem);
+                jqElem.keypress(function(event){
+                    if(event.keyCode != 13){
+                       return;
+                    }
+
+                    jqElem.parent().find(selector).click();
+                    event.preventDefault();
+                    event.stopPropagation();
                 });
             }
         };
