@@ -23,9 +23,7 @@
     <c:set var="label" value="${f:fmd(modelName, path).label}"/>
 </c:if>
 
-<c:if test="${empty displayFormat}">
-    <c:set var="displayFormat" value="${f:fmd(modelName, path).displayFormat}"/>
-</c:if>
+<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path).displayFormat, displayFormat)}"/>
 
 <c:if test="${empty descSeparator}">
     <c:set var="descSeparator" value="|"/>

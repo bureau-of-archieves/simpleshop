@@ -146,4 +146,20 @@ public class Functions {
         return String.format(message, arg);
     }
 
+    public static String combineDisplayFormat(String metadataFormat, String tagFormat){
+        if(StringUtils.isNullOrEmpty(tagFormat)){
+            return metadataFormat;
+        }
+
+        tagFormat = tagFormat.trim();
+        if(!tagFormat.startsWith("|")){
+            return tagFormat;
+        }
+
+        if(StringUtils.isNullOrEmpty(metadataFormat)){
+            return tagFormat.substring(1);
+        }
+
+        return metadataFormat.trim() + " " + tagFormat;
+    }
 }

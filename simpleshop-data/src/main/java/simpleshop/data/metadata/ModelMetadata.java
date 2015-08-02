@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-@JsonIgnoreProperties({"modelClass", "aliasDeclarations"})
+@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "noneSummaryProperties"})
 public class ModelMetadata {
 
     private String name;
