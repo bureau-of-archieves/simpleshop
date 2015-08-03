@@ -350,7 +350,6 @@ public final class StringUtils {
         return "";
     }
 
-
     public static String concat(String str1, String str2){
         return str1 + str2;
     }
@@ -372,5 +371,13 @@ public final class StringUtils {
             stringBuilder.append(ch);
         }
         return stringBuilder.toString();
+    }
+
+    public static boolean isIntegerType(String type){
+        return type != null && (type.equals("Short") || type.equals("Integer") || type.equals("Long"));
+    }
+
+    public static boolean isDateTimeType(String type){
+        return type != null && (type.endsWith("Date") || type.endsWith("DateTime"));
     }
 }

@@ -3,6 +3,7 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.Icon;
+import simpleshop.domain.metadata.ValueClass;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
 
@@ -88,6 +89,7 @@ public class Order {
         this.requiredDate = requiredDate;
     }
 
+    @ValueClass(OrderItem.class)
     @ElementCollection
     @CollectionTable(name="order_items", joinColumns=@JoinColumn(name="order_id"))
     @OrderColumn(name = "item_index")

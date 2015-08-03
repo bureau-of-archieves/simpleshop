@@ -52,6 +52,10 @@
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/delete";
         };
 
+        this.newJsonUrl = function (modelName) {
+            return jsonPath + zcl.pascalNameToUrlName(modelName) + "/new";
+        };
+
         /**
          * If a model supports quick search (or keyword search, such as in a autocomplete), the controller will support the list operation.
          * @param modelName specify what type of model we want to retrieve.
@@ -294,6 +298,38 @@
         return modelId;
     };
 
+    /**
+     * Update new model cache.
+     * @param bodyScope body scope.
+     * @param modelName model name.
+     * @param model pass null if want to retrieve from server.
+     */
+    var ensureNewModel = function(bodyScope, modelName, model){
+        if(!bodyScope.newModel) {
+            bodyScope.newModel = {};
+        }
+
+        if(!angular.isUndefined(model) && model != null){
+            bodyScope.newModel[modelName] = model;
+            return;
+        }
+
+        model = bodyScope.newModel[modelName];
+        if(!angular.isUndefined(model) && model != null){
+            return;
+        }
+
+        //get from server
+        var url = site.newJsonUrl(modelName);
+        $.getJSON(url, null, function(response){
+            if(response.status == "OK"){
+                bodyScope.newModel[modelName] = response.content;
+            } else {
+                bodyScope.newModel[modelName] = {};
+            }
+        });
+    };
+
     //endregion
 
     var spongeApp = angular.module("spongeApp", [], null);
@@ -433,6 +469,23 @@
         };
     }]);
 
+    /**
+     * Format a date time value with moment.js.
+     */
+    spongeApp.filter('moment',function () {
+
+        return function (input, format) {
+
+            if(angular.isUndefined(input) || input == null)
+                return input;
+
+            if(!format)
+                format = "LLL";
+
+            return moment(input, 'x').format(format);
+        };
+    });
+
     //endregion
 
     //region service
@@ -570,10 +623,16 @@
 
             //jquery initialization for the view
             $(elements).find("ul.nav.nav-tabs").makeTab();
-            $(elements).find(".date-picker").each(function (index, element) {//make datepickers
+
+
+            $(elements).find("*[data-spg-date]").each(function (index, element) {//make date pickers
                 var input = $(element);
-                var dateFormat = "yy-mm-dd";//todo need to work out a solution - problem is datepicker date format and angularjs date format is not consistent. input.data("spg-date");
-                input.datepicker({dateFormat: dateFormat});
+                var dateFormat = input.data("spgDate");
+                input.closest(".date")
+                    .datetimepicker({format: dateFormat})
+                    .on("dp.change", function(){
+                        setTimeout(input.data("update"), 0);
+                    });
             });
 
         };
@@ -1263,25 +1322,35 @@
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                $(element).addClass("date-picker");
+                
                 var format = attrs["spgDate"];
 
                 var dateParser = function (value) {
-                    var result = Date.parse(value);
-                    if (isNaN(result))
-                        return value;
-                    return result;
+                    var result = +moment(value, format);
+                    if (angular.isNumber(result) && !isNaN(result))
+                        return result;
+                    return value;
                 };
 
                 var dateFormatter = function (value) {
-                    var result = $filter('date')(value, format);
+                    var result = $filter('moment')(value, format);
                     if (result)
                         return result;
                     return value;
                 };
 
+                var update = function(){
+
+                    safeApply(scope, function(){
+                        var text = $(element).val();
+                        ngModel.$setViewValue(text);
+                        ngModel.$commitViewValue();
+                    });
+                };
+
                 ngModel.$parsers.push(dateParser);
                 ngModel.$formatters.push(dateFormatter);
+                $(element).data("update", update);
             }
         };
     }]);
@@ -1670,8 +1739,10 @@
             return angular.equals($scope.master, $scope.model);
         };
 
-        $scope.addToCollection = function (collection, key) {
-            var prototype = viewDetails.model.tags[key];
+        $scope.addToCollection = function (collection, modelName) {
+            var bodyScope = getBodyScope();
+            ensureNewModel(bodyScope, modelName, null);
+            var prototype = bodyScope.newModel[modelName];
             collection.push(angular.copy(prototype));
         };
 

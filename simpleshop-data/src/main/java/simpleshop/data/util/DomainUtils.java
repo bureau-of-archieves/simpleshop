@@ -113,6 +113,7 @@ public final class DomainUtils {
         if(elementsProperty.getReturnType() == null){
             elementsProperty.setReturnType(Object.class);
         }
+        elementsProperty.setPropertyType(elementsProperty.getReturnType().getSimpleName());
         propertyMetadataMap.put("elements", elementsProperty);
 
         //COLLECTION_SIZE = "size";
@@ -300,9 +301,9 @@ public final class DomainUtils {
         if(propertyMetadata.getDisplayFormat() == null){
 
             if(propertyMetadata.getPropertyType().endsWith("Date")){
-                propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd'");
+                propertyMetadata.setDisplayFormat("moment:'YYYY-MM-DD'");
             } else if(propertyMetadata.getPropertyType().endsWith("DateTime")){
-                propertyMetadata.setDisplayFormat("date : 'yyyy-MM-dd hh:mm:ss'");
+                propertyMetadata.setDisplayFormat("moment:'YYYY-MM-DD hh:mm:ss'");
             }
         }
     }
@@ -373,7 +374,7 @@ public final class DomainUtils {
         if(propertyMetadata.getInputFormat() == null){
             if("BigDecimal".equals(propertyType)){
                 propertyMetadata.setInputFormat("^\\d+(\\.\\d+)?$");
-            } else if(propertyType.equals("Integer") || propertyType.equals("Long") || propertyType.contains("Date")){//date is expressed as an integer in JSON.
+            } else if(StringUtils.isIntegerType(propertyType) || StringUtils.isDateTimeType(propertyType)){//date is expressed as an integer in JSON.
                 propertyMetadata.setInputFormat("^[+-]*[1-9]\\d*$");
             }
         }

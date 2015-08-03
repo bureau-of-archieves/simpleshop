@@ -167,6 +167,16 @@
         <function-signature>java.lang.String concat(java.lang.String,java.lang.String,java.lang.String)</function-signature>
     </function>
     <function>
+        <name>isIntegerType</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>boolean isIntegerType(java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>isDateTimeType</name>
+        <function-class>simpleshop.common.StringUtils</function-class>
+        <function-signature>boolean isDateTimeType(java.lang.String)</function-signature>
+    </function>
+    <function>
         <name>fid</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String getFieldId(java.lang.String,java.lang.String)</function-signature>
@@ -185,5 +195,15 @@
         <name>combineDisplayFormat</name>
         <function-class>simpleshop.webapp.util.Functions</function-class>
         <function-signature>java.lang.String combineDisplayFormat(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>collectionModelName</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String collectionModelName(simpleshop.data.metadata.PropertyMetadata)</function-signature>
+    </function>
+    <function>
+        <name>getDateFormatString</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String getDateFormatString(java.lang.String,java.lang.String)</function-signature>
     </function>
 </taglib>

@@ -7,12 +7,12 @@
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <link rel="icon" href="img/site.ico" type="image/x-icon"/>
-    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="icon" href="img/site.ico" type="image/x-icon" >
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-theme.css">
-    <link rel="stylesheet" href="css/site-layout.css"/>
-    <link rel="stylesheet" href="css/site-theme.css"/>
+    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="css/site-layout.css">
+    <link rel="stylesheet" href="css/site-theme.css">
 </head>
 
 <body>
@@ -138,9 +138,10 @@
 
 <%--scripts--%>
 <script src="js/jquery.js"></script>
+<script src="js/moment.js"></script>
 <script src="js/bootstrap.js"></script>
+<script src="js/bootstrap-datetimepicker.js"></script>
 <script src="js/angular.js"></script>
-<script src="js/jquery-ui.js"></script>
 <script src="js/zcl.js"></script>
 <script src="js/sponge.js"></script>
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import simpleshop.domain.model.Order;
+import simpleshop.domain.model.component.OrderItem;
 import simpleshop.dto.OrderSearch;
 import simpleshop.dto.JsonResponse;
 import simpleshop.service.OrderService;
@@ -43,12 +44,15 @@ public class OrderController extends BaseJsonController {
         return super.outputJson(model, response, orderService.ignoredJsonProperties());
     }
 
+    @RequestMapping(value = "/order_item/new", method = RequestMethod.GET)
+    public String orderItemCreate(Model model) {
+        JsonResponse<OrderItem> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, orderService.createOrderItem());
+        return super.outputJson(model, response, null);
+    }
+
     @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
     public String orderDetails(@PathVariable int id, Model model) {
         JsonResponse<Order> response = modelDetails(id, orderService);
-
-        response.getContent().setOrderDate(LocalDateTime.now());
-
         return super.outputJson(model, response, orderService.ignoredJsonProperties());
     }
 

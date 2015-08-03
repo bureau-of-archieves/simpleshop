@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import simpleshop.data.OrderDAO;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Order;
+import simpleshop.domain.model.component.OrderItem;
 import simpleshop.dto.OrderSearch;
 import simpleshop.service.OrderService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
@@ -23,6 +24,13 @@ public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> imple
     @Override
     public Order create() {
         return new Order();
+    }
+
+    @Override
+    public OrderItem createOrderItem(){
+        OrderItem orderItem = new OrderItem();
+        orderItem.setQuantity(1);
+        return orderItem;
     }
 
 }
