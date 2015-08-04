@@ -10,6 +10,11 @@ import simpleshop.dto.OrderSearch;
 import simpleshop.service.OrderService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+
 @Service
 public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> implements OrderService {
 
@@ -33,4 +38,14 @@ public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> imple
         return orderItem;
     }
 
+    private Collection<String> lazyLoadedProperties;
+
+    public OrderServiceImpl(){
+        lazyLoadedProperties = Collections.unmodifiableCollection(Arrays.asList("orderItems"));
+    }
+
+    @Override
+    public Collection<String> lazyLoadedProperties() {
+        return lazyLoadedProperties;
+    }
 }

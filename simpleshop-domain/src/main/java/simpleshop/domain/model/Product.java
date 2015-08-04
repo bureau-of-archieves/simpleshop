@@ -3,6 +3,7 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.metadata.Summary;
 import simpleshop.domain.model.component.ProductSupplier;
@@ -15,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "products")
 @Icon("shopping-cart")
+@DisplayFormat("concat:'id':' - ':'name':'(':'quantityPerUnit':')'")
 public class Product {
     private Integer id;
     private String name;
