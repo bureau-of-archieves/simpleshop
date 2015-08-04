@@ -15,9 +15,10 @@ public class ModelMetadata {
     private ModelType type;
     private boolean searchable = false;
     private String displayFormat;   //how to convert to string using pipelined ajs filters.
+    private String interpolateFormat;//format for the interpolation filter
     private Map<String, PropertyMetadata> PropertyMetadataMap;
-    private Set<String> noneSummaryProperties;
 
+    private Set<String> noneSummaryProperties;
     private List<AliasDeclaration> aliasDeclarations;
     private Class<?> modelClass;
 
@@ -80,6 +81,14 @@ public class ModelMetadata {
 
     public void setDisplayFormat(String displayFormat) {
         this.displayFormat = displayFormat;
+    }
+
+    public String getInterpolateFormat() {
+        return interpolateFormat;
+    }
+
+    public void setInterpolateFormat(String interpolateFormat) {
+        this.interpolateFormat = interpolateFormat;
     }
 
     public Class<?> getModelClass() {

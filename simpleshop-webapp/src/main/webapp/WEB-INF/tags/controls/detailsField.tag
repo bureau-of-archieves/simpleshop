@@ -6,9 +6,6 @@
 <%@attribute name="label" required="false" %>
 <%@attribute name="displayFormat" required="false" %>
 <%@attribute name="hideEmpty" type="java.lang.Boolean" required="false" %>
-
-<%@attribute name="descExpr" required="false" %>
-<%@attribute name="descSeparator" required="false" %>
 <%@attribute name="title" required="false" %>
 
 <c:if test="${base == null}">
@@ -23,11 +20,7 @@
     <c:set var="label" value="${f:fmd(modelName, path).label}"/>
 </c:if>
 
-<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path).displayFormat, displayFormat)}"/>
-
-<c:if test="${empty descSeparator}">
-    <c:set var="descSeparator" value="|"/>
-</c:if>
+<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path), displayFormat)}"/>
 
 <c:set var="fieldRef" value="${base}${path}"/>
 
@@ -50,7 +43,6 @@
                 </c:otherwise>
             </c:choose>
 
-            <c:if test="${not empty descExpr}"> ${descSeparator} {{${descExpr}}}</c:if>&nbsp;
             <jsp:doBody/>
         </div>
     </div>

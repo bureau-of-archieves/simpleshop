@@ -4,10 +4,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 /**
- * Created with IntelliJ IDEA.
- * User: JOHNZ
- * Date: 30/10/14
- * Time: 10:42 AM
+ * MaxString validator.
  */
 public class MaxStringValidator implements ConstraintValidator<MaxString, Object> {
 

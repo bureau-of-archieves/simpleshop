@@ -194,7 +194,7 @@
     <function>
         <name>combineDisplayFormat</name>
         <function-class>simpleshop.webapp.util.Functions</function-class>
-        <function-signature>java.lang.String combineDisplayFormat(java.lang.String,java.lang.String)</function-signature>
+        <function-signature>java.lang.String combineDisplayFormat(simpleshop.data.metadata.PropertyMetadata,java.lang.String)</function-signature>
     </function>
     <function>
         <name>collectionModelName</name>
@@ -205,5 +205,10 @@
         <name>getDateFormatString</name>
         <function-class>simpleshop.webapp.util.Functions</function-class>
         <function-signature>java.lang.String getDateFormatString(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>propertyTargetModelName</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String propertyTargetModelName(simpleshop.data.metadata.PropertyMetadata)</function-signature>
     </function>
 </taglib>

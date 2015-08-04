@@ -16,7 +16,7 @@ import java.lang.annotation.ElementType;
 @java.lang.annotation.Documented
 public @interface AllowedValues {
 
-    String message() default "{quickshop.domain.metadata.validation.allowed_values}";
+    String message() default "{simpleshop.domain.metadata.validation.allowed_values}";
 
     Class<?>[] groups() default {};
 

@@ -1,8 +1,5 @@
 package simpleshop.webapp.util;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
-import org.h2.value.ValueUuid;
-import org.hibernate.id.GUIDGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simpleshop.common.StringUtils;
@@ -14,7 +11,6 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -155,7 +151,32 @@ public class Functions {
         return String.format(message, arg);
     }
 
-    public static String combineDisplayFormat(String metadataFormat, String tagFormat) {
+    public static String combineDisplayFormat(PropertyMetadata propertyMetadata, String tagFormat) {
+
+        StringBuilder format = new StringBuilder();
+
+        if(propertyMetadata.getReturnTypeMetadata() != null){
+            String interpolateFormat = propertyMetadata.getReturnTypeMetadata().getInterpolateFormat();
+            if(!StringUtils.isNullOrEmpty(interpolateFormat)){
+                String targetModelName = propertyTargetModelName(propertyMetadata);
+                format.append("interpolate:'");
+                format.append(targetModelName);
+                format.append("'");
+            }
+        }
+
+        String combinedFormat = combineDisplayFormat(propertyMetadata.getDisplayFormat(), tagFormat);
+        if(!StringUtils.isNullOrEmpty(combinedFormat)){
+           if(format.length() != 0){
+               format.append("|");
+           }
+            format.append(combinedFormat);
+        }
+        return format.toString();
+    }
+
+    private static String combineDisplayFormat(String metadataFormat, String tagFormat){
+
         if (StringUtils.isNullOrEmpty(tagFormat)) {
             return metadataFormat;
         }
@@ -201,6 +222,13 @@ public class Functions {
         else
             return "LLL";
 
+    }
+
+    public static String propertyTargetModelName(PropertyMetadata propertyMetadata){
+        if(propertyMetadata.getReturnTypeMetadata() == null)
+            return StringUtils.camelNameToPascalName(propertyMetadata.getPropertyName());
+        else
+            return propertyMetadata.getReturnTypeMetadata().getName();
     }
 
 }

@@ -460,11 +460,16 @@
      * Transform input object into a formatted string.
      */
     spongeApp.filter('interpolate', ['$interpolate', function ($interpolate) {
-        return function (input, pattern) {
-            if(!pattern)
-                return "";
+        return function (input, modelName) {
+            if(!modelName)
+                return input;
 
-            var exp = $interpolate(pattern);
+            var bodyScope = getBodyScope();
+            var format = zcl.getProp(bodyScope, "metadata[" + modelName + "].interpolateFormat");
+            if(!format)
+                return input;
+
+            var exp = $interpolate(format);
             return exp(input);
         };
     }]);
@@ -953,64 +958,6 @@
             return createPromise(null);
         };
 
-        var beginLinkRequest = function (elementId) {
-            var fieldElement = $("#" + elementId);
-            if (fieldElement.size() == 0)
-                return createPromise(null);
-
-            var requests = $("#linkRequests");
-            if (requests.children("*").size() >= 3) {
-                return createPromise("Cannot create more link request.");
-            }
-
-            if ($("#link-" + elementId).size() > 0)
-                return createPromise(null);
-
-            var scope = getBodyScope();
-
-            scope.$apply(function () {
-                scope.linkRequests.splice(0, 0, {sourceFieldId: elementId, modelName: fieldElement.data("model-name")});
-            });
-
-            fieldElement.closest(".panel").on("$destroy", function () {
-                cancelLinkRequest(elementId);
-            });
-
-            return createPromise(null);
-        };
-
-        var cancelLinkRequest = function (elementId) {
-            var scope = getBodyScope();
-
-            scope.$apply(function () {
-                for (var i = 0; i < scope.linkRequests.length; i++) {
-                    if (scope.linkRequests[i].sourceFieldId == elementId) {
-                        scope.linkRequests.splice(i, 1);
-                        break;
-                    }
-                }
-            });
-
-        };
-
-        var endLinkRequest = function (ownerElement, elementId) {
-
-            var descScope = angular.element("#" + elementId).scope();
-            if (descScope) {
-                descScope.$apply(function () {
-                    var id = $(ownerElement).data("id");
-                    var desc = $(ownerElement).data("desc");
-                    var idProperty = $("#" + elementId).data("ng-model");
-                    var descExpr = $("#" + elementId + "-desc").data("ng-bind");
-                    zcl.setProp(descScope, idProperty, id);
-                    zcl.setProp(descScope, descExpr, desc);
-                });
-                descScope.$apply(function () {
-                });
-            }
-            cancelLinkRequest(elementId);
-        };
-
         return {
             getView: getView,
             save: save,
@@ -1018,9 +965,6 @@
             cancel: cancel,
             refresh: refresh,
             close: close,
-            beginLinkRequest: beginLinkRequest,
-            endLinkRequest: endLinkRequest,
-            cancelLinkRequest: cancelLinkRequest,
             sequenceNumbers: {}
         };
 

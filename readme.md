@@ -24,7 +24,7 @@ The page is divided into a menu area and a view area. The view area can display 
 
 Views have a model type, which is the type of model it can display.
 
-
+<img src="img/screenshot1.png">
 
 Todo List
 -----------
@@ -35,6 +35,7 @@ Todo List
  * Display search criteria in the list view.
  * Display and upload of image.
  * Fix the many problems in error handling in JavaScript.
+ * Improve validation messages.
  
 Future Todo List 
 -----------
@@ -48,6 +49,7 @@ The following architectural limitations are accepted and no attempt will be made
 
 * The search framework cannot generate very sophisticated queries especially when there are nested OR and AND expressions.
 * The 5 basic views display the associated type of domain object directly. Create a display view for a new view model if other types of query results are to be returned. These view models are considered read only. 
+* To simplify things each view is independent. A view will not use any part of the model object of another view. 
 
 
 

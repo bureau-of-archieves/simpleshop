@@ -6,9 +6,6 @@ import java.lang.annotation.ElementType;
 
 /**
  * The min validation for a string.
- * User: JOHNZ
- * Date: 30/10/14
- * Time: 10:27 AM
  */
 @java.lang.annotation.Target({ElementType.METHOD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)

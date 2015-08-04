@@ -6,7 +6,7 @@
         <ctrl:editField path="name"/>
         <ctrl:editField path="contactNumber"/>
         <ctrl:editField path="address"/>
-        <ctrl:editCombo path="suburb" />
+        <ctrl:editModelLink path="suburb" />
         <ctrl:editField path="hireDateLower" />
         <ctrl:editField path="hireDateUpper" />
     </t:view-search>

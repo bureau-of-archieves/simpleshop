@@ -36,7 +36,7 @@
 <c:set var="min" value="${f:fmd(modelName, path).min}"/>
 <c:set var="max" value="${f:fmd(modelName, path).max}"/>
 <c:set var="pattern" value="${f:fmd(modelName, path).inputFormat}"/>
-<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path).displayFormat, displayFormat)}"/>
+<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path), displayFormat)}"/>
 <c:set var="dateTimeFormat" value="${f:getDateFormatString(displayFormat, propertyType)}" />
 
 <div class="form-group">
