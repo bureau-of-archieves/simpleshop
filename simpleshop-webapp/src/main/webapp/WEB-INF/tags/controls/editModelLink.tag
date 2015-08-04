@@ -49,7 +49,7 @@
 <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
 
 <%--model update is totally controlled by data-spg-combo directive--%>
-<div class="form-group" data-ng-model="${fieldRef}" data-ng-model-options="{updateOn:''}" data-spg-combo='{"targetModelName":"${targetModelName}", "displayFormat":"${fieldRef} ${f:htmlEncodeSingleQuote(displayFormat)}"}' >
+<div class="form-group" data-ng-model="${fieldRef}" data-ng-model-options="{updateOn:''}" data-spg-combo='{"targetModelName":"${targetModelName}", "displayFormat":"${fieldRef} <c:if test="${not empty displayFormat}"> | ${f:htmlEncodeSingleQuote(displayFormat)} </c:if>"}' >
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
 
     <div class="col-sm-9">
@@ -66,7 +66,7 @@
             <ol class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em; list-style-type: none">
                 <li data-ng-show="loadingList" class="list-group-item display" > <img  style="width:5em;" src="${pageContext.request.contextPath}img/loading.gif" alt="Loading list..."></li>
                 <li data-ng-repeat="comboItem in comboList" class="list-group-item display" data-ng-click="updateView(comboItem)"><a href="javascript:void(0);">
-                    {{comboItem ${displayFormat}}}</a>
+                    {{comboItem <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if> }}</a>
                 </li>
                 <li class="display no-display-predecessor">No result found.</li>
             </ol>

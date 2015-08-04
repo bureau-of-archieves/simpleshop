@@ -13,7 +13,9 @@
         <ctrl:detailsField path="requiredDate" />
 
         <ctrl:detailsChildList path="orderItems" >
-            <ctrl:detailsModelLink path="product" />
+            <ctrl:detailsModelLink path="product" >
+                {{targetObject.id}} - {{targetObject.name}}
+            </ctrl:detailsModelLink>
             <ctrl:detailsField path="quantity"/>
             <ctrl:detailsField path="sellPrice"/>
         </ctrl:detailsChildList>

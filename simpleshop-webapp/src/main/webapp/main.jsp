@@ -115,7 +115,6 @@
         </section>
 
     </main>
-<h1>{{ metadata["Category"] |  interpolate:"===\{\{name\}\}==="  }}</h1>
     <%--page footer--%>
     <footer>
         <hr>

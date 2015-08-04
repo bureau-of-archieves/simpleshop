@@ -311,17 +311,21 @@
 
         if(!angular.isUndefined(model) && model != null){
             bodyScope.newModel[modelName] = model;
-            return;
+            return createPromise(null);
         }
 
         model = bodyScope.newModel[modelName];
         if(!angular.isUndefined(model) && model != null){
-            return;
+            return createPromise(null);
         }
 
         //get from server
         var url = site.newJsonUrl(modelName);
-        $.getJSON(url, null, function(response){
+        return $.ajax(url, {
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json"
+        }).done(function(response){
             if(response.status == "OK"){
                 bodyScope.newModel[modelName] = response.content;
             } else {
@@ -1685,9 +1689,13 @@
 
         $scope.addToCollection = function (collection, modelName) {
             var bodyScope = getBodyScope();
-            ensureNewModel(bodyScope, modelName, null);
-            var prototype = bodyScope.newModel[modelName];
-            collection.push(angular.copy(prototype));
+            var promise = ensureNewModel(bodyScope, modelName, null);
+            promise.done(function(){
+                safeApply($scope, function(){
+                    var prototype = bodyScope.newModel[modelName];
+                    collection.push(angular.copy(prototype));
+                });
+            });
         };
 
         $scope.removeFromCollection = function (collection, item) {

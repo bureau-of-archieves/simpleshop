@@ -163,63 +163,14 @@ public final class DomainUtils {
         modelMetadata.setModelClass(clazz);
         modelMetadata.setName(clazz.getSimpleName());
 
-        //set model type
-        String fullName = clazz.getName();
-        ModelMetadata.ModelType modelType;
-        if (fullName.contains(".component.")) {
-            modelType = ModelMetadata.ModelType.EMBEDDED;
-        } else if (fullName.contains(".lookup.")) {
-            modelType = ModelMetadata.ModelType.LOOKUP;
-        } else if (fullName.contains(".domain.")) {
-            modelType = ModelMetadata.ModelType.DOMAIN;
-        } else {
-            modelType = ModelMetadata.ModelType.DTO;
-        }
-        modelMetadata.setType(modelType);
-
-        //set icon
-        Icon icon = clazz.getAnnotation(Icon.class);
-        if (icon != null) {
-            modelMetadata.setIcon(icon.value());
-        }
-
-        //set display format
-        DisplayFormat displayFormat = clazz.getAnnotation(DisplayFormat.class);
-        if(displayFormat != null){
-            modelMetadata.setDisplayFormat(displayFormat.value());
-        }
-
-        //set alias annotations
-        Stack<Class<?>> classes = new Stack<>();
-        Class<?> superClass = clazz;
-        while (superClass != Object.class){
-            classes.push(superClass);
-            superClass = superClass.getSuperclass();
-        }
-        List<AliasDeclaration> aliasDeclarations = new ArrayList<>();
-        while (!classes.isEmpty()){
-            superClass = classes.pop();
-            AliasDeclaration aliasDeclaration = superClass.getAnnotation(AliasDeclaration.class);
-            if(aliasDeclaration != null)
-                aliasDeclarations.add(aliasDeclaration);
-            AliasDeclaration.List aliasDeclarationList = superClass.getAnnotation(AliasDeclaration.List.class);
-            if(aliasDeclarationList != null) {
-                aliasDeclarations.addAll(Arrays.asList(aliasDeclarationList.value()));
-            }
-        }
-        if (aliasDeclarations.size() > 0) {
-            modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
-        }
-
-        JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class);
-        Set<String> ignoredProperties = new TreeSet<>();
-        if(jsonIgnoreProperties != null){
-           for(String prop : jsonIgnoreProperties.value()){
-               ignoredProperties.add(prop);
-           }
-        }
+        setModelType(modelMetadata, clazz); //set model type
+        setIcon(modelMetadata, clazz); //set icon
+        setDisplayFormat(modelMetadata, clazz);//set display format
+        setInterpolateFormat(modelMetadata, clazz);
+        setAliasAnnotations(modelMetadata, clazz);//set alias annotations
 
         //set property metadata
+        Set<String> ignoredProperties = getJsonIgnoreProperties(clazz);
         Map<String, PropertyMetadata> propertyMap = new TreeMap<>();
         Set<String> noneSummaryProperties = new HashSet<>();
         Method[] methods = clazz.getMethods();
@@ -242,6 +193,76 @@ public final class DomainUtils {
         return modelMetadata;
     }
 
+    private static Set<String> getJsonIgnoreProperties(Class<?> clazz) {
+        JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class);
+        Set<String> ignoredProperties = new TreeSet<>();
+        if(jsonIgnoreProperties != null){
+           for(String prop : jsonIgnoreProperties.value()){
+               ignoredProperties.add(prop);
+           }
+        }
+        return ignoredProperties;
+    }
+
+    private static void setInterpolateFormat(ModelMetadata modelMetadata, Class<?> clazz){
+        InterpolateFormat interpolateFormat = clazz.getAnnotation(InterpolateFormat.class);
+        if(interpolateFormat != null){
+            modelMetadata.setInterpolateFormat(interpolateFormat.value());
+        }
+    }
+
+    private static void setAliasAnnotations(ModelMetadata modelMetadata, Class<?> clazz) {
+        Stack<Class<?>> classes = new Stack<>();
+        Class<?> superClass = clazz;
+        while (superClass != Object.class){
+            classes.push(superClass);
+            superClass = superClass.getSuperclass();
+        }
+        List<AliasDeclaration> aliasDeclarations = new ArrayList<>();
+        while (!classes.isEmpty()){
+            superClass = classes.pop();
+            AliasDeclaration aliasDeclaration = superClass.getAnnotation(AliasDeclaration.class);
+            if(aliasDeclaration != null)
+                aliasDeclarations.add(aliasDeclaration);
+            AliasDeclaration.List aliasDeclarationList = superClass.getAnnotation(AliasDeclaration.List.class);
+            if(aliasDeclarationList != null) {
+                aliasDeclarations.addAll(Arrays.asList(aliasDeclarationList.value()));
+            }
+        }
+        if (aliasDeclarations.size() > 0) {
+            modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
+        }
+    }
+
+    private static void setDisplayFormat(ModelMetadata modelMetadata, Class<?> clazz) {
+        DisplayFormat displayFormat = clazz.getAnnotation(DisplayFormat.class);
+        if(displayFormat != null){
+            modelMetadata.setDisplayFormat(displayFormat.value());
+        }
+    }
+
+    private static void setIcon(ModelMetadata modelMetadata, Class<?> clazz) {
+        Icon icon = clazz.getAnnotation(Icon.class);
+        if (icon != null) {
+            modelMetadata.setIcon(icon.value());
+        }
+    }
+
+    private static void setModelType(ModelMetadata modelMetadata, Class<?> clazz) {
+        String fullName = clazz.getName();
+        ModelMetadata.ModelType modelType;
+        if (fullName.contains(".component.")) {
+            modelType = ModelMetadata.ModelType.EMBEDDED;
+        } else if (fullName.contains(".lookup.")) {
+            modelType = ModelMetadata.ModelType.LOOKUP;
+        } else if (fullName.contains(".domain.")) {
+            modelType = ModelMetadata.ModelType.DOMAIN;
+        } else {
+            modelType = ModelMetadata.ModelType.DTO;
+        }
+        modelMetadata.setType(modelType);
+    }
+
     private static PropertyMetadata extraPropertyMetadata(Method method) {
 
         PropertyMetadata propertyMetadata;
@@ -250,23 +271,8 @@ public final class DomainUtils {
         propertyMetadata.setPropertyType(method.getReturnType().getSimpleName());
         propertyMetadata.setGetter(method);
 
-        //setIdProperty
-        Id idAnnotation = method.getAnnotation(Id.class);
-        if (idAnnotation != null)
-            propertyMetadata.setIdProperty(true);
-        EmbeddedId embeddedIdAnnotation = method.getAnnotation(EmbeddedId.class);
-        if (embeddedIdAnnotation != null)
-            propertyMetadata.setIdProperty(true);
-
-        //insertable, updatable, length
-        Column columnAnnotation = method.getAnnotation(Column.class);
-        if (columnAnnotation != null) {
-            propertyMetadata.setInsertable(columnAnnotation.insertable());
-            propertyMetadata.setUpdatable(columnAnnotation.updatable());
-            if(columnAnnotation.length() > 0)
-                propertyMetadata.setMaxLength(columnAnnotation.length());
-        }
-
+        setIdProperty(propertyMetadata, method); //setIdProperty
+        setColumn(propertyMetadata, method); //insertable, updatable, length
         setLabel(propertyMetadata, method);
         setDescription(propertyMetadata, method);
         setDisplayFormat(propertyMetadata, method);
@@ -276,6 +282,25 @@ public final class DomainUtils {
         setPropertyFilters(method, propertyMetadata);
 
         return propertyMetadata;
+    }
+
+    private static void setIdProperty(PropertyMetadata propertyMetadata, Method method) {
+        Id idAnnotation = method.getAnnotation(Id.class);
+        if (idAnnotation != null)
+            propertyMetadata.setIdProperty(true);
+        EmbeddedId embeddedIdAnnotation = method.getAnnotation(EmbeddedId.class);
+        if (embeddedIdAnnotation != null)
+            propertyMetadata.setIdProperty(true);
+    }
+
+    private static void setColumn(PropertyMetadata propertyMetadata, Method method) {
+        Column columnAnnotation = method.getAnnotation(Column.class);
+        if (columnAnnotation != null) {
+            propertyMetadata.setInsertable(columnAnnotation.insertable());
+            propertyMetadata.setUpdatable(columnAnnotation.updatable());
+            if(columnAnnotation.length() > 0)
+                propertyMetadata.setMaxLength(columnAnnotation.length());
+        }
     }
 
     private static void setLabel(PropertyMetadata PropertyMetadata, Method method) {
