@@ -69,14 +69,14 @@
 
         <c:set var="fieldRef" value="this['${parentId}-form']['${path}']"/>
 
-        <div class="errors" data-ng-show="${fieldRef}.$dirty && ${fieldRef}.$invalid">
+        <div class="errors" data-ng-show="${fieldRef}.$dirty && ${fieldRef}.$invalid || showError">
             <c:if test="${not empty minLength}"><p data-ng-show="${fieldRef}.$error.minlength">Min length
                 is ${minLength}</p></c:if>
             <c:if test="${not empty maxLength}"><p data-ng-show="${fieldRef}.$error.maxlength">Max length
                 is ${maxLength}</p></c:if>
-            <c:if test="${required}"><p data-ng-show="${fieldRef}.$error.required">Required</p></c:if>
             <c:if test="${not empty pattern}"><p data-ng-show="${fieldRef}.$error.pattern">Not a valid ${propertyType}.Pattern
                 should be "<c:out value="${pattern}"/>".</p></c:if>
+            <c:if test="${required}"><p data-ng-show="${fieldRef}.$error.required">Required</p></c:if>
             <c:if test="${min != null}"><p data-ng-show="${fieldRef}.$error.min">Min is ${min}</p></c:if>
             <c:if test="${max != null}"><p data-ng-show="${fieldRef}.$error.max">Max is ${max}</p></c:if>
         </div>

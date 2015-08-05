@@ -1135,7 +1135,10 @@
                 $(element).click(function ($event) {
 
                     if ($(element).closest("form").hasClass("ng-invalid")) {
-                        alert("Please correct error(s) in the form first.");
+                        reportError("Please correct error(s) in the form first.");
+                        safeApply(scope, function(){
+                            scope.showError = true;
+                        });
                         return false;
                     }
 
@@ -1143,6 +1146,11 @@
                     spongeService.save(viewId)
                         .fail(function (error) {
                             reportError(error);
+                        })
+                        .done(function(){
+                            safeApply(scope, function(){
+                                scope.showError = false;
+                            });
                         });
 
                     return false;
@@ -1680,6 +1688,7 @@
                     $scope[form.name].$setPristine();
                 }
             });
+            $scope.showError = false;
         };
 
         $scope.isUnchanged = function () {
