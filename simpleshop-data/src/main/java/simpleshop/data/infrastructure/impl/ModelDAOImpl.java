@@ -1,6 +1,7 @@
 package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -100,10 +101,10 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         }
 
         if(searchObject.getPageSize() > 0){
-            criteria.setMaxResults(searchObject.getPageSize());
+            criteria.setMaxResults(searchObject.getPageSize() + (searchObject.isPageSizePlusOne() ? 1 : 0));
             criteria.setFirstResult(searchObject.getPageIndex() * searchObject.getPageSize());
         }
-
+        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 

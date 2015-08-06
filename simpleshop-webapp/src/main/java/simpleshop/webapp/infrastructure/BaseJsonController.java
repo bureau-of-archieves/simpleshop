@@ -75,7 +75,8 @@ public abstract class BaseJsonController {
             return new JsonResponse<>(JsonResponse.STATUS_ERROR, getBindingErrorMessage(bindingResult), null);
 
         int actualPageSize = criteria.getPageSize();
-        criteria.setPageSize(actualPageSize + 1); //retrieve one more to decide if there is next page
+        criteria.setPageSize(actualPageSize);
+        criteria.setPageSizePlusOne(true);
         List<T> result = modelService.search(criteria);
 
         //todo set previous / next disabled here
@@ -85,7 +86,7 @@ public abstract class BaseJsonController {
         }
         if(result.size() > actualPageSize){
             response.getTags().put("nextPage", true);
-            result.remove(result.size() - 1);
+            result.remove(result.size() - 1);//retrieved one more to decide if there is next page
         }
 
         response.getTags().put("page", criteria.getPageIndex());

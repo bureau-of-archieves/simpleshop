@@ -12,6 +12,8 @@ import java.util.List;
 public class PageInfo implements Serializable{
     private int pageIndex;
     private int pageSize;
+    private boolean pageSizePlusOne = false;
+
     private List<SortInfo> sortInfoList;
 
     public PageInfo(){
@@ -44,6 +46,14 @@ public class PageInfo implements Serializable{
 
     public void setPageSize(int pageSize) {
         this.pageSize = pageSize;
+    }
+
+    public boolean isPageSizePlusOne() {
+        return pageSizePlusOne;
+    }
+
+    public void setPageSizePlusOne(boolean pageSizePlusOne) {
+        this.pageSizePlusOne = pageSizePlusOne;
     }
 
     public List<SortInfo> getSortInfoList() {
