@@ -8,4 +8,6 @@
 <%@ taglib prefix="d" tagdir="/WEB-INF/tags/domain" %>
 <%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="f" uri="sponge/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <jsp:useBean id="stack" class="simpleshop.webapp.util.ViewValueStackBean" scope="request" />

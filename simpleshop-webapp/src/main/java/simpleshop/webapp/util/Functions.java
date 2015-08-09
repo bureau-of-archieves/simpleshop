@@ -1,7 +1,10 @@
 package simpleshop.webapp.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.LocaleResolver;
 import simpleshop.common.StringUtils;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.metadata.PropertyMetadata;
@@ -9,7 +12,9 @@ import simpleshop.service.MetadataService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +32,9 @@ public class Functions {
 
     @Autowired
     private MetadataService metadataService;
+
+    @Resource(name = "messageSource")
+    private MessageSource messageSource;
 
     private static Pattern dateFormatPattern;
 
@@ -229,6 +237,10 @@ public class Functions {
             return StringUtils.camelNameToPascalName(propertyMetadata.getPropertyName());
         else
             return propertyMetadata.getReturnTypeMetadata().getName();
+    }
+
+    public static String msg(String code, Object[] args){
+        return springBean.messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
     }
 
 }

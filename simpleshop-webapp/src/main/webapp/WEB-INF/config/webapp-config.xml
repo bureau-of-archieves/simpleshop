@@ -10,4 +10,9 @@
 
     <import resource="classpath:spring-simpleshop-service.xml" />
 
+    <!--The bean required to make spring message tag work. The message tag is used for i18n.-->
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="messages" />
+    </bean>
+
 </beans>

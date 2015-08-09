@@ -211,4 +211,9 @@
         <function-class>simpleshop.webapp.util.Functions</function-class>
         <function-signature>java.lang.String propertyTargetModelName(simpleshop.data.metadata.PropertyMetadata)</function-signature>
     </function>
+    <function>
+        <name>msg</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String msg(java.lang.String,java.lang.Object[])</function-signature>
+    </function>
 </taglib>
