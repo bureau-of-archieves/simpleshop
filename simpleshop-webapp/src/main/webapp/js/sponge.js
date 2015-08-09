@@ -4,6 +4,8 @@
  */
 (function () {
 
+    var message = {"requestFailed":"Failed to send request to server."};
+
     /**
      * All references to UI layer element id or url are defined in this object.
      */
@@ -189,8 +191,13 @@
      * @param error error object.
      */
     var reportError = function (error) {
-        if (error)
-            alert(error);
+        if (!error)
+            return;
+
+        if(typeof(error) == "object"){
+            error = message["requestFailed"];
+        }
+        alert(error);
     };
 
     /**
@@ -1736,6 +1743,9 @@
             }
 
             map[newKey] = "";
+            setTimeout(function(){
+                keyInput.closest(".form-group").find("input[data-key='" + newKey + "']").focus()
+            }, 50);
         };
 
         $scope.removeFromMap = function(map, key, editorId){

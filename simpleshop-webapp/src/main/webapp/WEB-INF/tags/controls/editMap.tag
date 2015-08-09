@@ -56,7 +56,7 @@
                     <div class="col-sm-8">
                         <div class="input-group">
                             <input type="text" class="form-control" data-ng-model="${fieldRef}[key]"
-                                   aria-label="Set Value">
+                                   aria-label="Set Value" data-key="{{key}}">
                             <span class="input-group-addon">
                                 <span class="glyphicon glyphicon-minus cursor-pointer"
                                       data-ng-click="removeFromMap(${fieldRef}, key, '#${id}')"></span>
