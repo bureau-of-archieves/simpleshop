@@ -104,7 +104,6 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
             criteria.setMaxResults(searchObject.getPageSize() + (searchObject.isPageSizePlusOne() ? 1 : 0));
             criteria.setFirstResult(searchObject.getPageIndex() * searchObject.getPageSize());
         }
-        criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         return criteria.list();
     }
 

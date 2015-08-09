@@ -59,7 +59,7 @@ public class Contact {
 
     @Summary
     @ValueClass()
-    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
     @MapKeyClass(String.class)
     @CollectionTable(name = "contact_numbers", joinColumns=@JoinColumn(name="contact_id"))
     @MapKeyColumn(name = "contact_type")
