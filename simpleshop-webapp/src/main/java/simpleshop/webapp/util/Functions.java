@@ -2,6 +2,7 @@ package simpleshop.webapp.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.LocaleResolver;
@@ -14,6 +15,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -241,6 +244,26 @@ public class Functions {
 
     public static String msg(String code, Object[] args){
         return springBean.messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
+    public static List<Pair<String, String>> getOptions(Class<Enum> clazz){
+
+        List<Pair<String, String>> options = new ArrayList<>();
+        Enum[] values = clazz.getEnumConstants();
+        String codePrefix = "enum." + clazz.getSimpleName() + ".";
+        for(Enum val : values){
+            Pair<String, String> pair = new Pair<>();
+            pair.setKey(val.toString());
+            try{
+                String value = springBean.messageSource.getMessage(codePrefix + pair.getKey(), null, LocaleContextHolder.getLocale());
+                pair.setValue(value);
+            } catch(NoSuchMessageException ex){
+                pair.setValue(pair.getKey());
+            }
+            options.add(pair);
+        }
+
+        return options;
     }
 
 }

@@ -216,4 +216,10 @@
         <function-class>simpleshop.webapp.util.Functions</function-class>
         <function-signature>java.lang.String msg(java.lang.String,java.lang.Object[])</function-signature>
     </function>
+    <function>
+        <name>options</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.util.List getOptions(java.lang.Class)</function-signature>
+    </function>
+
 </taglib>

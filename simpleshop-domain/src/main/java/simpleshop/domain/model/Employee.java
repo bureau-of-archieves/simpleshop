@@ -20,6 +20,7 @@ public class Employee {
 
     private Integer id;
     private LocalDate hireDate;
+    private EmploymentType employmentType;
     private List<Order> orders = new ArrayList<>();
     private Contact contact;
 
@@ -34,6 +35,25 @@ public class Employee {
         this.id = id;
     }
 
+    @Column(name = "hire_date")
+    public LocalDate getHireDate() {
+        return hireDate;
+    }
+
+    public void setHireDate(LocalDate hireDate) {
+        this.hireDate = hireDate;
+    }
+
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "employment_type")
+    public EmploymentType getEmploymentType() {
+        return employmentType;
+    }
+
+    public void setEmploymentType(EmploymentType employmentType) {
+        this.employmentType = employmentType;
+    }
+
     @Summary
     @ManyToOne(optional = false)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH})
@@ -45,15 +65,6 @@ public class Employee {
 
     public void setContact(Contact contact) {
         this.contact = contact;
-    }
-
-    @Column(name = "hire_date")
-    public LocalDate getHireDate() {
-        return hireDate;
-    }
-
-    public void setHireDate(LocalDate hireDate) {
-        this.hireDate = hireDate;
     }
 
     @OneToMany(mappedBy = "employee")
