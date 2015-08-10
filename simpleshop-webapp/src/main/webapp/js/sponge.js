@@ -1785,6 +1785,9 @@
             }
         };
 
+        $scope.mapSize = function(obj){
+          return zcl.getOwnProperties(obj).length;
+        };
 
         $scope.reset();
     }]);

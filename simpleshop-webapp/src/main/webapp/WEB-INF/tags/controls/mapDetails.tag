@@ -41,5 +41,8 @@
         <div class="col-sm-7"><span>{{value}}</span></div>
     </div>
 
-
+    <div class="row" data-ng-show="mapSize(${fieldRef}) == 0" >
+        <div class="col-sm-5"><span><em>None</em></span></div>
+        <div class="col-sm-7"><span></span></div>
+    </div>
 </div>
