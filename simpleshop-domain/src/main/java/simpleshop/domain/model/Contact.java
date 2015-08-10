@@ -1,5 +1,6 @@
 package simpleshop.domain.model;
 
+import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.ItemText;
 import simpleshop.domain.metadata.ItemValue;
@@ -64,6 +65,7 @@ public class Contact {
     @CollectionTable(name = "contact_numbers", joinColumns=@JoinColumn(name="contact_id"))
     @MapKeyColumn(name = "contact_type")
     @Column(name = "contact_number")
+    @BatchSize(size = Constants.BATCH_SIZE)
     public Map<String, String> getContactNumbers() {
         return contactNumbers;
     }
