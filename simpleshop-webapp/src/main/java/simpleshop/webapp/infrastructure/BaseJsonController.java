@@ -1,14 +1,21 @@
 package simpleshop.webapp.infrastructure;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import simpleshop.common.StringUtils;
+import simpleshop.data.SortInfo;
+import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.data.metadata.SortDirection;
+import simpleshop.data.metadata.SortProperty;
 import simpleshop.dto.JsonResponse;
 import simpleshop.dto.ModelSearch;
+import simpleshop.service.MetadataService;
 import simpleshop.service.infrastructure.ModelService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,7 +47,6 @@ public abstract class BaseJsonController {
         return stringBuilder.toString();
     }
 
-
     protected <T> JsonResponse<T> saveModel(T model, ModelService<T, ?> modelService, BindingResult bindingResult) {
         JsonResponse<T> response;
 
@@ -59,10 +65,10 @@ public abstract class BaseJsonController {
         return response;
     }
 
-    protected <T> JsonResponse<T> modelDetails(Serializable id, ModelService<T, ?> modelService){
+    protected <T> JsonResponse<T> modelDetails(Serializable id, ModelService<T, ?> modelService) {
         T domainObject = modelService.getById(id);
         JsonResponse<T> response;
-        if(domainObject != null){
+        if (domainObject != null) {
             response = new JsonResponse<>(JsonResponse.STATUS_OK, null, domainObject);
         } else {
             response = new JsonResponse<>(JsonResponse.STATUS_ERROR, "Not found (id=" + id + ").", null);
@@ -70,7 +76,7 @@ public abstract class BaseJsonController {
         return response;
     }
 
-    protected <S extends ModelSearch, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult){
+    protected <S extends ModelSearch, T> JsonResponse<Iterable<T>> modelSearch(S criteria, ModelService<T, S> modelService, BindingResult bindingResult) {
         if (bindingResult != null && bindingResult.hasErrors())
             return new JsonResponse<>(JsonResponse.STATUS_ERROR, getBindingErrorMessage(bindingResult), null);
 
@@ -80,28 +86,63 @@ public abstract class BaseJsonController {
         List<T> result = modelService.search(criteria);
 
         //todo set previous / next disabled here
-        JsonResponse<Iterable<T>> response =  new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
-        if(criteria.getPageIndex() > 0){
+        JsonResponse<Iterable<T>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
+        if (criteria.getPageIndex() > 0) {
             response.getTags().put("prevPage", true);
         }
-        if(result.size() > actualPageSize){
+        if (result.size() > actualPageSize) {
             response.getTags().put("nextPage", true);
             result.remove(result.size() - 1);//retrieved one more to decide if there is next page
         }
 
-        response.getTags().put("page", criteria.getPageIndex());
         return response;
     }
 
-    protected <T> JsonResponse<Serializable> deleteModel(Serializable id, ModelService<T, ?> modelService){
+    protected <T> JsonResponse<Serializable> deleteModel(Serializable id, ModelService<T, ?> modelService) {
         JsonResponse<Serializable> response;
         try {
             modelService.delete(id);
             response = new JsonResponse<>(JsonResponse.STATUS_OK, null, id);
-        } catch (Exception ex){
+        } catch (Exception ex) {
             response = new JsonResponse<>(JsonResponse.STATUS_ERROR, ex.getMessage(), null);
         }
         return response;
     }
 
+    @Autowired
+    private MetadataService metadataService;
+
+    protected <T extends ModelSearch> JsonResponse<T> createSearchResponse(T newInstance) {
+
+        JsonResponse<T> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, newInstance);
+        ModelMetadata searchMetadata = metadataService.getMetadata(newInstance.getClass().getSimpleName());
+        List<SortProperty> sortProperties = searchMetadata.getSortProperties();
+        List<SortInfo> sortInfos = new ArrayList<>();
+        if (sortProperties != null) {
+            for (SortProperty sortProperty : sortProperties) {
+                SortInfo sortInfo = new SortInfo();
+                sortInfo.setAlias(sortProperty.alias());
+                sortInfo.setProperty(sortProperty.propertyName());
+                if(sortProperty.sortDirection() == SortDirection.DESC){
+                     sortInfo.setAscending(false);
+                } else {
+                    sortInfo.setAscending(true);
+                }
+                sortInfos.add(sortInfo);
+
+                if(sortProperty.sortDirection() == SortDirection.BOTH){
+
+                    sortInfo = new SortInfo();
+                    sortInfo.setAlias(sortProperty.alias());
+                    sortInfo.setProperty(sortProperty.propertyName());
+                    sortInfo.setAscending(false);
+                    sortInfos.add(sortInfo);
+                }
+            }
+        }
+
+        response.getTags().put("sortProperties", sortInfos);
+
+        return response;
+    }
 }

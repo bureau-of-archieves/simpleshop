@@ -17,7 +17,7 @@ The goal of this project is to create a framework which can quickly build a CRUD
 
 The page is divided into a menu area and a view area. The view area can display a list of views. Currently there are 5 types of views:
 * Search view - provides a form to search for a type of objects
-* List view - displays search results which is a list of objects
+* List view - displays search results which is a list of objects; support paging and sorting of a single field.
 * Details view - displays a single object in detail
 * Update view - provides a form to update an object
 * Create view - provides a form to create an object
@@ -28,7 +28,6 @@ Views have a model type, which is the type of model it can display.
 
 Todo List
 -----------
- * Support sorting in list view (by a single field asc or desc).
  * Check for modification before closing an edit/create view.
  * css/script bundling
  * Minification of sponge.js.

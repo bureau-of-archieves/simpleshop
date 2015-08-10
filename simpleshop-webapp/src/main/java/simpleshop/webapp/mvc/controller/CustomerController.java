@@ -12,6 +12,7 @@ import simpleshop.domain.model.Customer;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.dto.JsonResponse;
 import simpleshop.dto.ModelQuickSearch;
+import simpleshop.dto.ModelSearch;
 import simpleshop.service.CustomerService;
 import simpleshop.webapp.infrastructure.BaseJsonController;
 
@@ -27,7 +28,7 @@ public class CustomerController extends BaseJsonController {
 
     @RequestMapping(value = "/customer/search", method = RequestMethod.GET)
     public String customerSearch(Model model) {
-        JsonResponse<CustomerSearch> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, new CustomerSearch());
+        JsonResponse<CustomerSearch> response = createSearchResponse(new CustomerSearch());
         return super.outputJson(model, response, customerService.ignoredJsonProperties());
     }
 

@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 
-@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "noneSummaryProperties"})
+@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "noneSummaryProperties", "sortProperties"})
 public class ModelMetadata {
 
     private String name;
@@ -20,6 +20,7 @@ public class ModelMetadata {
 
     private Set<String> noneSummaryProperties;
     private List<AliasDeclaration> aliasDeclarations;
+    private List<SortProperty> sortProperties;
     private Class<?> modelClass;
 
     public Map<String, PropertyMetadata> getPropertyMetadataMap() {
@@ -118,5 +119,13 @@ public class ModelMetadata {
 
     public void setAliasDeclarations(List<AliasDeclaration> aliasDeclarations) {
         this.aliasDeclarations = aliasDeclarations;
+    }
+
+    public List<SortProperty> getSortProperties() {
+        return sortProperties;
+    }
+
+    public void setSortProperties(List<SortProperty> sortProperties) {
+        this.sortProperties = sortProperties;
     }
 }

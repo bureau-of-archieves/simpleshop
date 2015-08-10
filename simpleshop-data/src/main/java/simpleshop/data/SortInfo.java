@@ -1,9 +1,11 @@
 package simpleshop.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import simpleshop.common.StringUtils;
 
 import java.io.Serializable;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SortInfo implements Serializable {
 
     private boolean ascending = true;

@@ -3,9 +3,15 @@ package simpleshop.dto;
 
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.PropertyFilter;
+import simpleshop.data.metadata.SortProperty;
 import simpleshop.domain.model.Suburb;
 
+
 @AliasDeclaration(propertyName = "contact", aliasName = "ct")
+@SortProperty.List({
+        @SortProperty(alias = "ct", propertyName = "name"),
+        @SortProperty(alias = "ct", propertyName = "contactName")
+})
 public class ContactSearch extends ModelSearch {
 
     private String name;

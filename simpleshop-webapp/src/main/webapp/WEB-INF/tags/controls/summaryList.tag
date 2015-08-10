@@ -15,13 +15,10 @@
         <h4>Search result for ${friendlyMmodelName}</h4>
     </div>
     <div class="${f:peek(stack, "_colPrefix")}4 clearfix">
-        <form class="form-inline pull-right">
+        <form class="form-inline pull-right" data-ng-show="sortProperties.length > 0">
             <div class="input-group">
                 <span class="input-group-addon" id="sizing-addon2">Sort By</span>
-                <select class="selectpicker form-control">
-                    <option>Field 1 Asc</option>
-                    <option>Field 2 Desc</option>
-                    <option>Field 3 Asc</option>
+                <select class="selectpicker form-control" data-ng-model="postData.sortInfo" ng-options="item.text for item in sortProperties">
                 </select>
             </div>
         </form>

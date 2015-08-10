@@ -6,18 +6,20 @@ import org.apache.commons.collections.ListUtils;
 import simpleshop.Constants;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This is a simple bean that contains how to sort a list and which page is being requested.
  */
 @JsonFilter("propNameFilter")
-@JsonIgnoreProperties("pageSizePlusOne")
+@JsonIgnoreProperties({"pageSizePlusOne", "sortInfoList"})
 public class PageInfo implements Serializable{
     private int pageIndex;
     private int pageSize;
-    private boolean pageSizePlusOne = false;
+    private SortInfo sortInfo;
 
+    private boolean pageSizePlusOne = false;
     private List<SortInfo> sortInfoList;
 
     public PageInfo(){
@@ -60,12 +62,24 @@ public class PageInfo implements Serializable{
         this.pageSizePlusOne = pageSizePlusOne;
     }
 
+    public SortInfo getSortInfo() {
+        return sortInfo;
+    }
+
+    public void setSortInfo(SortInfo sortInfo) {
+        this.sortInfo = sortInfo;
+    }
+
     public List<SortInfo> getSortInfoList() {
+        if(sortInfoList == null && sortInfo != null){
+            sortInfoList = new ArrayList<>();
+            sortInfoList.add(sortInfo);
+        }
         return sortInfoList;
     }
 
-    public void setSortInfoList(List<SortInfo> sortInfo) {
-        this.sortInfoList = sortInfo;
+    public void setSortInfoList(List<SortInfo> sortInfoList) {
+        this.sortInfoList = sortInfoList;
     }
 
     @Override
@@ -77,8 +91,8 @@ public class PageInfo implements Serializable{
 
         if (pageIndex != pageInfo.pageIndex) return false;
         if (pageSize != pageInfo.pageSize) return false;
-
-        return ListUtils.isEqualList(sortInfoList, pageInfo.sortInfoList);
+        if (pageSizePlusOne != pageInfo.pageSizePlusOne) return false;
+        return !(sortInfo != null ? !sortInfo.equals(pageInfo.sortInfo) : pageInfo.sortInfo != null);
 
     }
 
@@ -86,7 +100,8 @@ public class PageInfo implements Serializable{
     public int hashCode() {
         int result = pageIndex;
         result = 31 * result + pageSize;
-        result = 31 * result + ListUtils.hashCodeForList(sortInfoList);
+        result = 31 * result + (pageSizePlusOne ? 1 : 0);
+        result = 31 * result + (sortInfo != null ? sortInfo.hashCode() : 0);
         return result;
     }
 }

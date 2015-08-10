@@ -168,6 +168,7 @@ public final class DomainUtils {
         setDisplayFormat(modelMetadata, clazz);//set display format
         setInterpolateFormat(modelMetadata, clazz);
         setAliasAnnotations(modelMetadata, clazz);//set alias annotations
+        setSortProperties(modelMetadata, clazz);//set sort properties
 
         //set property metadata
         Set<String> ignoredProperties = getJsonIgnoreProperties(clazz);
@@ -231,6 +232,29 @@ public final class DomainUtils {
         }
         if (aliasDeclarations.size() > 0) {
             modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
+        }
+    }
+
+    private static void setSortProperties(ModelMetadata modelMetadata, Class<?> clazz) {
+        Stack<Class<?>> classes = new Stack<>();
+        Class<?> superClass = clazz;
+        while (superClass != Object.class){
+            classes.push(superClass);
+            superClass = superClass.getSuperclass();
+        }
+        List<SortProperty> sortProperties = new ArrayList<>();
+        while (!classes.isEmpty()){
+            superClass = classes.pop();
+            SortProperty sortProperty = superClass.getAnnotation(SortProperty.class);
+            if(sortProperty != null)
+                sortProperties.add(sortProperty);
+            SortProperty.List sortPropertyList = superClass.getAnnotation(SortProperty.List.class);
+            if(sortPropertyList != null) {
+                sortProperties.addAll(Arrays.asList(sortPropertyList.value()));
+            }
+        }
+        if (sortProperties.size() > 0) {
+            modelMetadata.setSortProperties(Collections.unmodifiableList(sortProperties));
         }
     }
 

@@ -686,6 +686,14 @@
             var viewUrl = site.viewUrl(viewName, params);
             var operationKey = "get-" + viewId;
 
+            var sortProperties = getViewOptions.sortProperties;
+            if(!sortProperties){
+                sortProperties = [];
+            }
+            if(sortProperties.length > 0){
+                model.sortInfo = sortProperties[0];
+            }
+
             var createRequest = function () {
                 if (model) { //need to post
                     return $.ajax(
@@ -702,6 +710,8 @@
                 }
             };
 
+
+
             var createView = function (viewHtml) {
 
                 var parseResult = parseViewHtml(viewHtml, viewId);
@@ -714,6 +724,11 @@
                 if (existingViewDetails) { //remove old view
                     $(existingViewDetails.viewElements).remove();
                 }
+
+                var copyOfPostData = angular.copy(model);
+                if(sortProperties.length > 0){
+                    copyOfPostData["sortInfo"] = sortProperties[0];
+                }
                 viewMap[viewKey] = { //set newViewDetails
                     viewKey: viewKey,
                     viewId: viewId,
@@ -721,7 +736,7 @@
                     viewType: viewType,
                     instanceId: instanceId,
                     params: params,
-                    postData: model,
+                    postData: copyOfPostData,
                     model: parseResult.dataObject,
                     viewElements: parseResult.domElements,
                     getViewOptions: getViewOptions
@@ -1125,7 +1140,15 @@
                         criteria = {};
                     }
 
-                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true})
+                    var id = $(element).closest(".view").attr("id");
+                    var viewDetails = findViewDetails(id);
+                    var tags = viewDetails.model["tags"];
+                    var sortProperties = null;
+                    if(tags && !angular.isUndefined(tags["sortProperties"])){
+                        sortProperties = tags["sortProperties"];
+                    }
+
+                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true, sortProperties: sortProperties})
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1671,6 +1694,14 @@
         viewDetails.scope = $scope;
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
+        if(!angular.isUndefined(viewDetails.getViewOptions.sortProperties)){
+            $scope.sortProperties = viewDetails.getViewOptions.sortProperties;
+            $scope.postData = viewDetails.postData;
+            for(var i=0; i < $scope.sortProperties.length; i++){
+                var item = $scope.sortProperties[i];
+                item.text = zcl.camelNameToSpacedName(item["property"]) + (item["ascending"] ? " Asc" : " Desc" );
+            }
+        }
 
         if(isSubtypeOf(viewDetails.viewType, "list")){
             $scope.previousEnabled = function(){
@@ -1753,6 +1784,7 @@
                 delete map[key];
             }
         };
+
 
         $scope.reset();
     }]);
