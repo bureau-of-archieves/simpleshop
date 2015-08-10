@@ -10,7 +10,7 @@ import simpleshop.service.SupplierService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
-public class SupplierServiceImpl extends ModelServiceImpl<Supplier, SupplierSearch> implements SupplierService {
+public class SupplierServiceImpl extends ContactServiceImpl<Supplier, SupplierSearch> implements SupplierService {
 
     @Autowired
     private SupplierDAO supplierDAO;

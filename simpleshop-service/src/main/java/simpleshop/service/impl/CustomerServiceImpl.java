@@ -9,8 +9,12 @@ import simpleshop.dto.CustomerSearch;
 import simpleshop.service.CustomerService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Service
-public class CustomerServiceImpl extends ModelServiceImpl<Customer, CustomerSearch> implements CustomerService {
+public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSearch> implements CustomerService {
 
     @Autowired
     private CustomerDAO customerDAO;
@@ -24,5 +28,6 @@ public class CustomerServiceImpl extends ModelServiceImpl<Customer, CustomerSear
     public Customer create() {
         return new Customer();
     }
+
 
 }

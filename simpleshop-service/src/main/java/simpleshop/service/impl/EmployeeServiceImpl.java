@@ -10,7 +10,7 @@ import simpleshop.service.EmployeeService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
-public class EmployeeServiceImpl extends ModelServiceImpl<Employee, EmployeeSearch> implements EmployeeService {
+public class EmployeeServiceImpl extends ContactServiceImpl<Employee, EmployeeSearch> implements EmployeeService {
 
     @Autowired
     private EmployeeDAO employeeDAO;

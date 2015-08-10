@@ -1,6 +1,5 @@
 package simpleshop.service;
 
-import org.aspectj.lang.annotation.Before;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -37,7 +36,7 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
     private SuburbDAO suburbDAO;
 
     @Test
-    public void searchTest() {
+    public void searchTest()  {
         List<Suburb> suburbs = suburbDAO.quickSearch("", new PageInfo());
         createShipper(TestConstants.SHIPPER_NAME_1, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_1, TestConstants.MAGIC_STREET_1, suburbs.get(0));
         createShipper(TestConstants.SHIPPER_NAME_2, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_1, suburbs.get(1));

@@ -1,6 +1,7 @@
 package simpleshop.service.infrastructure.impl;
 
 import org.hibernate.Hibernate;
+import org.hibernate.collection.internal.PersistentMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,6 +204,10 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
                     if (setter != null) {
                         boolean exceptProperty = exceptProperties != null && exceptProperties.contains(propertyName);
                         if (exceptProperty) {
+                            if(value instanceof PersistentMap){
+                                Hibernate.initialize(value);
+                                return PropertyReflector.InspectionResult.BYPASS;
+                            }
                             return PropertyReflector.InspectionResult.CONTINUE;
                         } else {
                             ReflectionUtils.invokeMethod(setter, target, new Object[]{null});

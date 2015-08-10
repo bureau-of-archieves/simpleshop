@@ -10,7 +10,7 @@ import simpleshop.service.ShipperService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
-public class ShipperServiceImpl extends ModelServiceImpl<Shipper, ShipperSearch> implements ShipperService {
+public class ShipperServiceImpl extends ContactServiceImpl<Shipper, ShipperSearch> implements ShipperService {
 
     @Autowired
     private ShipperDAO shipperDAO;
