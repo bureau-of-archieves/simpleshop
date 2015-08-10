@@ -1,12 +1,10 @@
 package simpleshop.data;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import simpleshop.Constants;
-import simpleshop.common.ReflectionUtils;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.Contact;
@@ -16,15 +14,13 @@ import simpleshop.domain.model.Employee;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 public class EmployeeDAOImplTest extends TransactionalTest {
 
     @Autowired
     private EmployeeDAO employeeDAO;
 
-    @BeforeClass
-    public static void init(){
-    }
 
     @Test
     public void getNullTest(){
@@ -57,19 +53,31 @@ public class EmployeeDAOImplTest extends TransactionalTest {
         employeeDAO.save(employee);
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void deleteEmployees(List<Employee> result){
+        result.forEach(employeeDAO::delete);
+    }
+
     @Test
     public void quickSearchTest(){
        for(int i=1; i<=10; i++){
-           createEmployee("Employee" + i);
+           createEmployee("quickSearch - Employee" + i);
        }
 
         List<Employee> result = employeeDAO.quickSearch("Employee", new PageInfo());
         assertEquals(Constants.DEFAULT_PAGE_SIZE, result.size());
+        for(Employee employee : result){
+            assertThat(employee.getContact().getName(), containsString("Employee"));
+        }
 
-        List<Employee> top5Result = employeeDAO.quickSearch("Employee", new PageInfo(0, 5));
-        assertEquals(5, top5Result.size());
+        result = employeeDAO.quickSearch("Employee", new PageInfo(0, 5));
+        assertThat(result.size(), equalTo(5));
 
-        result.forEach(employeeDAO::delete);
+        result = employeeDAO.quickSearch("Employee", new PageInfo(1, 5));
+        assertThat(result.size(), equalTo(5));
+
+        result = employeeDAO.quickSearch("quickSearch", new PageInfo(0, Short.MAX_VALUE));
+        deleteEmployees(result);
 
     }
 

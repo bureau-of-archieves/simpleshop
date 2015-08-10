@@ -10,6 +10,7 @@ import simpleshop.domain.model.component.ProductSupplier;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -22,8 +23,8 @@ public class Product {
     private String name;
     private String imageUrl;
     private String quantityPerUnit;
-    private Set<Category> categories;
-    private Set<ProductSupplier> productSuppliers;
+    private Set<Category> categories = new HashSet<>();
+    private Set<ProductSupplier> productSuppliers = new HashSet<>();
     private Integer stock = 0;
 
     @Id

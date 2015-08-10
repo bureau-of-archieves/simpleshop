@@ -1,5 +1,7 @@
 package simpleshop.data;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.collections.ListUtils;
 import simpleshop.Constants;
 
@@ -9,6 +11,8 @@ import java.util.List;
 /**
  * This is a simple bean that contains how to sort a list and which page is being requested.
  */
+@JsonFilter("propNameFilter")
+@JsonIgnoreProperties("pageSizePlusOne")
 public class PageInfo implements Serializable{
     private int pageIndex;
     private int pageSize;
