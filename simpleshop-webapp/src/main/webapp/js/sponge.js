@@ -91,6 +91,9 @@
         //page element dependencies
         this.noViewElementId = "messageNoView"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
         this.headerElementId = "pageHeader"; //header element id, the header is fix positioned.
+
+        //angular js dependencies
+        this.ajs = {};
     })();
 
     /**
@@ -187,7 +190,6 @@
 
     /**
      * Report an error.This is usually called on the endOp promise.
-     * //todo use js message prompt instead of alert
      * @param error error object.
      */
     var reportError = function (error) {
@@ -197,8 +199,20 @@
         if(typeof(error) == "object"){
             error = message["requestFailed"];
         }
-        alert(error);
+
+        var instance = site.ajs.$modal.open({
+            backdrop:true,
+            templateUrl: "messageBox.html",
+            size:"md",
+            windowClass:"msgbox",
+            controller: 'messageBoxController'
+        });
+
+        instance.data = {title: "An error has occurred", message : error};
+
     };
+
+    window.showMessage = reportError;
 
     /**
      * Check if a viewType is a subtype of parentViewType.
@@ -343,7 +357,7 @@
 
     //endregion
 
-    var spongeApp = angular.module("spongeApp", [], null);
+    var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
 
     //region filters
 
@@ -1612,13 +1626,15 @@
 
     //region controllers
 
-    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", function ($scope, $http, spongeService) {
+    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", function ($scope, $http, spongeService, $modal) {
 
         $scope.linkRequests = []; //need to select an model to complete the operation.
 
         $scope.operationLocks = []; //in-progress long running operations
 
         $scope.scrollTo = scrollTo;
+
+        site.ajs.$modal = $modal;
 
         /**
          * load application metadata which sponge.js depends on.
@@ -1791,6 +1807,21 @@
         };
 
         $scope.reset();
+    }]);
+
+
+    spongeApp.controller('messageBoxController', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+
+        $scope.title = $modalInstance.data.title;
+        $scope.message = $modalInstance.data.message;
+
+        $scope.ok = function () {
+            $modalInstance.close(null);
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
     }]);
 
     //endregion

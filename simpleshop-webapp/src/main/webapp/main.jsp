@@ -8,9 +8,11 @@
 
     <%--stylesheets--%>
     <link rel="icon" href="img/site.ico" type="image/x-icon">
+
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/jquery-ui.structure.css">
     <link rel="stylesheet" href="css/jquery-ui.theme.css">
+
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-theme.css">
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
@@ -86,7 +88,7 @@
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a>About</a>
+                        <li><a href="javascript:showMessage('Modal message box test.')">About</a>
                         </li>
                         <li><a href="json.jsp">Test</a>
                         </li>
@@ -141,6 +143,18 @@
     </li>
 </ul>
 
+<script type="text/ng-template" id="messageBox.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{title}}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{{message}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" data-ng-click="ok()">OK</button>
+    </div>
+</script>
+
 
 <%--scripts--%>
 <script src="js/jquery.js"></script>
@@ -148,6 +162,7 @@
 <script src="js/moment.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/angular.js"></script>
+<script src="js/angular-animate.js"></script>
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/bootstrap-datetimepicker.js"></script>
 <script src="js/zcl.js"></script>
