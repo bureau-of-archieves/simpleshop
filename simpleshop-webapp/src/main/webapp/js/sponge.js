@@ -1143,7 +1143,7 @@
                     var id = $(element).closest(".view").attr("id");
                     var viewDetails = findViewDetails(id);
                     var tags = viewDetails.model["tags"];
-                    var sortProperties = null;
+                    var sortProperties = [];
                     if(tags && !angular.isUndefined(tags["sortProperties"])){
                         sortProperties = tags["sortProperties"];
                     }
