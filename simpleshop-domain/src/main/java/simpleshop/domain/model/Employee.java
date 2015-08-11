@@ -19,10 +19,10 @@ import java.util.List;
 public class Employee {
 
     private Integer id;
+    private List<Order> orders = new ArrayList<>();
+    private Contact contact = new Contact();
     private LocalDate hireDate;
     private EmploymentType employmentType;
-    private List<Order> orders = new ArrayList<>();
-    private Contact contact;
 
     @Id
     @GeneratedValue
@@ -56,7 +56,7 @@ public class Employee {
 
     @Summary
     @ManyToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
     @NotNull
     public Contact getContact() {

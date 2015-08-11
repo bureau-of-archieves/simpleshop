@@ -19,7 +19,7 @@
         <c:set var="title" value="${f:peek(stack, '_friendlyModelName')} ${modelId} Details" />
     </c:if>
 
-    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" >
+    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" panelClass="padding-bottom-1em" >
         <jsp:attribute name="header">
            <ctrl:icon value="pencil" cssClass="cursor-pointer" alignRight="true">
                <jsp:attribute name="attributes">

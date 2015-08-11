@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
-import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.ItemText;
 import simpleshop.domain.metadata.ItemValue;
@@ -9,6 +10,8 @@ import simpleshop.domain.metadata.ValueClass;
 import simpleshop.domain.model.component.Address;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;

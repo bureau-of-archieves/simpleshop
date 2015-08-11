@@ -226,6 +226,10 @@ input.ng-valid ~ .pattern-validation {
     padding-top: 1em;
 }
 
+.padding-bottom-1em {
+    padding-bottom:1em;
+}
+
 .msgbox{
     margin-top:1.5em;
 }

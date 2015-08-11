@@ -838,12 +838,16 @@
                 return createPromise(response["description"]);
             };
 
+            var saveFailed = function(p,s,e){
+                return createPromise(s + " - " + e);
+            };
+
             var operationKey = "save-" + viewId;
             var url = site.saveJsonUrl(viewDetails.modelName);
             return beginOp(operationKey).then(
                 function(){
                    return createJsonPostRequest(url, scope["model"])
-                       .then(saveSuccess)
+                       .then(saveSuccess, saveFailed)
                        .always(function () {
                             endOp(operationKey);
                        });
