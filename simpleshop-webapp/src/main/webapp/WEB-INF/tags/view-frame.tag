@@ -28,9 +28,6 @@
 <c:if test="${empty controller}">
     <c:set var="controller" value="view"/>
 </c:if>
-<c:if test="${not empty col}">
-    <c:set var="col" value="${f:peek(stack, '_colPrefix')}${col}"/>
-</c:if>
 <c:if test="${empty removable}">
     <c:set var="removable" value="true"/>
 </c:if>
@@ -38,7 +35,7 @@
     <c:set var="panelClass" value="panel-info"/>
 </c:if>
 
-<div id="${id}" class="view display ${col}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
+<div id="${id}" class="view display col-xs-12 col-md-6 col-xl-4" data-ng-init="modelName='${modelName}'; viewId='${id}';"
      data-ng-controller="${controller}Controller">
 
     ${f:_push(stack, "_parentId", id)}

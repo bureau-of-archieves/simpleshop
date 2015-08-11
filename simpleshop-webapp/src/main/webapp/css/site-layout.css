@@ -144,6 +144,24 @@ input.ng-valid ~ .pattern-validation {
     padding:0.1em;
 }
 
+@media (min-width: 1600px) {
+    .col-xl-4 {
+        float: left;
+        width: 33.33333333%;
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+}
+
+.col-md-6 {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+
+
 .dropdown-menu.result li.ng-scope{
     width:15em;
 }

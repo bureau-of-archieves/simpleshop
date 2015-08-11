@@ -1,4 +1,4 @@
-<%@include file="WEB-INF/_header.jspf"%>
+<%@include file="WEB-INF/_header.jspf" %>
 <!DOCTYPE html>
 <html data-ng-app="spongeApp" data-ng-controller="spongeController">
 <head>
@@ -7,7 +7,7 @@
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <link rel="icon" href="img/site.ico" type="image/x-icon" >
+    <link rel="icon" href="img/site.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/jquery-ui.structure.css">
     <link rel="stylesheet" href="css/jquery-ui.theme.css">
@@ -44,8 +44,8 @@
                     <ul role="menu" class="dropdown-menu">
                         <li data-ng-repeat="item in menu">
                             <a href="#" class="icon"
-                               data-spg-search="{{item.name}}" >
-                                <ctrl:icon value="{{item.icon}}" />&nbsp; {{item.name}} </a>
+                               data-spg-search="{{item.name}}">
+                                <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
                         </li>
                     </ul>
                 </li>
@@ -65,10 +65,14 @@
                             <a class="ng-binding result-menu-item" href="javascript:void(0);">
 
                                 <div class="row">
-                                    <div class="col-sm-9"><span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span></div>
+                                    <div class="col-sm-9"><span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span>
+                                    </div>
                                     <div class="col-sm-1">
-                                        <span class="glyphicon glyphicon-asterisk" data-ng-click="closeOthers(resultName)" title="Close Others"></span>&nbsp;
-                                        <span class="glyphicon glyphicon-remove-circle" data-ng-click="closeResult(resultName);$event.stopPropagation();" title="Close"></span>
+                                        <span class="glyphicon glyphicon-asterisk"
+                                              data-ng-click="closeOthers(resultName)" title="Close Others"></span>&nbsp;
+                                        <span class="glyphicon glyphicon-remove-circle"
+                                              data-ng-click="closeResult(resultName);$event.stopPropagation();"
+                                              title="Close"></span>
                                     </div>
                                 </div>
                             </a>
@@ -107,14 +111,14 @@
     <main class="row">
 
         <section class="col-xs-12">
-            <div class="row">
-                <section style="min-height: 60em" id="resultSection" class="col-xs-12 hide-children">
-                    <%--views--%>
-                    <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
-                        There is no open view.
-                    </div>
-                </section>
-            </div>
+
+            <section style="min-height: 60em" id="resultSection" class="hide-children row">
+                <%--views--%>
+                <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
+                    There is no open view.
+                </div>
+            </section>
+
         </section>
 
     </main>
