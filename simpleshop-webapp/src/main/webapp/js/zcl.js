@@ -503,6 +503,10 @@
         return result;
     };
 
+    zcl.removeAnchor = function(){
+        location.hash = '';
+    };
+
     //endregion
 
 })();

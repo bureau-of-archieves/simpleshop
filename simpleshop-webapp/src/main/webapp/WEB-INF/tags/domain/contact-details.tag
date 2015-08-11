@@ -8,8 +8,8 @@
 ${f:_push(stack, '_base', base)}
 ${f:_push(stack, '_modelName', modelName)}
 
-<ctrl:detailsField path="contactName" />
 <ctrl:detailsField path="name" />
+<ctrl:detailsField path="contactName" displayFormat="na" />
 <d:address-details path="address" />
 
 <ctrl:mapDetails path="contactNumbers" />

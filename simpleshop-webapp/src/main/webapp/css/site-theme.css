@@ -1,4 +1,9 @@
 
+body{
+   background-color: #fafafd;
+
+}
+
 .navbar-brand{
     font-family: Oswald,Arial,sans-serif;
     font-size: 1.1em;
@@ -18,6 +23,10 @@ body.in-progress {
 .tab-content{
     background-color: #fafbfa;
     border-right: 1px solid #ddd;
+}
+
+.view>.panel {
+    box-shadow: 5px 3px 4px rgba(128, 128, 128, 0.85);
 }
 
 .panel-body .panel-body{
@@ -71,4 +80,50 @@ input.ng-invalid.ng-dirty {
 .input-group > .selectpicker {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+
+#pageHeader {
+    background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
+    border-radius: 0.5em;
+    padding-left: 2em;
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+}
+
+.page-header small {
+    color: #555;
+    font-size: 0.9em;
+}
+
+.page-header small:hover {
+    position: relative;
+    left: -1px;
+    top: -1px;
+    text-shadow: #aaa 0.07em 0.04em 0.02em;
+}
+
+#messageNoView {
+    background-image: url("../img/title_bg.png");
+}
+
+.view>.panel>.panel-heading{
+    background-image: url("../img/title_bg.png");
+}
+
+.panel {
+    background: #ffffff;
+    background: -moz-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#fffffd), color-stop(100%,#effffd));
+    background: -webkit-linear-gradient(top, #ffffff 0%,#fffffd 47%,#effffd 100%);
+    background: -o-linear-gradient(top, #ffffff 0%,#fffffd 47%,#effffd 100%);
+    background: -ms-linear-gradient(top, #ffffff 0%,#fffffd 47%,#effffd 100%);
+    background: linear-gradient(to bottom, #ffffff 0%,#fffffd 47%,#effffd 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#effffd',GradientType=0 );
+}
+
+footer hr {
+    border: 0;
+    height: 1px;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
 }

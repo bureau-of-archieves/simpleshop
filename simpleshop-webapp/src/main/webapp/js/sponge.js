@@ -1463,6 +1463,7 @@
                     input.data("pending-change-handler", null);
                     if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
                         scope.$digest();
+                    ngModel.$setValidity(config.validationErrorKey, true);
                 };
 
                 input.focus(function () {

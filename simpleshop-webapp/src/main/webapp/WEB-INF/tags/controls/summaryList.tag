@@ -32,7 +32,7 @@
        class="list-group-item clearfix" data-ng-repeat="item in model">
         <jsp:doBody/>
 
-        <button class="btn btn-sm btn-danger pull-right" data-ng-mouseover="$event.stopPropagation();" data-spg-delete='{"modelName":"${modelName}","modelId":${modelId}}'>
+        <button class="btn btn-sm btn-warning pull-right" data-ng-mouseover="$event.stopPropagation();" data-spg-delete='{"modelName":"${modelName}","modelId":${modelId}}'>
             Delete
         </button>
     </a>
@@ -43,10 +43,10 @@
 </div>
 <div class="row">
 
-    <div class="${f:peek(stack, "_colPrefix")}9">
+    <div class="col-xs-6 col-sm-5">
         <button type="submit" class="btn btn-primary" data-spg-create="${modelName}">Create New</button>
     </div>
-    <div class="${f:peek(stack, "_colPrefix")}3">
+    <div class="col-xs-6 col-sm-7">
         <nav>
             <ul class="pager">
                 <li class="previous {{previousEnabled()}}" ><a href="#" data-spg-refresh='{"viewId":"${f:peek(stack, "_viewId")}","pageDelta":-1}'><span aria-hidden="true">&larr;</span> Older</a></li>

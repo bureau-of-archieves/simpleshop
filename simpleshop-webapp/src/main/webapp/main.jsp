@@ -100,7 +100,7 @@
 <div class="container-fluid page-body">
 
     <%--page header--%>
-    <header id="pageHeader" class="page-header">
+    <header id="pageHeader" class="page-header row">
         <h1>
             <a href=" "> <%--refresh main page--%>
                 <small>SimpleShop SPA Web App</small>
@@ -155,8 +155,7 @@
 
 <%--page initialization script--%>
 <script>
-
-
+     zcl.removeAnchor();
 </script>
 
 </body>

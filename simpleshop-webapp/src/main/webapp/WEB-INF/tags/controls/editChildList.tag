@@ -42,7 +42,7 @@
 <div class="form-group ">
     <div class="col-sm-offset-3 col-sm-9">
 
-        <div class="panel panel-default margin-top-1em">
+        <div class="panel panel-default margin-bottom-0">
             <div class="panel-heading">${label} &nbsp;
                 <span class="badge">{{${fieldRef}.length}}</span>
                 <span class="glyphicon glyphicon-plus pull-right cursor-pointer"
