@@ -36,12 +36,13 @@ Todo List
  * Fix the many problems in error handling in JavaScript.
  * Improve validation messages.
  * Trim unnecessary parts of the request before posting json.
+ * Add Spring Security.
+ * Separate template and data. This way a type of template can be cached by the client.
+ * Support full internationalization.
 
 Future Todo List 
 -----------
- * Add Spring Security.
  * Replace boilerplate code with a Maven code generation plugin.
- * Separate template and data. This way a type of template can be cached by the client.
 
 Limitations
 -----------
