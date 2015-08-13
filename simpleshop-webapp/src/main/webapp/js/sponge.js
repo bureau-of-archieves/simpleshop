@@ -355,6 +355,42 @@
         });
     };
 
+    /**
+     * Update search model cache.
+     * @param bodyScope body scope.
+     * @param modelName model name.
+     * @param model pass null if want to retrieve from server.
+     */
+    var ensureSearchModel = function(bodyScope, modelName, model){
+        if(!bodyScope.searchModel) {
+            bodyScope.searchModel = {};
+        }
+
+        if(!angular.isUndefined(model) && model != null){
+            bodyScope.searchModel[modelName] = model;
+            return createPromise(null);
+        }
+
+        model = bodyScope.searchModel[modelName];
+        if(!angular.isUndefined(model) && model != null){
+            return createPromise(null);
+        }
+
+        //get from server
+        var url = site.searchJsonUrl(modelName);
+        return $.ajax(url, {
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json"
+        }).done(function(response){
+            if(response.status == "OK"){
+                bodyScope.searchModel[modelName] = response.content;
+            } else {
+                bodyScope.searchModel[modelName] = {};
+            }
+        });
+    };
+
     //endregion
 
     var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
@@ -1153,17 +1189,25 @@
                 $(element).click(function ($event) {
                     var args = JSON.parse(attrs["spgList"]);
                     var modelName = args["modelName"];
-                    var criteria = scope[args["criteriaPath"]];
-                    if(!criteria){
-                        criteria = {};
+                    var criteria = {};
+                    var criteriaPath = args["criteriaPath"];
+                    if(criteriaPath){
+                        criteria = scope[criteriaPath];
+                        if(angular.isUndefined(criteria) || criteria == null){
+                            reportError("Criteria is not set.");
+                            return false;
+                        }
                     }
-
-                    var id = $(element).closest(".view").attr("id");
-                    var viewDetails = findViewDetails(id);
-                    var tags = viewDetails.model["tags"];
                     var sortProperties = [];
-                    if(tags && !angular.isUndefined(tags["sortProperties"])){
-                        sortProperties = tags["sortProperties"];
+                    var id = $(element).closest(".view").attr("id");
+                    if(id){
+                        var viewDetails = findViewDetails(id);
+                        if(viewDetails){
+                            var tags = viewDetails.model["tags"];
+                            if(tags && !angular.isUndefined(tags["sortProperties"])){
+                                sortProperties = tags["sortProperties"];
+                            }
+                        }
                     }
 
                     spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true, sortProperties: sortProperties})
@@ -1701,6 +1745,16 @@
                 if (otherName != resultName)
                     spongeService.close(otherName);
             }
+        };
+
+        $scope.makeCriteria = function(scope, modelName, propertyName, value){
+            var bodyScope = getBodyScope();
+            var promise = ensureSearchModel(bodyScope, modelName, null);
+            promise.done(function(){
+                var prototype = bodyScope.searchModel[modelName];
+                scope.criteria = angular.copy(prototype);
+                scope.criteria[propertyName] = value;
+            });
         };
 
         $scope.loadMetadata();

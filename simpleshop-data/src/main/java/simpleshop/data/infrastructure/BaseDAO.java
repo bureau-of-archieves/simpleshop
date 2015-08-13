@@ -1,5 +1,7 @@
 package simpleshop.data.infrastructure;
 
+import java.io.Serializable;
+
 /**
  * Common operations that all DAOs support.
  * All sql/hql should be confined within DAOs.
@@ -19,4 +21,7 @@ public interface BaseDAO {
     void sessionFlush();
 
     void evict(Object domainObject);
+
+    Serializable getIdentifier(Object domainObject);
+
 }

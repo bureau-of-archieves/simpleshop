@@ -12,6 +12,14 @@ public class SortInfo implements Serializable {
     private String alias = "";
     private String property;
 
+    public SortInfo(){
+
+    }
+
+    public SortInfo(String property){
+        this.property = property;
+    }
+
     public boolean isAscending() {
         return ascending;
     }

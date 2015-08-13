@@ -48,6 +48,7 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
                 OrderSearch.class,
                 ProductSearch.class,
                 SupplierSearch.class,
+                CategorySearch.class,
                 Address.class,
                 OrderItem.class,
                 ProductSupplier.class
@@ -58,6 +59,7 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
     @PostConstruct
     public void init() {
         DomainUtils.createModelMetadataMap(classes);
+        getMetadata(Category.class.getSimpleName()).setSearchable(false);
     }
 
     @Override

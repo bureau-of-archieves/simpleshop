@@ -1,6 +1,7 @@
 package simpleshop.data.metadata;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javafx.util.Pair;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class ModelMetadata {
         this.PropertyMetadataMap = PropertyMetadataMap;
     }
 
-    public PropertyMetadata getPropertyMetadata(String path) {
+    public Pair<ModelMetadata, PropertyMetadata> getPathMetadata(String path){
         String[] parts = path.split("\\.");
         ModelMetadata modelMetadata = this;
         PropertyMetadata propertyMetadata = null;
@@ -39,9 +40,20 @@ public class ModelMetadata {
             if (modelMetadata == null)
                 throw new RuntimeException("Failed to reflect property path: " + path);
             propertyMetadata = modelMetadata.getPropertyMetadataMap().get(parts[i]);
-            modelMetadata = propertyMetadata.getReturnTypeMetadata();
+            if(i < parts.length - 1)
+                modelMetadata = propertyMetadata.getReturnTypeMetadata();
         }
-        return propertyMetadata;
+        return new Pair<>(modelMetadata, propertyMetadata);
+    }
+
+    public ModelMetadata getPropertyOwnerMetadata(String path){
+        Pair<ModelMetadata, PropertyMetadata> pair = getPathMetadata(path);
+        return pair.getKey();
+    }
+
+    public PropertyMetadata getPropertyMetadata(String path) {
+        Pair<ModelMetadata, PropertyMetadata> pair = getPathMetadata(path);
+        return pair.getValue();
     }
 
     public Set<String> getNoneSummaryProperties() {

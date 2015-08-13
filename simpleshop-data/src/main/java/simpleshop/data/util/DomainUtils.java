@@ -43,9 +43,15 @@ public final class DomainUtils {
         return realClass;
     }
 
+    public static boolean isDomainObject(Object object){
+        Class<?> clazz = getProxiedClass(object);
+        return domainClasses.contains(clazz);
+    }
+
 
     private static volatile Map<String, ModelMetadata> modelMetadataMap;
 
+    private static final HashSet<Class<?>> domainClasses = new HashSet<>();
     /**
      * This method can only be called once in MetadataServiceImpl constructor.
      *
@@ -55,6 +61,8 @@ public final class DomainUtils {
 
         if (modelMetadataMap != null)
             throw new UnsupportedOperationException("DomainUtils.createModelMetadataMap(Class<?>[]) can only be called once.");
+
+        domainClasses.addAll(Arrays.asList(classes));
 
         HashMap<String, ModelMetadata> metadataMap = new HashMap<>();
         for (Class<?> clazz : classes) {

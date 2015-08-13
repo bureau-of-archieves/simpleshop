@@ -1,17 +1,22 @@
 package simpleshop.data;
 
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import simpleshop.data.*;
+
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.OrderItem;
-
 import java.math.BigDecimal;
+import java.util.List;
 
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 public class OrderDAOImplTest extends TransactionalTest {
 
@@ -55,10 +60,24 @@ public class OrderDAOImplTest extends TransactionalTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void createOrderTest(){
 
         Order order = createOrder();
+
+        Session session = sessionFactory.getCurrentSession();
+        Criteria criteria = session.createCriteria(Customer.class);
+        Criteria criteria2 = criteria.createCriteria("orders", "ord");
+        criteria2.add(Restrictions.idEq(session.getIdentifier(order)));
+
+        List<Customer> customers = criteria.list();
         deleteOrder(order);
+
+        assertThat(customers.size(), greaterThanOrEqualTo(1));
     }
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
 
 }

@@ -12,6 +12,7 @@ import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SortInfo;
 import simpleshop.data.metadata.*;
+import simpleshop.data.util.DomainUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -78,15 +79,22 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                 String propertyName = propertyFilter.property();
                 if (propertyName == null || Constants.REFLECTED_PROPERTY_NAME.equals(propertyName))
                     propertyName = propertyMetadata.getPropertyName();
+                String lastPart = propertyName.substring(propertyName.lastIndexOf('.') + 1);
+                String fullPropertyPath = getFullPropertyPath(aliasDeclarations, propertyName, propertyFilter.alias());
 
                 //get property type
-                String fullPropertyPath = getFullPropertyPath(aliasDeclarations, propertyName, propertyFilter.alias());
-                PropertyMetadata targetPropertyMetadata = modelMetadata.getPropertyMetadata(fullPropertyPath);
-                Class<?> targetType = targetPropertyMetadata.getReturnType();
+                Class<?> targetType;
+                if("self".equals(lastPart)){
+                    ModelMetadata propertyOwnerMetadata = modelMetadata.getPropertyOwnerMetadata(fullPropertyPath);
+                    targetType = propertyOwnerMetadata.getModelClass();
+                } else {
+                    PropertyMetadata targetPropertyMetadata = modelMetadata.getPropertyMetadata(fullPropertyPath);
+                    targetType = targetPropertyMetadata.getReturnType();
+                }
 
                 //add
                 String alias = createAssociationPath(aliases, propertyFilter.alias(), propertyName);
-                String lastPart = propertyName.substring(propertyName.lastIndexOf('.') + 1);
+
                 Criterion criterion = createCriterion((StringUtils.isNullOrEmpty(alias) ? "" : alias + ".") + lastPart, propertyFilter.operator(), targetType, value, propertyFilter.negate());
                 propertyCriteria.add(criterion);
             }
@@ -213,6 +221,16 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                 criterion = Restrictions.in(propertyName, values);
                 if(negate) {
                     criterion = Restrictions.not(criterion);
+                }
+                break;
+            case CONTAINS:
+                if(negate)
+                    throw new RuntimeException("Negation is not supported with CONTAINS criteria.");
+
+                if(DomainUtils.isDomainObject(value)){
+                    criterion = Restrictions.idEq(this.getIdentifier(value));
+                } else {
+                  throw new RuntimeException("CONTAINS criteria must be applied to a domain object.");
                 }
                 break;
             case EQUAL:

@@ -85,7 +85,6 @@ public abstract class BaseJsonController {
         criteria.setPageSizePlusOne(true);
         List<T> result = modelService.search(criteria);
 
-        //todo set previous / next disabled here
         JsonResponse<Iterable<T>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, result);
         if (criteria.getPageIndex() > 0) {
             response.getTags().put("prevPage", true);

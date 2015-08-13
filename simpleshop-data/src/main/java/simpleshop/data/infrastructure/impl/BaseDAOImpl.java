@@ -14,6 +14,7 @@ import org.springframework.util.ReflectionUtils;
 import simpleshop.common.StringUtils;
 import simpleshop.data.infrastructure.BaseDAO;
 import simpleshop.data.PageInfo;
+import simpleshop.data.util.DomainUtils;
 
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -67,6 +68,11 @@ public abstract class BaseDAOImpl implements BaseDAO {
     @Override
     public void evict(Object domainObject){
         getSession().evict(domainObject);
+    }
+
+    @Override
+    public Serializable getIdentifier(Object domainObject) {
+        return getSession().getIdentifier(domainObject);
     }
 
     ////////////////////////// protected methods //////////////////////////////////////////////////////////

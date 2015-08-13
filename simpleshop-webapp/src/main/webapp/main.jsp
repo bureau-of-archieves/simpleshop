@@ -39,6 +39,8 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
 
+                <li ><a href="#" data-spg-list='{"modelName":"Category"}'>Categories</a></li>
+
                 <li class="dropdown">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <span class="caret"></span>
                     </a>

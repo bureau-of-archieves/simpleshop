@@ -1,5 +1,6 @@
 package simpleshop.domain.model;
 
+import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.*;
 
@@ -67,6 +68,7 @@ public class Category {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
+    @BatchSize(size = Constants.BATCH_SIZE)
     public Category getParent() {
         return parent;
     }
