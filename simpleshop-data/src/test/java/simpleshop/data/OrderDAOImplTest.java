@@ -71,9 +71,12 @@ public class OrderDAOImplTest extends TransactionalTest {
         criteria2.add(Restrictions.idEq(session.getIdentifier(order)));
 
         List<Customer> customers = criteria.list();
+        assertThat(customers.size(), greaterThanOrEqualTo(1));
+
+
         deleteOrder(order);
 
-        assertThat(customers.size(), greaterThanOrEqualTo(1));
+
     }
 
     @Autowired

@@ -1,7 +1,7 @@
 package simpleshop.data.metadata;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import javafx.util.Pair;
+import simpleshop.common.Pair;
 
 import java.util.List;
 import java.util.Map;

@@ -1,12 +1,21 @@
-package simpleshop.webapp.util;
+package simpleshop.common;
 
 /**
- * Created by ZHY on 8/9/2015.
+ * A generic key value pair.
  */
 public class Pair<K, V> {
 
     private K key;
     private V value;
+
+    public Pair(){
+
+    }
+
+    public Pair(K key, V value){
+        this.key = key;
+        this.value = value;
+    }
 
     public K getKey() {
         return key;

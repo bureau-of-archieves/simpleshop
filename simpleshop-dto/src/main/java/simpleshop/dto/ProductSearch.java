@@ -20,7 +20,7 @@ public class ProductSearch extends ModelSearch {
         this.name = name;
     }
 
-    @PropertyFilter(property = "cat.self", operator = PropertyFilter.Operator.CONTAINS)
+    @PropertyFilter(alias = "cat", property = "this", operator = PropertyFilter.Operator.CONTAINS)
     public Category getCategory() {
         return category;
     }

@@ -6,6 +6,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.metamodel.source.annotations.ReflectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -72,6 +73,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
 
     @Override
     public Serializable getIdentifier(Object domainObject) {
+        getSession().refresh(domainObject);
         return getSession().getIdentifier(domainObject);
     }
 

@@ -174,7 +174,10 @@ public class TestDataInitializer {
             Product product = new Product();
             product.setName(name);
             product.setQuantityPerUnit(quantityPerUnit);
-            product.getCategories().add(category);
+            while (category != null) {
+                product.getCategories().add(category);
+                category = category.getParent();
+            }
             product.setStock(50);
             session.save(product);
         }

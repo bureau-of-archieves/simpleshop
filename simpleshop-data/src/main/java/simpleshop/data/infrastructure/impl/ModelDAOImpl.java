@@ -1,24 +1,22 @@
 package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import simpleshop.Constants;
+import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SortInfo;
+import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.*;
 import simpleshop.data.util.DomainUtils;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Repository
@@ -60,7 +58,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         createAliases(aliases, aliasDeclarations);
 
         //add criteria from each search parameter
-        List<Criterion> propertyCriteria = new ArrayList<>(); //expressions for OR clause
+        List<Pair<Criterion, Criteria>> propertyCriteria = new ArrayList<>(); //expressions for OR clause
         for(PropertyMetadata propertyMetadata : searchMetadata.getPropertyMetadataMap().values()){
 
             //get or filters
@@ -79,12 +77,13 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                 String propertyName = propertyFilter.property();
                 if (propertyName == null || Constants.REFLECTED_PROPERTY_NAME.equals(propertyName))
                     propertyName = propertyMetadata.getPropertyName();
+
                 String lastPart = propertyName.substring(propertyName.lastIndexOf('.') + 1);
                 String fullPropertyPath = getFullPropertyPath(aliasDeclarations, propertyName, propertyFilter.alias());
 
                 //get property type
                 Class<?> targetType;
-                if("self".equals(lastPart)){
+                if("this".equals(lastPart)){
                     ModelMetadata propertyOwnerMetadata = modelMetadata.getPropertyOwnerMetadata(fullPropertyPath);
                     targetType = propertyOwnerMetadata.getModelClass();
                 } else {
@@ -94,20 +93,23 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
 
                 //add
                 String alias = createAssociationPath(aliases, propertyFilter.alias(), propertyName);
-
-                Criterion criterion = createCriterion((StringUtils.isNullOrEmpty(alias) ? "" : alias + ".") + lastPart, propertyFilter.operator(), targetType, value, propertyFilter.negate());
-                propertyCriteria.add(criterion);
+                String qualifiedPropertyName = "this".equals (lastPart) ? alias : ((StringUtils.isNullOrEmpty(alias) ? "" : alias + ".") + lastPart);
+                Criterion criterion = createCriterion(qualifiedPropertyName, propertyFilter.operator(), targetType, value, propertyFilter.negate());
+                propertyCriteria.add(new Pair<>(criterion, "this".equals(lastPart) ? aliases.get(propertyFilter.alias()) : criteria));
             }
-            addCriteria(criteria, propertyCriteria);
+
+            addCriteria(propertyCriteria);
             propertyCriteria.clear();
         }
 
+        //sorting
         if(searchObject.getSortInfoList() != null){
             for(SortInfo sortInfo : searchObject.getSortInfoList()){
                 aliases.get(sortInfo.getAlias()).addOrder(sortInfo.isAscending() ? Order.asc(sortInfo.getProperty()) : Order.desc(sortInfo.getProperty()));
             }
         }
 
+        //paging
         if(searchObject.getPageSize() > 0){
             criteria.setMaxResults(searchObject.getPageSize() + (searchObject.isPageSizePlusOne() ? 1 : 0));
             criteria.setFirstResult(searchObject.getPageIndex() * searchObject.getPageSize());
@@ -175,13 +177,20 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         return fullPropertyPath;
     }
 
-    private void addCriteria(Criteria parentCriteria, List<Criterion> propertyCriteria) {
+    private void addCriteria(List<Pair<Criterion, Criteria>> propertyCriteria) {
         if(propertyCriteria.size() == 1){
-            parentCriteria.add(propertyCriteria.get(0));
+            Pair<Criterion, Criteria> pair = propertyCriteria.get(0);
+            pair.getValue().add(pair.getKey());
         } else if(propertyCriteria.size() > 1) {
             Criterion[] expressions = new Criterion[propertyCriteria.size()];
-            propertyCriteria.toArray(expressions);
-            parentCriteria.add(Restrictions.or(expressions));
+            for(int i=0; i<propertyCriteria.size(); i++){
+                Pair<Criterion, Criteria> pair = propertyCriteria.get(i);
+                expressions[i] = pair.getKey();
+                if(i > 0 && propertyCriteria.get(i-1).getValue() != pair.getValue()){
+                    throw new SpongeConfigurationException("OR conditions must be added to the same criteria.");
+                }
+            }
+            propertyCriteria.get(0).getValue().add(Restrictions.or(expressions));
         }
     }
 
@@ -208,31 +217,47 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         Object parsedObject;
         switch (operator){
             case LIKE:
+                if(!CharSequence.class.isAssignableFrom(targetType))
+                    throw new SpongeConfigurationException("LIKE operator does not apply to property type: " + targetType.getName());
+
                 String pattern = StringUtils.wrapLikeKeywords(value.toString());
                 criterion = Restrictions.like(propertyName, pattern);
                 if(negate) {
                     criterion = Restrictions.not(criterion);
                 }
                 break;
+
             case IN:
-                Object[] values = value.toString().split(",");
-                for(int i=0; i<values.length;i++)
-                    values[i] = simpleshop.common.ReflectionUtils.parseObject(values[i],targetType);
+                Object[] values;
+                if(value instanceof Iterable<?>){
+                    Iterable<?> iterable = (Iterable<?>)value;
+                    List<Object> list = new ArrayList<>();
+                    for(Object obj : iterable){
+                        list.add(obj);
+                    }
+                    values = list.toArray();
+                } else {
+                    values = value.toString().split(",");
+                    for(int i=0; i<values.length;i++)
+                        values[i] = simpleshop.common.ReflectionUtils.parseObject(values[i],targetType);
+                }
                 criterion = Restrictions.in(propertyName, values);
                 if(negate) {
                     criterion = Restrictions.not(criterion);
                 }
                 break;
+
             case CONTAINS:
                 if(negate)
-                    throw new RuntimeException("Negation is not supported with CONTAINS criteria.");
+                    throw new SpongeConfigurationException("Negation is not supported with CONTAINS criteria.");
 
-                if(DomainUtils.isDomainObject(value)){
-                    criterion = Restrictions.idEq(this.getIdentifier(value));
-                } else {
-                  throw new RuntimeException("CONTAINS criteria must be applied to a domain object.");
+                if(!DomainUtils.isDomainObject(value)){
+                    throw new SpongeConfigurationException("CONTAINS criteria must be applied to a domain object.");
+
                 }
+                criterion = Restrictions.idEq(this.getIdentifier(value));
                 break;
+
             case EQUAL:
                 parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
                 if(negate){
@@ -241,6 +266,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                     criterion = Restrictions.eq(propertyName, parsedObject);
                 }
                 break;
+
             case GREATER:
                 parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
                 if(negate){
@@ -249,6 +275,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                     criterion = Restrictions.gt(propertyName, parsedObject);
                 }
                 break;
+
             case LESS:
                 parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
                 if(negate){
@@ -257,12 +284,14 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
                     criterion = Restrictions.lt(propertyName, parsedObject);
                 }
                 break;
+
             case IS_NULL:
                 if(Objects.equals("false", value) ^ negate)
                     criterion = Restrictions.isNull(propertyName);
                 else
                     criterion = Restrictions.isNotNull(propertyName);
                 break;
+
             default:
                 throw new IllegalArgumentException("operator");
         }
