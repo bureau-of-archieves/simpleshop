@@ -6,6 +6,7 @@ import org.hibernate.collection.internal.PersistentSet;
 import org.hibernate.validator.constraints.URL;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.common.StringUtils;
+import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.*;
 import simpleshop.domain.metadata.*;
 import simpleshop.domain.metadata.validation.*;
@@ -76,7 +77,7 @@ public final class DomainUtils {
 
             //setSearchable
             ModelMetadata modelMetadata = metadataMap.get(modelName);
-            if (modelMetadata.getType() == ModelMetadata.ModelType.DOMAIN) {
+            if (modelMetadata.getType() == ModelType.DOMAIN) {
                 String searchModelName = modelName + "Search";
                 if (metadataMap.containsKey(searchModelName))
                     modelMetadata.setSearchable(true);
@@ -104,7 +105,7 @@ public final class DomainUtils {
         Class<?> returnType = propertyMetadata.getGetter().getReturnType();
         metadata.setName(returnType.getSimpleName());
         metadata.setModelClass(returnType);
-        metadata.setType(ModelMetadata.ModelType.COLLECTION);
+        metadata.setType(ModelType.COLLECTION);
         Map<String, PropertyMetadata> propertyMetadataMap = new HashMap<>();
         metadata.setSearchable(false);
         metadata.setPropertyMetadataMap(propertyMetadataMap);
@@ -167,16 +168,19 @@ public final class DomainUtils {
      */
     public static ModelMetadata createModelMetadata(Class<?> clazz) {
 
-        ModelMetadata modelMetadata = new ModelMetadata();
-        modelMetadata.setModelClass(clazz);
-        modelMetadata.setName(clazz.getSimpleName());
+        ModelMetadata modelMetadata = new ModelMetadata(clazz);
 
-        setModelType(modelMetadata, clazz); //set model type
+
         setIcon(modelMetadata, clazz); //set icon
         setDisplayFormat(modelMetadata, clazz);//set display format
         setInterpolateFormat(modelMetadata, clazz);
-        setAliasAnnotations(modelMetadata, clazz);//set alias annotations
-        setSortProperties(modelMetadata, clazz);//set sort properties
+
+        if(modelMetadata.isSearchDTO()){
+            setAliasAnnotations(modelMetadata, clazz);//set alias annotations
+            setSortProperties(modelMetadata, clazz);//set sort properties
+        }
+
+
 
         //set property metadata
         Set<String> ignoredProperties = getJsonIgnoreProperties(clazz);
@@ -238,7 +242,17 @@ public final class DomainUtils {
                 aliasDeclarations.addAll(Arrays.asList(aliasDeclarationList.value()));
             }
         }
+
+        Map<String, AliasDeclaration> declarationMap = new HashMap<>();
+        for(AliasDeclaration aliasDeclaration : aliasDeclarations){
+            if(declarationMap.containsKey(aliasDeclaration.aliasName()))
+                throw new SpongeConfigurationException("Duplicate alias declaration detected in the same search model.");
+
+            declarationMap.put(aliasDeclaration.aliasName(), aliasDeclaration);
+        }
         if (aliasDeclarations.size() > 0) {
+
+
             modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
         }
     }
@@ -280,20 +294,7 @@ public final class DomainUtils {
         }
     }
 
-    private static void setModelType(ModelMetadata modelMetadata, Class<?> clazz) {
-        String fullName = clazz.getName();
-        ModelMetadata.ModelType modelType;
-        if (fullName.contains(".component.")) {
-            modelType = ModelMetadata.ModelType.EMBEDDED;
-        } else if (fullName.contains(".lookup.")) {
-            modelType = ModelMetadata.ModelType.LOOKUP;
-        } else if (fullName.contains(".domain.")) {
-            modelType = ModelMetadata.ModelType.DOMAIN;
-        } else {
-            modelType = ModelMetadata.ModelType.DTO;
-        }
-        modelMetadata.setType(modelType);
-    }
+
 
     private static PropertyMetadata extraPropertyMetadata(Method method) {
 
@@ -308,7 +309,6 @@ public final class DomainUtils {
         setLabel(propertyMetadata, method);
         setDescription(propertyMetadata, method);
         setDisplayFormat(propertyMetadata, method);
-        setSummary(method, propertyMetadata);
         setWatermark(method, propertyMetadata);
         setBeanValidation(method, propertyMetadata);
         setPropertyFilters(method, propertyMetadata);
@@ -363,12 +363,6 @@ public final class DomainUtils {
                 propertyMetadata.setDisplayFormat("moment:'YYYY-MM-DD hh:mm:ss'");
             }
         }
-    }
-
-    private static void setSummary(Method method, PropertyMetadata propertyMetadata) {
-        Summary summaryAnnotation = method.getAnnotation(Summary.class);
-        if (summaryAnnotation != null)
-            propertyMetadata.setSummaryProperty(true);
     }
 
     private static void setWatermark(Method method, PropertyMetadata propertyMetadata) {
@@ -453,86 +447,7 @@ public final class DomainUtils {
         }
     }
 
-    /**
-     * Extract the properties marked as @ItemText.
-     * @param domainObject the domain object used as a select item.
-     * @return Item text for the object.
-     */
-    public static String extractItemText(Object domainObject) {
-        if (domainObject == null)
-            return null;
 
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for (Method method : domainObject.getClass().getMethods()) {
-            if (!ReflectionUtils.isPublicInstanceGetter(method))
-                continue;
 
-            ItemText text = method.getAnnotation(ItemText.class);
-            if (text == null)
-                continue;
-
-            try {
-                Object value = method.invoke(domainObject);
-                if (value != null) {
-                    treeMap.put(text.order() * 2 + 1, text.separator());
-                    treeMap.put(text.order() * 2 + 2, value.toString());
-                }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        String result = "";
-        for (Integer key : treeMap.keySet()) {
-            if (key % 2 == 1) { //separator
-                if (result.length() > 0)
-                    result += treeMap.get(key);
-            } else {
-                result += treeMap.get(key);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Extract the properties marked as @ItemValue.
-     * @param domainObject the domain object used as a select item.
-     * @return Item value for the object.
-     */
-    public static String extractItemValue(Object domainObject) {
-        if (domainObject == null)
-            return null;
-
-        TreeMap<Integer, String> treeMap = new TreeMap<>();
-        for (Method method : domainObject.getClass().getMethods()) {
-            if (!ReflectionUtils.isPublicInstanceGetter(method))
-                continue;
-
-            ItemValue text = method.getAnnotation(ItemValue.class);
-            if (text == null)
-                continue;
-
-            try {
-                Object value = method.invoke(domainObject);
-                if (value != null) {
-                    treeMap.put(text.order() * 2 + 1, text.separator());
-                    treeMap.put(text.order() * 2 + 2, value.toString());
-                }
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-
-        String result = "";
-        for (Integer key : treeMap.keySet()) {
-            if (key % 2 == 1) { //separator
-                if (result.length() > 0)
-                    result += treeMap.get(key);
-            } else {
-                result += treeMap.get(key);
-            }
-        }
-        return result;
-    }
 
 }

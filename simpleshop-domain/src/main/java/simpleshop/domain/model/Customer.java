@@ -4,7 +4,6 @@ import org.hibernate.annotations.*;
 import simpleshop.domain.metadata.*;
 
 import javax.persistence.*;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -36,7 +35,6 @@ public class Customer {
         this.id = id;
     }
 
-    @Summary
     @ManyToOne(optional = false)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
@@ -49,7 +47,6 @@ public class Customer {
         this.contact = contact;
     }
 
-    @Summary
     @Column(name = "stock", nullable = false)
     @NotNull
     @Description("True if this customer represents stock")

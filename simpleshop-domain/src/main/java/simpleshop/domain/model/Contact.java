@@ -1,11 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.*;
-import org.hibernate.annotations.CascadeType;
 import simpleshop.Constants;
-import simpleshop.domain.metadata.ItemText;
-import simpleshop.domain.metadata.ItemValue;
-import simpleshop.domain.metadata.Summary;
 import simpleshop.domain.metadata.ValueClass;
 import simpleshop.domain.model.component.Address;
 
@@ -30,7 +26,6 @@ public class Contact {
     @Id
     @GeneratedValue
     @Column(nullable = false, insertable = false, updatable = false)
-    @ItemValue
     public Integer getId() {
         return id;
     }
@@ -39,10 +34,8 @@ public class Contact {
         this.id = id;
     }
 
-    @Summary
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)
     @NotNull
-    @ItemText
     public String getName() {
         return name;
     }
@@ -51,7 +44,6 @@ public class Contact {
         this.name = name;
     }
 
-    @Summary
     @Column(name = "contact_name",  length = Constants.MID_STRING_LENGTH)
     public String getContactName() {
         return contactName;
@@ -61,7 +53,6 @@ public class Contact {
         this.contactName = contactName;
     }
 
-    @Summary
     @ValueClass()
     @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
     @MapKeyClass(String.class)

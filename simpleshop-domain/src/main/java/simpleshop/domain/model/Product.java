@@ -5,9 +5,7 @@ import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
-import simpleshop.domain.metadata.Summary;
 import simpleshop.domain.model.component.ProductSupplier;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
@@ -38,7 +36,6 @@ public class Product {
         this.id = id;
     }
 
-    @Summary
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)
     @NotNull
     public String getName() {
@@ -49,7 +46,6 @@ public class Product {
         this.name = name;
     }
 
-    @Summary
     @Column(length = Constants.MID_STRING_LENGTH)
     @Description("Main image of the product.")
     public String getImageUrl() {
@@ -60,7 +56,6 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    @Summary
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)
     @NotNull
     public String getQuantityPerUnit() {
@@ -93,7 +88,6 @@ public class Product {
         this.productSuppliers = productSuppliers;
     }
 
-    @Summary
     @Column(name = "stock", nullable = false)
     @NotNull
     public Integer getStock() {

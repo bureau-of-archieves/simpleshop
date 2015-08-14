@@ -8,24 +8,52 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
- * Created by ZHY on 10/01/2015.
+ * Category domain object.
+ * There are two types of Category objects:
+ * menuItem = true  - an item in the menu tree.
+ * menuItem = false - use as a standalone tag.
  */
 @Entity
 @Table(name = "categories")
 public class Category {
 
     private Integer id;
+
+    /**
+     * Name of the category.
+     */
     private String name;
+
+    /**
+     * A short description.
+     */
     private String description;
+
+    /**
+     * Category image.
+     */
     private String imagePath;
+
+    /**
+     * Parent category for menu items.
+     * Tag category can have a parent but things under a tag does not belong to the parent tag.
+     */
     private Category parent;
+
+    /**
+     * If is a menu item or not.
+     */
     private Boolean menuItem = Boolean.FALSE;
+
+    /**
+     * Used for hierarchical search.
+     * The value is: id0_id1_id2_idn which is a underscore separated string of all ancestor ids.
+     */
+    private String prefix;
 
     @Id
     @GeneratedValue
     @Column(nullable = false, insertable = false, updatable = false)
-    @ItemValue
-    @ItemText
     public Integer getId() {
         return id;
     }
@@ -34,10 +62,8 @@ public class Category {
         this.id = id;
     }
 
-    @Summary
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)
     @NotNull
-    @ItemText(order = 1, separator = " - ")
     public String getName() {
         return name;
     }
@@ -46,7 +72,6 @@ public class Category {
         this.name = name;
     }
 
-    @Summary
     @Column(length = Constants.LONG_STRING_LENGTH)
     @ItemDescription
     public String getDescription() {
@@ -88,4 +113,12 @@ public class Category {
         this.menuItem = menuItem;
     }
 
+    @Column(name = "prefix", length = Constants.MID_STRING_LENGTH)
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 }

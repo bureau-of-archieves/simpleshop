@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
 import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.data.metadata.ModelType;
 import simpleshop.data.metadata.PropertyMetadata;
 import simpleshop.service.MetadataService;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -209,7 +210,7 @@ public class Functions {
         }
 
         ModelMetadata collectionMetadata = propertyMetadata.getReturnTypeMetadata();
-        if (collectionMetadata.getType() != ModelMetadata.ModelType.COLLECTION) {
+        if (collectionMetadata.getType() != ModelType.COLLECTION) {
             throw new RuntimeException("Property " + propertyMetadata.getPropertyName() + " does not return a collection.");
         }
 

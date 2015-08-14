@@ -5,33 +5,87 @@ import simpleshop.common.Pair;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
-@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "noneSummaryProperties", "sortProperties"})
+/**
+ * Model metadata extracted from the domain model.
+ * Some information is only available on the server side (i.e. json ignored).
+ */
+@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "sortProperties"})
 public class ModelMetadata {
 
+    public ModelMetadata(Class<?> modelClass){
+
+        this.modelClass = modelClass;
+        this.name = modelClass.getSimpleName();
+
+        String fullName = modelClass.getName();
+        if (fullName.contains(".component.")) {
+            this.type = ModelType.EMBEDDED;
+        } else if (fullName.contains(".domain.")) {
+            this.type = ModelType.DOMAIN;
+        } else {
+            this.type = ModelType.DTO;
+        }
+    }
+
+    /**
+     * Name of the model in Pascal casing.
+     */
     private String name;
+
+    /**
+     * Icon name for the model in the format of [prefix:]icon_name.
+     * If no prefix is specified the name indicate Bootstrap graph icon.
+     */
     private String icon;
+
+    /**
+     * Model type, see {@link ModelType}.
+     */
     private ModelType type;
-    private boolean searchable = false;
-    private String displayFormat;   //how to convert to string using pipelined ajs filters.
-    private String interpolateFormat;//format for the interpolation filter
+
+    /**
+     * Decide if this type of model can be listed in the search menu.
+     */
+    private boolean searchable;
+
+    /**
+     * Pipelined ajs filters converting a model instance to a string for display.
+     */
+    private String displayFormat;
+
+    /**
+     * An ajs expression string which will be passed to $interpolate service to convert a model instance to string.
+     * If both interpolateFormat and displayFormat are set, interpolateFormat will be called first.
+     * See {@link simpleshop.webapp.util.Functions#combineDisplayFormat(simpleshop.data.metadata.PropertyMetadata, java.lang.String).}
+     */
+    private String interpolateFormat;
+
+    /**
+     * Name of the id property.
+     * In Sponge framework all models should have a single property for the primary key.
+     */
+    private String idPropertyName;
+
+    /**
+     * Metadata for all properties.
+     */
     private Map<String, PropertyMetadata> PropertyMetadataMap;
 
-    private Set<String> noneSummaryProperties;
-    private List<AliasDeclaration> aliasDeclarations;
+    //region Server side information
+
+    private Map<String, AliasDeclaration> aliases;
     private List<SortProperty> sortProperties;
     private Class<?> modelClass;
 
-    public Map<String, PropertyMetadata> getPropertyMetadataMap() {
-        return PropertyMetadataMap;
-    }
+    //endregion
 
-    public void setPropertyMetadataMap(Map<String, PropertyMetadata> PropertyMetadataMap) {
-        this.PropertyMetadataMap = PropertyMetadataMap;
-    }
-
+    /**
+     * Get the metadata of a property.
+     * @param path dot separated Path to the property from this model.
+     * @return the property metadata and the defining model metadata.
+     */
     public Pair<ModelMetadata, PropertyMetadata> getPathMetadata(String path){
         String[] parts = path.split("\\.");
         ModelMetadata modelMetadata = this;
@@ -46,22 +100,38 @@ public class ModelMetadata {
         return new Pair<>(modelMetadata, propertyMetadata);
     }
 
+    /**
+     * Get the metadata of the model which defines the property.
+     * @param path the dot separated path to a property.
+     * @return metadata of the owner model.
+     */
     public ModelMetadata getPropertyOwnerMetadata(String path){
         Pair<ModelMetadata, PropertyMetadata> pair = getPathMetadata(path);
         return pair.getKey();
     }
 
+    /**
+     * Get the metadata of a property.
+     * @param path the dot separated path to a property.
+     * @return metadata of the property.
+     */
     public PropertyMetadata getPropertyMetadata(String path) {
         Pair<ModelMetadata, PropertyMetadata> pair = getPathMetadata(path);
         return pair.getValue();
     }
 
-    public Set<String> getNoneSummaryProperties() {
-        return noneSummaryProperties;
+    /**
+     * Check if this model is search DTO, which has additional metadata.
+     * @return
+     */
+    public boolean isSearchDTO(){
+        return this.type == ModelType.DTO && this.name.endsWith("Search");
     }
 
-    public void setNoneSummaryProperties(Set<String> noneSummaryProperties) {
-        this.noneSummaryProperties = noneSummaryProperties;
+    //region generated properties
+
+    public String getName() {
+        return name;
     }
 
     public String getIcon() {
@@ -72,12 +142,8 @@ public class ModelMetadata {
         this.icon = icon;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public ModelType getType() {
+        return type;
     }
 
     public boolean isSearchable() {
@@ -104,33 +170,28 @@ public class ModelMetadata {
         this.interpolateFormat = interpolateFormat;
     }
 
-    public Class<?> getModelClass() {
-        return modelClass;
+    public String getIdPropertyName() {
+        return idPropertyName;
     }
 
-    public ModelType getType() {
-        return type;
+    public void setIdPropertyName(String idPropertyName) {
+        this.idPropertyName = idPropertyName;
     }
 
-    public void setType(ModelType type) {
-        this.type = type;
+    public Map<String, PropertyMetadata> getPropertyMetadataMap() {
+        return PropertyMetadataMap;
     }
 
-    public void setModelClass(Class<?> modelClass) {
-        this.modelClass = modelClass;
+    public void setPropertyMetadataMap(Map<String, PropertyMetadata> propertyMetadataMap) {
+        PropertyMetadataMap = propertyMetadataMap;
     }
 
-    public enum ModelType {
-
-        DOMAIN, DTO, LOOKUP, EMBEDDED, COLLECTION
+    public Map<String, AliasDeclaration> getAliases() {
+        return aliases;
     }
 
-    public List<AliasDeclaration> getAliasDeclarations() {
-        return aliasDeclarations;
-    }
-
-    public void setAliasDeclarations(List<AliasDeclaration> aliasDeclarations) {
-        this.aliasDeclarations = aliasDeclarations;
+    public void setAliases(Map<String, AliasDeclaration> aliases) {
+        this.aliases = aliases;
     }
 
     public List<SortProperty> getSortProperties() {
@@ -140,4 +201,11 @@ public class ModelMetadata {
     public void setSortProperties(List<SortProperty> sortProperties) {
         this.sortProperties = sortProperties;
     }
+
+    public Class<?> getModelClass() {
+        return modelClass;
+    }
+
+    //endregion
+
 }

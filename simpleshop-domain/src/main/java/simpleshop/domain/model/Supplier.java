@@ -4,8 +4,6 @@ import org.hibernate.annotations.Cascade;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
-import simpleshop.domain.metadata.Summary;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -31,7 +29,6 @@ public class Supplier {
         this.id = id;
     }
 
-    @Summary
     @ManyToOne(optional = false)
     @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
@@ -44,7 +41,6 @@ public class Supplier {
         this.contact = contact;
     }
 
-    @Summary
     @Column(name = "stock", nullable = false)
     @NotNull
     @Description("True if this supplier represents stock")
