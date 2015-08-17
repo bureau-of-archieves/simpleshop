@@ -380,4 +380,13 @@ public final class StringUtils {
     public static boolean isDateTimeType(String type){
         return type != null && (type.endsWith("Date") || type.endsWith("DateTime"));
     }
+
+    public static String subStrAfterFirst(String src, String s) {
+        if(src == null)
+            return null;
+        if(s == null)
+            return src;
+        int index = src.indexOf(s);
+        return src.substring(index + 1);
+    }
 }

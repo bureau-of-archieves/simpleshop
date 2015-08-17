@@ -14,6 +14,8 @@ import java.util.Map;
 @JsonIgnoreProperties({"modelClass", "aliasDeclarations", "sortProperties"})
 public class ModelMetadata {
 
+    public ModelMetadata(){}
+
     public ModelMetadata(Class<?> modelClass){
 
         this.modelClass = modelClass;
@@ -134,6 +136,10 @@ public class ModelMetadata {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getIcon() {
         return icon;
     }
@@ -144,6 +150,10 @@ public class ModelMetadata {
 
     public ModelType getType() {
         return type;
+    }
+
+    public void setType(ModelType type) {
+        this.type = type;
     }
 
     public boolean isSearchable() {
@@ -205,6 +215,11 @@ public class ModelMetadata {
     public Class<?> getModelClass() {
         return modelClass;
     }
+
+    public void setModelClass(Class<?> modelClass) {
+        this.modelClass = modelClass;
+    }
+
 
     //endregion
 

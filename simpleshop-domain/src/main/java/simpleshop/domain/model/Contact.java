@@ -2,7 +2,6 @@ package simpleshop.domain.model;
 
 import org.hibernate.annotations.*;
 import simpleshop.Constants;
-import simpleshop.domain.metadata.ValueClass;
 import simpleshop.domain.model.component.Address;
 
 import javax.persistence.*;
@@ -53,7 +52,6 @@ public class Contact {
         this.contactName = contactName;
     }
 
-    @ValueClass()
     @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
     @MapKeyClass(String.class)
     @CollectionTable(name = "contact_numbers", joinColumns=@JoinColumn(name="contact_id"))

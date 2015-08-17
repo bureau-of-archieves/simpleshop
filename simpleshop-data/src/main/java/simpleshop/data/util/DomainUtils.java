@@ -15,8 +15,9 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public final class DomainUtils {
@@ -44,83 +45,139 @@ public final class DomainUtils {
         return realClass;
     }
 
+    /**
+     * Check if the given object is a domain object.
+     * @param object any object. Cannot pass null here.
+     * @return true if is domain object.
+     */
     public static boolean isDomainObject(Object object){
         Class<?> clazz = getProxiedClass(object);
         return domainClasses.contains(clazz);
     }
 
+    /**
+     * Get the domain and dto metadata.
+     * @return unmodifiable map for concurrent access.
+     */
+    public static Map<String, ModelMetadata> getModelMetadata(){
+        return modelMetadataMap;
+    }
 
-    private static volatile Map<String, ModelMetadata> modelMetadataMap;
+    /**
+     * Get property metadata for a single model.
+     * @param modelName name in pascal casing.
+     * @return null if not found.
+     */
+    public static ModelMetadata getModelMetadata(String modelName){
+        if(modelMetadataMap != null && modelMetadataMap.containsKey(modelName))
+            return modelMetadataMap.get(modelName);
 
-    private static final HashSet<Class<?>> domainClasses = new HashSet<>();
+        return null;
+    }
+
+    //////////////////////////////////metadata creation logic///////////////////////////////////////////////////
+    private static Map<String, ModelMetadata> modelMetadataMap;
+    private static Set<Class<?>> domainClasses;
+
     /**
      * This method can only be called once in MetadataServiceImpl constructor.
-     *
      * @param classes all model classes, this is only know in service layer, as data layer does not depend on dto.
      */
-    public static void createModelMetadataMap(Class<?>[] classes) {
+    public static synchronized void createModelMetadataMap(Class<?>[] classes) {
 
         if (modelMetadataMap != null)
             throw new UnsupportedOperationException("DomainUtils.createModelMetadataMap(Class<?>[]) can only be called once.");
 
-        domainClasses.addAll(Arrays.asList(classes));
+        HashSet<Class<?>> set = new HashSet<>(new HashSet<>(Arrays.asList(classes)));
+        domainClasses = Collections.unmodifiableSet(set);
 
         HashMap<String, ModelMetadata> metadataMap = new HashMap<>();
         for (Class<?> clazz : classes) {
-            String modelName = clazz.getSimpleName();
             ModelMetadata modelMetadata = createModelMetadata(clazz);
-            metadataMap.put(modelName, modelMetadata);
+            metadataMap.put(modelMetadata.getName(), modelMetadata);
         }
         modelMetadataMap = Collections.unmodifiableMap(metadataMap);//for thread safety
 
+        finishMetadataCreation(metadataMap);
+    }
+
+    /**
+     * Update metadata before it is ready for access.
+     * @param metadataMap metadata just loaded.
+     */
+    private static void finishMetadataCreation(HashMap<String, ModelMetadata> metadataMap) {
         for (String modelName : modelMetadataMap.keySet()) {
 
             //setSearchable
             ModelMetadata modelMetadata = metadataMap.get(modelName);
             if (modelMetadata.getType() == ModelType.DOMAIN) {
                 String searchModelName = modelName + "Search";
-                if (metadataMap.containsKey(searchModelName))
+                if (metadataMap.containsKey(searchModelName) && !StringUtils.isNullOrEmpty(modelMetadata.getIcon()))
                     modelMetadata.setSearchable(true);
             }
 
-            //set returnTypeMetadata
-            for (String fieldName : modelMetadata.getPropertyMetadataMap().keySet()) {
-                PropertyMetadata propertyMetadata = modelMetadata.getPropertyMetadataMap().get(fieldName);
+            //set returnTypeMetadata & id property name
+            for (PropertyMetadata propertyMetadata : modelMetadata.getPropertyMetadataMap().values()) {
                 String possibleModelName = propertyMetadata.getPropertyType();
                 if (metadataMap.containsKey(possibleModelName)) {
                     propertyMetadata.setReturnTypeMetadata(metadataMap.get(possibleModelName));
                 } else {
                     Class<?> returnType = propertyMetadata.getGetter().getReturnType();
                     if(Iterable.class.isAssignableFrom(returnType) || Map.class.isAssignableFrom(returnType)){
-                        //create collection return type metadata
-                        generateCollectionReturnTypeMetadata(propertyMetadata, metadataMap);
+                        generateCollectionReturnTypeMetadata(propertyMetadata);
                     }
+                }
+
+                //set id property name
+                if(propertyMetadata.isIdProperty()){
+                    if(modelMetadata.getIdPropertyName() != null)
+                        throw new SpongeConfigurationException("There can be at most 1 id property.");
+
+                    modelMetadata.setIdPropertyName(propertyMetadata.getPropertyName());
                 }
             }
         }
     }
 
-    private static void generateCollectionReturnTypeMetadata(PropertyMetadata propertyMetadata, HashMap<String, ModelMetadata> metadataMap) {
-        ModelMetadata metadata = new ModelMetadata();
+    /**
+     * Property of propertyMetadata returns a collection. Generate the collection metadata.
+     * @param propertyMetadata generate collection metadata for the return type of this property.
+     */
+    private static void generateCollectionReturnTypeMetadata(PropertyMetadata propertyMetadata) {
+
         Class<?> returnType = propertyMetadata.getGetter().getReturnType();
+        ModelMetadata metadata = new ModelMetadata();
         metadata.setName(returnType.getSimpleName());
         metadata.setModelClass(returnType);
         metadata.setType(ModelType.COLLECTION);
-        Map<String, PropertyMetadata> propertyMetadataMap = new HashMap<>();
         metadata.setSearchable(false);
+        metadata.setDisplayFormat(propertyMetadata.getDisplayFormat());
+        propertyMetadata.setReturnTypeMetadata(metadata);
+
+        Map<String, PropertyMetadata> propertyMetadataMap = new HashMap<>();
         metadata.setPropertyMetadataMap(propertyMetadataMap);
 
         //COLLECTION_ELEMENTS = "elements";
         PropertyMetadata elementsProperty = new PropertyMetadata();
         elementsProperty.setPropertyName("elements");
-        if(propertyMetadata.getGetter() != null){
-            ValueClass valueClass = propertyMetadata.getGetter().getAnnotation(ValueClass.class);
-            if(valueClass != null){
-                elementsProperty.setReturnType(valueClass.value());
+
+        try{
+            Type type = propertyMetadata.getGetter().getDeclaringClass().getDeclaredField(propertyMetadata.getPropertyName()).getGenericType();
+            if (!(type instanceof ParameterizedType)) {
+                elementsProperty.setReturnType(Object.class);
+            } else {
+                Type[] genericArguments = ((ParameterizedType) type).getActualTypeArguments();
+
+                if(genericArguments.length == 1)
+                    elementsProperty.setReturnType((Class<?>)genericArguments[0]); //for collection
+                else if(genericArguments.length == 2)
+                    elementsProperty.setReturnType((Class<?>)genericArguments[1]); //for map
+                else
+                    throw new SpongeConfigurationException("Invalid generic collection type: " + type);
             }
-        }
-        if(elementsProperty.getReturnType() == null){
-            elementsProperty.setReturnType(Object.class);
+
+        }catch (NoSuchFieldException ex){
+            throw new SpongeConfigurationException("Property getter has not backing field: " + propertyMetadata.getGetter(), ex);
         }
         elementsProperty.setPropertyType(elementsProperty.getReturnType().getSimpleName());
         propertyMetadataMap.put("elements", elementsProperty);
@@ -130,8 +187,6 @@ public final class DomainUtils {
         sizeProperty.setPropertyName("size");
         sizeProperty.setReturnType(Integer.class);
         propertyMetadataMap.put("size", sizeProperty);
-
-        propertyMetadata.setReturnTypeMetadata(metadata);
 
         /*
             todo other properties to create.
@@ -146,21 +201,6 @@ public final class DomainUtils {
     }
 
     /**
-     * Get the domain and dto metadata.
-     * @return unmodifiable map for concurrent access.
-     */
-    public static Map<String, ModelMetadata> getModelMetadata(){
-        return modelMetadataMap;
-    }
-
-    public static ModelMetadata getModelMetadata(String modelName){
-        if(modelMetadataMap != null && modelMetadataMap.containsKey(modelName))
-            return modelMetadataMap.get(modelName);
-
-        return null;
-    }
-
-    /**
      * Extract metadata of a class into an object.
      *
      * @param clazz class.
@@ -169,7 +209,6 @@ public final class DomainUtils {
     public static ModelMetadata createModelMetadata(Class<?> clazz) {
 
         ModelMetadata modelMetadata = new ModelMetadata(clazz);
-
 
         setIcon(modelMetadata, clazz); //set icon
         setDisplayFormat(modelMetadata, clazz);//set display format
@@ -180,12 +219,9 @@ public final class DomainUtils {
             setSortProperties(modelMetadata, clazz);//set sort properties
         }
 
-
-
         //set property metadata
-        Set<String> ignoredProperties = getJsonIgnoreProperties(clazz);
         Map<String, PropertyMetadata> propertyMap = new TreeMap<>();
-        Set<String> noneSummaryProperties = new HashSet<>();
+        Set<String> ignoredProperties = getJsonIgnoreProperties(clazz);
         Method[] methods = clazz.getMethods();
         for (Method method : methods) {
             if (!ReflectionUtils.isPublicInstanceGetter(method))
@@ -196,18 +232,13 @@ public final class DomainUtils {
                 continue;
 
             propertyMap.put(propertyMetadata.getPropertyName(), propertyMetadata);
-            if(!propertyMetadata.isSummaryProperty() && !propertyMetadata.isIdProperty()){
-                noneSummaryProperties.add(propertyMetadata.getPropertyName());
-            }
         }
         modelMetadata.setPropertyMetadataMap(Collections.unmodifiableMap(propertyMap));
-        modelMetadata.setNoneSummaryProperties(Collections.unmodifiableSet(noneSummaryProperties));
-
         return modelMetadata;
     }
 
     private static Set<String> getJsonIgnoreProperties(Class<?> clazz) {
-        JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class);
+        JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class); //only add this annotation at top level
         Set<String> ignoredProperties = new TreeSet<>();
         if(jsonIgnoreProperties != null){
            for(String prop : jsonIgnoreProperties.value()){
@@ -225,12 +256,15 @@ public final class DomainUtils {
     }
 
     private static void setAliasAnnotations(ModelMetadata modelMetadata, Class<?> clazz) {
+        //get all super classes
         Stack<Class<?>> classes = new Stack<>();
         Class<?> superClass = clazz;
         while (superClass != Object.class){
             classes.push(superClass);
             superClass = superClass.getSuperclass();
         }
+
+        //get all alias declarations
         List<AliasDeclaration> aliasDeclarations = new ArrayList<>();
         while (!classes.isEmpty()){
             superClass = classes.pop();
@@ -250,20 +284,21 @@ public final class DomainUtils {
 
             declarationMap.put(aliasDeclaration.aliasName(), aliasDeclaration);
         }
-        if (aliasDeclarations.size() > 0) {
 
-
-            modelMetadata.setAliasDeclarations(Collections.unmodifiableList(aliasDeclarations));
-        }
+        modelMetadata.setAliases(declarationMap);
     }
 
     private static void setSortProperties(ModelMetadata modelMetadata, Class<?> clazz) {
+
+        //get all super classes
         Stack<Class<?>> classes = new Stack<>();
         Class<?> superClass = clazz;
         while (superClass != Object.class){
             classes.push(superClass);
             superClass = superClass.getSuperclass();
         }
+
+        //get all sort properties
         List<SortProperty> sortProperties = new ArrayList<>();
         while (!classes.isEmpty()){
             superClass = classes.pop();
@@ -275,9 +310,8 @@ public final class DomainUtils {
                 sortProperties.addAll(Arrays.asList(sortPropertyList.value()));
             }
         }
-        if (sortProperties.size() > 0) {
-            modelMetadata.setSortProperties(Collections.unmodifiableList(sortProperties));
-        }
+
+        modelMetadata.setSortProperties(Collections.unmodifiableList(sortProperties));
     }
 
     private static void setDisplayFormat(ModelMetadata modelMetadata, Class<?> clazz) {
@@ -294,18 +328,15 @@ public final class DomainUtils {
         }
     }
 
-
-
     private static PropertyMetadata extraPropertyMetadata(Method method) {
 
-        PropertyMetadata propertyMetadata;
-        propertyMetadata = new PropertyMetadata();
+        PropertyMetadata propertyMetadata = new PropertyMetadata();
         propertyMetadata.setPropertyName(StringUtils.getPropertyName(method.getName()));
         propertyMetadata.setPropertyType(method.getReturnType().getSimpleName());
         propertyMetadata.setGetter(method);
 
-        setIdProperty(propertyMetadata, method); //setIdProperty
-        setColumn(propertyMetadata, method); //insertable, updatable, length
+        setIdProperty(propertyMetadata, method);
+        setColumn(propertyMetadata, method);
         setLabel(propertyMetadata, method);
         setDescription(propertyMetadata, method);
         setDisplayFormat(propertyMetadata, method);
@@ -446,8 +477,5 @@ public final class DomainUtils {
             propertyMetadata.setPropertyFilters(Collections.unmodifiableList(propertyFilters));
         }
     }
-
-
-
 
 }

@@ -7,7 +7,10 @@ import simpleshop.data.metadata.SortProperty;
 import simpleshop.domain.model.Suburb;
 
 
-@AliasDeclaration(propertyName = "contact", aliasName = "ct")
+@AliasDeclaration.List({
+        @AliasDeclaration(propertyName = "contact", aliasName = "ct"),
+        @AliasDeclaration(parentAlias = "ct", propertyName = "contactNumbers", aliasName = "ctn")
+})
 @SortProperty.List({
         @SortProperty(alias = "ct", propertyName = "name"),
         @SortProperty(alias = "ct", propertyName = "contactName")
@@ -31,7 +34,7 @@ public class ContactSearch extends ModelSearch {
         this.name = name;
     }
 
-    @PropertyFilter(alias = "ct", property = "contactNumbers.elements", operator = PropertyFilter.Operator.LIKE)
+    @PropertyFilter(alias = "ctn", property = "elements", operator = PropertyFilter.Operator.LIKE)
     public String getContactNumber() {
         return contactNumber;
     }

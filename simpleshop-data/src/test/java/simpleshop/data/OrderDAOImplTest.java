@@ -3,7 +3,10 @@ package simpleshop.data;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -66,17 +69,37 @@ public class OrderDAOImplTest extends TransactionalTest {
         Order order = createOrder();
 
         Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Customer.class);
-        Criteria criteria2 = criteria.createCriteria("orders", "ord");
-        criteria2.add(Restrictions.idEq(session.getIdentifier(order)));
+        Criteria criteria = session.createCriteria(Customer.class, "c");
 
+        DetachedCriteria subQuery = DetachedCriteria.forClass(Order.class, "sub1");
+        subQuery.setProjection(Property.forName("id"));
+        //subQuery.add(Restrictions.idEq(25));
+        DetachedCriteria subQuery2 = DetachedCriteria.forClass(Customer.class, "sub2").add(Restrictions.eqProperty("id", "c.id")).createCriteria("orders", "ord").setProjection(Property.forName("ord.id"));
+        subQuery.add(Subqueries.propertyIn("id", subQuery2));
+        //subQuery.add(Restrictions.eqProperty("customer", "c.id"));
+        criteria.add(Subqueries.exists(subQuery));
         List<Customer> customers = criteria.list();
         assertThat(customers.size(), greaterThanOrEqualTo(1));
 
-
         deleteOrder(order);
+    }
 
+    @Test
+    public void criteriaTest() {
+        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class, "c");
+        Criteria criteria1 = criteria.createCriteria("contact", "ct");
 
+        //criteria1.add(Restrictions.ilike("address.addressLine1", "%"));
+
+//        Suburb suburb = new Suburb();
+//        suburb.setId(1);
+//        criteria1.add(Restrictions.eq("address.suburb", suburb));
+
+        Criteria criteria2 = criteria1.createCriteria("address.suburb", "sb");
+        criteria2.add(Restrictions.ilike("sb.suburb", "%wol%"));
+
+        List<Customer> customers = criteria.list();
+        assertThat(customers.size(), greaterThanOrEqualTo(1));
     }
 
     @Autowired

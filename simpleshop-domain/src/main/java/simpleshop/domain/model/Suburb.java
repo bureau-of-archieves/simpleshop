@@ -3,9 +3,6 @@ package simpleshop.domain.model;
 
 import simpleshop.Constants;
 import simpleshop.domain.metadata.DisplayFormat;
-import simpleshop.domain.metadata.ItemText;
-import simpleshop.domain.metadata.ItemValue;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -25,7 +22,6 @@ public class Suburb {
     @Id
     @GeneratedValue
     @Column(nullable = false, insertable = false, updatable = false)
-    @ItemValue
     public Integer getId() {
         return id;
     }
@@ -36,7 +32,6 @@ public class Suburb {
 
     @Column(name = "suburb", nullable = false, length = Constants.MID_STRING_LENGTH)
     @NotNull
-    @ItemText
     public String getSuburb() {
         return suburb;
     }
@@ -55,7 +50,6 @@ public class Suburb {
     }
 
     @Column(name = "state", length = Constants.MID_STRING_LENGTH)
-    @ItemText(order = 1, separator = ", ")
     public String getState() {
         return state;
     }
@@ -66,7 +60,6 @@ public class Suburb {
 
     @Column(name = "postcode", nullable = false, length = Constants.SHORT_STRING_LENGTH)
     @NotNull
-    @ItemText(order = 2, separator = " ")
     public String getPostcode() {
         return postcode;
     }
@@ -78,7 +71,6 @@ public class Suburb {
     @ManyToOne(optional = false)
     @JoinColumn(name = "country_code", nullable = false)
     @NotNull
-    @ItemText(order = 3, separator = " ")
     public Country getCountry() {
         return country;
     }

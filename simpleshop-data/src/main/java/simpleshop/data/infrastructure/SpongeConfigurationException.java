@@ -9,6 +9,10 @@ public class SpongeConfigurationException extends RuntimeException {
         super(msg);
     }
 
+    public SpongeConfigurationException(String msg, Throwable ex){
+        super(msg, ex);
+    }
+
 
 
 }

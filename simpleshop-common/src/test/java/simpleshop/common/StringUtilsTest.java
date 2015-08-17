@@ -1,11 +1,9 @@
 package simpleshop.common;
 
 import org.junit.Test;
-
-import java.lang.reflect.Array;
-import java.util.*;
-
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+
 /**
  * Unit tests for StringUtilsTest.
  */
@@ -62,5 +60,13 @@ public class StringUtilsTest {
         assertEquals(null, StringUtils.camelNameToUrlName(null));
         assertEquals("camel_name", StringUtils.camelNameToUrlName("camelName"));
         assertEquals("my_super_model", StringUtils.camelNameToUrlName("mySuperModel"));
+    }
+
+    @Test
+    public void subStrAfterFirstTest(){
+        assertThat(StringUtils.subStrAfterFirst(null, null), equalTo(null));
+        assertThat(StringUtils.subStrAfterFirst("", "."), equalTo(""));
+        assertThat(StringUtils.subStrAfterFirst("aa.bb.cc", "."), equalTo("bb.cc"));
+        assertThat(StringUtils.subStrAfterFirst(".ba", "."), equalTo("ba"));
     }
 }

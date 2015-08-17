@@ -1,9 +1,6 @@
 package simpleshop.domain.model;
 
 import simpleshop.Constants;
-import simpleshop.domain.metadata.ItemText;
-import simpleshop.domain.metadata.ItemValue;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -30,7 +27,6 @@ public class Country implements Comparable<Country>{
     @Id
     @Column(name = "country_code", length = 3, nullable = false, updatable = false)
     @NotNull
-    @ItemValue
     public String getCountryCode() {
         return countryCode;
     }
@@ -41,7 +37,6 @@ public class Country implements Comparable<Country>{
 
     @Column(name = "name", nullable = false, length = Constants.SHORT_STRING_LENGTH)
     @NotNull
-    @ItemText
     public String getName() {
         return name;
     }
@@ -73,7 +68,6 @@ public class Country implements Comparable<Country>{
         Country country = (Country) o;
 
         return countryCode.equals(country.countryCode);
-
     }
 
     @Override
@@ -91,7 +85,6 @@ public class Country implements Comparable<Country>{
 
     /**
      * This will be used in filtering.
-     * @return this should return the same result as defined by @ItemText.
      */
     @Override
     public String toString() {
