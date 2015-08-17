@@ -162,7 +162,7 @@ public class ModelSearchCriteriaBuilder {
 
         CriterionFactory factory = getCriteriaFactory(operator);
         String qualifiedPropertyName = (StringUtils.isNullOrEmpty(targetAlias) ? "" : targetAlias + ".") + targetPropertyName;
-        return factory.createCriterion(qualifiedPropertyName, targetType, value, negate);
+         return factory.createCriterion(qualifiedPropertyName, targetType, value, negate);
     }
 
     private CriterionFactory getCriteriaFactory(PropertyFilter.Operator operator){
@@ -250,13 +250,11 @@ public class ModelSearchCriteriaBuilder {
                 throw new SpongeConfigurationException(String.format("CONTAINS operator does not apply to non-collection property '%s'", qualifiedPropertyName));
             }
 
-            String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
-            String propertyName = StringUtils.subStrAfterFirst(qualifiedPropertyName, ".");
-            String fullPath = this.getFullPropertyPath(alias, propertyName);
-            Pair<ModelMetadata, PropertyMetadata> pair = modelMetadata.getPathMetadata(fullPath);
+            Pair<ModelMetadata, PropertyMetadata> pair = getMetadata(qualifiedPropertyName);
 
             ModelMetadata targetModelMetadata = pair.getKey();
             DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");
+            String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
             detachedCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), alias + "." + targetModelMetadata.getIdPropertyName()));
 
             PropertyMetadata targetPropertyMetadata = pair.getValue();
@@ -285,10 +283,43 @@ public class ModelSearchCriteriaBuilder {
             return criterion;
         });
 
-        //criterionFactoryMap.put(PropertyFilter.Operator.IN, (targetPropertyName, targetType, value, negate) -> {});
+        criterionFactoryMap.put(PropertyFilter.Operator.VALUE_LIKE, (qualifiedPropertyName, targetType, value, negate) -> {
+
+            if(!Map.class.isAssignableFrom(targetType))
+                throw new SpongeConfigurationException("Operator VALUE_LIKE is only applicable to Map properties.");
+
+            Pair<ModelMetadata, PropertyMetadata> pair = getMetadata(qualifiedPropertyName);
+            PropertyMetadata targetPropertyMetadata = pair.getValue();
+            if(!CharSequence.class.isAssignableFrom(targetPropertyMetadata.getReturnTypeMetadata().getPropertyMetadata("elements").getReturnType())){
+                throw new SpongeConfigurationException("Operator VALUE_LIKE is only applicable to String values.");
+            }
+
+            ModelMetadata targetModelMetadata = pair.getKey();
+            DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");
+            String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
+            detachedCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), alias + "." + targetModelMetadata.getIdPropertyName()));
+            DetachedCriteria subPropertyCriteria = detachedCriteria.createCriteria(targetPropertyMetadata.getPropertyName(), "sub1prop");
+            detachedCriteria.setProjection(Property.forName("sub1prop.elements"));
+            String pattern = StringUtils.wrapLikeKeywords(value.toString());
+            subPropertyCriteria.add(Restrictions.like("elements", pattern));
+
+            Criterion criterion = Subqueries.exists(detachedCriteria);
+            if(negate)
+                criterion = Restrictions.not(criterion);
+            return criterion;
+        });
+
+
+        //criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {});
     }
 
-
+    private Pair<ModelMetadata, PropertyMetadata> getMetadata(String qualifiedPropertyName){
+        String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
+        String propertyName = StringUtils.subStrAfterFirst(qualifiedPropertyName, ".");
+        String fullPath = this.getFullPropertyPath(alias, propertyName);
+        Pair<ModelMetadata, PropertyMetadata> pair = modelMetadata.getPathMetadata(fullPath);
+        return pair;
+    }
 
 
 }

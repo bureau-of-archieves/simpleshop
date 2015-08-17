@@ -34,7 +34,7 @@ public class ContactSearch extends ModelSearch {
         this.name = name;
     }
 
-    @PropertyFilter(alias = "ctn", property = "elements", operator = PropertyFilter.Operator.LIKE)
+    @PropertyFilter(alias = "ct", property = "contactNumbers", operator = PropertyFilter.Operator.VALUE_LIKE)
     public String getContactNumber() {
         return contactNumber;
     }

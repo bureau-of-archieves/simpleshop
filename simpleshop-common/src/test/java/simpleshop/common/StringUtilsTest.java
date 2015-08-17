@@ -2,6 +2,8 @@ package simpleshop.common;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -104,4 +106,76 @@ public class StringUtilsTest {
         assertThat(StringUtils.firstCharUpper("a"), equalTo("A"));
         assertThat(StringUtils.firstCharUpper("about"), equalTo("About"));
     }
+
+    @Test
+    public void ngEscapeTest(){
+        assertThat(StringUtils.ngEscape(null), equalTo(null));
+        assertThat(StringUtils.ngEscape(""), equalTo(""));
+        assertThat(StringUtils.ngEscape("{test}"), equalTo("\\{test\\}"));
+    }
+
+    @Test
+    public void concatTest(){
+        assertThat(StringUtils.concat("Robo", "Cop"), equalTo("RoboCop"));
+        assertThat(StringUtils.concat("Actual", "Test", "Bad"), equalTo("ActualTestBad"));
+    }
+
+    @Test
+    public void toEmptyStringTest(){
+        assertThat(StringUtils.toEmptyString(null), equalTo(null));
+        assertThat(StringUtils.toEmptyString(new BigDecimal("321")), equalTo(""));
+    }
+
+    @Test
+    public void wrapLikeKeywords(){
+
+        assertThat(StringUtils.wrapLikeKeywords(null), equalTo("%"));
+        assertThat(StringUtils.wrapLikeKeywords("%"), equalTo("%"));
+        assertThat(StringUtils.wrapLikeKeywords("abc def"), equalTo("%abc def%"));
+    }
+
+    @Test
+    public void friendlyNameToPascalNameTest(){
+
+        assertThat(StringUtils.friendlyNameToPascalName(null), equalTo(null));
+        assertThat(StringUtils.friendlyNameToPascalName(""), equalTo(""));
+        assertThat(StringUtils.friendlyNameToPascalName("Computer"), equalTo("Computer"));
+        assertThat(StringUtils.friendlyNameToPascalName("Computer Game "), equalTo("ComputerGame"));
+    }
+
+    @Test
+    public void pascalNameToUrlNameTest(){
+        assertThat(StringUtils.pascalNameToUrlName(null), equalTo(null));
+        assertThat(StringUtils.pascalNameToUrlName(""), equalTo(""));
+        assertThat(StringUtils.pascalNameToUrlName("TestWebsite"), equalTo("test_website"));
+        assertThat(StringUtils.pascalNameToUrlName("TheCompanyName"), equalTo("the_company_name"));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void parseIdTest(){
+        StringUtils.parseId("pp");
+    }
+
+    @Test
+    public void viewNameFromUrlTest(){
+       assertThat(StringUtils.viewNameFromUrl("test/category/product-special_view.php"), equalTo("product-special_view"));
+    }
+
+    @Test
+    public void viewTypeFromUrlTest(){
+        assertThat(StringUtils.viewTypeFromUrl("test/category/product-special_view.php"), equalTo("special_view"));
+    }
+
+    @Test
+    public void getFieldId(){
+        assertThat(StringUtils.getFieldId("myDiv", "contact.name"), equalTo("myDiv-contact_name"));
+    }
+
+    @Test
+    public void camelNameToPascalNameTest(){
+        assertThat(StringUtils.camelNameToPascalName(""), equalTo(""));
+        assertThat(StringUtils.camelNameToPascalName("testMainPage"), equalTo("TestMainPage"));
+    }
+
+
 }

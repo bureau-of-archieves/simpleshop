@@ -32,7 +32,7 @@ public @interface PropertyFilter {
     boolean negate() default false;
 
     enum Operator{
-        LIKE, EQUAL, GREATER, LESS, IN, CONTAINS, IS_NULL
+        LIKE, EQUAL, GREATER, LESS, IN, CONTAINS, VALUE_LIKE, IS_NULL
     }
 
     /**

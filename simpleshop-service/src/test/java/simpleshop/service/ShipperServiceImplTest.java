@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
-import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,6 +23,7 @@ import simpleshop.dto.ShipperSearch;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Test <code>MetadataServiceImpl</code> methods.
@@ -48,17 +49,17 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
         ShipperSearch shipperSearch = new ShipperSearch();
         shipperSearch.setName(TestConstants.SHIPPER_NAME_1);
         List<Shipper> shippers = shipperService.search(shipperSearch);
-        assertTrue(shippers.size() == 1);
+        assertThat(shippers.size(), equalTo(1));
 
         shipperSearch.setName(TestConstants.RAMBO);
         shipperSearch.setPageSize(5);
         shippers = shipperService.search(shipperSearch);
-        assertTrue(shippers.size() == 5);
+        assertThat(shippers.size(), equalTo(5));
 
         shipperSearch.setContactNumber(TestConstants.HOME_PHONE_NUMBER_2);
         shipperSearch.setPageSize(10);
-        shippers = shipperService.search(shipperSearch);
-        assertTrue(shippers.size() == 5);
+        shippers = shipperService.search(shipperSearch); //todo fix why return 0????
+        assertThat(shippers.size(), equalTo(5));
     }
 
     @Autowired
@@ -80,10 +81,10 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
         session.close();
     }
 
-    @org.junit.Before
-    @After
+    @Before
+    //@After
     public void cleanUp() {
-        List<Shipper> shippers = shipperService.quickSearch("", new PageInfo());
+        List<Shipper> shippers = shipperService.quickSearch("", new PageInfo(0, Integer.MAX_VALUE));
         for (Shipper shipper : shippers) {
             shipperService.delete(shipper.getId());
         }

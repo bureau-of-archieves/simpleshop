@@ -1,9 +1,11 @@
 package simpleshop.domain.model;
 
-import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.*;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.metadata.InterpolateFormat;
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 
@@ -29,7 +31,7 @@ public class Shipper {
     }
 
     @ManyToOne(optional = false)
-    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
+    @Cascade({org.hibernate.annotations.CascadeType.SAVE_UPDATE,org.hibernate.annotations.CascadeType.DELETE, org.hibernate.annotations.CascadeType.REFRESH, org.hibernate.annotations.CascadeType.MERGE})
     @JoinColumn(name = "contact_id", nullable = false, updatable = false)
     @NotNull
     public Contact getContact() {

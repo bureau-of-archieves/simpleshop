@@ -319,10 +319,12 @@ public final class StringUtils {
 
     /**
      * Convert from friendly name to pascal name, which is concatenated capitalised words.
-     * @param name
-     * @return
+     * @param name name in friendly format.
+     * @return pascal casing.
      */
     public static String friendlyNameToPascalName(String name) {
+        if(isNullOrEmpty(name))
+            return name;
         return name.replaceAll("\\s+", "");
     }
 

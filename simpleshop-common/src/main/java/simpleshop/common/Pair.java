@@ -40,14 +40,14 @@ public class Pair<K, V> {
 
         Pair<?, ?> pair = (Pair<?, ?>) o;
 
-        if (!key.equals(pair.key)) return false;
+        if (key != null ? !key.equals(pair.key) : pair.key != null) return false;
         return !(value != null ? !value.equals(pair.value) : pair.value != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = key.hashCode();
+        int result = key != null ? key.hashCode() : 0;
         result = 31 * result + (value != null ? value.hashCode() : 0);
         return result;
     }

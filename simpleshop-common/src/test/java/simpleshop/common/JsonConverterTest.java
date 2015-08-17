@@ -1,7 +1,6 @@
 package simpleshop.common;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
-import jdk.internal.util.xml.impl.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
