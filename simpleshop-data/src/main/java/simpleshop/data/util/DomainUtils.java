@@ -86,7 +86,7 @@ public final class DomainUtils {
     public static synchronized void createModelMetadataMap(Class<?>[] classes) {
 
         if (modelMetadataMap != null)
-            throw new UnsupportedOperationException("DomainUtils.createModelMetadataMap(Class<?>[]) can only be called once.");
+            return; //throw new UnsupportedOperationException("DomainUtils.createModelMetadataMap(Class<?>[]) can only be called once.");
 
         HashSet<Class<?>> set = new HashSet<>(new HashSet<>(Arrays.asList(classes)));
         domainClasses = Collections.unmodifiableSet(set);

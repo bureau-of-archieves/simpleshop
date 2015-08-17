@@ -2,14 +2,14 @@ package simpleshop.common;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.stream.Stream;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Unit tests for ReflectionUtils.
@@ -91,7 +91,7 @@ public class ReflectionUtilsTest {
 
     @Test
     public void getSetterTest() throws NoSuchMethodException{
-        Method getter = TestObject.class.getMethod("setStream",Stream.class);
+        Method getter = TestObject.class.getMethod("setStream", Stream.class);
         Method result = ReflectionUtils.getSetter(TestObject.class, "stream", Stream.class);
         assertEquals(getter, result);
 
@@ -116,6 +116,27 @@ public class ReflectionUtilsTest {
     }
 
     @Test
+    public void parseObjectTest(){
+
+         assertThat(ReflectionUtils.parseObject(null, Boolean.class), equalTo(null));
+         assertThat(ReflectionUtils.parseObject(Boolean.TRUE, Boolean.class), equalTo(Boolean.TRUE));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void parseStringExceptionTest(){
+
+        ReflectionUtils.parseString("abc", this.getClass());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void parseStringNotSupportedTest(){
+
+        ReflectionUtils.parseString("abc", Integer.class);
+    }
+
+
+
+    @Test
     public void getPropertyTest(){
 
         assertNull(ReflectionUtils.getProperty(null, "whatever"));
@@ -132,6 +153,23 @@ public class ReflectionUtilsTest {
         assertEquals(999, ReflectionUtils.getProperty(testObject, "node.next.value"));
     }
 
+    @Test(expected = RuntimeException.class)
+    public void getPropertyExceptionTest(){
+
+        ReflectionUtils.getProperty("test1", "class.xxx");
+    }
+
+    @Test
+    public void getProperty_IsEmptyTest(){
+        Boolean value = (Boolean)ReflectionUtils.getProperty("", "empty");
+
+        assertThat(value, equalTo(true));
+
+        value = (Boolean)ReflectionUtils.getProperty("aaa", "empty");
+
+        assertThat(value, equalTo(false));
+    }
+
     @Test
     public void setPropertyTest(){
 
@@ -142,7 +180,7 @@ public class ReflectionUtilsTest {
         assertNotNull(testObject.getNode());
 
         assertTrue(ReflectionUtils.setProperty(testObject, "node.value", 999));
-        assertEquals(999, testObject.getNode().getValue());
+        assertThat(testObject.getNode().getValue(), equalTo(999));
 
         assertFalse(ReflectionUtils.setProperty(testObject, "node.next.value", 999));
 
@@ -150,4 +188,18 @@ public class ReflectionUtilsTest {
         assertTrue(ReflectionUtils.setProperty(testObject, "node.next.value", 888));
         assertEquals(888, testObject.getNode().getNext().getValue());
     }
+
+    @Test
+    public void setPropertyReturnValueTest(){
+
+        boolean valueSet = ReflectionUtils.setProperty(new Object(), "class", "can't do");
+        assertThat(valueSet, equalTo(false));
+
+        valueSet = ReflectionUtils.setProperty(new Pair<String, String>(), "key", "can do");
+        assertThat(valueSet, equalTo(true));
+
+    }
+
+
+
 }

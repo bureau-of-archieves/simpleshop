@@ -26,6 +26,11 @@ public class DateUtilsTest {
         assertFalse(date1.before(date3));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createDate_ExceptionTest(){
+       DateUtils.createDate(2011,14,3);
+    }
+
     @Test
     public void calcAgeTest() {
 

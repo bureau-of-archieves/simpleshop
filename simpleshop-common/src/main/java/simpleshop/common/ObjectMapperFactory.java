@@ -44,4 +44,5 @@ public class ObjectMapperFactory {
         filterProvider.addFilter("propNameFilter", SimpleBeanPropertyFilter.serializeAllExcept(excludeFields));
         return filterProvider;
     }
+
 }

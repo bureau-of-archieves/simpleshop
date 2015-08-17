@@ -15,16 +15,15 @@ public final class ReflectionUtils {
     private static final HashSet<String> primitiveConversions = new HashSet<>();
 
     static {
-        primitiveConversions.add("int-Integer");
-        primitiveConversions.add("Integer-int");
-        primitiveConversions.add("int-Long");
-        primitiveConversions.add("int-long");
-        primitiveConversions.add("Integer-Long");
-        primitiveConversions.add("Integer-long");
-        primitiveConversions.add("long-Long");
-        primitiveConversions.add("Long-long");
+        String[] primitiveTypes = {"short", "Short", "int", "Integer", "long", "Long"};
 
-        //todo char, short
+        for(int i=0; i<primitiveTypes.length - 1; i++){
+            for(int j=i+1; j<primitiveTypes.length; j++){
+
+                primitiveConversions.add(primitiveTypes[i] + "-" + primitiveTypes[j]);
+                primitiveConversions.add(primitiveTypes[j] + "-" + primitiveTypes[i]);
+            }
+        }
     }
 
     /**
@@ -78,7 +77,7 @@ public final class ReflectionUtils {
 
      public static <T> T parseString(String s, Class<T> returnType) {
 
-         if(returnType == String.class || returnType == BigDecimal.class || returnType == Integer.class || returnType == Boolean.class || returnType == Character.class) {
+         if( returnType == Boolean.class || returnType == Character.class || returnType == Short.class || returnType == Integer.class || returnType == Float.class || returnType == Double.class || returnType == BigDecimal.class || returnType == String.class) {
              try {
                  return returnType.getConstructor(new Class[]{String.class}).newInstance(s);
              } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException ex) {
@@ -122,12 +121,13 @@ public final class ReflectionUtils {
         Method setter = ReflectionUtils.getSetter(obj.getClass(), property, value == null ? null : value.getClass());
         if (setter != null) {
             try{
-            setter.invoke(obj, value);
+                setter.invoke(obj, value);
+                return true;
             }catch (IllegalAccessException | InvocationTargetException ex){
                 throw new RuntimeException(ex);
             }
         }
-        return true;
+        return false;
     }
 
     /**
@@ -142,7 +142,7 @@ public final class ReflectionUtils {
             return null;
 
         String[] path = property.split("\\.");
-        boolean tryIs = false;
+        boolean tryIs = false; //getBoolean v.s. isBoolean
         for (int i = 0; i < path.length; i++) {
             String prop = path[i];
             String getterName = (tryIs ? "is" : "get") + StringUtils.firstCharUpper(prop);
