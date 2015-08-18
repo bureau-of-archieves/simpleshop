@@ -39,6 +39,7 @@ public class ShipperDAOImplTest extends TransactionalTest {
         address.setSuburb(suburbs.get(0));
         shipper.getContact().setAddress(address);
         shipperDAO.save(shipper);
+        shipperDAO.sessionFlush();
         shipperDAO.evict(shipper);
 
         shipper = shipperDAO.get(shipperId);

@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.CascadeType;
 import simpleshop.Constants;
 import simpleshop.domain.model.component.Address;
 
@@ -58,6 +59,7 @@ public class Contact {
     @MapKeyColumn(name = "contact_type")
     @Column(name = "contact_number")
     @BatchSize(size = Constants.BATCH_SIZE)
+    @Cascade({CascadeType.ALL})
     public Map<String, String> getContactNumbers() {
         return contactNumbers;
     }

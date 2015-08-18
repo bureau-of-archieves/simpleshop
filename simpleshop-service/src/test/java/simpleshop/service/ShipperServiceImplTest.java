@@ -38,13 +38,6 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
 
     @Test
     public void searchTest()  {
-        List<Suburb> suburbs = suburbDAO.quickSearch("", new PageInfo());
-        createShipper(TestConstants.SHIPPER_NAME_1, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_1, TestConstants.MAGIC_STREET_1, suburbs.get(0));
-        createShipper(TestConstants.SHIPPER_NAME_2, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_1, suburbs.get(1));
-
-        for (int i = 0; i < 10; i++) {
-            createShipper(TestConstants.RAMBO + i, ContactNumberType.WORK_PHONE.name(), i % 2 == 1 ? TestConstants.HOME_PHONE_NUMBER_1 : TestConstants.HOME_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_2, suburbs.get(1));
-        }
 
         ShipperSearch shipperSearch = new ShipperSearch();
         shipperSearch.setName(TestConstants.SHIPPER_NAME_1);
@@ -58,7 +51,7 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
 
         shipperSearch.setContactNumber(TestConstants.HOME_PHONE_NUMBER_2);
         shipperSearch.setPageSize(10);
-        shippers = shipperService.search(shipperSearch); //todo fix why return 0????
+        shippers = shipperService.search(shipperSearch);
         assertThat(shippers.size(), equalTo(5));
     }
 
@@ -82,12 +75,21 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
     }
 
     @Before
-    //@After
     public void cleanUp() {
         List<Shipper> shippers = shipperService.quickSearch("", new PageInfo(0, Integer.MAX_VALUE));
         for (Shipper shipper : shippers) {
             shipperService.delete(shipper.getId());
         }
+
+        List<Suburb> suburbs = suburbDAO.quickSearch("", new PageInfo());
+        createShipper(TestConstants.SHIPPER_NAME_1, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_1, TestConstants.MAGIC_STREET_1, suburbs.get(0));
+        createShipper(TestConstants.SHIPPER_NAME_2, ContactNumberType.WORK_PHONE.name(), TestConstants.WORK_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_1, suburbs.get(1));
+
+        for (int i = 0; i < 10; i++) {
+            createShipper(TestConstants.RAMBO + i, ContactNumberType.WORK_PHONE.name(), i % 2 == 1 ? TestConstants.HOME_PHONE_NUMBER_1 : TestConstants.HOME_PHONE_NUMBER_2, TestConstants.CONTACT_STREET_2, suburbs.get(1));
+        }
+        //have to flush here as auto flushing mode does not check the exists sub-query in our search.
+        sessionFactory.getCurrentSession().flush();
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
