@@ -2,7 +2,7 @@ package simpleshop.common;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import simpleshop.common.test.DomainNameTestObject;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.lang.reflect.Method;
@@ -120,6 +120,8 @@ public class ReflectionUtilsTest {
 
          assertThat(ReflectionUtils.parseObject(null, Boolean.class), equalTo(null));
          assertThat(ReflectionUtils.parseObject(Boolean.TRUE, Boolean.class), equalTo(Boolean.TRUE));
+         assertThat(ReflectionUtils.parseObject("true", Boolean.class), equalTo(Boolean.TRUE));
+
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -198,6 +200,14 @@ public class ReflectionUtilsTest {
         valueSet = ReflectionUtils.setProperty(new Pair<String, String>(), "key", "can do");
         assertThat(valueSet, equalTo(true));
 
+    }
+
+
+
+    @Test(expected = RuntimeException.class)
+    public void setPropertyExceptionTest(){
+        DomainNameTestObject domainNameTestObject = new DomainNameTestObject();
+        ReflectionUtils.setProperty(domainNameTestObject, "name", "*invalid*");
     }
 
 

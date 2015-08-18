@@ -1,16 +1,16 @@
 package simpleshop.common;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import simpleshop.common.test.DomainNameTestObject;
+import simpleshop.common.test.PersonTestObject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -18,86 +18,36 @@ import static org.hamcrest.Matchers.*;
 @ContextConfiguration(classes = TestSpringConfig.class)
 public class JsonConverterTest {
 
-    @JsonFilter("propNameFilter")
-    private static class Person {
-        private String name;
-        private Integer age;
-        private Boolean gender;
-        private List<Person> children;
-        private LocalDate dateOfBirth;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Integer getAge() {
-            return age;
-        }
-
-        public void setAge(Integer age) {
-            this.age = age;
-        }
-
-        public Boolean getGender() {
-            return gender;
-        }
-
-        public void setGender(Boolean gender) {
-            this.gender = gender;
-        }
-
-        public List<Person> getChildren() {
-            return children;
-        }
-
-        public void setChildren(List<Person> children) {
-            this.children = children;
-        }
-
-        public LocalDate getDateOfBirth() {
-            return dateOfBirth;
-        }
-
-        public void setDateOfBirth(LocalDate dateOfBirth) {
-            this.dateOfBirth = dateOfBirth;
-        }
-    }
+    @Autowired
+    private JsonConverter converter;
 
     @Test
     public void toJsonTest(){
         JsonConverter converter = configuredJsonConverter();
 
-        Person person = new Person();
-        person.setName("Marsh");
-        person.setGender(Boolean.TRUE);
-        person.setAge(36);
-        String result = converter.toJson(person);
+        PersonTestObject personTestObject = new PersonTestObject();
+        personTestObject.setName("Marsh");
+        personTestObject.setGender(Boolean.TRUE);
+        personTestObject.setAge(36);
+        String result = converter.toJson(personTestObject);
         assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":null,\"dateOfBirth\":null}", result);
 
-        person.setChildren(new ArrayList<>());
-        result = converter.toJson(person);
+        personTestObject.setChildren(new ArrayList<>());
+        result = converter.toJson(personTestObject);
         assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":[],\"dateOfBirth\":null}", result);
 
-        Person stan = new Person();
+        PersonTestObject stan = new PersonTestObject();
         stan.setName("Stan");
         stan.setAge(8);
         stan.setGender(Boolean.TRUE);
-        person.getChildren().add(stan);
-        result = converter.toJson(person);
+        personTestObject.getChildren().add(stan);
+        result = converter.toJson(personTestObject);
         assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":[{\"name\":\"Stan\",\"age\":8,\"gender\":true,\"children\":null,\"dateOfBirth\":null}],\"dateOfBirth\":null}", result);
 
         stan.setDateOfBirth(LocalDate.of(1999,1,1));
-        result = converter.toJson(person);
+        result = converter.toJson(personTestObject);
         assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":[{\"name\":\"Stan\",\"age\":8,\"gender\":true,\"children\":null,\"dateOfBirth\":\"915109200000\"}],\"dateOfBirth\":null}", result);
     }
-
-
-    @Autowired
-    private JsonConverter converter;
 
     @Test
     public void springInjectionTest(){
@@ -106,24 +56,24 @@ public class JsonConverterTest {
 
     @Test
     public void excludeFieldsTest(){
-        Person person = new Person();
-        person.setName("Marsh");
-        person.setGender(Boolean.TRUE);
-        person.setAge(36);
+        PersonTestObject personTestObject = new PersonTestObject();
+        personTestObject.setName("Marsh");
+        personTestObject.setGender(Boolean.TRUE);
+        personTestObject.setAge(36);
 
         String[] excluded = {"children", "dateOfBirth"};
-        String result = converter.toJson(person, excluded);
+        String result = converter.toJson(personTestObject, excluded);
         assertThat(result, equalTo("{\"name\":\"Marsh\",\"age\":36,\"gender\":true}"));
     }
 
     @Test(expected = RuntimeException.class)
     public void toJsonExceptionTest(){
 
-        Person person = new Person();
-        person.setChildren(new ArrayList<>());
-        person.getChildren().add(person);
+        PersonTestObject personTestObject = new PersonTestObject();
+        personTestObject.setChildren(new ArrayList<>());
+        personTestObject.getChildren().add(personTestObject);
 
-        converter.toJson(person);
+        converter.toJson(personTestObject);
     }
 
     @Test
@@ -131,18 +81,24 @@ public class JsonConverterTest {
 
         JsonConverter converter = configuredJsonConverter();
 
-        Person person = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"915109200000\"}", Person.class);
+        PersonTestObject personTestObject = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"915109200000\"}", PersonTestObject.class);
 
-        assertThat(person.getName(), equalTo("Marsh"));
-        assertThat(person.getAge(), equalTo(36));
-        assertThat(person.getGender(), equalTo(true));
-        assertThat(person.getDateOfBirth(), equalTo(LocalDate.of(1999, 1, 1)));
+        assertThat(personTestObject.getName(), equalTo("Marsh"));
+        assertThat(personTestObject.getAge(), equalTo(36));
+        assertThat(personTestObject.getGender(), equalTo(true));
+        assertThat(personTestObject.getDateOfBirth(), equalTo(LocalDate.of(1999, 1, 1)));
+
+        personTestObject = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"\"}", PersonTestObject.class);
+        assertThat(personTestObject.getDateOfBirth(), equalTo(null));
+
+        personTestObject = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":null}", PersonTestObject.class);
+        assertThat(personTestObject.getDateOfBirth(), equalTo(null));
     }
 
     @Test(expected = RuntimeException.class)
     public void fromJsonExceptionTest(){
 
-        converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"915109200000\"}", Person.class);
+        converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"915109200000\"}", PersonTestObject.class);
     }
 
     @Test
@@ -159,6 +115,13 @@ public class JsonConverterTest {
         assertThat(result, equalTo("{\"key\":\"1317923717000\",\"value\":\"1317063317000\"}"));
         assertThat(converter.fromJson("1317923717000", LocalDateTime.class), equalTo(time1));
         assertThat(converter.fromJson("1317063317000", LocalDateTime.class), equalTo(time2));
+
+        DomainNameTestObject domainName = converter.fromJson("{\"name\":\"test.org\",\"registrationDateTime\":\"\"}", DomainNameTestObject.class);
+        assertThat(domainName.getRegistrationDateTime(), equalTo(null));
+
+        domainName = converter.fromJson("{\"name\":\"test.org\",\"registrationDateTime\":null}", DomainNameTestObject.class);
+        assertThat(domainName.getRegistrationDateTime(), equalTo(null));
+
     }
 
     private JsonConverter configuredJsonConverter(){

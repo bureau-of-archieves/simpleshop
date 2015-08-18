@@ -1,9 +1,8 @@
 package simpleshop.common;
 
 import org.junit.Test;
-
+import simpleshop.common.test.EntityTestObject;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,73 +24,19 @@ public class PropertyReflectorTest {
                 }, null
         );
 
-        Entity entity = new Entity();
-        entity.setName("John");
-        entity.setId(Integer.valueOf(12));
-        entity.setSpouse(entity);
-        entity.getRelatives().add(entity);
+        EntityTestObject entityTestObject = new EntityTestObject();
+        entityTestObject.setName("John");
+        entityTestObject.setId(12);
+        entityTestObject.setSpouse(entityTestObject);
+        entityTestObject.getRelatives().add(entityTestObject);
 
-        Entity entity1 = new Entity();
-        entity1.setName("Steve");
-        entity.getRelatives().add(entity1);
-        entity.getRelatives().add(entity1);
-        entity1.getRelatives().add(entity);
+        EntityTestObject entityTestObject1 = new EntityTestObject();
+        entityTestObject1.setName("Steve");
+        entityTestObject.getRelatives().add(entityTestObject1);
+        entityTestObject.getRelatives().add(entityTestObject1);
+        entityTestObject1.getRelatives().add(entityTestObject);
 
-        inspector.inspect(entity);
+        inspector.inspect(entityTestObject);
     }
 
-    //test class
-    private static class Entity {
-
-        private Integer id;
-        private String name;
-        private String type;
-        private Entity spouse;
-        private ArrayList<Entity> relatives = new ArrayList<>();
-
-        public ArrayList<Entity> getRelatives() {
-            return relatives;
-        }
-
-        public void setRelatives(ArrayList<Entity> relatives) {
-            this.relatives = relatives;
-        }
-
-        public Entity getSpouse() {
-            return spouse;
-        }
-
-        public void setSpouse(Entity spouse) {
-            this.spouse = spouse;
-        }
-
-        public Integer getId() {
-            return id;
-        }
-
-        public void setId(Integer id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public int getScore() {
-            return 99;
-        }
-
-    }
 }
