@@ -16,8 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.*;
+import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
+
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -35,6 +38,9 @@ public class OrderDAOImplTest extends TransactionalTest {
     private ProductDAO productDAO;
 
     @Autowired
+    private SuburbDAO suburbDAO;
+
+    @Autowired
     private OrderDAO orderDAO;
 
     @Before
@@ -42,73 +48,96 @@ public class OrderDAOImplTest extends TransactionalTest {
         cleanUp(orderDAO, TestConstants.ORDER_MARK);
     }
 
-    private Order createOrder(){
-        Customer customer = customerDAO.quickSearch("Google", new PageInfo()).get(0);
-        Employee employee = employeeDAO.quickSearch("Steve", new PageInfo()).get(0);
-        Product product = productDAO.quickSearch("Race Car", new PageInfo()).get(0);
-
-        Order order = new Order();
-        order.setCustomer(customer);
-        order.setEmployee(employee);
-        orderDAO.save(order);
-
-        order.setShipName("John " + TestConstants.ORDER_MARK);
-        OrderItem orderItem = new OrderItem();
-        orderItem.setProduct(product);
-        orderItem.setQuantity(1);
-        orderItem.setSellPrice(BigDecimal.ONE);
-        order.getOrderItems().add(orderItem);
-
-        return order;
+    @Test
+    public void getTest(){
+        assertThat(orderDAO.get(Integer.MAX_VALUE), nullValue());
     }
-
 
     @Test
-    @SuppressWarnings("unchecked")
-    public void createOrderTest(){
+    public void createDeleteTest() {
 
-        Order order = createOrder();
-
-        Session session = sessionFactory.getCurrentSession();
-        Criteria criteria = session.createCriteria(Customer.class, "c");
-
-        DetachedCriteria subQuery = DetachedCriteria.forClass(Order.class, "sub1");
-        subQuery.setProjection(Property.forName("id"));
-        //subQuery.add(Restrictions.idEq(25));
-        DetachedCriteria subQuery2 = DetachedCriteria.forClass(Customer.class, "sub2").add(Restrictions.eqProperty("id", "c.id")).createCriteria("orders", "ord").setProjection(Property.forName("ord.id"));
-        subQuery.add(Subqueries.propertyIn("id", subQuery2));
-        //subQuery.add(Restrictions.eqProperty("customer", "c.id"));
-        criteria.add(Subqueries.exists(subQuery));
-        List<Customer> customers = criteria.list();
+        List<Customer> customers = customerDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
         assertThat(customers.size(), greaterThanOrEqualTo(1));
 
+        List<Employee> employees = employeeDAO.quickSearch(TestConstants.EMPLOYEE_NAME_1, new PageInfo());
+        assertThat(employees.size(), greaterThanOrEqualTo(1));
+
+        List<Suburb> suburbs = suburbDAO.quickSearch(TestConstants.SUBURB_AUS_1, new PageInfo());
+        assertThat(suburbs.size(), greaterThanOrEqualTo(1));
+
+        Order order = new Order();
+        order.setCustomer(customers.get(0));
+        order.setEmployee(employees.get(0));
+        order.setShipName(TestConstants.ORDER_MARK + "aa");
+        LocalDateTime orderTime = LocalDateTime.of(2015, 8, 17, 16, 22, 32);
+        order.setOrderDate(orderTime);
+        Address shipAddress = new Address();
+        shipAddress.setSuburb(suburbs.get(0));
+        shipAddress.setAddressLine1("My Street Address");
+        order.setShipAddress(shipAddress);
+        List<Product> products = productDAO.quickSearch("", new PageInfo());
+        assertThat(products.size(), greaterThanOrEqualTo(2));
+        OrderItem orderItem = new OrderItem();
+        orderItem.setProduct(products.get(0));
+        orderItem.setSellPrice(new BigDecimal("11.40"));
+        orderItem.setQuantity(1);
+        order.getOrderItems().add(orderItem);
+
+        orderDAO.save(order);
+        orderDAO.sessionFlush();
+
+        assertThat(order.getId(), not(nullValue()));
+        orderDAO.evict(order);
+
+        Order loaded = orderDAO.load(order.getId());
+        assertThat(loaded.getCustomer(), sameInstance(order.getCustomer()));
+        assertThat(loaded.getEmployee(), sameInstance(order.getEmployee()));
+        assertThat(loaded.getRequiredDate(), nullValue());
+        assertThat(loaded.getOrderDate(), equalTo(orderTime));
+        assertThat(loaded.getOrderItems().size(), equalTo(1));
+
+        loaded.setShippedDate(orderTime.plusDays(3));
+        loaded.setFreight(new BigDecimal("15.00"));
+        orderDAO.sessionFlush();
+
+        orderDAO.delete(loaded);
     }
-//
-//    @Test
-//    @SuppressWarnings("unchecked")
-//    public void accessEmbeddedPropertyTest() {
-//        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class, "c");
-//        Criteria criteria1 = criteria.createCriteria("contact", "ct");
-//        Criteria criteria2 = criteria1.createCriteria("address.suburb", "sb");
-//        criteria2.add(Restrictions.ilike("sb.suburb", "%wol%"));
-//        List<Customer> customers = criteria.list();
-//        assertThat(customers.size(), greaterThanOrEqualTo(1));
-//    }
-//
-//    @Test
-//    public void accessEmbeddedObjectPropertyTest(){
-//
-//
-//
-//        //criteria1.add(Restrictions.ilike("address.addressLine1", "%"));
-//
-////        Suburb suburb = new Suburb();
-////        suburb.setId(1);
-////        criteria1.add(Restrictions.eq("address.suburb", suburb));
-//    }
 
-    @Autowired
-    private SessionFactory sessionFactory;
+    @Test
+    public void quickSearchTest() {
+        List<Order> orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
+        assertThat(orders.size(), equalTo(1));
+        assertThat(orders.get(0).getCustomer().getContact().getName(), equalTo(TestConstants.CUSTOMER_NAME_1));
 
+        Employee employee = orders.get(0).getEmployee();
+        Shipper shipper = orders.get(0).getShipper();
+
+        orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_2, new PageInfo());
+        assertThat(orders.size(), equalTo(0));
+
+        List<Customer> customers = customerDAO.quickSearch(TestConstants.CUSTOMER_NAME_2, new PageInfo());
+        assertThat(customers.size(), greaterThanOrEqualTo(1));
+
+        Customer customer = customers.get(0);
+
+        for (int i = 0; i < 10; i++) {
+            Order order = new Order();
+            order.setCustomer(customer);
+            order.setEmployee(employee);
+            order.setShipName(TestConstants.ORDER_MARK + (i % 2 == 0 ? "_TypeA" : "_TypeB"));
+            order.setShipper(shipper);
+            orderDAO.save(order);
+        }
+
+        orders = orderDAO.quickSearch("_TypeA", new PageInfo(0, 10));
+        assertThat(orders.size(), equalTo(5));
+
+        orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_2, new PageInfo(0, 20));
+        assertThat(orders.size(), equalTo(10));
+
+        orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_2, new PageInfo(1, 7));
+        assertThat(orders.size(), equalTo(3));
+
+    }
 
 }

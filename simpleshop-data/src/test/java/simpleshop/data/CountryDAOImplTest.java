@@ -17,6 +17,10 @@ public class CountryDAOImplTest extends TransactionalTest {
     @Autowired
     private CountryDAO countryDAO;
 
+    @Test
+    public void getTest(){
+        assertThat(countryDAO.get("ZZ9"), nullValue());
+    }
 
     @Test
     public void quickSearchTest(){

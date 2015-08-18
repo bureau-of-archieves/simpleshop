@@ -31,6 +31,11 @@ public class CategoryDAOImplTest extends TransactionalTest {
     }
 
     @Test
+    public void getTest(){
+        assertThat(categoryDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
+    @Test
     public void createDeleteTest() {
 
         //can save without parent

@@ -3,14 +3,18 @@ package simpleshop.data.test;
 import junit.framework.Test;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import simpleshop.data.CategoryDAO;
 import simpleshop.domain.model.*;
+import simpleshop.domain.model.Order;
 import simpleshop.domain.model.component.Address;
+import simpleshop.domain.model.component.OrderItem;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +52,7 @@ public class TestDataInitializer {
 
     /**
      * Create the test data.
+     *
      * @param session an opened session.
      */
     private void seedData(Session session) {
@@ -58,24 +63,24 @@ public class TestDataInitializer {
         createCountry("DEU", "Germany", "EUR", session);
         session.flush();
 
-        Suburb wollongong = createSuburb("Wollongong", null, "NSW", "2500", "AUS", session);
+        Suburb wollongong = createSuburb(TestConstants.SUBURB_AUS_2, null, "NSW", TestConstants.SUBURB_AUS_2_POSTCODE, "AUS", session);
         createSuburb("Figtree", null, "NSW", "2525", "AUS", session);
         createSuburb(TestConstants.SUBURB_AUS_1, null, "NSW", TestConstants.SUBURB_AUS_1_POSTCODE, "AUS", session);
         createSuburb("Gwynneville", null, "NSW", "2500", "AUS", session);
         createSuburb("Keiraville", null, "NSW", "2500", "AUS", session);
-        createSuburb("Linzi", "ZIBO", "Shandong", "255400", "CHN", session);
+        Suburb linzi = createSuburb("Linzi", "ZIBO", "Shandong", "255400", "CHN", session);
         createSuburb("Zhifu", "Yantai", "Shandong", "264005", "CHN", session);
         createSuburb("Manhattan", "New York", "NY", "10001", "USA", session);
         session.flush();
 
-        createCustomer("Google", "Larry Page", session);
+        Customer customer1 = createCustomer(TestConstants.CUSTOMER_NAME_1, "Larry Page", session);
 
         Map<String, String> billContacts = new HashMap<>();
         billContacts.put("Work Phone", "987654321");
         billContacts.put("Home Phone", "22 9384711");
         billContacts.put("Email", "bill@microsoft.com");
         createCustomer("Apple", "Steve Jobs", session);
-        createCustomer("Microsoft", "Bill Gates", billContacts, null, session);
+        createCustomer(TestConstants.CUSTOMER_NAME_2, "Bill Gates", billContacts, null, session);
 
         Address address = new Address();
         address.setSuburb(wollongong);
@@ -83,7 +88,7 @@ public class TestDataInitializer {
         createCustomer("Bill Gates", "Mr. Gates", null, address, session);
         session.flush();
 
-        createEmployee("Steve Ballmer", "Mr. Ballmer", null, null, session);
+        Employee employee1 = createEmployee(TestConstants.EMPLOYEE_NAME_1, "Mr. Ballmer", null, null, session);
         session.flush();
 
         Category allProducts = createCategory("All Products", null, null, session);
@@ -93,8 +98,8 @@ public class TestDataInitializer {
         Category pharmaceutical = createCategory(TestConstants.SUB_CATEGORY_3, null, allProducts, session);
         session.flush();
 
-        createProduct("Race Car", toy, "1", session);
-        createProduct("Monopoly", toy, "1", session);
+        Product product1 = createProduct(TestConstants.PRODUCT_NAME_1, toy, "1", session);
+        Product product2 = createProduct(TestConstants.PRODUCT_NAME_2, toy, "1", session);
         createProduct("Fried Chicken", food, "6pcs", session);
         createProduct("Sun Cream", pharmaceutical, "250g", session);
         session.flush();
@@ -102,7 +107,37 @@ public class TestDataInitializer {
         createShipper("EMS", "Ms. Li", null, null, session);
         session.flush();
 
-        createSupplier("Walmart", "Mr. Cohen", null, null, session);
+        Supplier supplier1 = createSupplier(TestConstants.SUPPLIER_NAME_1, "Mr. Cohen", null, null, session);
+        session.flush();
+
+        if (customer1.getOrders().size() == 0) {
+            Order order = new Order();
+            order.setCustomer(customer1);
+            order.setEmployee(employee1);
+            order.setOrderDate(LocalDateTime.of(2015, 8, 17, 11, 25, 33));
+            order.setShipName("Mr. " + customer1.getContact().getName());
+            Address address1 = new Address();
+            address1.setSuburb(linzi);
+            address1.setAddressLine1("Build 3 201");
+            order.setShipAddress(address1);
+
+            OrderItem orderItem1 = new OrderItem();
+            orderItem1.setProduct(product1);
+            orderItem1.setQuantity(1);
+            orderItem1.setSellPrice(new BigDecimal("20.15"));
+            orderItem1.setSupplier(supplier1);
+
+            order.getOrderItems().add(orderItem1);
+
+            OrderItem orderItem2 = new OrderItem();
+            orderItem2.setProduct(product2);
+            orderItem2.setQuantity(2);
+            orderItem2.setSellPrice(new BigDecimal(8.50));
+
+            order.getOrderItems().add(orderItem2);
+
+            session.save(order);
+        }
         session.flush();
     }
 
@@ -128,21 +163,24 @@ public class TestDataInitializer {
         return session.createCriteria(Suburb.class).add(Restrictions.like("suburb", "%" + name + "%")).list();
     }
 
-    private void createCustomer(String name, String contactName, Session session) {
-        createCustomer(name, contactName, null, null, session);
+    private Customer createCustomer(String name, String contactName, Session session) {
+        return createCustomer(name, contactName, null, null, session);
     }
 
-    private void createCustomer(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
+    private Customer createCustomer(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
         List<Customer> result = getCustomerListByName(name, session);
-        if (result.size() == 0) {
-            Customer customer = new Customer();
-            customer.setContact(new Contact());
-            customer.getContact().setName(name);
-            customer.getContact().setContactName(contactName);
-            customer.getContact().setContactNumbers(contactNumbers);
-            customer.getContact().setAddress(address);
-            session.save(customer);
-        }
+        if (result.size() > 0)
+            return result.get(0);
+
+        Customer customer = new Customer();
+        customer.setContact(new Contact());
+        customer.getContact().setName(name);
+        customer.getContact().setContactName(contactName);
+        customer.getContact().setContactNumbers(contactNumbers);
+        customer.getContact().setAddress(address);
+        session.save(customer);
+        return customer;
+
     }
 
     @SuppressWarnings("unchecked")
@@ -181,17 +219,19 @@ public class TestDataInitializer {
         return session.createCriteria(Category.class).add(Restrictions.like("name", "%" + name + "%")).list();
     }
 
-    private void createEmployee(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
+    private Employee createEmployee(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
         List<Employee> result = getEmployeeListByName(name, session);
-        if (result.size() == 0) {
-            Employee employee = new Employee();
-            employee.setContact(new Contact());
-            employee.getContact().setName(name);
-            employee.getContact().setContactName(contactName);
-            employee.getContact().setContactNumbers(contactNumbers);
-            employee.getContact().setAddress(address);
-            session.save(employee);
-        }
+        if (result.size() > 0)
+            return result.get(0);
+
+        Employee employee = new Employee();
+        employee.setContact(new Contact());
+        employee.getContact().setName(name);
+        employee.getContact().setContactName(contactName);
+        employee.getContact().setContactNumbers(contactNumbers);
+        employee.getContact().setAddress(address);
+        session.save(employee);
+        return employee;
     }
 
     @SuppressWarnings("unchecked")
@@ -199,20 +239,21 @@ public class TestDataInitializer {
         return session.createCriteria(Employee.class).createCriteria("contact").add(Restrictions.like("name", "%" + name + "%")).list();
     }
 
-    private void createProduct(String name, Category category, String quantityPerUnit, Session session) {
+    private Product createProduct(String name, Category category, String quantityPerUnit, Session session) {
         List<Product> result = getProductListByName(name, session);
-        if (result.size() == 0) {
-            Product product = new Product();
-            product.setName(name);
-            product.setQuantityPerUnit(quantityPerUnit);
-            while (category != null) {
-                product.getCategories().add(category);
-                category = category.getParent();
-            }
-            product.setStock(50);
-            session.save(product);
-        }
+        if (result.size() > 0)
+            return result.get(0);
 
+        Product product = new Product();
+        product.setName(name);
+        product.setQuantityPerUnit(quantityPerUnit);
+        while (category != null) {
+            product.getCategories().add(category);
+            category = category.getParent();
+        }
+        product.setStock(50);
+        session.save(product);
+        return product;
     }
 
     @SuppressWarnings("unchecked")
@@ -238,17 +279,20 @@ public class TestDataInitializer {
         return session.createCriteria(Shipper.class).createCriteria("contact").add(Restrictions.like("name", "%" + name + "%")).list();
     }
 
-    private void createSupplier(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
+    private Supplier createSupplier(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
         List<Supplier> result = getSupplierListByName(name, session);
-        if (result.size() == 0) {
-            Supplier supplier = new Supplier();
-            supplier.setContact(new Contact());
-            supplier.getContact().setName(name);
-            supplier.getContact().setContactName(contactName);
-            supplier.getContact().setContactNumbers(contactNumbers);
-            supplier.getContact().setAddress(address);
-            session.save(supplier);
+        if (result.size() > 0) {
+            return result.get(0);
         }
+
+        Supplier supplier = new Supplier();
+        supplier.setContact(new Contact());
+        supplier.getContact().setName(name);
+        supplier.getContact().setContactName(contactName);
+        supplier.getContact().setContactNumbers(contactNumbers);
+        supplier.getContact().setAddress(address);
+        session.save(supplier);
+        return supplier;
     }
 
     @SuppressWarnings("unchecked")

@@ -17,9 +17,17 @@ public class TestConstants {
     public static final String WORK_PHONE_NUMBER_2 = "3 5433 4321";
     public static final String RAMBO = "Rambo";
     public static final String SUBURB_AUS_1 = "Hurstville";
+    public static final String SUBURB_AUS_2 = "Wollongong";
     public static final String SUBURB_AUS_1_POSTCODE = "2200";
+    public static final String SUBURB_AUS_2_POSTCODE = "2500";
     public static final String SHIPPER_NAME_1 = "FedEx xxx";
+    public static final String CUSTOMER_NAME_1 = "Google";
+    public static final String CUSTOMER_NAME_2 = "Microsoft";
+    public static final String EMPLOYEE_NAME_1 = "Steve Ballmer";
+    public static final String PRODUCT_NAME_1 = "Steve Ballmer";
+    public static final String PRODUCT_NAME_2 = "Steve Ballmer";
     public static final String SHIPPER_NAME_2 = "AusPost";
+    public static final String SUPPLIER_NAME_1 = "Walmart";
     public static final String SUB_CATEGORY_1 = "Food";
     public static final String SUB_CATEGORY_2 = "Toy";
     public static final String SUB_CATEGORY_3 = "Pharmaceutical";

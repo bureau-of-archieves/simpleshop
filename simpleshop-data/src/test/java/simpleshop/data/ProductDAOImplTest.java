@@ -27,6 +27,11 @@ public class ProductDAOImplTest extends TransactionalTest {
     @Autowired
     private SupplierDAO supplierDAO;
 
+    @Test
+    public void getTest(){
+        assertThat(productDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
     private void createProduct(String name, Category category){
         Product product = new Product();
         product.setName(name);

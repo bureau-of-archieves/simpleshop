@@ -23,6 +23,11 @@ public class EmployeeDAOImplTest extends TransactionalTest {
     private EmployeeDAO employeeDAO;
 
     @Test
+    public void getTest(){
+        assertThat(employeeDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
+    @Test
     public void createDeleteTest(){
         Employee employee = new Employee();
         employee.setContact(new Contact());

@@ -26,6 +26,11 @@ public class ShipperDAOImplTest extends TransactionalTest {
     private SuburbDAO suburbDAO;
 
     @Test
+    public void getTest(){
+        assertThat(shipperDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
+    @Test
     public void quickSearchTest() {
         for (int i = 0; i < 10; i++) {
             Shipper shipper = new Shipper();

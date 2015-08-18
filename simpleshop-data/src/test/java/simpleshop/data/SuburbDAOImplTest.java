@@ -25,6 +25,11 @@ public class SuburbDAOImplTest extends TransactionalTest {
     private CountryDAO countryDAO;
 
     @Test
+    public void getTest(){
+        assertThat(suburbDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
+    @Test
     public void loadTest() {
         List<Suburb> suburbs = suburbDAO.quickSearch("", new PageInfo());
         assertTrue(suburbs.size() > 0);

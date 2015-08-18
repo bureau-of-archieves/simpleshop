@@ -28,6 +28,11 @@ public class SupplierDAOImplTest extends TransactionalTest {
     private SuburbDAO suburbDAO;
 
     @Test
+    public void getTest(){
+        assertThat(supplierDAO.get(Integer.MAX_VALUE), nullValue());
+    }
+
+    @Test
     public void createDeleteTest(){
 
         List<Suburb> suburbs = suburbDAO.quickSearch(TestConstants.SUBURB_AUS_1, new PageInfo());
@@ -51,7 +56,7 @@ public class SupplierDAOImplTest extends TransactionalTest {
         assertNotNull(supplier.getId());
 
         supplierDAO.evict(supplier);
-        supplier = supplierDAO.get(supplier.getId());
+        supplier = supplierDAO.load(supplier.getId());
 
         assertNotNull(supplier);
         assertNotNull(supplier.getContact());
