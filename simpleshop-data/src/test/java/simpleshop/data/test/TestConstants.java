@@ -20,5 +20,15 @@ public class TestConstants {
     public static final String SUBURB_AUS_1_POSTCODE = "2200";
     public static final String SHIPPER_NAME_1 = "FedEx xxx";
     public static final String SHIPPER_NAME_2 = "AusPost";
-
+    public static final String SUB_CATEGORY_1 = "Food";
+    public static final String SUB_CATEGORY_2 = "Toy";
+    public static final String SUB_CATEGORY_3 = "Pharmaceutical";
+    public static final String CATEGORY_MARK = "CAT_TEST";
+    public static final String COUNTRY_MARK = "XX";
+    public static final String SUPPLIER_MARK = "SUP_TEST";
+    public static final String SHIPPER_MARK = "SHP_TEST";
+    public static final String SUBURB_MARK = "SUB_TEST";
+    public static final String PRODUCT_MARK = "PRD_TEST";
+    public static final String EMPLOYEE_MARK = "EMP_TEST";
+    public static final String ORDER_MARK = "ORD_TEST";
 }

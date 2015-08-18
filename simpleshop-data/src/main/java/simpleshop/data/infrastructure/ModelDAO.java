@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by ZHY on 28/10/2014.
+ * DAO methods shared by all model DAOs.
  */
 public interface ModelDAO<T> extends BaseDAO{
 

@@ -1,5 +1,6 @@
 package simpleshop.data.test;
 
+import junit.framework.Test;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -32,37 +33,7 @@ public class TestDataInitializer {
         try {
             session.beginTransaction();
 
-            createCountry("AUS", "Australia", "AUD", session);
-            createCountry("USA", "United States", "USD", session);
-            createCountry("CHN", "China", "CNY", session);
-
-            Suburb wollong = createSuburb("Wollongong", null, "NSW", "2500", "AUS", session);
-            createSuburb("Figtree", null, "NSW", "2525", "AUS", session);
-            createSuburb("Gwynneville", null, "NSW", "2500", "AUS", session);
-            createSuburb("Keiraville", null, "NSW", "2500", "AUS", session);
-
-            Address address = new Address();
-            address.setSuburb(wollong);
-            address.setAddressLine1("63 Market St.");
-
-            Map<String, String> billContacts = new HashMap<>();
-            billContacts.put("Work Phone", "987654321");
-            billContacts.put("Home Phone", "22 9384711");
-            billContacts.put("Email", "bill@microsoft.com");
-            createCustomer("Apple", "Steve Jobs", session);
-            createCustomer("Microsoft", "Bill Gates", billContacts, null, session);
-            createCustomer("Google", "Larry Page", session);
-            createCustomer("Bill Gates", "The Great", null, address, session);
-
-            createEmployee("Steve Ballmer", "The terrible", null, null, session);
-
-
-            Category allProducts = createCategory("All Products", null, null, session);
-            createCategory("Pharmaceutical", null, allProducts, session);
-            createCategory("Food", null, allProducts, session);
-            Category toy = createCategory("Toys", null, allProducts, session);
-
-            createProduct("Race Car", toy, "1", session);
+            seedData(session);
 
             session.getTransaction().commit();
         } catch (Throwable ex) {
@@ -73,6 +44,66 @@ public class TestDataInitializer {
             if (session != null)
                 session.close();
         }
+    }
+
+    /**
+     * Create the test data.
+     * @param session an opened session.
+     */
+    private void seedData(Session session) {
+
+        createCountry("AUS", "Australia", "AUD", session);
+        createCountry("USA", "United States", "USD", session);
+        createCountry("CHN", "China", "CNY", session);
+        createCountry("DEU", "Germany", "EUR", session);
+        session.flush();
+
+        Suburb wollongong = createSuburb("Wollongong", null, "NSW", "2500", "AUS", session);
+        createSuburb("Figtree", null, "NSW", "2525", "AUS", session);
+        createSuburb(TestConstants.SUBURB_AUS_1, null, "NSW", TestConstants.SUBURB_AUS_1_POSTCODE, "AUS", session);
+        createSuburb("Gwynneville", null, "NSW", "2500", "AUS", session);
+        createSuburb("Keiraville", null, "NSW", "2500", "AUS", session);
+        createSuburb("Linzi", "ZIBO", "Shandong", "255400", "CHN", session);
+        createSuburb("Zhifu", "Yantai", "Shandong", "264005", "CHN", session);
+        createSuburb("Manhattan", "New York", "NY", "10001", "USA", session);
+        session.flush();
+
+        createCustomer("Google", "Larry Page", session);
+
+        Map<String, String> billContacts = new HashMap<>();
+        billContacts.put("Work Phone", "987654321");
+        billContacts.put("Home Phone", "22 9384711");
+        billContacts.put("Email", "bill@microsoft.com");
+        createCustomer("Apple", "Steve Jobs", session);
+        createCustomer("Microsoft", "Bill Gates", billContacts, null, session);
+
+        Address address = new Address();
+        address.setSuburb(wollongong);
+        address.setAddressLine1("63 Market St.");
+        createCustomer("Bill Gates", "Mr. Gates", null, address, session);
+        session.flush();
+
+        createEmployee("Steve Ballmer", "Mr. Ballmer", null, null, session);
+        session.flush();
+
+        Category allProducts = createCategory("All Products", null, null, session);
+
+        Category food = createCategory(TestConstants.SUB_CATEGORY_1, null, allProducts, session);
+        Category toy = createCategory(TestConstants.SUB_CATEGORY_2, null, allProducts, session);
+        Category pharmaceutical = createCategory(TestConstants.SUB_CATEGORY_3, null, allProducts, session);
+        session.flush();
+
+        createProduct("Race Car", toy, "1", session);
+        createProduct("Monopoly", toy, "1", session);
+        createProduct("Fried Chicken", food, "6pcs", session);
+        createProduct("Sun Cream", pharmaceutical, "250g", session);
+        session.flush();
+
+        createShipper("EMS", "Ms. Li", null, null, session);
+        session.flush();
+
+        createSupplier("Walmart", "Mr. Cohen", null, null, session);
+        session.flush();
     }
 
     private Suburb createSuburb(String name, String city, String state, String postcode, String countryCode, Session session) {
@@ -189,4 +220,39 @@ public class TestDataInitializer {
         return session.createCriteria(Product.class).add(Restrictions.like("name", "%" + name + "%")).list();
     }
 
+    private void createShipper(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
+        List<Shipper> result = getShipperListByName(name, session);
+        if (result.size() == 0) {
+            Shipper shipper = new Shipper();
+            shipper.setContact(new Contact());
+            shipper.getContact().setName(name);
+            shipper.getContact().setContactName(contactName);
+            shipper.getContact().setContactNumbers(contactNumbers);
+            shipper.getContact().setAddress(address);
+            session.save(shipper);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Shipper> getShipperListByName(String name, Session session) {
+        return session.createCriteria(Shipper.class).createCriteria("contact").add(Restrictions.like("name", "%" + name + "%")).list();
+    }
+
+    private void createSupplier(String name, String contactName, Map<String, String> contactNumbers, Address address, Session session) {
+        List<Supplier> result = getSupplierListByName(name, session);
+        if (result.size() == 0) {
+            Supplier supplier = new Supplier();
+            supplier.setContact(new Contact());
+            supplier.getContact().setName(name);
+            supplier.getContact().setContactName(contactName);
+            supplier.getContact().setContactNumbers(contactNumbers);
+            supplier.getContact().setAddress(address);
+            session.save(supplier);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Supplier> getSupplierListByName(String name, Session session) {
+        return session.createCriteria(Supplier.class).createCriteria("contact").add(Restrictions.like("name", "%" + name + "%")).list();
+    }
 }

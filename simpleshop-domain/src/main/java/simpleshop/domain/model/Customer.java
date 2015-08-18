@@ -21,6 +21,12 @@ public class Customer {
     private Integer id;
     private Contact contact = new Contact();
     private List<Order> orders = new ArrayList<>();
+
+    /**
+     * There can be at most 1 customer who is STOCK.
+     * When this customer buys the shop stock increases.
+     * //todo add a StockStorage domain object and change this flag to an id.
+     */
     private Boolean stock = Boolean.FALSE;
 
 

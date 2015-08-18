@@ -1,12 +1,10 @@
 package simpleshop.data;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
-import simpleshop.domain.model.Contact;
 import simpleshop.domain.model.Shipper;
 import simpleshop.domain.model.Suburb;
 import simpleshop.domain.model.component.Address;
@@ -14,6 +12,7 @@ import simpleshop.domain.model.component.Address;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Unit tests for <code>shipperDAO</code>
@@ -25,6 +24,29 @@ public class ShipperDAOImplTest extends TransactionalTest {
 
     @Autowired
     private SuburbDAO suburbDAO;
+
+    @Test
+    public void quickSearchTest() {
+        for (int i = 0; i < 10; i++) {
+            Shipper shipper = new Shipper();
+            shipper.getContact().setName(i + TestConstants.SHIPPER_MARK);
+            shipper.getContact().setContactName(i % 2 == 0 ? "Mr Zhang" : "Mrs Zhang");
+            shipperDAO.save(shipper);
+        }
+        shipperDAO.sessionFlush();
+
+        List<Shipper> shippers = shipperDAO.quickSearch("ZZZ57859098543", new PageInfo());
+        assertThat(shippers.size(), equalTo(0));
+
+        shippers = shipperDAO.quickSearch(TestConstants.SHIPPER_MARK, new PageInfo(0,20));
+        assertThat(shippers.size(), equalTo(10));
+
+        shippers = shipperDAO.quickSearch(TestConstants.SHIPPER_MARK, new PageInfo(0,9));
+        assertThat(shippers.size(), equalTo(9));
+
+        shippers = shipperDAO.quickSearch(1 + TestConstants.SHIPPER_MARK, new PageInfo(0,9));
+        assertThat(shippers.size(), equalTo(1));
+    }
 
     @Test
     public void createDeleteTest() {
@@ -48,17 +70,32 @@ public class ShipperDAOImplTest extends TransactionalTest {
         assertNotNull(shipper.getContact().getAddress().getSuburb());
         assertEquals("Wollongong", shipper.getContact().getAddress().getSuburb().getSuburb());
 
+        shipper.getContact().getContactNumbers().put("QQ", "32131232154");
+        shipper.getContact().getContactNumbers().put("email", "abc@web.net");
+        shipperDAO.sessionFlush();
+        shipperDAO.evict(shipper);
+
+        shipper = shipperDAO.get(shipperId);
+        assertThat(shipper.getContact().getContactNumbers().size(), equalTo(2));
+        assertThat(shipper.getContact().getContactNumbers().get("QQ"), equalTo("32131232154"));
+        assertThat(shipper.getContact().getContactNumbers().get("email"), equalTo("abc@web.net"));
+
         shipperDAO.delete(shipper);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private Integer createShipper(String name) {
         Shipper shipper = new Shipper();
-        shipper.setContact(new Contact());
+        shipper.getContact().setContactName(TestConstants.SHIPPER_MARK);
         shipper.getContact().setName(name);
 
         shipperDAO.save(shipper);
         return shipper.getId();
     }
+
+    @Before
+    public void cleanUp() {
+        cleanUp(shipperDAO, TestConstants.SHIPPER_MARK);
+    }
+
 
 }

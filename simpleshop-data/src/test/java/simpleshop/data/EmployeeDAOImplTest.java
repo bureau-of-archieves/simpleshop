@@ -1,5 +1,6 @@
 package simpleshop.data;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
@@ -21,18 +22,12 @@ public class EmployeeDAOImplTest extends TransactionalTest {
     @Autowired
     private EmployeeDAO employeeDAO;
 
-
-    @Test
-    public void getNullTest(){
-        Employee employee = employeeDAO.get(0x7FFFFFFF);
-        assertNull(employee);
-    }
-
     @Test
     public void createDeleteTest(){
         Employee employee = new Employee();
         employee.setContact(new Contact());
         employee.getContact().setName(TestConstants.JON_SNOW);
+        employee.getContact().setContactName(TestConstants.EMPLOYEE_MARK);
         employee.getContact().getContactNumbers().put(ContactNumberType.HOME_PHONE.name(), TestConstants.HOME_PHONE_NUMBER_1);
         employeeDAO.save(employee);
         employeeDAO.evict(employee);
@@ -45,17 +40,12 @@ public class EmployeeDAOImplTest extends TransactionalTest {
         employeeDAO.delete(employee);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void createEmployee(String name){
         Employee employee = new Employee();
         employee.setContact(new Contact());
         employee.getContact().setName(name);
+        employee.getContact().setContactName(TestConstants.EMPLOYEE_MARK);
         employeeDAO.save(employee);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void deleteEmployees(List<Employee> result){
-        result.forEach(employeeDAO::delete);
     }
 
     @Test
@@ -77,12 +67,13 @@ public class EmployeeDAOImplTest extends TransactionalTest {
         assertThat(result.size(), equalTo(5));
 
         result = employeeDAO.quickSearch("quickSearch", new PageInfo(0, Short.MAX_VALUE));
-        deleteEmployees(result);
+        assertThat(result.size(), equalTo(10));
 
     }
 
-
-
-
+    @Before
+    public void cleanUp() {
+        cleanUp(employeeDAO, TestConstants.EMPLOYEE_MARK);
+    }
 
 }

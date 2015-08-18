@@ -78,4 +78,25 @@ public class Suburb {
     public void setCountry(Country country) {
         this.country = country;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Suburb suburb1 = (Suburb) o;
+
+        if (!suburb.equals(suburb1.suburb)) return false;
+        if (postcode != null ? !postcode.equals(suburb1.postcode) : suburb1.postcode != null) return false;
+        return country.equals(suburb1.country);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = suburb.hashCode();
+        result = 31 * result + (postcode != null ? postcode.hashCode() : 0);
+        result = 31 * result + country.hashCode();
+        return result;
+    }
 }

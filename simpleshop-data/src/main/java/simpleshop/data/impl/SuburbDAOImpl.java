@@ -29,7 +29,7 @@ public class SuburbDAOImpl extends ModelDAOImpl<Suburb> implements SuburbDAO {
     @Override
     public List<Suburb> quickSearch(String keywords, PageInfo pageInfo){
         keywords = StringUtils.wrapLikeKeywords(keywords);
-        Query query = super.createQuery("SELECT sub FROM Suburb sub WHERE sub.suburb LIKE ?1", pageInfo, keywords);
+        Query query = super.createQuery("SELECT sub FROM Suburb sub WHERE sub.suburb LIKE ?1 or sub.postcode like ?1", pageInfo, keywords);
         return query.list();
     }
 }

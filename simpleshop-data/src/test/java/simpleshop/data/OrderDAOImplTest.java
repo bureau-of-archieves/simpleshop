@@ -7,11 +7,13 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.OrderItem;
@@ -35,8 +37,11 @@ public class OrderDAOImplTest extends TransactionalTest {
     @Autowired
     private OrderDAO orderDAO;
 
+    @Before
+    public void cleanUp() {
+        cleanUp(orderDAO, TestConstants.ORDER_MARK);
+    }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     private Order createOrder(){
         Customer customer = customerDAO.quickSearch("Google", new PageInfo()).get(0);
         Employee employee = employeeDAO.quickSearch("Steve", new PageInfo()).get(0);
@@ -47,7 +52,7 @@ public class OrderDAOImplTest extends TransactionalTest {
         order.setEmployee(employee);
         orderDAO.save(order);
 
-        order.setShipName("John");
+        order.setShipName("John " + TestConstants.ORDER_MARK);
         OrderItem orderItem = new OrderItem();
         orderItem.setProduct(product);
         orderItem.setQuantity(1);
@@ -57,10 +62,6 @@ public class OrderDAOImplTest extends TransactionalTest {
         return order;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void deleteOrder(Order order){
-        orderDAO.delete(order);
-    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -81,26 +82,30 @@ public class OrderDAOImplTest extends TransactionalTest {
         List<Customer> customers = criteria.list();
         assertThat(customers.size(), greaterThanOrEqualTo(1));
 
-        deleteOrder(order);
     }
-
-    @Test
-    public void criteriaTest() {
-        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class, "c");
-        Criteria criteria1 = criteria.createCriteria("contact", "ct");
-
-        //criteria1.add(Restrictions.ilike("address.addressLine1", "%"));
-
-//        Suburb suburb = new Suburb();
-//        suburb.setId(1);
-//        criteria1.add(Restrictions.eq("address.suburb", suburb));
-
-        Criteria criteria2 = criteria1.createCriteria("address.suburb", "sb");
-        criteria2.add(Restrictions.ilike("sb.suburb", "%wol%"));
-
-        List<Customer> customers = criteria.list();
-        assertThat(customers.size(), greaterThanOrEqualTo(1));
-    }
+//
+//    @Test
+//    @SuppressWarnings("unchecked")
+//    public void accessEmbeddedPropertyTest() {
+//        Criteria criteria = sessionFactory.getCurrentSession().createCriteria(Customer.class, "c");
+//        Criteria criteria1 = criteria.createCriteria("contact", "ct");
+//        Criteria criteria2 = criteria1.createCriteria("address.suburb", "sb");
+//        criteria2.add(Restrictions.ilike("sb.suburb", "%wol%"));
+//        List<Customer> customers = criteria.list();
+//        assertThat(customers.size(), greaterThanOrEqualTo(1));
+//    }
+//
+//    @Test
+//    public void accessEmbeddedObjectPropertyTest(){
+//
+//
+//
+//        //criteria1.add(Restrictions.ilike("address.addressLine1", "%"));
+//
+////        Suburb suburb = new Suburb();
+////        suburb.setId(1);
+////        criteria1.add(Restrictions.eq("address.suburb", suburb));
+//    }
 
     @Autowired
     private SessionFactory sessionFactory;

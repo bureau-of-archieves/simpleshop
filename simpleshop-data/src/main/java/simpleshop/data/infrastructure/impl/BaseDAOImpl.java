@@ -122,7 +122,7 @@ public abstract class BaseDAOImpl implements BaseDAO {
             query.setParameter(String.valueOf(i + 1), parameters[i]);
         query.setFirstResult(pageInfo.getPageIndex() * pageInfo.getPageSize());
         if (pageInfo.getPageSize() > 0)
-            query.setMaxResults(pageInfo.getPageSize());
+            query.setMaxResults(pageInfo.getPageSize() + (pageInfo.isPageSizePlusOne() ? 1 : 0));
         return query;
     }
 

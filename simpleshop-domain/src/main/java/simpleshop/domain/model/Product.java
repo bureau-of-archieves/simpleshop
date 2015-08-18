@@ -66,7 +66,7 @@ public class Product {
         this.quantityPerUnit = quantityPerUnit;
     }
 
-    @OneToMany
+    @ManyToMany()
     @JoinTable(name = "product_categories", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     @BatchSize(size = Constants.BATCH_SIZE)
     public Set<Category> getCategories() {
