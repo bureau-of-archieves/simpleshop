@@ -186,6 +186,18 @@ public class ModelSearchCriteriaBuilder {
             return criterion;
         });
 
+        criterionFactoryMap.put(PropertyFilter.Operator.START_WITH, (qualifiedPropertyName, targetType, value, negate) -> {
+            if(!CharSequence.class.isAssignableFrom(targetType))
+                throw new SpongeConfigurationException("START_WITH operator does not apply to property type: " + targetType.getName());
+
+            String pattern = value.toString() + "%";
+            Criterion criterion = Restrictions.like(qualifiedPropertyName, pattern);
+            if(negate) {
+                criterion = Restrictions.not(criterion);
+            }
+            return criterion;
+        });
+
         criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {
             Object[] values;
             if(value instanceof Iterable<?>){

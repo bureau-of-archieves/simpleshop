@@ -47,7 +47,8 @@ public class Category {
 
     /**
      * Used for hierarchical search.
-     * The value is: id0_id1_id2_idn which is a underscore separated string of all ancestor ids.
+     * searchPrefix = parentSearchPrefix + "_" + id.
+     * For the root category it is "_" + id.
      */
     private String prefix;
 

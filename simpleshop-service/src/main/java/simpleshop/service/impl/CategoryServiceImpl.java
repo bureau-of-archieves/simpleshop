@@ -38,6 +38,22 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
     }
 
     /**
+     * Update search prefix to the correct value.
+     * @param model Category instance to save..
+     */
+    @Override
+    public void save(@NotNull Category model) {
+
+        super.save(model);
+
+        String parentPrefix = "";
+        if(model.getParent() != null){
+            parentPrefix = model.getParent().getPrefix();
+        }
+        model.setPrefix(parentPrefix + "_" + model.getId());
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override

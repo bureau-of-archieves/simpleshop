@@ -10,8 +10,12 @@ public class CategorySearch extends ModelSearch {
 
     private String name;
     private Category parentCategory;
+    private String prefix;
 
-    @PropertyFilter(operator = PropertyFilter.Operator.LIKE)
+    @PropertyFilter.List({
+            @PropertyFilter(property = "name", operator = PropertyFilter.Operator.LIKE),
+            @PropertyFilter(property = "description", operator = PropertyFilter.Operator.LIKE)
+    })
     public String getName() {
         return name;
     }
@@ -29,4 +33,12 @@ public class CategorySearch extends ModelSearch {
         this.parentCategory = parentCategory;
     }
 
+    @PropertyFilter(operator = PropertyFilter.Operator.START_WITH)
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
 }

@@ -3,6 +3,7 @@ package simpleshop.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simpleshop.data.CustomerDAO;
+import simpleshop.data.PageInfo;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Customer;
 import simpleshop.dto.CustomerSearch;
@@ -12,6 +13,7 @@ import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSearch> implements CustomerService {
@@ -34,6 +36,5 @@ public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSe
     public Customer create() {
         return new Customer();
     }
-
 
 }

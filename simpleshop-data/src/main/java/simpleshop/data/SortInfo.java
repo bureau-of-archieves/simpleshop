@@ -2,6 +2,7 @@ package simpleshop.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import simpleshop.common.StringUtils;
+import simpleshop.data.metadata.AliasDeclaration;
 
 import java.io.Serializable;
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
 public class SortInfo implements Serializable {
 
     private boolean ascending = true;
-    private String alias = "";
+    private String alias = AliasDeclaration.ROOT_CRITERIA_ALIAS;
     private String property;
 
     public SortInfo(){
