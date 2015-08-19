@@ -16,7 +16,7 @@ public class ShipperServiceImpl extends ContactServiceImpl<Shipper, ShipperSearc
     private ShipperDAO shipperDAO;
 
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Shipper> getModelDAO() {
         return shipperDAO;
     }
 

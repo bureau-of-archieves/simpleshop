@@ -1,9 +1,21 @@
 package simpleshop.dto;
 
 
+import simpleshop.data.metadata.PropertyFilter;
+
 /**
- * Created by ZHY on 13/01/2015.
+ * Search model for a Customer object.
  */
 public class CustomerSearch extends ContactSearch {
 
+    private boolean stock = false;
+
+    @PropertyFilter
+    public boolean isStock() {
+        return stock;
+    }
+
+    public void setStock(boolean stock) {
+        this.stock = stock;
+    }
 }

@@ -3,16 +3,14 @@ package simpleshop.data.test;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
-import org.hibernate.criterion.Subqueries;
+import org.hibernate.criterion.*;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SuburbDAO;
 import simpleshop.domain.model.Customer;
 import simpleshop.domain.model.Order;
+import simpleshop.domain.model.Shipper;
 import simpleshop.domain.model.Suburb;
 
 import java.util.List;
@@ -82,6 +80,19 @@ public class MiscTest extends TransactionalTest {
         criteria.add(Subqueries.exists(subQuery));
         List<Customer> customers = criteria.list();
         assertThat(customers.size(), greaterThanOrEqualTo(1));
+
+    }
+
+    @Test
+    public void mapValueTest() {
+        Session session = sessionFactory.getCurrentSession();
+
+        Criteria criteria = session.createCriteria(Customer.class);
+        Criteria ct = criteria.createCriteria("contact", "ct").createCriteria("contactNumbers", "cn");
+        Criterion criterion = Restrictions.like("cn.elements", TestConstants.WORK_PHONE_NUMBER_1);
+        criteria.add(criterion);
+        List result = criteria.list();
+        assertThat(result.size(), greaterThanOrEqualTo(1));
 
     }
 

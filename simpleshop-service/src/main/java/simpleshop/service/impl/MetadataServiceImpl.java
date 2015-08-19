@@ -62,11 +62,17 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
         getMetadata(Category.class.getSimpleName()).setSearchable(false);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, ModelMetadata> getMetadata() {
         return DomainUtils.getModelMetadata();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ModelMetadata getMetadata(String modelName) {
         return DomainUtils.getModelMetadata(modelName);

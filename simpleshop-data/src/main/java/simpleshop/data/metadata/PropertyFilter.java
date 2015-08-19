@@ -19,7 +19,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Documented
 public @interface PropertyFilter {
 
-    String alias() default "";
+    String alias() default AliasDeclaration.ROOT_CRITERIA_ALIAS;
 
     /**
      * By default, the filter target property name is inferred from the getter.

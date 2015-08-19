@@ -21,16 +21,25 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
     @Autowired
     private CategoryDAO categoryDAO;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Category> getModelDAO() {
         return categoryDAO;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Category create() {
         return new Category();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional(readOnly = true)
     public List<Category> search(@NotNull CategorySearch searchParams) {

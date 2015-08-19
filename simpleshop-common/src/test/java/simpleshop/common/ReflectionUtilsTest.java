@@ -81,7 +81,7 @@ public class ReflectionUtilsTest {
         methods = TestObject.class.getMethods();
         for(Method method : methods){
             boolean result = ReflectionUtils.isPublicInstanceGetter(method);
-            if(Arrays.asList(new String[]{"getAge", "getName", "getNode"}).contains(method.getName()) )
+            if(Arrays.asList(new String[]{"getAge", "getName", "getNode", "isMale"}).contains(method.getName()) )
                 Assert.assertTrue(result);
             else
                 Assert.assertFalse(result);

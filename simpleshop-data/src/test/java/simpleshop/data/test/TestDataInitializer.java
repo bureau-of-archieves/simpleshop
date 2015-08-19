@@ -76,8 +76,8 @@ public class TestDataInitializer {
         Customer customer1 = createCustomer(TestConstants.CUSTOMER_NAME_1, "Larry Page", session);
 
         Map<String, String> billContacts = new HashMap<>();
-        billContacts.put("Work Phone", "987654321");
-        billContacts.put("Home Phone", "22 9384711");
+        billContacts.put("Work Phone", TestConstants.WORK_PHONE_NUMBER_1);
+        billContacts.put("Home Phone", "987654321");
         billContacts.put("Email", "bill@microsoft.com");
         createCustomer("Apple", "Steve Jobs", session);
         createCustomer(TestConstants.CUSTOMER_NAME_2, "Bill Gates", billContacts, null, session);

@@ -6,7 +6,7 @@ import simpleshop.service.infrastructure.BaseService;
 import java.util.Map;
 
 /**
- * Created by JOHNZ on 1/06/2015.
+ * The service used to access domain/dto model metadata.
  */
 public interface MetadataService extends BaseService {
 

@@ -1,5 +1,6 @@
 package simpleshop.data.test;
 
+import org.hibernate.SessionFactory;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ public abstract class TransactionalTest {
     protected static final Logger logger = LoggerFactory.getLogger(TransactionalTest.class);
 
     @Autowired
+    private SessionFactory sessionFactory;
+
+    @Autowired
     protected JsonConverter jsonConverter;
 
     protected <T> void cleanUp(ModelDAO<T> modelDAO, String keyword){
@@ -33,8 +37,12 @@ public abstract class TransactionalTest {
         if(objects.size() > 0){
             logger.debug("Clearing " + objects.size() + " objects of type " + objects.get(0).getClass().getSimpleName());
             objects.forEach(modelDAO::delete);
-            modelDAO.sessionFlush();
+            flush();
         }
+    }
+
+    protected void flush(){
+        sessionFactory.getCurrentSession().flush();
     }
 
 }

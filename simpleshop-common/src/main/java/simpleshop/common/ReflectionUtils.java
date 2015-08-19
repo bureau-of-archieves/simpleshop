@@ -33,7 +33,7 @@ public final class ReflectionUtils {
      */
     public static boolean isPublicInstanceGetter(Method method) {
         return method.getParameterTypes().length == 0
-                && method.getName().startsWith("get")
+                && (method.getName().startsWith("get") || method.getName().startsWith("is") && (Boolean.class == method.getReturnType() || boolean.class == method.getReturnType()) )
                 && !method.getName().equals("getClass")
                 && !method.getName().equals("getBytes")
                 && Modifier.isPublic(method.getModifiers())

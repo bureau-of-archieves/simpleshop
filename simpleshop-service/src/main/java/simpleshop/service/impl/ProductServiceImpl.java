@@ -16,7 +16,7 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
     private ProductDAO productDAO;
 
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Product> getModelDAO() {
         return productDAO;
     }
 

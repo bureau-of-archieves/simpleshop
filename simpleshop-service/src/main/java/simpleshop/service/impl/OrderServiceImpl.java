@@ -22,7 +22,7 @@ public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> imple
     private OrderDAO orderDAO;
 
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Order> getModelDAO() {
         return orderDAO;
     }
 

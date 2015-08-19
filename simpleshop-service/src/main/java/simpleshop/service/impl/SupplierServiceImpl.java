@@ -16,7 +16,7 @@ public class SupplierServiceImpl extends ContactServiceImpl<Supplier, SupplierSe
     private SupplierDAO supplierDAO;
 
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Supplier> getModelDAO() {
         return supplierDAO;
     }
 

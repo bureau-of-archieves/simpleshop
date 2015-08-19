@@ -15,11 +15,17 @@ public class EmployeeServiceImpl extends ContactServiceImpl<Employee, EmployeeSe
     @Autowired
     private EmployeeDAO employeeDAO;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Employee> getModelDAO() {
         return employeeDAO;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Employee create() {
         return new Employee();

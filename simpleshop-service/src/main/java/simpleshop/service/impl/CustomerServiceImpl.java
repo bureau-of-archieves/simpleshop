@@ -19,11 +19,17 @@ public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSe
     @Autowired
     private CustomerDAO customerDAO;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected ModelDAO getModelDAO() {
+    protected ModelDAO<Customer> getModelDAO() {
         return customerDAO;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Customer create() {
         return new Customer();

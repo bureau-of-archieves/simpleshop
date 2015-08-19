@@ -33,6 +33,12 @@ public interface ModelService<T, S extends ModelSearch> extends BaseService {
     void delete(Serializable id);
 
     /**
+     * Delete a domain object.
+     * @param domainObject the object to delete.
+     */
+    void delete(T domainObject);
+
+    /**
      * [convention:modelId]All model classes have 1 and only 1 id property, and it's type is not composite. Domain classes with composite id is understood as a n-way relationship.
      * Get a model instance by its id.
      * @param id id.

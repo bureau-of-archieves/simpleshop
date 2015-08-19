@@ -1,5 +1,7 @@
 package simpleshop.data.test;
 
+import java.util.Random;
+
 /**
  * Test constant values.
  */
@@ -39,4 +41,6 @@ public class TestConstants {
     public static final String PRODUCT_MARK = "PRD_TEST";
     public static final String EMPLOYEE_MARK = "EMP_TEST";
     public static final String ORDER_MARK = "ORD_TEST";
+    public static final String CUSTOMER_MARK = "CST_TEST";
+    public static final Random RANDOM = new Random(111);
 }

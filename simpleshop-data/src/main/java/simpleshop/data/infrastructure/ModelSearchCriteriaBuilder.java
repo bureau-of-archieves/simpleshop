@@ -157,8 +157,6 @@ public class ModelSearchCriteriaBuilder {
     }
 
     private Criterion createCriterion(String targetAlias, String targetPropertyName, Class<?> targetType, PropertyFilter.Operator operator, Object value, boolean negate) {
-        if(targetPropertyName.indexOf('.') >= 0)
-            throw new SpongeConfigurationException("Compound target property is not supported: " + targetPropertyName);
 
         CriterionFactory factory = getCriteriaFactory(operator);
         String qualifiedPropertyName = (StringUtils.isNullOrEmpty(targetAlias) ? "" : targetAlias + ".") + targetPropertyName;

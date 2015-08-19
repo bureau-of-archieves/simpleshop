@@ -135,6 +135,19 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
         getModelDAO().save(model);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Transactional
+    @Override
+    public void delete(T model){
+       getModelDAO().delete(model);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Transactional
     @Override
     public void delete(Serializable id){
