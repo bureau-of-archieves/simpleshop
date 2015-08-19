@@ -49,6 +49,7 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
                 ProductSearch.class,
                 SupplierSearch.class,
                 CategorySearch.class,
+                SuburbSearch.class,
                 Address.class,
                 OrderItem.class,
                 ProductSupplier.class
