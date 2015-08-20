@@ -7,5 +7,5 @@ import org.hibernate.criterion.Criterion;
  */
 public interface CriterionFactory {
 
-    Criterion createCriterion(String targetPropertyName, Class<?> targetType, Object value, boolean negate);
+    Criterion createCriterion(String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate);
 }

@@ -1,21 +1,12 @@
 package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import simpleshop.Constants;
-import simpleshop.common.Pair;
-import simpleshop.common.StringUtils;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SortInfo;
-import simpleshop.data.infrastructure.ModelSearchCriteriaBuilder;
-import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.*;
-import simpleshop.data.util.DomainUtils;
 
 import java.io.Serializable;
 import java.util.*;

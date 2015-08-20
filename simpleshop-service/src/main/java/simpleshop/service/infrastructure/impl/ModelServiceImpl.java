@@ -10,6 +10,7 @@ import simpleshop.common.PropertyReflector;
 import simpleshop.common.StringUtils;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.util.DomainUtils;
 import simpleshop.dto.ModelSearch;
@@ -115,13 +116,19 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
      */
     @Transactional(readOnly = true)
     protected @NotNull List<T> daoSearch(S searchParams){
+
+        //get search model metadata
         String searchModelName = searchParams.getClass().getSimpleName();
         ModelMetadata metadata = metadataService.getMetadata(searchModelName);
         if(metadata == null)
             throw new RuntimeException("Cannot find metadata for searchParams: " + searchModelName);
 
-        String modelName = searchModelName.replace("Search", "");
-        ModelMetadata modelMetadata = metadataService.getMetadata(modelName);
+        //get target model metadata
+        String targetModelName = searchModelName.replace("Search", "");
+        ModelMetadata modelMetadata = metadataService.getMetadata(targetModelName);
+        if(modelMetadata == null)
+            throw new SpongeConfigurationException(String.format("Cannot find metadata for target model name '%s'", targetModelName));
+
         return getModelDAO().search(metadata, modelMetadata, searchParams);
     }
 

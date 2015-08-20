@@ -1,4 +1,4 @@
-package simpleshop.data.infrastructure;
+package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -9,16 +9,20 @@ import org.hibernate.metadata.CollectionMetadata;
 import org.hibernate.sql.JoinType;
 import org.hibernate.type.Type;
 import simpleshop.Constants;
+import simpleshop.common.CollectionUtils;
 import simpleshop.common.Pair;
+import simpleshop.common.ReflectionUtils;
 import simpleshop.common.StringUtils;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.CriterionFactory;
+import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.metadata.PropertyFilter;
 import simpleshop.data.metadata.PropertyMetadata;
-import simpleshop.data.util.DomainUtils;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -26,10 +30,27 @@ import java.util.*;
  */
 public class ModelSearchCriteriaBuilder {
 
+    /**
+     * The search model metadata.
+     */
     private ModelMetadata searchMetadata;
+
+    /**
+     * The result model metadata.
+     */
     private ModelMetadata modelMetadata;
+
+    /**
+     * The session to use to create Hibernate Criteria.
+     */
     private Session session;
+
+    /**
+     * A map of all created criteria. The key is the alias.
+     */
     private Map<String, Criteria> criteriaMap;
+
+
     public Map<PropertyFilter.Operator, CriterionFactory> criterionFactoryMap = new HashMap<>();
 
     public ModelSearchCriteriaBuilder(ModelMetadata searchMetadata, ModelMetadata modelMetadata, Session session){
@@ -190,7 +211,7 @@ public class ModelSearchCriteriaBuilder {
             if(!CharSequence.class.isAssignableFrom(targetType))
                 throw new SpongeConfigurationException("START_WITH operator does not apply to property type: " + targetType.getName());
 
-            String pattern = value.toString() + "%";
+            String pattern = StringUtils.wrapStartWithKeywords(value.toString());
             Criterion criterion = Restrictions.like(qualifiedPropertyName, pattern);
             if(negate) {
                 criterion = Restrictions.not(criterion);
@@ -199,20 +220,8 @@ public class ModelSearchCriteriaBuilder {
         });
 
         criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {
-            Object[] values;
-            if(value instanceof Iterable<?>){
-                Iterable<?> iterable = (Iterable<?>)value;
-                List<Object> list = new ArrayList<>();
-                for(Object obj : iterable){
-                    list.add(obj);
-                }
-                values = list.toArray();
-            } else {
-                values = value.toString().split(",");
-                for(int i=0; i<values.length;i++)
-                    values[i] = simpleshop.common.ReflectionUtils.parseObject(values[i],targetType);
-            }
-            Criterion criterion = Restrictions.in(qualifiedPropertyName, values);
+            Object[] values = CollectionUtils.objectToObjectArray(value, targetType);
+            Criterion criterion = values.length == 0 ? Restrictions.neProperty(qualifiedPropertyName, qualifiedPropertyName)/*false condition*/ : Restrictions.in(qualifiedPropertyName, values);
             if(negate) {
                 criterion = Restrictions.not(criterion);
             }
@@ -255,75 +264,106 @@ public class ModelSearchCriteriaBuilder {
                 return Restrictions.isNotNull(qualifiedPropertyName);
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS, (qualifiedPropertyName, targetType, value, negate) -> {
-            if(!Collection.class.isAssignableFrom(targetType)){
-                throw new SpongeConfigurationException(String.format("CONTAINS operator does not apply to non-collection property '%s'", qualifiedPropertyName));
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS, new CollectionCriterionFactory(this) {
+
+            @Override
+            protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
+                if(elementMetadata == null){ //collection of simple type
+                    Object parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, elementType);
+                    return Restrictions.eq("elements", parsedObject);
+                } else {
+                    if(!elementType.isAssignableFrom(value.getClass()))
+                        throw new SpongeConfigurationException(String.format("CONTAINS operator error: collection element type %s is not assignable from search parameter value type %s.", elementType, value.getClass()));
+
+                    Serializable id = (Serializable)ReflectionUtils.getProperty(value, elementMetadata.getIdentifierPropertyName());
+                    return Restrictions.eq(elementMetadata.getIdentifierPropertyName(), id);
+                }
             }
-
-            Pair<ModelMetadata, PropertyMetadata> pair = getMetadata(qualifiedPropertyName);
-
-            ModelMetadata targetModelMetadata = pair.getKey();
-            DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");
-            String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
-            detachedCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), alias + "." + targetModelMetadata.getIdPropertyName()));
-
-            PropertyMetadata targetPropertyMetadata = pair.getValue();
-            DetachedCriteria subPropertyCriteria = detachedCriteria.createCriteria(targetPropertyMetadata.getPropertyName(), "sub1prop");
-
-            String collectionRoleName = targetModelMetadata.getModelClass().getName() + "." + targetPropertyMetadata.getPropertyName();
-            Class<?> elementType =  session.getSessionFactory().getCollectionMetadata(collectionRoleName).getElementType().getReturnedClass();
-            ClassMetadata elementMetadata = session.getSessionFactory().getClassMetadata(elementType);
-            if(elementMetadata == null){
-                //not a domain model
-                subPropertyCriteria.add(Restrictions.eq("elements", value));
-                detachedCriteria.setProjection(Property.forName("sub1prop.elements"));
-            } else {
-                if(!elementType.isAssignableFrom(value.getClass()))
-                    throw new SpongeConfigurationException(String.format("CONTAINS operator error: collection element type %s is not assignable from search parameter value type %s.", elementType, value.getClass()));
-
-                session.refresh(value);
-                Serializable id = session.getIdentifier(value);
-                subPropertyCriteria.add(Restrictions.eq(elementMetadata.getIdentifierPropertyName(), id));
-                detachedCriteria.setProjection(Property.forName("sub1prop." + elementMetadata.getIdentifierPropertyName()));
-            }
-
-            Criterion criterion = Subqueries.exists(detachedCriteria);
-            if(negate)
-                criterion = Restrictions.not(criterion);
-            return criterion;
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.VALUE_LIKE, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_ANY, new CollectionCriterionFactory(this) {
+            @Override
+            protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
+                Object[] values = CollectionUtils.objectToObjectArray(value, elementType);
+                if(values.length == 0)
+                    return null;
 
-            if(!Map.class.isAssignableFrom(targetType))
-                throw new SpongeConfigurationException("Operator VALUE_LIKE is only applicable to Map properties.");
+                if(elementMetadata == null) { //collection of simple type
+                    return Restrictions.in("elements", values);
+                } else {
+                    List<Serializable> ids = new ArrayList<>();
+                    Arrays.asList(values).forEach(val -> {
+                        if (!elementType.isAssignableFrom(val.getClass()))
+                            throw new SpongeConfigurationException(String.format("CONTAINS_ANY operator error: collection element type %s is not assignable from search parameter value type %s.", elementType, val.getClass()));
 
-            Pair<ModelMetadata, PropertyMetadata> pair = getMetadata(qualifiedPropertyName);
-            PropertyMetadata targetPropertyMetadata = pair.getValue();
-            if(!CharSequence.class.isAssignableFrom(targetPropertyMetadata.getReturnTypeMetadata().getPropertyMetadata("elements").getReturnType())){
-                throw new SpongeConfigurationException("Operator VALUE_LIKE is only applicable to String values.");
+                        Serializable id = (Serializable)ReflectionUtils.getProperty(val, elementMetadata.getIdentifierPropertyName());
+                        ids.add(id);
+                    });
+
+                    return Restrictions.in(elementMetadata.getIdentifierPropertyName(), ids);
+                }
             }
-
-            ModelMetadata targetModelMetadata = pair.getKey();
-            DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");
-            String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
-            detachedCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), alias + "." + targetModelMetadata.getIdPropertyName()));
-            DetachedCriteria subPropertyCriteria = detachedCriteria.createCriteria(targetPropertyMetadata.getPropertyName(), "sub1prop");
-            detachedCriteria.setProjection(Property.forName("sub1prop.elements"));
-            String pattern = StringUtils.wrapLikeKeywords(value.toString());
-            subPropertyCriteria.add(Restrictions.like("elements", pattern));
-
-            Criterion criterion = Subqueries.exists(detachedCriteria);
-            if(negate)
-                criterion = Restrictions.not(criterion);
-            return criterion;
         });
 
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_MATCH, new CollectionCriterionFactory(this) {
+
+            @Override
+            protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
+                if(elementMetadata == null){ //collection of simple type
+                    throw new SpongeConfigurationException("CONTAINS_MATCH operator does not apply to collection of simple type.");
+                } else {
+
+                    Conjunction criterion = Restrictions.conjunction();
+                    for(Method method : value.getClass().getMethods()) {
+                        if (!ReflectionUtils.isPublicInstanceGetter(method))
+                            continue;
+
+                        Object val = org.springframework.util.ReflectionUtils.invokeMethod(method, value);
+                        if (val == null)
+                            continue;
+
+                        PropertyFilter filter = method.getDeclaredAnnotation(PropertyFilter.class);
+                        if (filter == null)
+                            continue;
+
+                        PropertyFilter.Operator operator = filter.operator();
+                        if (!operator.isSimple()) {
+                            throw new SpongeConfigurationException("Must be a simple operator at nested level.");
+                        }
+
+                        String propertyName = filter.property();
+                        if (propertyName == null || Constants.REFLECTED_PROPERTY_NAME.equals(propertyName))
+                            propertyName = StringUtils.getPropertyName(method.getName());
+
+                        CriterionFactory factory = criterionFactoryMap.get(operator);
+                        criterion.add(factory.createCriterion(propertyName, elementMetadata.getPropertyType(propertyName).getReturnedClass(), val, filter.negate()));
+                    }
+
+                    return criterion;
+                }
+            }
+        });
+
+        criterionFactoryMap.put(PropertyFilter.Operator.VALUE_LIKE, new MapCriterionFactory(this) {
+
+            @Override
+            protected Criterion createEntryCriterion(Object value) {
+                String pattern = StringUtils.wrapLikeKeywords(value.toString());
+                return Restrictions.like("elements", pattern);
+            }
+
+            @Override
+            protected boolean isOperatorValidForMapKeyValueType(ModelMetadata collectionModelMetadata) {
+                return CharSequence.class.isAssignableFrom(collectionModelMetadata.getPropertyMetadata("elements").getReturnType());
+            }
+        });
 
         //criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {});
     }
 
-    private Pair<ModelMetadata, PropertyMetadata> getMetadata(String qualifiedPropertyName){
+    private static final PropertyFilter.Operator[] SIMPLE_OPERATORS = {PropertyFilter.Operator.IN, PropertyFilter.Operator.LIKE, PropertyFilter.Operator.START_WITH, PropertyFilter.Operator.EQUAL, PropertyFilter.Operator.GREATER, PropertyFilter.Operator.LESS};
+
+    public Pair<ModelMetadata, PropertyMetadata> getMetadata(String qualifiedPropertyName){
         String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
         String propertyName = StringUtils.subStrAfterFirst(qualifiedPropertyName, ".");
         String fullPath = this.getFullPropertyPath(alias, propertyName);
@@ -331,5 +371,15 @@ public class ModelSearchCriteriaBuilder {
         return pair;
     }
 
+    public ModelMetadata getSearchMetadata() {
+        return searchMetadata;
+    }
 
+    public ModelMetadata getModelMetadata() {
+        return modelMetadata;
+    }
+
+    public Session getSession() {
+        return session;
+    }
 }

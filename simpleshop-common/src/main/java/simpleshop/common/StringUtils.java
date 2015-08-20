@@ -341,6 +341,16 @@ public final class StringUtils {
         return param.replaceAll("-", "");
     }
 
+    public static String wrapStartWithKeywords(String param){
+        if(param == null)
+            param = "";
+
+        if(!param.endsWith("%"))
+            param += "%";
+
+        return param;
+    }
+
     /**
      * If obj is null, returns null, else returns empty string.
      * @param obj any object.

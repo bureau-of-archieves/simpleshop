@@ -15,6 +15,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
 import javax.validation.constraints.*;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -160,18 +161,25 @@ public final class DomainUtils {
         //COLLECTION_ELEMENTS = "elements";
         PropertyMetadata elementsProperty = new PropertyMetadata();
         elementsProperty.setPropertyName("elements");
-
+        Class<?> indicesClass = null;
         try{
-            Type type = propertyMetadata.getGetter().getDeclaringClass().getDeclaredField(propertyMetadata.getPropertyName()).getGenericType();
+            Field field = propertyMetadata.getGetter().getDeclaringClass().getDeclaredField(propertyMetadata.getPropertyName());
+            Type type = field.getGenericType();
             if (!(type instanceof ParameterizedType)) {
                 elementsProperty.setReturnType(Object.class);
             } else {
                 Type[] genericArguments = ((ParameterizedType) type).getActualTypeArguments();
 
-                if(genericArguments.length == 1)
+                if(genericArguments.length == 1){
                     elementsProperty.setReturnType((Class<?>)genericArguments[0]); //for collection
-                else if(genericArguments.length == 2)
+                    if(List.class.isAssignableFrom(field.getType())){
+                        indicesClass = Integer.class;
+                    }
+                }
+                else if(genericArguments.length == 2) {
                     elementsProperty.setReturnType((Class<?>)genericArguments[1]); //for map
+                    indicesClass = (Class<?>)genericArguments[0];
+                }
                 else
                     throw new SpongeConfigurationException("Invalid generic collection type: " + type);
             }
@@ -188,16 +196,14 @@ public final class DomainUtils {
         sizeProperty.setReturnType(Integer.class);
         propertyMetadataMap.put("size", sizeProperty);
 
-        /*
-            todo other properties to create.
-
-	        COLLECTION_INDICES = "indices";
-	        COLLECTION_MAX_INDEX = "maxIndex";
-	        COLLECTION_MIN_INDEX = "minIndex";
-	        COLLECTION_MAX_ELEMENT = "maxElement";
-	        COLLECTION_MIN_ELEMENT = "minElement";
-	        COLLECTION_INDEX = "index";
-        */
+        //COLLECTION_INDICES = "indices";
+        if(indicesClass != null){
+            PropertyMetadata indicesProperty = new PropertyMetadata();
+            indicesProperty.setPropertyName("indices");
+            indicesProperty.setReturnType(indicesClass);
+            indicesProperty.setPropertyType(indicesProperty.getReturnType().getSimpleName());
+            propertyMetadataMap.put("indices", indicesProperty);
+        }
     }
 
     /**

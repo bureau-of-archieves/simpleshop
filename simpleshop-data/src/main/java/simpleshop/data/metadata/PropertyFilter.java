@@ -32,7 +32,78 @@ public @interface PropertyFilter {
     boolean negate() default false;
 
     enum Operator{
-        LIKE, EQUAL, GREATER, LESS, IN, CONTAINS, VALUE_LIKE, START_WITH, IS_NULL
+
+        /**
+         * String property like.
+         */
+        LIKE,
+
+        /**
+         * String property start with.
+         */
+        START_WITH,
+
+        /**
+         * Property equal.
+         */
+        EQUAL,
+
+        /**
+         * Property greater than. Make sure the property type is applicable to this operator.
+         */
+        GREATER,
+
+        /**
+         * Property less than. Make sure the property type is applicable to this operator.
+         */
+        LESS,
+
+        /**
+         * Property in a list of values.
+         */
+        IN,
+
+        /**
+         * Property is null.
+         */
+        IS_NULL,
+
+        /**
+         * Property is a String valued map.
+         * The owner object has a map entry whose value like.
+         */
+        VALUE_LIKE(false),
+
+        /**
+         * Property is a collection which contains parameter object.
+         */
+        CONTAINS(false),
+
+        /**
+         * Property is a collection and the parameter object is also a collection.
+         * The property collection contains at least one item in the parameter collection.
+         */
+        CONTAINS_ANY(false),
+
+        /**
+         * Property is a collection and the parameter object is a parameter object.
+         * The property collection contains at least one item which matches the criteria specified in the parameter object.
+         */
+         CONTAINS_MATCH(false);
+
+        private final boolean simple;
+
+        Operator(){
+            this.simple = true;
+        }
+
+        Operator(boolean isSimple){
+            this.simple = isSimple;
+        }
+
+        public boolean isSimple() {
+            return simple;
+        }
     }
 
     /**
@@ -60,4 +131,5 @@ public @interface PropertyFilter {
             return result;
         }
     }
+
 }

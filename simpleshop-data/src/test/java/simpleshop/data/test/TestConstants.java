@@ -30,6 +30,7 @@ public class TestConstants {
     public static final String PRODUCT_NAME_2 = "Steve Ballmer";
     public static final String SHIPPER_NAME_2 = "AusPost";
     public static final String SUPPLIER_NAME_1 = "Walmart";
+    public static final String ROOT_CATEGORY = "All Products";
     public static final String SUB_CATEGORY_1 = "Food";
     public static final String SUB_CATEGORY_2 = "Toy";
     public static final String SUB_CATEGORY_3 = "Pharmaceutical";
