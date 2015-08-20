@@ -2,18 +2,16 @@ package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.metadata.CollectionMetadata;
-import org.hibernate.sql.JoinType;
-import org.hibernate.type.Type;
 import simpleshop.Constants;
 import simpleshop.common.CollectionUtils;
 import simpleshop.common.Pair;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.common.StringUtils;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.CriteriaBuilder;
+import simpleshop.data.infrastructure.CriterionContext;
 import simpleshop.data.infrastructure.CriterionFactory;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.AliasDeclaration;
@@ -28,7 +26,7 @@ import java.util.*;
 /**
  * An object that contains
  */
-public class ModelSearchCriteriaBuilder {
+public class ModelSearchCriteriaBuilder implements CriteriaBuilder, CriterionContext {
 
     /**
      * The search model metadata.
@@ -49,9 +47,6 @@ public class ModelSearchCriteriaBuilder {
      * A map of all created criteria. The key is the alias.
      */
     private Map<String, Criteria> criteriaMap;
-
-
-    public Map<PropertyFilter.Operator, CriterionFactory> criterionFactoryMap = new HashMap<>();
 
     public ModelSearchCriteriaBuilder(ModelMetadata searchMetadata, ModelMetadata modelMetadata, Session session){
         this.searchMetadata = searchMetadata;
@@ -112,8 +107,6 @@ public class ModelSearchCriteriaBuilder {
      */
     public void buildCriteria(PageInfo searchObject){
 
-        initializeOperators();
-
         //add criteria from each search parameter
         List<Pair<Criterion, Criteria>> propertyCriteria = new ArrayList<>(); //expressions for OR clause
         for(PropertyMetadata propertyMetadata : searchMetadata.getPropertyMetadataMap().values()){
@@ -147,11 +140,17 @@ public class ModelSearchCriteriaBuilder {
                 propertyCriteria.add(new Pair<>(criterion, parent));
             }
 
-            addCriteria(propertyCriteria);
+            addOrClauses(propertyCriteria);
             propertyCriteria.clear();
         }
     }
 
+    /**
+     * Get the full property path from the root object.
+     * @param alias alias.
+     * @param propertyName property name.
+     * @return e.g. ctn.elements -> ct.contactNumbers.elements -> root.contact.contactNumbers.elements.
+     */
     private String getFullPropertyPath(String alias, String propertyName) {
         Map<String, AliasDeclaration> aliases = searchMetadata.getAliases();
         String fullPath = propertyName;
@@ -165,14 +164,22 @@ public class ModelSearchCriteriaBuilder {
         return fullPath;
     }
 
-    private void addCriteria(List<Pair<Criterion, Criteria>> propertyCriteria) {
+    /**
+     * All criterion objects created for a single search parameter will be added as a disjunction criterion.
+     * i.e. (clause1 or clause2 or clause3 ...). The result will be added to the criteria identified by the first Filter's alias.
+     * A criterion usually is added to its parent criteria. However, when multiple criterion objects have different parent criteria object, we will choose the first.
+     * This is not a problem unless a criterion object other than the first one is not qualified.
+     * This means we have have at most one idEq per search object property and it has to be the first filter.
+     * @param clauses list of criterion objects build from a single search object property.
+     */
+    private void addOrClauses(List<Pair<Criterion, Criteria>> clauses) {
 
-        if(propertyCriteria.size() > 0) {
+        if(clauses.size() > 0) {
             Disjunction disjunction = Restrictions.disjunction();
-            for(Pair<Criterion, Criteria> pair : propertyCriteria){
+            for(Pair<Criterion, Criteria> pair : clauses){
                 disjunction.add(pair.getKey());
             }
-            Criteria owner = propertyCriteria.get(0).getValue();
+            Criteria owner = clauses.get(0).getValue();
             owner.add(disjunction);
         }
     }
@@ -181,7 +188,7 @@ public class ModelSearchCriteriaBuilder {
 
         CriterionFactory factory = getCriteriaFactory(operator);
         String qualifiedPropertyName = (StringUtils.isNullOrEmpty(targetAlias) ? "" : targetAlias + ".") + targetPropertyName;
-         return factory.createCriterion(qualifiedPropertyName, targetType, value, negate);
+        return factory.createCriterion(this, qualifiedPropertyName, targetType, value, negate);
     }
 
     private CriterionFactory getCriteriaFactory(PropertyFilter.Operator operator){
@@ -193,9 +200,23 @@ public class ModelSearchCriteriaBuilder {
         return factory;
     }
 
+    public Pair<ModelMetadata, PropertyMetadata> getMetadata(String qualifiedPropertyName){
+        String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
+        String propertyName = StringUtils.subStrAfterFirst(qualifiedPropertyName, ".");
+        String fullPath = this.getFullPropertyPath(alias, propertyName);
+        Pair<ModelMetadata, PropertyMetadata> pair = modelMetadata.getPathMetadata(fullPath);
+        return pair;
+    }
 
-    private void initializeOperators(){
-        criterionFactoryMap.put(PropertyFilter.Operator.LIKE, (qualifiedPropertyName, targetType, value, negate) -> {
+    public Session getSession() {
+        return session;
+    }
+
+
+    private static final Map<PropertyFilter.Operator, CriterionFactory> criterionFactoryMap = new HashMap<>();
+
+    static {
+        criterionFactoryMap.put(PropertyFilter.Operator.LIKE, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             if(!CharSequence.class.isAssignableFrom(targetType))
                 throw new SpongeConfigurationException("LIKE operator does not apply to property type: " + targetType.getName());
 
@@ -207,7 +228,7 @@ public class ModelSearchCriteriaBuilder {
             return criterion;
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.START_WITH, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.START_WITH, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             if(!CharSequence.class.isAssignableFrom(targetType))
                 throw new SpongeConfigurationException("START_WITH operator does not apply to property type: " + targetType.getName());
 
@@ -219,7 +240,7 @@ public class ModelSearchCriteriaBuilder {
             return criterion;
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.IN, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             Object[] values = CollectionUtils.objectToObjectArray(value, targetType);
             Criterion criterion = values.length == 0 ? Restrictions.neProperty(qualifiedPropertyName, qualifiedPropertyName)/*false condition*/ : Restrictions.in(qualifiedPropertyName, values);
             if(negate) {
@@ -229,7 +250,7 @@ public class ModelSearchCriteriaBuilder {
             return criterion;
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.EQUAL, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.EQUAL, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             Object parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
             if(negate){
                 return Restrictions.ne(qualifiedPropertyName, parsedObject);
@@ -238,7 +259,7 @@ public class ModelSearchCriteriaBuilder {
             }
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.GREATER, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.GREATER, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             Object parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
             if(negate){
                 return  Restrictions.le(qualifiedPropertyName, parsedObject);
@@ -247,7 +268,7 @@ public class ModelSearchCriteriaBuilder {
             }
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.LESS, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.LESS, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             Object parsedObject = simpleshop.common.ReflectionUtils.parseObject(value, targetType);
             if(negate){
                 return Restrictions.ge(qualifiedPropertyName, parsedObject);
@@ -257,14 +278,14 @@ public class ModelSearchCriteriaBuilder {
         });
 
 
-        criterionFactoryMap.put(PropertyFilter.Operator.IS_NULL, (qualifiedPropertyName, targetType, value, negate) -> {
+        criterionFactoryMap.put(PropertyFilter.Operator.IS_NULL, (criterionContext, qualifiedPropertyName, targetType, value, negate) -> {
             if(Objects.equals("false", value) ^ negate)
                 return Restrictions.isNull(qualifiedPropertyName);
             else
                 return Restrictions.isNotNull(qualifiedPropertyName);
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS, new CollectionCriterionFactory(this) {
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS, new CollectionCriterionFactory() {
 
             @Override
             protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
@@ -281,7 +302,7 @@ public class ModelSearchCriteriaBuilder {
             }
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_ANY, new CollectionCriterionFactory(this) {
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_ANY, new CollectionCriterionFactory() {
             @Override
             protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
                 Object[] values = CollectionUtils.objectToObjectArray(value, elementType);
@@ -305,7 +326,7 @@ public class ModelSearchCriteriaBuilder {
             }
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_MATCH, new CollectionCriterionFactory(this) {
+        criterionFactoryMap.put(PropertyFilter.Operator.CONTAINS_MATCH, new CollectionCriterionFactory() {
 
             @Override
             protected Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value) {
@@ -336,7 +357,7 @@ public class ModelSearchCriteriaBuilder {
                             propertyName = StringUtils.getPropertyName(method.getName());
 
                         CriterionFactory factory = criterionFactoryMap.get(operator);
-                        criterion.add(factory.createCriterion(propertyName, elementMetadata.getPropertyType(propertyName).getReturnedClass(), val, filter.negate()));
+                        criterion.add(factory.createCriterion(null /*Simple criterion does not require context*/, propertyName, elementMetadata.getPropertyType(propertyName).getReturnedClass(), val, filter.negate()));
                     }
 
                     return criterion;
@@ -344,7 +365,7 @@ public class ModelSearchCriteriaBuilder {
             }
         });
 
-        criterionFactoryMap.put(PropertyFilter.Operator.VALUE_LIKE, new MapCriterionFactory(this) {
+        criterionFactoryMap.put(PropertyFilter.Operator.VALUE_LIKE, new MapCriterionFactory() {
 
             @Override
             protected Criterion createEntryCriterion(Object value) {
@@ -361,25 +382,4 @@ public class ModelSearchCriteriaBuilder {
         //criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {});
     }
 
-    private static final PropertyFilter.Operator[] SIMPLE_OPERATORS = {PropertyFilter.Operator.IN, PropertyFilter.Operator.LIKE, PropertyFilter.Operator.START_WITH, PropertyFilter.Operator.EQUAL, PropertyFilter.Operator.GREATER, PropertyFilter.Operator.LESS};
-
-    public Pair<ModelMetadata, PropertyMetadata> getMetadata(String qualifiedPropertyName){
-        String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
-        String propertyName = StringUtils.subStrAfterFirst(qualifiedPropertyName, ".");
-        String fullPath = this.getFullPropertyPath(alias, propertyName);
-        Pair<ModelMetadata, PropertyMetadata> pair = modelMetadata.getPathMetadata(fullPath);
-        return pair;
-    }
-
-    public ModelMetadata getSearchMetadata() {
-        return searchMetadata;
-    }
-
-    public ModelMetadata getModelMetadata() {
-        return modelMetadata;
-    }
-
-    public Session getSession() {
-        return session;
-    }
 }

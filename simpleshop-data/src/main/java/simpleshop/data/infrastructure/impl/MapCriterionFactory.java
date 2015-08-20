@@ -3,6 +3,7 @@ package simpleshop.data.infrastructure.impl;
 import org.hibernate.criterion.*;
 import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
+import simpleshop.data.infrastructure.CriterionContext;
 import simpleshop.data.infrastructure.CriterionFactory;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
@@ -15,19 +16,14 @@ import java.util.Map;
  */
 public abstract class MapCriterionFactory implements CriterionFactory{
 
-    private ModelSearchCriteriaBuilder criteriaBuilder;
-
-    public MapCriterionFactory(ModelSearchCriteriaBuilder criteriaBuilder){
-        this.criteriaBuilder = criteriaBuilder;
-    }
 
     @Override
-    public Criterion createCriterion(String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate) {
+    public Criterion createCriterion(CriterionContext criterionContext, String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate) {
 
         if(!Map.class.isAssignableFrom(targetType))
             throw new SpongeConfigurationException("Operator is only applicable to Map properties.");
 
-        Pair<ModelMetadata, PropertyMetadata> pair = criteriaBuilder.getMetadata(qualifiedPropertyName);
+        Pair<ModelMetadata, PropertyMetadata> pair = criterionContext.getMetadata(qualifiedPropertyName);
         PropertyMetadata targetPropertyMetadata = pair.getValue();
         if(!isOperatorValidForMapKeyValueType(targetPropertyMetadata.getReturnTypeMetadata())){
             throw new SpongeConfigurationException("Operator is not applicable to the map key type or the map value type.");

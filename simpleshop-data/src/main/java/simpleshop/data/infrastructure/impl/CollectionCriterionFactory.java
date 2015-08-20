@@ -5,6 +5,7 @@ import org.hibernate.criterion.*;
 import org.hibernate.metadata.ClassMetadata;
 import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
+import simpleshop.data.infrastructure.CriterionContext;
 import simpleshop.data.infrastructure.CriterionFactory;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
@@ -17,21 +18,15 @@ import java.util.Collection;
  */
 public abstract class CollectionCriterionFactory implements CriterionFactory {
 
-    private ModelSearchCriteriaBuilder criteriaBuilder;
-
-    public CollectionCriterionFactory(ModelSearchCriteriaBuilder criteriaBuilder){
-        this.criteriaBuilder = criteriaBuilder;
-    }
-
     @Override
-    public Criterion createCriterion(String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate) {
+    public Criterion createCriterion(CriterionContext criterionContext, String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate) {
 
         if(!Collection.class.isAssignableFrom(targetType)){
             throw new SpongeConfigurationException(String.format("Operator does not apply to non-collection property '%s'", qualifiedPropertyName));
         }
 
-        Session session = criteriaBuilder.getSession();
-        Pair<ModelMetadata, PropertyMetadata> pair = criteriaBuilder.getMetadata(qualifiedPropertyName);
+        Session session = criterionContext.getSession();
+        Pair<ModelMetadata, PropertyMetadata> pair = criterionContext.getMetadata(qualifiedPropertyName);
 
         ModelMetadata targetModelMetadata = pair.getKey();
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");

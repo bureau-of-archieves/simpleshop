@@ -3,6 +3,7 @@ package simpleshop.data.infrastructure.impl;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
+import simpleshop.data.infrastructure.CriteriaBuilder;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SortInfo;
@@ -43,7 +44,7 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
     @Override
     public List<T> search(ModelMetadata searchMetadata, ModelMetadata modelMetadata, PageInfo searchObject){
 
-        ModelSearchCriteriaBuilder builder = new ModelSearchCriteriaBuilder(searchMetadata, modelMetadata, getSession());
+        CriteriaBuilder builder = new ModelSearchCriteriaBuilder(searchMetadata, modelMetadata, getSession());
 
         builder.buildCriteria(searchObject);
 
