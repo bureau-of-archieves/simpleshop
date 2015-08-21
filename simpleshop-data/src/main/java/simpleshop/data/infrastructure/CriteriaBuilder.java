@@ -1,6 +1,7 @@
 package simpleshop.data.infrastructure;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import simpleshop.data.PageInfo;
 
 /**
@@ -19,7 +20,7 @@ public interface CriteriaBuilder {
      * @param alias the declared alias.
      * @return created criteria.
      */
-    Criteria getCriteria(String alias);
+    DetachedCriteria getCriteria(String alias);
 
 
 

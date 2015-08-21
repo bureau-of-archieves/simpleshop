@@ -28,6 +28,14 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void subStrAfterLastTest(){
+         assertThat(StringUtils.subStrAfterLast(null, ""), nullValue());
+         assertThat(StringUtils.subStrAfterLast("abc", ""), equalTo("abc"));
+         assertThat(StringUtils.subStrAfterLast("test3.test2.test1", "."), equalTo("test1"));
+         assertThat(StringUtils.subStrAfterLast("test3.test2.test1.", "."), equalTo(""));
+    }
+
+    @Test
     public void getPropertyNameTest() {
         assertEquals("name", StringUtils.getPropertyName("getName"));
         assertEquals("birthDate", StringUtils.getPropertyName("setBirthDate"));

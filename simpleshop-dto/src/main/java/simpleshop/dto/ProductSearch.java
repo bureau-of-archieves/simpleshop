@@ -15,7 +15,7 @@ public class ProductSearch extends ModelSearch {
     private String name;
     private Category category;
     private List<Category> categories;
-    private CategoryPrefix categoryPrefix;
+    private CategorySearch categoryPrefix;
     private Supplier supplier;
 
     @PropertyFilter(operator = PropertyFilter.Operator.LIKE)
@@ -46,11 +46,11 @@ public class ProductSearch extends ModelSearch {
     }
 
     @PropertyFilter(property = "categories", operator = PropertyFilter.Operator.CONTAINS_MATCH)
-    public CategoryPrefix getCategoryPrefix() {
+    public CategorySearch getCategoryPrefix() {
         return categoryPrefix;
     }
 
-    public void setCategoryPrefix(CategoryPrefix categoryPrefix) {
+    public void setCategoryPrefix(CategorySearch categoryPrefix) {
         this.categoryPrefix = categoryPrefix;
     }
 
@@ -64,19 +64,5 @@ public class ProductSearch extends ModelSearch {
     }
 
 
-    public static class CategoryPrefix {
-
-        private String prefix;
-
-        @PropertyFilter(property = "prefix", operator = PropertyFilter.Operator.START_WITH)
-        public String getPrefix() {
-            return prefix;
-        }
-
-        public void setPrefix(String prefix) {
-            this.prefix = prefix;
-        }
-
-    }
 
 }

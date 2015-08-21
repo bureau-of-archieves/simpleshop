@@ -3,13 +3,17 @@ package simpleshop.data.infrastructure.impl;
 import org.hibernate.Session;
 import org.hibernate.criterion.*;
 import org.hibernate.metadata.ClassMetadata;
+import org.hibernate.metadata.CollectionMetadata;
 import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
 import simpleshop.data.infrastructure.CriterionContext;
 import simpleshop.data.infrastructure.CriterionFactory;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
+import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.data.metadata.PropertyFilter;
 import simpleshop.data.metadata.PropertyMetadata;
+import simpleshop.data.util.DomainUtils;
 
 import java.util.Collection;
 
@@ -19,37 +23,57 @@ import java.util.Collection;
 public abstract class CollectionCriterionFactory implements CriterionFactory {
 
     @Override
-    public Criterion createCriterion(CriterionContext criterionContext, String qualifiedPropertyName, Class<?> targetType, Object value, boolean negate) {
+    public Criterion createCriterion(CriterionContext criterionContext, String alias, String propertyName, Class<?> targetType, Object value, boolean negate) {
 
         if(!Collection.class.isAssignableFrom(targetType)){
-            throw new SpongeConfigurationException(String.format("Operator does not apply to non-collection property '%s'", qualifiedPropertyName));
+            throw new SpongeConfigurationException(String.format("Operator does not apply to non-collection property '%s'", propertyName));
         }
 
+        //load metadata
         Session session = criterionContext.getSession();
-        Pair<ModelMetadata, PropertyMetadata> pair = criterionContext.getMetadata(qualifiedPropertyName);
-
+        Pair<ModelMetadata, PropertyMetadata> pair = criterionContext.getMetadata(alias, propertyName);
         ModelMetadata targetModelMetadata = pair.getKey();
-        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), "sub1");
-        String alias = StringUtils.subStrB4(qualifiedPropertyName, ".");
-        detachedCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), alias + "." + targetModelMetadata.getIdPropertyName()));
-        detachedCriteria.setProjection(Property.forName(targetModelMetadata.getIdPropertyName()));
-
         PropertyMetadata targetPropertyMetadata = pair.getValue();
-        DetachedCriteria subPropertyCriteria = detachedCriteria.createCriteria(targetPropertyMetadata.getPropertyName(), "sub1prop");
         String collectionRoleName = targetModelMetadata.getModelClass().getName() + "." + targetPropertyMetadata.getPropertyName();
-        Class<?> elementType = session.getSessionFactory().getCollectionMetadata(collectionRoleName).getElementType().getReturnedClass();
+        CollectionMetadata collectionMetadata = session.getSessionFactory().getCollectionMetadata(collectionRoleName);
+        Class<?> elementType = collectionMetadata.getElementType().getReturnedClass();
         ClassMetadata elementMetadata = session.getSessionFactory().getClassMetadata(elementType);
-        Criterion elementCriterion = createElementCriterion(elementType, elementMetadata, value);
-        if(elementCriterion == null){ // === false
-            elementCriterion = Restrictions.neProperty("sub1." + targetModelMetadata.getIdPropertyName(), "sub1." + targetModelMetadata.getIdPropertyName());
+
+        int subQueryLevel = criterionContext.getNestedLevel() + 1;
+        String levelLeadAlias = CriterionContext.getLevelAlias(SUB_QUERY_LEAD_ALIAS, subQueryLevel);
+        DetachedCriteria subQueryLeadCriteria = DetachedCriteria.forClass(targetModelMetadata.getModelClass(), levelLeadAlias);
+        String levelAlias = criterionContext.getLevelAlias(alias);
+        subQueryLeadCriteria.add(Restrictions.eqProperty(targetModelMetadata.getIdPropertyName(), levelAlias + "." + targetModelMetadata.getIdPropertyName()));
+        subQueryLeadCriteria.setProjection(Property.forName(targetModelMetadata.getIdPropertyName()));
+
+        String levelRootAlias = CriterionContext.getLevelAlias(AliasDeclaration.ROOT_CRITERIA_ALIAS, subQueryLevel);
+        DetachedCriteria subQueryRootCriteria = subQueryLeadCriteria.createCriteria(targetPropertyMetadata.getPropertyName(), levelRootAlias);
+
+        Criterion subQueryCriterion;
+        if(elementMetadata == null){ //collection element is not domain model
+            subQueryCriterion = createSimpleElementCriterion(elementType, value);
+
+        } else {
+            String entityName = elementMetadata.getEntityName();
+            String modelName = StringUtils.subStrAfterLast(entityName, ".");
+            ModelMetadata elementModelMetadata = DomainUtils.getModelMetadata(modelName);
+            ModelMetadata elementSearchModelMetadata = DomainUtils.getModelMetadata(modelName + "Search");
+            NestedCriterionContext nestedCriterionContext = new NestedCriterionContext(elementSearchModelMetadata, elementModelMetadata, criterionContext);
+            nestedCriterionContext.addCriteria(subQueryRootCriteria);
+            subQueryCriterion = createModelElementCriterion(nestedCriterionContext, elementMetadata, elementType, value);
         }
-        subPropertyCriteria.add(elementCriterion);
-        Criterion criterion = Subqueries.exists(detachedCriteria);
+        if(subQueryCriterion != null){
+            subQueryRootCriteria.add(subQueryCriterion);
+        }
+
+        Criterion criterion = Subqueries.exists(subQueryLeadCriteria);
         if(negate)
             criterion = Restrictions.not(criterion);
         return criterion;
     }
 
-    protected abstract Criterion createElementCriterion(Class<?> elementType, ClassMetadata elementMetadata, Object value);
+    protected abstract Criterion createSimpleElementCriterion(Class<?> elementType, Object value);
+
+    protected abstract Criterion createModelElementCriterion(CriterionContext nestedCriterionContext, ClassMetadata elementMetadata, Class<?> elementType,  Object value);
 
 }

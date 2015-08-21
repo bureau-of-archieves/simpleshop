@@ -36,6 +36,23 @@ public final class StringUtils {
     }
 
     /**
+     * Get the sub string after the last appearance of separator.
+     * @param master the master string.
+     * @param separator the separator.
+     * @return
+     */
+    public static String subStrAfterLast(String master, String separator){
+        if(master == null || master.length() == 0 || separator == null || separator.length() == 0)
+            return master;
+
+        int index = master.lastIndexOf(separator);
+        if(index == -1)
+            return master;
+
+        return master.substring(index + separator.length());
+    }
+
+    /**
      * Returns the part of master before the last separator. Returns the whole string if separator is not found.
      * @param master the string.
      * @param separator separator is not included in the return value.

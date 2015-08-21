@@ -1,6 +1,7 @@
 package simpleshop.data.infrastructure.impl;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 import simpleshop.data.infrastructure.CriteriaBuilder;
@@ -49,21 +50,22 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
         builder.buildCriteria(searchObject);
 
         //sorting
-        Criteria rootCriteria = builder.getCriteria(AliasDeclaration.ROOT_CRITERIA_ALIAS);
+        DetachedCriteria rootCriteria = builder.getCriteria(AliasDeclaration.ROOT_CRITERIA_ALIAS);
         if(searchObject.getSortInfoList() != null){
             for(SortInfo sortInfo : searchObject.getSortInfoList()){
-                Criteria parentCriteria = builder.getCriteria(sortInfo.getAlias());
+                DetachedCriteria parentCriteria = builder.getCriteria(sortInfo.getAlias());
                 Order sortOrder = sortInfo.isAscending() ? Order.asc(sortInfo.getProperty()) : Order.desc(sortInfo.getProperty());
                 parentCriteria.addOrder(sortOrder);
             }
         }
 
         //paging
+        Criteria executableCriteria = rootCriteria.getExecutableCriteria(getSession());
         if(searchObject.getPageSize() > 0){
-            rootCriteria.setMaxResults(searchObject.getPageSize() + (searchObject.isPageSizePlusOne() ? 1 : 0));
-            rootCriteria.setFirstResult(searchObject.getPageIndex() * searchObject.getPageSize());
+            executableCriteria.setMaxResults(searchObject.getPageSize() + (searchObject.isPageSizePlusOne() ? 1 : 0));
+            executableCriteria.setFirstResult(searchObject.getPageIndex() * searchObject.getPageSize());
         }
-        return rootCriteria.list();
+        return executableCriteria.list();
     }
 
 

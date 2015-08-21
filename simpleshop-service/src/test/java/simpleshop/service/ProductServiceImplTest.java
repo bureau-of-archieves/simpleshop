@@ -119,7 +119,7 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
         //test contains match
         productSearch.setPageSize(20);
         productSearch.setCategories(null);
-        productSearch.setCategoryPrefix(new ProductSearch.CategoryPrefix());
+        productSearch.setCategoryPrefix(new CategorySearch());
         List<Category> rootCategory = categoryService.quickSearch(TestConstants.ROOT_CATEGORY, new PageInfo());
         productSearch.getCategoryPrefix().setPrefix(rootCategory.get(0).getPrefix());
         result = productService.search(productSearch);
