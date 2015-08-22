@@ -89,7 +89,12 @@ public @interface PropertyFilter {
          * Property is a collection and the parameter object is a parameter object.
          * The property collection contains at least one item which matches the criteria specified in the parameter object.
          */
-         CONTAINS_MATCH(false);
+         CONTAINS_MATCH(false),
+
+        /**
+         * Property is a domain object and the object matches the search parameter.
+         */
+        MATCH(false);
 
         private final boolean simple;
 

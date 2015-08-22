@@ -74,12 +74,12 @@ public class TestDataInitializer {
         session.flush();
 
         Customer customer1 = createCustomer(TestConstants.CUSTOMER_NAME_1, "Larry Page", session);
+        createCustomer("Apple", "Steve Jobs", session);
 
         Map<String, String> billContacts = new HashMap<>();
         billContacts.put("Work Phone", TestConstants.WORK_PHONE_NUMBER_1);
         billContacts.put("Home Phone", "987654321");
         billContacts.put("Email", "bill@microsoft.com");
-        createCustomer("Apple", "Steve Jobs", session);
         createCustomer(TestConstants.CUSTOMER_NAME_2, "Bill Gates", billContacts, null, session);
 
         Address address = new Address();

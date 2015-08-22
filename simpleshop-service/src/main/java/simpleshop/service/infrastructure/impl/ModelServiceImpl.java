@@ -79,6 +79,12 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
         }
     }
 
+
+    @Override
+    public void sessionFlush() {
+        getModelDAO().sessionFlush();
+    }
+
     /**
      * The template method for proper searching of a list of model.Called form child class overriding method.
      * @param searchParams search parameters for the model.

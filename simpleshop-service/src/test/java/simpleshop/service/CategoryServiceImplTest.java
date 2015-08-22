@@ -3,6 +3,7 @@ package simpleshop.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import simpleshop.data.CategoryDAO;
 import simpleshop.data.PageInfo;
 import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
@@ -22,15 +23,18 @@ import static org.junit.Assert.assertThat;
 public class CategoryServiceImplTest extends ServiceTransactionTest {
 
     @Autowired
-        private CategoryService categoryService;
+    private CategoryService categoryService;
+
+    @Autowired
+    private CategoryDAO categoryDAO;
 
     @Before
-    public void cleanUp(){
-        super.cleanUp(categoryService, TestConstants.CATEGORY_MARK);
+    public void cleanUp() {
+        super.cleanUp(categoryDAO, TestConstants.CATEGORY_MARK);
     }
 
     @Test
-    public void createDeleteTest(){
+    public void createDeleteTest() {
 
         Category category = new Category();
         category.setName("My Root Category");
@@ -53,7 +57,7 @@ public class CategoryServiceImplTest extends ServiceTransactionTest {
     }
 
     @Test
-    public void searchTest(){
+    public void searchTest() {
 
         Category root = new Category();
         root.setName("Root");

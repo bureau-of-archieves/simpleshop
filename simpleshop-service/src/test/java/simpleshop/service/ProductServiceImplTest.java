@@ -3,7 +3,9 @@ package simpleshop.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import simpleshop.data.PageInfo;
+import simpleshop.data.ProductDAO;
 import simpleshop.data.test.TestConstants;
 import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Product;
@@ -29,9 +31,12 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
     @Autowired
     private SupplierService supplierService;
 
+    @Autowired
+    private ProductDAO productDAO;
+
     @Before
     public void cleanUp() {
-        super.cleanUp(productService, TestConstants.PRODUCT_MARK);
+        super.cleanUp(productDAO, TestConstants.PRODUCT_MARK);
     }
 
     @Autowired
@@ -62,6 +67,7 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
     }
 
     @Test
+    @Transactional
     public void searchTest() {
 
         List<Product> products = new ArrayList<>();
@@ -72,8 +78,8 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
             productService.save(product);
             products.add(product);
         }
+        productService.sessionFlush();
 
-        flush();
 
         ProductSearch productSearch = new ProductSearch();
         productSearch.setPageSize(100);
@@ -91,7 +97,7 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
             products.get(i).getCategories().add(categories.get(0));
             productService.save(products.get(i));
         }
-        flush();
+        productService.sessionFlush();
 
         productSearch.setCategory(categories.get(0));
         result = productService.search(productSearch);
@@ -104,7 +110,7 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
             products.get(i).getCategories().addAll(categories2);
             productService.save(products.get(i));
         }
-        flush();
+        productService.sessionFlush();
         categories.add(categories2.get(0));
 
         productSearch.setCategory(null);
@@ -124,6 +130,7 @@ public class ProductServiceImplTest extends ServiceTransactionTest {
         productSearch.getCategoryPrefix().setPrefix(rootCategory.get(0).getPrefix());
         result = productService.search(productSearch);
         assertThat(result.size(), greaterThanOrEqualTo(9));
+
 
     }
 }

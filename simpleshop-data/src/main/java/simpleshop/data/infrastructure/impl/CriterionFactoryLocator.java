@@ -203,6 +203,15 @@ public class CriterionFactoryLocator {
         });
 
 
+        criterionFactoryMap.put(PropertyFilter.Operator.MATCH, new ModelCriterionFactory() {
+            @Override
+            protected Criterion createModelValueCriterion(NestedCriterionContext nestedCriterionContext, ModelMetadata targetModelMetadata, Class<?> targetType, PageInfo searchObject) {
+                nestedCriterionContext.buildCriteria(searchObject);
+                return null;
+            }
+        });
+
+
         //criterionFactoryMap.put(PropertyFilter.Operator.IN, (qualifiedPropertyName, targetType, value, negate) -> {});
     }
 }

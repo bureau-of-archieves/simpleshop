@@ -3,6 +3,7 @@ package simpleshop.service;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
 import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Country;
@@ -21,9 +22,12 @@ public class SuburbServiceImplTest extends ServiceTransactionTest {
     @Autowired
     private SuburbService suburbService;
 
+    @Autowired
+    private SuburbDAO suburbDAO;
+
     @Before
     public void cleanUp() {
-        super.cleanUp(suburbService, TestConstants.SUBURB_MARK);
+        super.cleanUp(suburbDAO, TestConstants.SUBURB_MARK);
     }
 
     @Test

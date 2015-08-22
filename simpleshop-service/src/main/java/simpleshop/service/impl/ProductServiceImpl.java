@@ -9,6 +9,9 @@ import simpleshop.dto.ProductSearch;
 import simpleshop.service.ProductService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Service
 public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch> implements ProductService {
 
@@ -25,4 +28,14 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
         return new Product();
     }
 
+    private static final ArrayList<String> LAZY_LOADED_PROPERTIES = new ArrayList<>();
+
+    static {
+        LAZY_LOADED_PROPERTIES.add("categories");
+    }
+
+    @Override
+    public Collection<String> lazyLoadedProperties() {
+        return LAZY_LOADED_PROPERTIES;
+    }
 }

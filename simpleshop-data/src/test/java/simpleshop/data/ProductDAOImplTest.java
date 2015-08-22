@@ -78,6 +78,7 @@ public class ProductDAOImplTest extends TransactionalTest {
         String[] prefix = {" Potato Chips ", " Rice Cracker "};
         for(int i=0; i<10; i++){
             createProduct(TestConstants.PRODUCT_MARK + i + prefix[i % prefix.length], category);
+            productDAO.sessionFlush();
         }
 
        List<Product> products = productDAO.quickSearch("Cracker", new PageInfo(1,3));

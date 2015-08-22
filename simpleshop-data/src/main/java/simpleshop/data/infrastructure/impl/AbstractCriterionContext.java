@@ -174,7 +174,7 @@ public abstract class AbstractCriterionContext implements CriterionContext {
 
                 //get target property type
                 DetachedCriteria parent = loadCriteria(propertyFilter.alias());
-                String fullPropertyPath = getFullPropertyPath(parent.getAlias(), targetPropertyName);
+                String fullPropertyPath = getFullPropertyPath(propertyFilter.alias(), targetPropertyName);
                 PropertyMetadata targetPropertyMetadata = modelMetadata.getPropertyMetadata(fullPropertyPath);
                 Class<?> targetType = targetPropertyMetadata.getReturnType();
 

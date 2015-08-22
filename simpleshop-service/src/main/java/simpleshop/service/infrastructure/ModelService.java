@@ -46,6 +46,9 @@ public interface ModelService<T, S extends ModelSearch> extends BaseService {
      */
     T getById(Serializable id);
 
+
+    void sessionFlush();
+
     /**
      * Search for a list of matching models.
      * @param searchParams instance of the corresponding search class for the model class..

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import simpleshop.data.PageInfo;
+import simpleshop.data.ShipperDAO;
 import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
 import simpleshop.domain.model.ContactNumberType;
@@ -28,9 +29,12 @@ public class ShipperServiceImplTest extends ServiceTransactionTest {
     @Autowired
     private SuburbDAO suburbDAO;
 
+    @Autowired
+    private ShipperDAO shipperDAO;
+
     @Before
     public void cleanUp(){
-        super.cleanUp(shipperService, TestConstants.SHIPPER_MARK);
+        super.cleanUp(shipperDAO, TestConstants.SHIPPER_MARK);
     }
 
     @Test

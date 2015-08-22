@@ -34,7 +34,7 @@ public class Order {
     private Integer numberOfParcels;
     private BigDecimal freight;
     private String shipName;
-    private Address shipAddress;
+    private Address shipAddress = new Address();
 
     @Id
     @GeneratedValue
@@ -69,7 +69,7 @@ public class Order {
         this.employee = employee;
     }
 
-    @Column(name = "order_date")
+    @Column(name = "order_date", nullable = false)
     public LocalDateTime getOrderDate() {
         return orderDate;
     }

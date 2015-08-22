@@ -9,7 +9,9 @@ import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -28,7 +30,6 @@ public class Customer {
      * //todo add a StockStorage domain object and change this flag to an id.
      */
     private Boolean stock = Boolean.FALSE;
-
 
     @Id
     @GeneratedValue
@@ -65,7 +66,7 @@ public class Customer {
     }
 
     @OneToMany(mappedBy = "customer")
-    @OrderBy("id")
+    @OrderBy("orderDate")
     public List<Order> getOrders() {
         return orders;
     }
