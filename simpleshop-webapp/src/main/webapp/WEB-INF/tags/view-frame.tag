@@ -17,6 +17,8 @@
 <%@attribute name="cssClass" %>
 <%--bootstrap panel css class--%>
 <%@attribute name="panelClass" %>
+<%--bootstrap view frame css class--%>
+<%@attribute name="frameClass" %>
 <%--just hide this view when close--%>
 <%@attribute name="removable" type="java.lang.Boolean" %>
 <%--show the refresh button or not--%>
@@ -31,11 +33,17 @@
 <c:if test="${empty removable}">
     <c:set var="removable" value="true"/>
 </c:if>
+<c:if test="${empty cssClass}">
+    <c:set var="cssClass" value=""/>
+</c:if>
 <c:if test="${empty panelClass}">
     <c:set var="panelClass" value="panel-info"/>
 </c:if>
+<c:if test="${empty frameClass}">
+    <c:set var="frameClass" value="col-xs-12 col-md-6 col-xl-4"/>
+</c:if>
 
-<div id="${id}" class="view display col-xs-12 col-md-6 col-xl-4" data-ng-init="modelName='${modelName}'; viewId='${id}';"
+<div id="${id}" class="view display ${frameClass}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
      data-ng-controller="${controller}Controller">
 
     ${f:_push(stack, "_parentId", id)}

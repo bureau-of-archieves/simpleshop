@@ -1,11 +1,13 @@
 <%@include file="_header.tag"%>
+<%--bootstrap view frame css class--%>
+<%@attribute name="frameClass" %>
 
 <c:set var="viewId" value="&${f:uuid()};"/>
 <t:view>
     ${f:_push(stack, "_viewId", viewId)}
     ${f:_push(stack, "_replace_id_marker", viewId)}
 
-    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" >
+    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" frameClass="${frameClass}">
         <jsp:attribute name="header">
 
         </jsp:attribute>

@@ -54,6 +54,9 @@ public class CategoryServiceImplTest extends ServiceTransactionTest {
 
         assertThat(subCategory.getId(), notNullValue());
         assertThat(subCategory.getPrefix(), equalTo(category.getPrefix() + "_" + subCategory.getId()));
+
+        categoryService.delete(category);
+        categoryService.delete(subCategory);
     }
 
     @Test
