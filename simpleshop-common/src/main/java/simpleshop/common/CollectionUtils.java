@@ -1,9 +1,6 @@
 package simpleshop.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Util methods for collections.
@@ -57,5 +54,34 @@ public final class CollectionUtils {
             values = CollectionUtils.stringToObjectArray(value.toString(), ",", targetType);
         }
         return values;
+    }
+
+    public static <T> boolean iterableEquals(Iterable<T> i1, Iterable<T> i2){
+
+        if(Objects.equals(i1, i2))
+            return true;
+
+        if(i1 == null || i2 == null)
+            return false;
+
+        Iterator<T> iterator1 =  i1.iterator();
+        Iterator<T> iterator2 =  i2.iterator();
+
+        while (iterator1.hasNext()){
+
+            if(!iterator2.hasNext())
+                return false;
+
+            T obj1 = iterator1.next();
+            T obj2 = iterator2.next();
+
+            if(!Objects.equals(obj1, obj2)){
+                return false;
+            }
+        }
+
+        if(iterator2.hasNext())
+            return false;
+        return true;
     }
 }

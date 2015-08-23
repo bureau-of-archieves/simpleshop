@@ -8,7 +8,9 @@ import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.component.ProductSupplier;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -19,7 +21,7 @@ import java.util.Set;
 public class Product {
     private Integer id;
     private String name;
-    private String imageUrl;
+    private List<String> images = new ArrayList<>();
     private String quantityPerUnit;
     private Set<Category> categories = new HashSet<>();
     private Set<ProductSupplier> productSuppliers = new HashSet<>();
@@ -46,14 +48,15 @@ public class Product {
         this.name = name;
     }
 
-    @Column(length = Constants.MID_STRING_LENGTH)
-    @Description("Main image of the product.")
-    public String getImageUrl() {
-        return imageUrl;
+    @ElementCollection
+    @CollectionTable(name="product_images", joinColumns=@JoinColumn(name="product_id"))
+    @Column(name="image_name", length = Constants.MID_STRING_LENGTH, nullable = false)
+    public List<String> getImages() {
+        return images;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImages(List<String> imageUrls) {
+        this.images = imageUrls;
     }
 
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)

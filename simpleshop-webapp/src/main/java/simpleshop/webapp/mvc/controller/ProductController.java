@@ -46,6 +46,11 @@ public class ProductController extends BaseJsonController {
     @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
     public String productDetails(@PathVariable int id, Model model) {
         JsonResponse<Product> response = modelDetails(id, productService);
+        if(response.getContent().getImages().size() == 0){
+            response.getContent().getImages().add("product_1.jpg");
+            response.getContent().getImages().add("product_2.jpg");
+            response.getContent().getImages().add("product_3.jpg");
+        }
         return super.outputJson(model, response, productService.ignoredJsonProperties());
     }
 

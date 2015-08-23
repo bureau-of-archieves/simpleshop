@@ -32,6 +32,7 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
 
     static {
         LAZY_LOADED_PROPERTIES.add("categories");
+        LAZY_LOADED_PROPERTIES.add("images");
     }
 
     @Override

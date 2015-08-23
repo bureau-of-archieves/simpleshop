@@ -233,3 +233,11 @@ input.ng-valid ~ .pattern-validation {
 .msgbox{
     margin-top:1.5em;
 }
+
+.carousel-control{
+    cursor: pointer;
+}
+
+div.carousel-container{
+    margin-bottom: 1em;
+}

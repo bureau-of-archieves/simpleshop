@@ -3,8 +3,7 @@ package simpleshop.data;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import simpleshop.common.CollectionUtils;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.*;
@@ -49,7 +48,7 @@ public class ProductDAOImplTest extends TransactionalTest {
         List<Category> categories = categoryDAO.quickSearch("", new PageInfo());
         assertThat(categories.size(), greaterThanOrEqualTo(2));
         product.getCategories().addAll(categories);
-        product.setImageUrl("prod1.png");
+        product.getImages().add("prod1.png");
 
         productDAO.save(product);
         productDAO.sessionFlush();
@@ -58,7 +57,7 @@ public class ProductDAOImplTest extends TransactionalTest {
         Product loaded = productDAO.load(product.getId());
         assertThat(loaded, not(nullValue()));
         assertThat(loaded.getName(), equalTo(product.getName()));
-        assertThat(loaded.getImageUrl(), equalTo(product.getImageUrl()));
+        assertThat(CollectionUtils.iterableEquals(loaded.getImages(), product.getImages()), equalTo(true));
         assertThat(loaded.getQuantityPerUnit(), equalTo(product.getQuantityPerUnit()));
         assertThat(loaded.getCategories().size(), equalTo(categories.size()));
 

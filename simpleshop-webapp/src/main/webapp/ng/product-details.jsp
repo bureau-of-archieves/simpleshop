@@ -2,6 +2,7 @@
 
 <t:page>
     <t:view-details>
+        <ctrl:carousel path="images" hideEmpty="true" />
         <ctrl:detailsField path="name" />
         <ctrl:detailsField path="quantityPerUnit" />
         <ctrl:detailsField path="stock" />

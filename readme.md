@@ -28,7 +28,6 @@ Views have a model type, which is the type of model it can display.
 
 Todo List
 -----------
- * Revamp search function.
  * Check for modification before closing an edit/create view.
  * Implement watermark.
  * css/script bundling
