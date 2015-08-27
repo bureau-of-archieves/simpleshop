@@ -44,7 +44,7 @@ public class CriterionFactoryLocator {
                     throw new SpongeConfigurationException("LIKE operator does not apply to property type: " + targetType.getName());
 
                 String pattern = StringUtils.wrapLikeKeywords(value.toString());
-                Criterion criterion = Restrictions.like(qualifiedPropertyName, pattern);
+                Criterion criterion = Restrictions.ilike(qualifiedPropertyName, pattern);
                 if(negate) {
                     criterion = Restrictions.not(criterion);
                 }
@@ -59,7 +59,7 @@ public class CriterionFactoryLocator {
                     throw new SpongeConfigurationException("START_WITH operator does not apply to property type: " + targetType.getName());
 
                 String pattern = StringUtils.wrapStartWithKeywords(value.toString());
-                Criterion criterion = Restrictions.like(qualifiedPropertyName, pattern);
+                Criterion criterion = Restrictions.ilike(qualifiedPropertyName, pattern);
                 if(negate) {
                     criterion = Restrictions.not(criterion);
                 }
@@ -131,7 +131,7 @@ public class CriterionFactoryLocator {
             @Override
             protected Criterion createEntryCriterion(Object value) {
                 String pattern = StringUtils.wrapLikeKeywords(value.toString());
-                return Restrictions.like("elements", pattern);
+                return Restrictions.ilike("elements", pattern);
             }
 
             @Override

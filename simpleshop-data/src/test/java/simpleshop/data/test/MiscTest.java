@@ -89,7 +89,7 @@ public class MiscTest extends TransactionalTest {
 
         Criteria criteria = session.createCriteria(Customer.class);
         Criteria ct = criteria.createCriteria("contact", "ct").createCriteria("contactNumbers", "cn");
-        Criterion criterion = Restrictions.like("cn.elements", TestConstants.WORK_PHONE_NUMBER_1);
+        Criterion criterion = Restrictions.ilike("cn.elements", TestConstants.WORK_PHONE_NUMBER_1);
         criteria.add(criterion);
         List result = criteria.list();
         assertThat(result.size(), greaterThanOrEqualTo(1));
