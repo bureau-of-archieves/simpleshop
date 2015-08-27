@@ -40,6 +40,8 @@ Todo List
  * Add Spring Security.
  * Separate template and data. This way a type of template can be cached by the client.
  * Support full internationalization.
+ * Replace Bootstrap view layout with masonry layout, e.g. http://w3bits.com/labs/css-masonry/
+ * drag and drop swap view positions.
 
 Future Todo List 
 -----------
