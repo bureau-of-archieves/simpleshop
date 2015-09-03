@@ -59,9 +59,14 @@
                     </a>
                     <ul role="menu" class="dropdown-menu">
 
-                        <li style="width:15em">
+                        <li>
                             <a href="javascript:void(0);">
-                                <span data-ng-click="closeOthers('')">Close All</span>
+                                <div class="row">
+                                    <table>
+                                        <tr><td><span data-ng-click="closeOthers('')">Close All</span></td></tr>
+                                    </table>
+                                </div>
+
                             </a>
                         </li>
 
@@ -69,15 +74,25 @@
                             <a class="ng-binding result-menu-item" href="javascript:void(0);">
 
                                 <div class="row">
-                                    <div class="col-sm-9"><span data-ng-click="scrollTo(resultName)">{{resultName | pascal}}</span>
-                                    </div>
-                                    <div class="col-sm-1">
-                                        <span class="glyphicon glyphicon-asterisk"
-                                              data-ng-click="closeOthers(resultName)" title="Close Others"></span>&nbsp;
-                                        <span class="glyphicon glyphicon-remove-circle"
-                                              data-ng-click="closeResult(resultName);$event.stopPropagation();"
-                                              title="Close"></span>
-                                    </div>
+
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <span data-ng-click="scrollTo(resultName)" style="display:inline-block; margin-right:4.5em;">{{resultName | pascal}}</span>
+
+                                                <div class="btn-group btn-group-xs" style="position:absolute; right:0.5em"   role="menuitem" aria-label="Menu item options">
+                                                    <div class="btn btn-default" role="button" aria-label="Close Others" data-ng-click="closeOthers(resultName)" >
+                                                        <span class="glyphicon glyphicon-remove-sign" title="Close Others"></span>
+                                                    </div>
+                                                    <div class="btn btn-default" role="button" aria-label="Close This" data-ng-click="closeResult(resultName);$event.stopPropagation();" >
+                                                        <span class="glyphicon glyphicon-remove-circle" title="Close This"></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
                                 </div>
                             </a>
                         </li>
