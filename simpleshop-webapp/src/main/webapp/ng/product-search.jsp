@@ -6,6 +6,7 @@
 
     <t:view-search>
         <ctrl:editField path="name"/>
+        <ctrl:editModelLink path="supplier" />
     </t:view-search>
 
     <script>
