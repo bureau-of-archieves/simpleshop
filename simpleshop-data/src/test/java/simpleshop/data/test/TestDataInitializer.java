@@ -214,6 +214,14 @@ public class TestDataInitializer {
         category.setParent(parent);
 
         session.save(category);
+
+        //copied from Service save function
+        String parentPrefix = "";
+        if(category.getParent() != null){
+            parentPrefix = category.getParent().getPrefix();
+        }
+        category.setPrefix(parentPrefix + "_" + category.getId());
+
         return category;
     }
 

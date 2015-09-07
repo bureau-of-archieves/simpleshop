@@ -429,6 +429,25 @@
         return trim ? str.trim() : str;
     };
 
+    /**
+     * Get the substring after the first first argument.
+     * @param {string} str - source string.
+     * @param {string} first - separator.
+     * @param {boolean} trim - whether to trim result.
+     * @returns {string}
+     */
+    zcl.subStrAfterFirst = function(str, first, trim){
+        if(!str)
+            return str;
+
+        var index = str.indexOf(first);
+        if(index >= 0){
+            str = str.substr(index + 1);
+        }
+
+        return trim ? str.trim() : str;
+    };
+
     zcl.camelNameToUrlName = function(camelName){//camel name to underscored name
         var result = [];
         for(var i=0; i<camelName.length; i++){

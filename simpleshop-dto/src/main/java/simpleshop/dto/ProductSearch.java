@@ -3,6 +3,7 @@ package simpleshop.dto;
 
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.PropertyFilter;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Supplier;
 

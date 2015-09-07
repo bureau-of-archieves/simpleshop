@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "categories")
+@DisplayFormat("concat:'id':' - ':'name'")
 public class Category {
 
     private Integer id;

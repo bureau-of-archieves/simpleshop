@@ -19,6 +19,8 @@
 <%--the path used to reference this property in angular--%>
 <%@attribute name="base" required="false" %>
 <%@attribute name="showLink" type="java.lang.Boolean" required="false" %>
+<%--A function to call to convert this field before posting back to server--%>
+<%@attribute name="prePostProcessor" type="java.lang.String" required="false" %>
 
 <c:if test="${empty modelName}" >
     <c:set var="modelName" value="${f:peek(stack, '_modelName')}" />
@@ -46,10 +48,20 @@
     <c:set var="showLink" value="false" />
 </c:if>
 
+<c:if test="${empty displayFormat}">
+    <c:set var="displayFormat" value="${f:smd(targetModelName).displayFormat}" />
+</c:if>
+
 <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
 
 <%--model update is totally controlled by data-spg-combo directive--%>
-<div class="form-group" data-ng-model="${fieldRef}" data-ng-model-options="{updateOn:''}" data-spg-combo='{"targetModelName":"${targetModelName}", "displayFormat":"${fieldRef} <c:if test="${not empty displayFormat}"> | ${f:htmlEncodeSingleQuote(displayFormat)} </c:if>"}' >
+<div class="form-group"
+     data-ng-model="${fieldRef}"
+     data-ng-model-options="{updateOn:''}"
+     data-spg-combo='{"targetModelName":"${targetModelName}",
+     "displayFormat":"${fieldRef} <c:if test="${not empty displayFormat}"> | ${f:htmlEncodeSingleQuote(displayFormat)} </c:if>"}'
+        <c:if test="${not empty prePostProcessor}">data-pre-post="${prePostProcessor}"</c:if>
+        >
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
 
     <div class="col-sm-9">

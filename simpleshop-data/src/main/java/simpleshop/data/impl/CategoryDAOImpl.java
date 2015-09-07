@@ -29,7 +29,7 @@ public class CategoryDAOImpl extends ModelDAOImpl<Category> implements CategoryD
     @Override
     public List<Category> quickSearch(String keywords, PageInfo pageInfo){
         keywords = StringUtils.wrapLikeKeywords(keywords);
-        Query query = super.createQuery("SELECT cat FROM Category cat WHERE cat.name LIKE ?1 or cat.description LIKE ?1", pageInfo, keywords);
+        Query query = super.createQuery("SELECT cat FROM Category cat WHERE lower(cat.name) LIKE ?1 or lower(cat.description) LIKE ?1", pageInfo, keywords.toLowerCase());
         return query.list();
 
     }

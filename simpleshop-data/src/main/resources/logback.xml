@@ -18,13 +18,13 @@
         <appender-ref ref="console"/>
     </logger>
 
-    <logger name="org.hibernate.SQL" level="DEBUG">
-        <appender-ref ref="console"/>
-    </logger>
+    <!--<logger name="org.hibernate.SQL" level="DEBUG">-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
 
-    <logger name="org.hibernate.type" level="TRACE">
-        <appender-ref ref="console"/>
-    </logger>
+    <!--<logger name="org.hibernate.type" level="TRACE">-->
+        <!--<appender-ref ref="console"/>-->
+    <!--</logger>-->
 
     <root level="INFO">
         <appender-ref ref="console"/>

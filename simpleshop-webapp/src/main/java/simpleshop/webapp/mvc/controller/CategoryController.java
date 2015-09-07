@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import simpleshop.domain.model.Category;
 import simpleshop.dto.CategorySearch;
 import simpleshop.dto.JsonResponse;
+import simpleshop.dto.ModelQuickSearch;
 import simpleshop.service.CategoryService;
 import simpleshop.webapp.infrastructure.BaseJsonController;
 
@@ -30,6 +31,12 @@ public class CategoryController extends BaseJsonController {
         }
 
         return super.outputJson(model, response, categoryService.ignoredJsonProperties());
+    }
+
+    @RequestMapping(value = "/category/list", method = RequestMethod.POST, consumes = "application/json")
+    public String suburbList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
+        JsonResponse<Iterable<Category>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,categoryService.quickSearch(quickSearch.getKeywords(), quickSearch));
+        return super.outputJson(model, response, null);
     }
 
 

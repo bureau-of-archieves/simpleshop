@@ -636,7 +636,7 @@
             viewKeyObject.push(getViewOptions.viewTypeInViewKey ? viewType : null);
             viewKeyObject.push(getViewOptions.instanceIdInViewKey && instanceId ? instanceId : null);
             viewKeyObject.push(getViewOptions.postDataInViewKey && postData ? postData : null);
-            return JSON.stringify(viewKeyObject);
+            return angular.toJson(viewKeyObject); //use this to remove $$hashKey.
         };
 
         /**
@@ -713,7 +713,7 @@
          * @param getViewOptions - removeExisting whether to remove existing view with the same id.
          * @returns {*} the promise of this operation.
          */
-        var getView = function (modelName, viewType, instanceId, params, model, getViewOptions) {
+        var getView = function (modelName, viewType, instanceId, params, model, getViewOptions, eventScope) {
 
             getViewOptions = $.extend($.extend({}, defaultGetViewOption), getViewOptions);
             var viewName = getViewName(modelName, viewType);
@@ -746,11 +746,15 @@
 
             var createRequest = function () {
                 if (model) { //need to post
+
+                    var clone = angular.copy(model);
+                    prePostHandler(clone, eventScope);
+
                     return $.ajax(
                         viewUrl,
                         {
                             type: "POST",
-                            data: JSON.stringify(model),
+                            data: JSON.stringify(clone),
                             contentType: "application/json",
                             dataType: "html"
                         }
@@ -759,7 +763,6 @@
                     return $.get(viewUrl);
                 }
             };
-
 
 
             var createView = function (viewHtml) {
@@ -1038,6 +1041,61 @@
             return createPromise(null);
         };
 
+        var prePostProcessors = {
+
+            propertyValue : function(model, path, args){
+
+                if(args.length == 0)
+                    throw {message:"propertyValue pre-post processor requires a property name argument."};
+
+                var propertyName = args[0];
+                var target = zcl.getProp(model, path);
+                if(angular.isObject(target)){
+                    var value = target[propertyName];
+
+                    if(angular.isUndefined(value)){
+                        value = null;
+                    }
+                    zcl.setProp(model, path, value);
+                }
+            }
+        };
+
+        /**
+         * Update model before posting it to the server.
+         * @param model the model to post.
+         * @param formId the id of the form where the model originates.
+         */
+        var prePostHandler = function(model, eventScope){
+            var formElement = null;
+            if(eventScope && eventScope["eventElement"]){
+                formElement = $(eventScope["eventElement"]).closest("form");
+            }
+
+            if(!formElement){
+                return;
+            }
+
+            $(formElement[0]).closest("form").find("[data-pre-post]").each(function(index, element){
+                element = $(element);
+                var path = element.data("ngModel");
+                if(!path)
+                    return;
+
+                path = zcl.subStrAfterFirst(path, ".", false);
+                var processorString = element.data("prePost");
+                var processorName = zcl.subStrBeforeFirst(processorString, ":", false);
+                var args = processorString.split(":");
+                args.shift();
+                var processor = prePostProcessors[processorName];
+                if(!processor)
+                    return;
+                processor(model, path, args);
+
+            });
+
+        };
+
         return {
             getView: getView,
             save: save,
@@ -1045,6 +1103,7 @@
             cancel: cancel,
             refresh: refresh,
             close: close,
+            prePost : prePostHandler,
             sequenceNumbers: {}
         };
 
@@ -1209,8 +1268,8 @@
                             }
                         }
                     }
-
-                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true, sortProperties: sortProperties})
+                    scope["eventElement"] = element;
+                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true, sortProperties: sortProperties}, scope)
                         .fail(function (error) {
                             reportError(error);
                         });
