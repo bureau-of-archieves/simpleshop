@@ -91,6 +91,9 @@ public class TestDataInitializer {
         Employee employee1 = createEmployee(TestConstants.EMPLOYEE_NAME_1, "Mr. Ballmer", null, null, session);
         session.flush();
 
+        Employee employee2 = createEmployee(TestConstants.EMPLOYEE_NAME_2, "Mr. Drake", null, null, session);
+        session.flush();
+
         Category allProducts = createCategory(TestConstants.ROOT_CATEGORY, null, null, session);
 
         Category food = createCategory(TestConstants.SUB_CATEGORY_1, null, allProducts, session);

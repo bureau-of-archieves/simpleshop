@@ -15,6 +15,7 @@ import simpleshop.dto.EmployeeSearch;
 import simpleshop.dto.OrderSearch;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import static org.hamcrest.Matchers.*;
@@ -135,8 +136,10 @@ public class OrderServiceTest extends ServiceTransactionTest{
         Employee employee2 = employees.get(1);
 
         Order order1 = createOrder(customer1, employee1, suburb1, product1);
+        order1.setOrderDate(LocalDateTime.of(2011,12,24,12,55));
         orderService.save(order1);
         Order order2 = createOrder(customer2, employee1, suburb1, product1);
+        order1.setOrderDate(LocalDateTime.of(2014, 10, 7, 2, 55));
         orderService.save(order2);
         flush();
 
@@ -156,11 +159,53 @@ public class OrderServiceTest extends ServiceTransactionTest{
         assertThat(result.size(), equalTo(2));
 
         Order order3 = createOrder(customer1, employee2, suburb1, product1);
+        order3.setOrderDate(LocalDateTime.of(2015, 3, 18, 9, 20));
         orderService.save(order3);
         flush();
         result = orderService.search(orderSearch);
         assertThat(result.size(), equalTo(2));
 
+        //test order date
+        orderSearch = new OrderSearch();
+        orderSearch.setShipName(TestConstants.ORDER_MARK);
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(3));
 
+        orderSearch.setOrderDateUpper(LocalDateTime.of(2020, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(3));
+
+        orderSearch.setOrderDateUpper(LocalDateTime.of(2015, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(2));
+
+        orderSearch.setOrderDateUpper(LocalDateTime.of(2014, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(1));
+
+        orderSearch.setOrderDateUpper(LocalDateTime.of(2000, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(0));
+
+        orderSearch.setOrderDateUpper(null);
+        orderSearch.setOrderDateLower(LocalDateTime.of(2000, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(3));
+
+        orderSearch.setOrderDateLower(LocalDateTime.of(2014, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(2));
+
+        orderSearch.setOrderDateLower(LocalDateTime.of(2015, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(1));
+
+        orderSearch.setOrderDateLower(LocalDateTime.of(2020, 1, 1, 1, 11));
+        result = orderService.search(orderSearch);
+        assertThat(result.size(), equalTo(0));
     }
+
+
+
+
 }

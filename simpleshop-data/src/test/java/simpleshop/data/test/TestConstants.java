@@ -26,6 +26,7 @@ public class TestConstants {
     public static final String CUSTOMER_NAME_1 = "Google";
     public static final String CUSTOMER_NAME_2 = "Microsoft";
     public static final String EMPLOYEE_NAME_1 = "Steve Ballmer";
+    public static final String EMPLOYEE_NAME_2 = "Nathan Drake";
     public static final String PRODUCT_NAME_1 = "Transformer";
     public static final String PRODUCT_NAME_2 = "Lego All Star";
     public static final String SHIPPER_NAME_2 = "AusPost";
