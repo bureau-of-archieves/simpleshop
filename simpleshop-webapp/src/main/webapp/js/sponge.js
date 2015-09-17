@@ -1049,7 +1049,11 @@
                     throw {message:"propertyValue pre-post processor requires a property name argument."};
 
                 var propertyName = args[0];
-                var target = zcl.getProp(model, path);
+                try {
+                    var target = zcl.getProp(model, path);
+                }catch(ex){
+
+                }
                 if(angular.isObject(target)){
                     var value = target[propertyName];
 

@@ -74,6 +74,7 @@ public class EmployeeDAOImplTest extends TransactionalTest {
         result = employeeDAO.quickSearch("quickSearch", new PageInfo(0, Short.MAX_VALUE));
         assertThat(result.size(), equalTo(10));
 
+        cleanUp();
     }
 
     @Before
