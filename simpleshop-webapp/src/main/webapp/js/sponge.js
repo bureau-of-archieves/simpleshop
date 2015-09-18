@@ -4,7 +4,7 @@
  */
 (function () {
 
-    var message = {"requestFailed":"Failed to send request to server."};
+    var message = {"requestFailed": "Failed to send request to server."};
 
     /**
      * All references to UI layer element id or url are defined in this object.
@@ -67,6 +67,10 @@
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/list";
         };
 
+        this.dropdownJsonUrl = function (modelName) {
+            return jsonPath + zcl.pascalNameToUrlName(modelName) + "/dropdown";
+        };
+
         /**
          * Construct the url to access a view.
          * @param viewName full view name as in the view jsp file.
@@ -113,8 +117,8 @@
      * @param id
      */
     var scrollTo = function (id) {
-        if(!id){ //scroll to top
-             window.location.href = "#";
+        if (!id) { //scroll to top
+            window.location.href = "#";
         }
 
         var elem = document.getElementById(id);
@@ -196,19 +200,19 @@
         if (!error)
             return;
 
-        if(typeof(error) == "object"){
+        if (typeof(error) == "object") {
             error = message["requestFailed"];
         }
 
         var instance = site.ajs.$modal.open({
-            backdrop:true,
+            backdrop: true,
             templateUrl: "messageBox.html",
-            size:"md",
-            windowClass:"msgbox",
+            size: "md",
+            windowClass: "msgbox",
             controller: 'messageBoxController'
         });
 
-        instance.data = {title: "An error has occurred", message : error};
+        instance.data = {title: "An error has occurred", message: error};
 
     };
 
@@ -235,7 +239,7 @@
      */
     var findViewDetails = function (viewId) {
         var key = findViewKey(viewId);
-        if(key){
+        if (key) {
             return viewMap[key];
         }
         return null;
@@ -246,9 +250,9 @@
      * @param viewId
      * @returns {*}
      */
-    var findViewKey = function(viewId) {
+    var findViewKey = function (viewId) {
         var ownProperties = zcl.getOwnProperties(viewMap);
-        for(var i=0; i<ownProperties.length; i++){
+        for (var i = 0; i < ownProperties.length; i++) {
             var key = ownProperties[i];
             var viewDetails = viewMap[key];
             if (viewDetails && viewDetails.viewId == viewId) {
@@ -270,15 +274,15 @@
      * The element to go to when a view is closed.
      * @param targetElement the element to be closed.
      */
-    var goBackElementId = function(targetElement){
+    var goBackElementId = function (targetElement) {
         var gotoId = "";
         var nextElement = targetElement.next(".display");
-        if(nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId){
+        if (nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId) {
             gotoId = nextElement.attr("id");
         }
-        if(!gotoId){
+        if (!gotoId) {
             var prevElement = targetElement.prev(".display");
-            if(prevElement && prevElement.length == 1){
+            if (prevElement && prevElement.length == 1) {
                 gotoId = prevElement.attr("id");
             }
         }
@@ -292,7 +296,7 @@
      * @param viewType the full view type.
      * @returns {string} the view name.
      */
-    var getViewName = function(modelName, viewType){
+    var getViewName = function (modelName, viewType) {
         return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
     };
 
@@ -301,8 +305,8 @@
      * @param modelId could be an id selector of the input field which contains the model id.
      * @returns {*} model id resolved.
      */
-    var resolveModelId = function(modelId){
-        if(!modelId)
+    var resolveModelId = function (modelId) {
+        if (!modelId)
             return modelId;
 
         if (typeof modelId == "string") {
@@ -325,18 +329,18 @@
      * @param modelName model name.
      * @param model pass null if want to retrieve from server.
      */
-    var ensureNewModel = function(bodyScope, modelName, model){
-        if(!bodyScope.newModel) {
+    var ensureNewModel = function (bodyScope, modelName, model) {
+        if (!bodyScope.newModel) {
             bodyScope.newModel = {};
         }
 
-        if(!angular.isUndefined(model) && model != null){
+        if (!angular.isUndefined(model) && model != null) {
             bodyScope.newModel[modelName] = model;
             return createPromise(null);
         }
 
         model = bodyScope.newModel[modelName];
-        if(!angular.isUndefined(model) && model != null){
+        if (!angular.isUndefined(model) && model != null) {
             return createPromise(null);
         }
 
@@ -346,8 +350,8 @@
             type: "GET",
             contentType: "application/json",
             dataType: "json"
-        }).done(function(response){
-            if(response.status == "OK"){
+        }).done(function (response) {
+            if (response.status == "OK") {
                 bodyScope.newModel[modelName] = response.content;
             } else {
                 bodyScope.newModel[modelName] = {};
@@ -361,18 +365,18 @@
      * @param modelName model name.
      * @param model pass null if want to retrieve from server.
      */
-    var ensureSearchModel = function(bodyScope, modelName, model){
-        if(!bodyScope.searchModel) {
+    var ensureSearchModel = function (bodyScope, modelName, model) {
+        if (!bodyScope.searchModel) {
             bodyScope.searchModel = {};
         }
 
-        if(!angular.isUndefined(model) && model != null){
+        if (!angular.isUndefined(model) && model != null) {
             bodyScope.searchModel[modelName] = model;
             return createPromise(null);
         }
 
         model = bodyScope.searchModel[modelName];
-        if(!angular.isUndefined(model) && model != null){
+        if (!angular.isUndefined(model) && model != null) {
             return createPromise(null);
         }
 
@@ -382,8 +386,8 @@
             type: "GET",
             contentType: "application/json",
             dataType: "json"
-        }).done(function(response){
-            if(response.status == "OK"){
+        }).done(function (response) {
+            if (response.status == "OK") {
                 bodyScope.searchModel[modelName] = response.content;
             } else {
                 bodyScope.searchModel[modelName] = {};
@@ -459,7 +463,7 @@
 
     spongeApp.filter('prefix', function () {
         return function (input, pref) {
-            if(input){
+            if (input) {
                 return pref + input;
             }
             return "";
@@ -468,7 +472,7 @@
 
     spongeApp.filter('suffix', function () {
         return function (input, suff) {
-            if(input){
+            if (input) {
                 return input + suff;
             }
             return "";
@@ -498,13 +502,15 @@
         return function () {
             var input = arguments[0];
             var result = "";
+            if(angular.equals({}, input))
+                return result;
             var prevIsProp = false;
-            for(var i=1; i<arguments.length; i++){
+            for (var i = 1; i < arguments.length; i++) {
                 var prop = arguments[i];
                 var val = zcl.getProp(input, prop);
 
-                if(!angular.isUndefined(val)){
-                    if(prevIsProp)
+                if (!angular.isUndefined(val)) {
+                    if (prevIsProp)
                         result += " ";
                     result += val;
                     prevIsProp = true;
@@ -522,12 +528,12 @@
      */
     spongeApp.filter('interpolate', ['$interpolate', function ($interpolate) {
         return function (input, modelName) {
-            if(!modelName)
+            if (!modelName)
                 return input;
 
             var bodyScope = getBodyScope();
             var format = zcl.getProp(bodyScope, "metadata[" + modelName + "].interpolateFormat");
-            if(!format)
+            if (!format)
                 return input;
 
             var exp = $interpolate(format);
@@ -538,14 +544,14 @@
     /**
      * Format a date time value with moment.js.
      */
-    spongeApp.filter('moment',function () {
+    spongeApp.filter('moment', function () {
 
         return function (input, format) {
 
-            if(angular.isUndefined(input) || input == null)
+            if (angular.isUndefined(input) || input == null)
                 return input;
 
-            if(!format)
+            if (!format)
                 format = "LLL";
 
             return moment(input, 'x').format(format);
@@ -630,7 +636,7 @@
          * @param postData dependant component.
          * @param getViewOptions get view options.
          */
-        var createViewKey = function(modelName, viewType, instanceId, postData, getViewOptions) {
+        var createViewKey = function (modelName, viewType, instanceId, postData, getViewOptions) {
             //calculate viewKey; two views have the same key if they display the same content and therefore one has to close for the other to open.
             var viewKeyObject = [modelName];
             viewKeyObject.push(getViewOptions.viewTypeInViewKey ? viewType : null);
@@ -646,20 +652,20 @@
          * @param viewId view id generated on the client side. View id is always created on the client side.
          * @returns {*} constructed dom elements and the data object to bind to.
          */
-        var parseViewHtml = function(viewHtml, viewId){
-            if(!viewHtml){
+        var parseViewHtml = function (viewHtml, viewId) {
+            if (!viewHtml) {
                 viewHtml = "";
             }
 
             //handle view id.
             var markerIndex = viewHtml.lastIndexOf("<replace-id-marker>");
-            if(markerIndex >=0){
+            if (markerIndex >= 0) {
                 var marker = viewHtml.substr(markerIndex);
                 viewHtml = viewHtml.substring(0, markerIndex);
                 var contentEndIndex = marker.lastIndexOf("<");
                 marker = marker.substring(19, contentEndIndex).trim();
-                if(marker)
-                    viewHtml = viewHtml.replace(new RegExp(marker,"g"), viewId);
+                if (marker)
+                    viewHtml = viewHtml.replace(new RegExp(marker, "g"), viewId);
             }
 
             var elements = $.parseHTML(viewHtml, null, true);
@@ -676,14 +682,14 @@
 
             json = $.trim(json);
             var newModel = json ? JSON.parse(json) : {};
-            return {domElements : elements, dataObject: newModel};
+            return {domElements: elements, dataObject: newModel};
         };
 
         /**
          * After the view is successfully created, initialise the view elements.
          * @param viewDetails whose view is to be initialised.
          */
-        var initViewElements = function(viewDetails){
+        var initViewElements = function (viewDetails) {
 
             var elements = viewDetails.viewElements;
 
@@ -696,7 +702,7 @@
                 var dateFormat = input.data("spgDate");
                 input.closest(".date")
                     .datetimepicker({format: dateFormat})
-                    .on("dp.change", function(){
+                    .on("dp.change", function () {
                         setTimeout(input.data("update"), 0);
                     });
             });
@@ -737,10 +743,10 @@
             var operationKey = "get-" + viewId;
 
             var sortProperties = getViewOptions.sortProperties;
-            if(!sortProperties){
+            if (!sortProperties) {
                 sortProperties = [];
             }
-            if(sortProperties.length > 0){
+            if (sortProperties.length > 0) {
                 model.sortInfo = sortProperties[0];
             }
 
@@ -779,7 +785,7 @@
                 }
 
                 var copyOfPostData = angular.copy(model);
-                if(sortProperties.length > 0){
+                if (sortProperties.length > 0) {
                     copyOfPostData["sortInfo"] = sortProperties[0];
                 }
                 viewMap[viewKey] = { //set newViewDetails
@@ -821,10 +827,10 @@
             };
 
             return beginOp(operationKey)
-                .fail(function(){
+                .fail(function () {
                     reportError("Cannot begin operation.");
                 })
-                .then(function(){
+                .then(function () {
                     return createRequest().then(
                         createView,
                         createViewFailure
@@ -842,7 +848,7 @@
          * @param data json object.
          * @returns {*}
          */
-        var createJsonPostRequest = function (url ,data) {
+        var createJsonPostRequest = function (url, data) {
 
             return $.ajax(url,
                 {
@@ -877,43 +883,43 @@
                 return createPromise(response["description"]);
             };
 
-            var saveFailed = function(p,s,e){
+            var saveFailed = function (p, s, e) {
                 return createPromise(s + " - " + e);
             };
 
             var operationKey = "save-" + viewId;
             var url = site.saveJsonUrl(viewDetails.modelName);
             return beginOp(operationKey).then(
-                function(){
-                   return createJsonPostRequest(url, scope["model"])
-                       .then(saveSuccess, saveFailed)
-                       .always(function () {
+                function () {
+                    return createJsonPostRequest(url, scope["model"])
+                        .then(saveSuccess, saveFailed)
+                        .always(function () {
                             endOp(operationKey);
-                       });
+                        });
                 }
             );
         };
 
-        var remove = function(modelName, modelId, viewId){
+        var remove = function (modelName, modelId, viewId) {
 
-            if(!viewId)
+            if (!viewId)
                 return createPromise("View Id is not passed.");
 
-            var deleteSuccess = function(response){
+            var deleteSuccess = function (response) {
                 if (response["status"] == "OK") {
                     var viewDetails = findViewDetails(viewId);
                     var scope = viewDetails.scope;
                     var content = scope["model"];
-                    if(angular.isArray(content)){
+                    if (angular.isArray(content)) {
                         var deleted = -1;
-                        for(var i=0; i<content.length; i++){
-                            if(content[i]["id"] == modelId){
+                        for (var i = 0; i < content.length; i++) {
+                            if (content[i]["id"] == modelId) {
                                 deleted = i;
                                 break;
                             }
                         }
-                        if(deleted >= 0){
-                            safeApply(scope, function(){
+                        if (deleted >= 0) {
+                            safeApply(scope, function () {
                                 content.splice(deleted, 1);
                             });
                         }
@@ -930,7 +936,7 @@
             var operationKey = "delete-" + viewId;
             var url = site.deleteJsonUrl(modelName);
             return beginOp(operationKey).then(
-                function(){
+                function () {
                     return createJsonPostRequest(url, modelId)
                         .then(deleteSuccess)
                         .always(function () {
@@ -969,21 +975,21 @@
             if (element.size() == 0)
                 return createPromise(null);
 
-            var viewDetails =findViewDetails(viewId);
+            var viewDetails = findViewDetails(viewId);
 
             //get the url to retrieve json data.
             var jsonUrl = null;
             var viewType = viewDetails.viewType;
-            if(isSubtypeOf(viewType, "list")){
+            if (isSubtypeOf(viewType, "list")) {
                 jsonUrl = site.searchJsonUrl(viewDetails.modelName);
-            } else{
+            } else {
                 jsonUrl = site.modelJsonUrl(viewDetails.modelName, viewDetails.instanceId);
             }
 
             //change the page.
             var operationKey = "refresh-" + viewId;
             var model = viewDetails.postData;
-            if(pageDelta){
+            if (pageDelta) {
                 model["pageIndex"] += pageDelta;
             }
 
@@ -1005,13 +1011,13 @@
                 return ajaxPromise;
             };
 
-            return beginOp(operationKey).fail(function(){
+            return beginOp(operationKey).fail(function () {
                 reportError("Cannot begin operation.");
-            }).then(function(){
+            }).then(function () {
                 return createRequest(jsonUrl, model).then(
-                    function(json){
+                    function (json) {
                         //refresh result
-                        safeApply(getBodyScope(), function(){
+                        safeApply(getBodyScope(), function () {
                             viewDetails.model = json;
                             viewDetails.scope.master = viewDetails.model["content"];
                             viewDetails.scope.reset();
@@ -1023,7 +1029,7 @@
                     }
                 ).always(function () {
                         return endOp(operationKey);
-                });
+                    });
             });
         };
 
@@ -1043,21 +1049,21 @@
 
         var prePostProcessors = {
 
-            propertyValue : function(model, path, args){
+            propertyValue: function (model, path, args) {
 
-                if(args.length == 0)
-                    throw {message:"propertyValue pre-post processor requires a property name argument."};
+                if (args.length == 0)
+                    throw {message: "propertyValue pre-post processor requires a property name argument."};
 
                 var propertyName = args[0];
                 try {
                     var target = zcl.getProp(model, path);
-                }catch(ex){
+                } catch (ex) {
 
                 }
-                if(angular.isObject(target)){
+                if (angular.isObject(target)) {
                     var value = target[propertyName];
 
-                    if(angular.isUndefined(value)){
+                    if (angular.isUndefined(value)) {
                         value = null;
                     }
                     zcl.setProp(model, path, value);
@@ -1070,20 +1076,20 @@
          * @param model the model to post.
          * @param formId the id of the form where the model originates.
          */
-        var prePostHandler = function(model, eventScope){
+        var prePostHandler = function (model, eventScope) {
             var formElement = null;
-            if(eventScope && eventScope["eventElement"]){
+            if (eventScope && eventScope["eventElement"]) {
                 formElement = $(eventScope["eventElement"]).closest("form");
             }
 
-            if(!formElement){
+            if (!formElement) {
                 return;
             }
 
-            $(formElement[0]).closest("form").find("[data-pre-post]").each(function(index, element){
+            $(formElement[0]).closest("form").find("[data-pre-post]").each(function (index, element) {
                 element = $(element);
                 var path = element.data("ngModel");
-                if(!path)
+                if (!path)
                     return;
 
                 path = zcl.subStrAfterFirst(path, ".", false);
@@ -1092,7 +1098,7 @@
                 var args = processorString.split(":");
                 args.shift();
                 var processor = prePostProcessors[processorName];
-                if(!processor)
+                if (!processor)
                     return;
                 processor(model, path, args);
 
@@ -1103,11 +1109,11 @@
         return {
             getView: getView,
             save: save,
-            remove : remove,
+            remove: remove,
             cancel: cancel,
             refresh: refresh,
             close: close,
-            prePost : prePostHandler,
+            prePost: prePostHandler,
             sequenceNumbers: {}
         };
 
@@ -1241,6 +1247,38 @@
         };
     }]);
 
+    spongeApp.directive("spgSelect", [function () {
+
+        return {
+            restrict: 'A',
+            scope: true,
+            link: function (scope, element, attrs) {
+                var args = JSON.parse(attrs["spgSelect"]);
+                if (!args)
+                    return;
+                var modelName = args["modelName"];
+                if (!modelName)
+                    return;
+                var url = site.dropdownJsonUrl(modelName);
+
+                $.ajax(
+                    url,
+                    {
+                        type: "GET",
+                        contentType: "application/json"
+                    }
+                ).then(function (result) {
+                        safeApply(scope, function () {
+                            var list = result.content;
+                            list.unshift({});
+                            scope.dropdownList = list;
+                        });
+                    });
+
+            }
+        };
+    }]);
+
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
@@ -1254,26 +1292,29 @@
                     var modelName = args["modelName"];
                     var criteria = {};
                     var criteriaPath = args["criteriaPath"];
-                    if(criteriaPath){
+                    if (criteriaPath) {
                         criteria = scope[criteriaPath];
-                        if(angular.isUndefined(criteria) || criteria == null){
+                        if (angular.isUndefined(criteria) || criteria == null) {
                             reportError("Criteria is not set.");
                             return false;
                         }
                     }
                     var sortProperties = [];
                     var id = $(element).closest(".view").attr("id");
-                    if(id){
+                    if (id) {
                         var viewDetails = findViewDetails(id);
-                        if(viewDetails){
+                        if (viewDetails) {
                             var tags = viewDetails.model["tags"];
-                            if(tags && !angular.isUndefined(tags["sortProperties"])){
+                            if (tags && !angular.isUndefined(tags["sortProperties"])) {
                                 sortProperties = tags["sortProperties"];
                             }
                         }
                     }
                     scope["eventElement"] = element;
-                    spongeService.getView(modelName, "list", null, null, criteria, {instanceIdInViewKey: true, sortProperties: sortProperties}, scope)
+                    spongeService.getView(modelName, "list", null, null, criteria, {
+                        instanceIdInViewKey: true,
+                        sortProperties: sortProperties
+                    }, scope)
                         .fail(function (error) {
                             reportError(error);
                         });
@@ -1291,7 +1332,7 @@
 
                     if ($(element).closest("form").hasClass("ng-invalid")) {
                         reportError("Please correct error(s) in the form first.");
-                        safeApply(scope, function(){
+                        safeApply(scope, function () {
                             scope.showError = true;
                         });
                         return false;
@@ -1302,8 +1343,8 @@
                         .fail(function (error) {
                             reportError(error);
                         })
-                        .done(function(){
-                            safeApply(scope, function(){
+                        .done(function () {
+                            safeApply(scope, function () {
                                 scope.showError = false;
                             });
                         });
@@ -1330,7 +1371,7 @@
                 $(element).click(function ($event) {
 
                     $event.preventDefault();
-                    if($(this).parent().hasClass("disabled"))
+                    if ($(this).parent().hasClass("disabled"))
                         return false;
 
                     spongeService.refresh(viewId, args["pageDelta"])
@@ -1379,7 +1420,7 @@
                     var targetElement = $("#" + targetId);
                     var gotoId = goBackElementId(targetElement);
                     spongeService.close(targetId)
-                        .done(function(){
+                        .done(function () {
                             scrollTo(gotoId);
                         })
                         .fail(function (error) {
@@ -1403,8 +1444,9 @@
                 $(element).click(function () {
                     var targetElement = $("#" + targetId);
                     var gotoId = goBackElementId(targetElement);
-                    if(display(targetId, false)){
-                        safeApply(getBodyScope(), function(){});
+                    if (display(targetId, false)) {
+                        safeApply(getBodyScope(), function () {
+                        });
                         scrollTo(gotoId);
                         return true;
                     }
@@ -1433,7 +1475,7 @@
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                
+
                 var format = attrs["spgDate"];
 
                 var dateParser = function (value) {
@@ -1450,9 +1492,9 @@
                     return value;
                 };
 
-                var update = function(){
+                var update = function () {
 
-                    safeApply(scope, function(){
+                    safeApply(scope, function () {
                         var text = $(element).val();
                         ngModel.$setViewValue(text);
                         ngModel.$commitViewValue();
@@ -1625,8 +1667,8 @@
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, elem, attrs, ctrl) {
-                ctrl.$parsers.push(function(viewValue) {
-                    if(viewValue == "") {
+                ctrl.$parsers.push(function (viewValue) {
+                    if (viewValue == "") {
                         return null;
                     }
                     return viewValue;
@@ -1643,13 +1685,13 @@
             restrict: 'A',
             link: function (scope, elem, attrs, ctrl) {
                 var selector = attrs["spgEnterToClick"];
-                if(!selector)
+                if (!selector)
                     return;
 
                 var jqElem = $(elem);
-                jqElem.keypress(function(event){
-                    if(event.keyCode != 13){
-                       return;
+                jqElem.keypress(function (event) {
+                    if (event.keyCode != 13) {
+                        return;
                     }
 
                     jqElem.parent().find(selector).click();
@@ -1759,13 +1801,13 @@
 
                 //init menu
                 var menu = [];
-                for(var modelName in metadata){
+                for (var modelName in metadata) {
                     var model = metadata[modelName];
-                    if(model["searchable"]){
+                    if (model["searchable"]) {
                         menu.push(model);
                     }
                 }
-                menu.sort(function(m1, m2){
+                menu.sort(function (m1, m2) {
                     return m1.name.localeCompare(m2.name);
                 });
                 $scope.menu = menu;
@@ -1786,7 +1828,7 @@
                 var key = keys[i];
                 var viewId = viewMap[key].viewId;
                 var display = $("#" + viewId).css("display");
-                if(display && display != "none" && display != "hidden")
+                if (display && display != "none" && display != "hidden")
                     result.push(viewId);
             }
 
@@ -1810,10 +1852,10 @@
             }
         };
 
-        $scope.makeCriteria = function(scope, modelName, propertyName, value){
+        $scope.makeCriteria = function (scope, modelName, propertyName, value) {
             var bodyScope = getBodyScope();
             var promise = ensureSearchModel(bodyScope, modelName, null);
-            promise.done(function(){
+            promise.done(function () {
                 var prototype = bodyScope.searchModel[modelName];
                 scope.criteria = angular.copy(prototype);
                 scope.criteria[propertyName] = value;
@@ -1832,26 +1874,26 @@
         viewDetails.scope = $scope;
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
-        if(!angular.isUndefined(viewDetails.getViewOptions.sortProperties)){
+        if (!angular.isUndefined(viewDetails.getViewOptions.sortProperties)) {
             $scope.sortProperties = viewDetails.getViewOptions.sortProperties;
             $scope.postData = viewDetails.postData;
-            for(var i=0; i < $scope.sortProperties.length; i++){
+            for (var i = 0; i < $scope.sortProperties.length; i++) {
                 var item = $scope.sortProperties[i];
                 item.text = zcl.camelNameToSpacedName(item["property"]) + (item["ascending"] ? " Asc" : " Desc" );
             }
         }
 
-        if(isSubtypeOf(viewDetails.viewType, "list")){
-            $scope.previousEnabled = function(){
+        if (isSubtypeOf(viewDetails.viewType, "list")) {
+            $scope.previousEnabled = function () {
                 var viewDetails = findViewDetails(id);
-                if(viewDetails && viewDetails.model["tags"]["prevPage"])
+                if (viewDetails && viewDetails.model["tags"]["prevPage"])
                     return "";
                 return "disabled";
             };
 
-            $scope.nextEnabled = function(){
+            $scope.nextEnabled = function () {
                 var viewDetails = findViewDetails(id);
-                if(viewDetails && viewDetails.model["tags"]["nextPage"])
+                if (viewDetails && viewDetails.model["tags"]["nextPage"])
                     return "";
                 return "disabled";
             };
@@ -1875,8 +1917,8 @@
         $scope.addToCollection = function (collection, modelName) {
             var bodyScope = getBodyScope();
             var promise = ensureNewModel(bodyScope, modelName, null);
-            promise.done(function(){
-                safeApply($scope, function(){
+            promise.done(function () {
+                safeApply($scope, function () {
                     var prototype = bodyScope.newModel[modelName];
                     collection.push(angular.copy(prototype));
                 });
@@ -1892,39 +1934,39 @@
             }
         };
 
-        $scope.addToMap = function(map, editorId){
+        $scope.addToMap = function (map, editorId) {
             var keyInput = $(editorId + " .add_entry");
             var newKey = keyInput.val();
-            if(!newKey){
+            if (!newKey) {
                 keyInput.focus();
                 return;
             }
-            if(newKey in map){
+            if (newKey in map) {
                 var entries = $(editorId + " .entries .form-group");
-                for(var i=0; i<entries.size(); i++){
+                for (var i = 0; i < entries.size(); i++) {
                     var entry = $(entries.get(i));
-                   if(entry.find("label").text() == newKey){
-                       entry.find("input").focus();
-                       break;
-                   }
+                    if (entry.find("label").text() == newKey) {
+                        entry.find("input").focus();
+                        break;
+                    }
                 }
                 return;
             }
 
             map[newKey] = "";
-            setTimeout(function(){
+            setTimeout(function () {
                 keyInput.closest(".form-group").find("input[data-key='" + newKey + "']").focus()
             }, 50);
         };
 
-        $scope.removeFromMap = function(map, key, editorId){
-            if(key in map){
+        $scope.removeFromMap = function (map, key, editorId) {
+            if (key in map) {
                 delete map[key];
             }
         };
 
-        $scope.mapSize = function(obj){
-          return zcl.getOwnProperties(obj).length;
+        $scope.mapSize = function (obj) {
+            return zcl.getOwnProperties(obj).length;
         };
 
         $scope.reset();

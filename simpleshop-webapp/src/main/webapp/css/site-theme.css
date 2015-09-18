@@ -150,3 +150,7 @@ footer hr {
     background: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 31%,#ededed 36%,#ffffff 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
 }
+
+a.list-group-item:hover{
+    color:#428bca;
+}

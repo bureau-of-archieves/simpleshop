@@ -3,6 +3,7 @@ package simpleshop.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import simpleshop.Constants;
 import simpleshop.common.StringUtils;
 import simpleshop.data.CategoryDAO;
 import simpleshop.data.SortInfo;
@@ -66,6 +67,18 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
 
         boolean leaveIdOnly = StringUtils.isNullOrEmpty(searchParams.getName());
         stripParent(categories, leaveIdOnly);
+        return categories;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Category> getDropdownItems() {
+
+        List<Category> categories = categoryDAO.getDropdownItems(Constants.MAX_DROPDOWN_LIST_SIZE);
+        stripParent(categories, false);
         return categories;
     }
 

@@ -2,6 +2,7 @@ package simpleshop.data.impl;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import simpleshop.Constants;
 import simpleshop.common.StringUtils;
 import simpleshop.data.CategoryDAO;
 import simpleshop.data.PageInfo;
@@ -32,5 +33,15 @@ public class CategoryDAOImpl extends ModelDAOImpl<Category> implements CategoryD
         Query query = super.createQuery("SELECT cat FROM Category cat WHERE lower(cat.name) LIKE ?1 or lower(cat.description) LIKE ?1", pageInfo, keywords.toLowerCase());
         return query.list();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<Category> getDropdownItems(int maxSize) {
+
+        PageInfo pageInfo = new PageInfo(0, maxSize);
+
+        Query query = super.createQuery("SELECT cat FROM Category cat WHERE NOT EXISTS(FROM Category cat2 WHERE cat2.parent = cat)", pageInfo);
+        return query.list();
     }
 }

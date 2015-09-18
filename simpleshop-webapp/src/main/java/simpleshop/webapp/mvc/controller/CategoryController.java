@@ -34,10 +34,15 @@ public class CategoryController extends BaseJsonController {
     }
 
     @RequestMapping(value = "/category/list", method = RequestMethod.POST, consumes = "application/json")
-    public String suburbList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
+    public String categoryList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
         JsonResponse<Iterable<Category>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,categoryService.quickSearch(quickSearch.getKeywords(), quickSearch));
         return super.outputJson(model, response, null);
     }
 
+    @RequestMapping(value = "/category/dropdown", method = RequestMethod.GET, consumes = "application/json")
+    public String categoryDropdown(Model model){
+        JsonResponse<Iterable<Category>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,categoryService.getDropdownItems());
+        return super.outputJson(model, response, null);
+    }
 
 }

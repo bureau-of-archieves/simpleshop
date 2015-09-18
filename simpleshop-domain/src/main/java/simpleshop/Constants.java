@@ -14,5 +14,6 @@ public class Constants {
     public static final int VERY_LONG_STRING_LENGTH = 288;
     public static final int CURRENCY_PRECISION = 18;
     public static final int CURRENCY_SCALE = 4;
+    public static final int MAX_DROPDOWN_LIST_SIZE = 50;
 
 }

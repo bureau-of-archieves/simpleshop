@@ -245,7 +245,7 @@ div.carousel-container{
     margin-bottom: 1em;
 }
 
-.details-inline-list span.label {
+.inline-list span.label {
     margin-right:0.5em;
 }
 
@@ -258,4 +258,20 @@ div.carousel-container{
 .label a:hover{
     color: orange;
     text-decoration: none;
+}
+
+.title-text{
+    font-weight: 600;
+}
+
+.edit-inline-list .items-container{
+    padding-top:0.5em;
+}
+
+.items-container .glyphicon{
+    cursor: hand;
+}
+
+.items-container {
+    font-size: 1.2em;
 }

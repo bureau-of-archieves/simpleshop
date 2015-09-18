@@ -39,7 +39,7 @@
     <c:set var="childModelName" value="${f:collectionModelName(propertyMetadata)}"/>
 </c:if>
 
-<div class="col-sm-6 details-inline-list">
+<div class="col-sm-6 inline-list details-inline-list">
 
     <div class="row">
         <div class="col-sm-5"><label> ${label}</label></div>

@@ -111,4 +111,12 @@ public class CategoryServiceImplTest extends ServiceTransactionTest {
         assertThat(result.size(), equalTo(1));
 
     }
+
+    @Test
+    public void getDropdownItemsTest(){
+        List<Category> result = categoryService.getDropdownItems();
+
+        assertThat(result.size(), greaterThanOrEqualTo(3));
+
+    }
 }
