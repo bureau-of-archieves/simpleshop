@@ -61,10 +61,10 @@
         <c:set var="fieldRef" value="${base}${path}"/>
 
         <select id="${id}"  class="form-control" data-ng-init="dropdownList=[];" data-spg-select='{"modelName":"${targetModelName}", "collectionPath":"${fieldRef}"}' >
-            <option data-ng-repeat="item in dropdownList" value="{{$index}}" ng-attr-selected="$index == 0 || undefined">{{item <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if>}}</option>
+            <option data-ng-repeat="item in dropdownList" value="{{$index}}" data-ng-click="add(item)" ng-attr-selected="$index == 0 || undefined">{{item <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if>}}</option>
         </select>
 
-        <div class="clearfix items-container">
+        <div class="clearfix items-container" data-spg-removable-collection="${fieldRef}">
             <span class="pull-left" data-ng-repeat="${itemName} in ${fieldRef}">
                 <jsp:doBody/>
             </span>

@@ -154,3 +154,11 @@ footer hr {
 a.list-group-item:hover{
     color:#428bca;
 }
+
+a.list-group-item .label{
+    font-weight: 300;
+}
+
+.inline-list .label{
+    font-weight:300;
+}

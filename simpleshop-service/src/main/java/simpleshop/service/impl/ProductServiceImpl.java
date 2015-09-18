@@ -2,6 +2,7 @@ package simpleshop.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import simpleshop.common.StringUtils;
 import simpleshop.data.ProductDAO;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Product;
@@ -9,6 +10,7 @@ import simpleshop.dto.ProductSearch;
 import simpleshop.service.ProductService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -38,5 +40,15 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
     @Override
     public Collection<String> lazyLoadedProperties() {
         return LAZY_LOADED_PROPERTIES;
+    }
+
+    private static final String[] jsonIgnored = {"parent"}; //category.parent
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public @NotNull
+    String[] ignoredJsonProperties(){
+        return jsonIgnored;
     }
 }

@@ -39,10 +39,12 @@ public class CategoryController extends BaseJsonController {
         return super.outputJson(model, response, null);
     }
 
+    private static final String[] jsonIgnoreDropdown = {"parent"};
+
     @RequestMapping(value = "/category/dropdown", method = RequestMethod.GET, consumes = "application/json")
     public String categoryDropdown(Model model){
         JsonResponse<Iterable<Category>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,categoryService.getDropdownItems());
-        return super.outputJson(model, response, null);
+        return super.outputJson(model, response, jsonIgnoreDropdown);
     }
 
 }

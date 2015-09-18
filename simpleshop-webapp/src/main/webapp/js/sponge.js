@@ -1247,7 +1247,36 @@
         };
     }]);
 
-    spongeApp.directive("spgSelect", [function () {
+    spongeApp.directive("spgRemovableCollection", ["$parse",function($parse){
+
+        return {
+            restrict: 'A',
+            scope: true,
+            link: function (scope, element, attrs) {
+                var collectionPath = attrs["spgRemovableCollection"];
+                if(!collectionPath)
+                    return;
+
+                var getter = $parse(collectionPath);
+                scope.remove = function(item){
+                    var collection = getter(scope);
+                    if(!collection)
+                        return;
+
+                    for(var i=0; i<collection.length; i++){
+                        if(angular.equals(collection[i], item)){
+                            collection.splice(i, 1);
+                            return;
+                        }
+                    }
+                };
+            }
+
+        };
+
+    }]);
+
+    spongeApp.directive("spgSelect", ["$parse", function ($parse) {
 
         return {
             restrict: 'A',
@@ -1256,6 +1285,42 @@
                 var args = JSON.parse(attrs["spgSelect"]);
                 if (!args)
                     return;
+
+                var collectionPath = args["collectionPath"];
+                if(!collectionPath)
+                    return;
+
+                var getter = $parse(collectionPath);
+                var setter = getter.assign;
+
+                scope.add = function(item){
+                    if(angular.equals(item, {}))
+                        return;
+
+                    var collection = getter(scope);
+                    if(!collection){
+                        setter(scope, []);
+                    }
+                    collection = getter(scope);
+                    for(var i=0; i<collection.length; i++){
+                        if(angular.equals(collection[i], item))
+                            return;
+                    }
+                    collection.push(item);
+                };
+
+                $(element).change(function(){
+
+                    safeApply(scope, function(){
+                        var val = $(element).val();
+                        if(!val)
+                            return;
+
+                        var item = scope.dropdownList[parseInt(val)];
+                        scope.add(item);
+                    });
+                });
+
                 var modelName = args["modelName"];
                 if (!modelName)
                     return;
@@ -1270,6 +1335,9 @@
                 ).then(function (result) {
                         safeApply(scope, function () {
                             var list = result.content;
+                            if(list == null){
+                                list = [];
+                            }
                             list.unshift({});
                             scope.dropdownList = list;
                         });
@@ -1278,6 +1346,7 @@
             }
         };
     }]);
+
 
     /**
      * Annotate an element so that when clicked the details view of a model is opened.

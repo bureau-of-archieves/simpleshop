@@ -78,7 +78,10 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
     public List<Category> getDropdownItems() {
 
         List<Category> categories = categoryDAO.getDropdownItems(Constants.MAX_DROPDOWN_LIST_SIZE);
-        stripParent(categories, false);
+        for (Object obj : categories){
+            resolveLookupValues(obj, this.lazyLoadedProperties());
+            getModelDAO().detach(obj);
+        }
         return categories;
     }
 
@@ -95,7 +98,7 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
                 if(!leaveIdOnly){
                     category.getParent().setName(parent.getName());
                     category.getParent().setDescription(parent.getDescription());
-                    category.getParent().setImagePath(parent.getDescription());
+                    category.getParent().setImagePath(parent.getImagePath());
                 }
             }
         }

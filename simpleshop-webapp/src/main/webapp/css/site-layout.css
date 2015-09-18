@@ -272,6 +272,15 @@ div.carousel-container{
     cursor: hand;
 }
 
-.items-container {
-    font-size: 1.2em;
+.items-container .label{
+   padding: 0.25em;
+}
+
+.items-container span.glyphicon{
+    cursor: pointer;
+    margin-left: 0.35em;
+}
+
+.items-container span.glyphicon:hover{
+    color:orange;
 }
