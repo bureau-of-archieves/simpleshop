@@ -3,6 +3,8 @@ package simpleshop.domain.model;
 
 import simpleshop.Constants;
 import simpleshop.domain.metadata.DisplayFormat;
+import simpleshop.domain.metadata.Icon;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -10,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "suburbs")
 @DisplayFormat("concat:'suburb':'postcode'")
+@Icon("map-marker")
 public class Suburb {
 
     private Integer id;

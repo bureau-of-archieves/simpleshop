@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "categories")
 @DisplayFormat("concat:'id':' - ':'name'")
+@Icon("tags")//[sponge]searchable - searchable iff domain object has icon and a search object.
 public class Category {
 
     private Integer id;

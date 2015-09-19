@@ -38,6 +38,11 @@
             <groupId>org.rythmengine</groupId>
             <artifactId>rythm-engine</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-data</artifactId>
+        </dependency>
     </dependencies>
 
 <build>

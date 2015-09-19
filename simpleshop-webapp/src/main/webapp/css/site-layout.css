@@ -51,6 +51,11 @@ html {
     padding-left: 1em;
 }
 
+.cursor-pointer:hover{
+    color: orange;
+    font-weight:600;
+}
+
 .page-body {
     margin: 2em 0.5em;
 }

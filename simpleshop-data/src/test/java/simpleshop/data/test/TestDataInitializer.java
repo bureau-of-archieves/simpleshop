@@ -71,6 +71,7 @@ public class TestDataInitializer {
         Suburb linzi = createSuburb("Linzi", "ZIBO", "Shandong", "255400", "CHN", session);
         createSuburb("Zhifu", "Yantai", "Shandong", "264005", "CHN", session);
         createSuburb("Manhattan", "New York", "NY", "10001", "USA", session);
+        createSuburb("Brooklyn", "New York", "NY", "11201", "USA", session);
         session.flush();
 
         Customer customer1 = createCustomer(TestConstants.CUSTOMER_NAME_1, "Larry Page", session);
@@ -99,6 +100,15 @@ public class TestDataInitializer {
         Category food = createCategory(TestConstants.SUB_CATEGORY_1, null, allProducts, session);
         Category toy = createCategory(TestConstants.SUB_CATEGORY_2, null, allProducts, session);
         Category pharmaceutical = createCategory(TestConstants.SUB_CATEGORY_3, null, allProducts, session);
+        Category fashion = createCategory("Fashion", null, allProducts, session);
+        createCategory("Clothes", null, fashion, session);
+        createCategory("Jewellery", null, fashion, session);
+        createCategory("Decoration", null, fashion, session);
+
+        Category electronics = createCategory("Electronics", null, allProducts, session);
+        createCategory("Tablet", null, electronics, session);
+        createCategory("Laptop", null, electronics, session);
+        createCategory("Printer", null, electronics, session);
         session.flush();
 
         Product product1 = createProduct(TestConstants.PRODUCT_NAME_1, toy, "1", session);

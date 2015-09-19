@@ -33,7 +33,7 @@ Todo List
  * css/script bundling
  * Minification of sponge.js.
  * Display search criteria in the list view.
- * Display and upload of image.
+ * Upload of image.
  * Fix the many problems in error handling in JavaScript.
  * Improve validation messages.
  * Trim unnecessary parts of the request before posting json.

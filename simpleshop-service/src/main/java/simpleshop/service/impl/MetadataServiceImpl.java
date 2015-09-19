@@ -60,7 +60,6 @@ public class MetadataServiceImpl extends BaseServiceImpl implements MetadataServ
     @PostConstruct
     public void init() {
         DomainUtils.createModelMetadataMap(classes);
-        getMetadata(Category.class.getSimpleName()).setSearchable(false);
     }
 
     /**
