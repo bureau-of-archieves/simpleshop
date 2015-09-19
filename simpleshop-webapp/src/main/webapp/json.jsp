@@ -62,7 +62,7 @@
 <script type="text/javascript">
     $(function(){
 
-        var url_prefix = "http://localhost:8080/json/";
+        var url_prefix = "${pageContext.request.contextPath}/json/";
         $("#url_prefix").html(url_prefix);
         var display_response = function(data){
             $("#result").text(JSON.stringify(data, null, 4));

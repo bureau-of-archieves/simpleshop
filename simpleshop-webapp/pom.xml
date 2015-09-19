@@ -117,7 +117,7 @@
                             <goal>webapp</goal>
                         </goals>
                         <configuration>
-                            
+
                             <projectName>SimpleShop</projectName>
 
                         </configuration>

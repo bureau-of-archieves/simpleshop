@@ -21,7 +21,7 @@
 
     ${f:_push(stack, "_viewId", viewId)}
 
-    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" >
+    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" cssClass="update-view">
         <jsp:attribute name="header">
 
         </jsp:attribute>

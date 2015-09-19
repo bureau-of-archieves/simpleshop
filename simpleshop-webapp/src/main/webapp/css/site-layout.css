@@ -149,14 +149,25 @@ input.ng-valid ~ .pattern-validation {
     padding-left: 10px;
 }
 
-.panel-body{
+.create-view>.panel-body{
+    padding-bottom: 0;
+}
+
+.list-view>.panel-body{
+    padding-bottom: 0;
+}
+
+.update-view>.panel-body{
+    padding-bottom: 0;
+}
+
+.search-view>.panel-body{
     padding-bottom: 0;
 }
 
 .panel {
     margin-bottom: 1em;
 }
-
 
 .dropdown-menu.result li.ng-scope{
     width:15em;

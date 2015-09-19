@@ -1,71 +1,73 @@
 @args String projectName, String modelName;
 @{String basePackage = projectName.toLowerCase()}
-package @(basePackage).webapp.mvc.controller;
+@{String modelNameCamel = modelName.substring(0,1).toLowerCase() + modelName.substring(1)}
+@{String modelNameUrl = modelNameCamel.replaceAll("(?=[A-Z])", "\\_").toLowerCase()}
+package @(basePackage).webapp.mvc.controller.base;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import @(basePackage).domain.model.Employee;
-import @(basePackage).dto.EmployeeSearch;
+import @(basePackage).domain.model.@(modelName);
+import @(basePackage).dto.@(modelName)Search;
 import @(basePackage).dto.JsonResponse;
 import @(basePackage).dto.ModelQuickSearch;
-import @(basePackage).service.EmployeeService;
+import @(basePackage).service.@(modelName)Service;
 import @(basePackage).webapp.infrastructure.BaseJsonController;
 
 import javax.validation.Valid;
 import java.io.Serializable;
 
-@Controller
-@RequestMapping(produces = "application/json")
-public class EmployeeController extends BaseJsonController {
+@@Controller
+@@RequestMapping(produces = "application/json")
+public abstract class @(modelName)BaseController extends BaseJsonController {
 
-    @Autowired
-    private EmployeeService employeeService;
+    @@Autowired
+    protected @(modelName)Service @(modelNameCamel)Service;
 
-    @RequestMapping(value = "/employee/search", method = RequestMethod.GET)
-    public String employeeSearch(Model model) {
-        JsonResponse<EmployeeSearch> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, new EmployeeSearch());
-        return super.outputJson(model, response, employeeService.ignoredJsonProperties());
+    @@RequestMapping(value = "/@(modelNameUrl)/search", method = RequestMethod.GET)
+    public String @(modelNameCamel)Search(Model model) {
+        JsonResponse<@(modelName)Search> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, new @(modelName)Search());
+        return super.outputJson(model, response, @(modelNameCamel)Service.ignoredJsonProperties());
     }
 
-    @RequestMapping(value = "/employee/search", method = RequestMethod.POST, consumes = "application/json")
-    public String employeeSearch(@Valid @RequestBody final EmployeeSearch employeeSearch, Model model, BindingResult bindingResult) {
-        JsonResponse<Iterable<Employee>> response = modelSearch(employeeSearch, employeeService, bindingResult);
-        return super.outputJson(model, response, employeeService.ignoredJsonProperties());
+    @@RequestMapping(value = "/@(modelNameUrl)/search", method = RequestMethod.POST, consumes = "application/json")
+    public String @(modelNameCamel)Search(@@Valid @@RequestBody final @(modelName)Search @(modelNameCamel)Search, BindingResult bindingResult, Model model) {
+        JsonResponse<Iterable<@(modelName)>> response = modelSearch(@(modelNameCamel)Search, @(modelNameCamel)Service, bindingResult);
+        return super.outputJson(model, response, @(modelNameCamel)Service.ignoredJsonProperties());
     }
 
-    @RequestMapping(value = "/employee/new", method = RequestMethod.GET)
-    public String employeeCreate(Model model) {
-        JsonResponse<Employee> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, employeeService.create());
-        return super.outputJson(model, response, employeeService.ignoredJsonProperties());
+    @@RequestMapping(value = "/@(modelNameUrl)/new", method = RequestMethod.GET)
+    public String @(modelNameCamel)Create(Model model) {
+        JsonResponse<@(modelName)> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, @(modelNameCamel)Service.create());
+        return super.outputJson(model, response, @(modelNameCamel)Service.ignoredJsonProperties());
     }
 
-    @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
-    public String employeeDetails(@PathVariable int id, Model model) {
-        JsonResponse<Employee> response = modelDetails(id, employeeService);
-        return super.outputJson(model, response, employeeService.ignoredJsonProperties());
+    @@RequestMapping(value = "/@(modelNameUrl)/save", method = RequestMethod.POST, consumes = "application/json")
+    public String @(modelNameCamel)Save(@@Valid @@RequestBody final @(modelName) @(modelNameCamel), BindingResult bindingResult, Model model) {
+        JsonResponse<@(modelName)>  response =  saveModel(@(modelNameCamel), @(modelNameCamel)Service, bindingResult);
+        return super.outputJson(model, response, @(modelNameCamel)Service.ignoredJsonProperties());
     }
 
-    @RequestMapping(value = "/employee/save", method = RequestMethod.POST, consumes = "application/json")
-    public String employeeSave(@Valid @RequestBody final Employee employee,Model model,  BindingResult bindingResult) {
-        JsonResponse<Employee>  response =  saveModel(employee, employeeService, bindingResult);
-        return super.outputJson(model, response, employeeService.ignoredJsonProperties());
+    @@RequestMapping(value = "/@(modelNameUrl)/{id}", method = RequestMethod.GET)
+    public String @(modelNameCamel)Details(@@PathVariable int id, Model model) {
+        JsonResponse<@(modelName)> response = modelDetails(id, @(modelNameCamel)Service);
+        return super.outputJson(model, response, @(modelNameCamel)Service.ignoredJsonProperties());
     }
 
-    @RequestMapping(value = "/employee/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String employeeDelete(@Valid @RequestBody final int id, Model model) {
-        JsonResponse<Serializable> response = deleteModel(id, employeeService);
+    @@RequestMapping(value = "/@(modelNameUrl)/delete", method = RequestMethod.POST, consumes = "application/json")
+    public String @(modelNameCamel)Delete(@@Valid @@RequestBody final int id, Model model) {
+        JsonResponse<Serializable> response = deleteModel(id, @(modelNameCamel)Service);
         return super.outputJson(model, response, null);
     }
 
-    @RequestMapping(value = "/employee/list", method = RequestMethod.POST, consumes = "application/json")
-    public String suburbList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
-        JsonResponse<Iterable<Employee>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,employeeService.quickSearch(quickSearch.getKeywords(), quickSearch));
+    @@RequestMapping(value = "/@(modelNameUrl)/list", method = RequestMethod.POST, consumes = "application/json")
+    public String @(modelNameCamel)List(@@Valid @@RequestBody final ModelQuickSearch quickSearch, Model model){
+        JsonResponse<Iterable<@(modelName)>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,@(modelNameCamel)Service.quickSearch(quickSearch.getKeywords(), quickSearch));
         return super.outputJson(model, response, null);
     }
 }

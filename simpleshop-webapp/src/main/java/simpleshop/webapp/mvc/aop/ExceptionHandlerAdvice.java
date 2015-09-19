@@ -14,11 +14,8 @@ import simpleshop.webapp.infrastructure.BaseJsonController;
 @ControllerAdvice("simpleshop.webapp.mvc.controller")
 public class ExceptionHandlerAdvice {
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ModelAndView returnErrorMessages(MethodArgumentNotValidException ex){
+    private ModelAndView returnErrorMessage(String errorMessage){
 
-        BindingResult bindingResult = ex.getBindingResult();
-        String errorMessage = BaseJsonController.getBindingErrorMessage(bindingResult);
         JsonResponse<?> jsonResponse = new JsonResponse<>(JsonResponse.STATUS_ERROR, errorMessage, null);
 
         ModelAndView modelAndView = new ModelAndView();
@@ -28,18 +25,24 @@ public class ExceptionHandlerAdvice {
         return modelAndView;
     }
 
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ModelAndView returnErrorMessages(MethodArgumentNotValidException ex){
+
+        BindingResult bindingResult = ex.getBindingResult();
+        String errorMessage = BaseJsonController.getBindingErrorMessage(bindingResult);
+        return returnErrorMessage(errorMessage);
+    }
+
     @ExceptionHandler({ServletRequestBindingException.class})
     public ModelAndView returnErrorMessages(ServletRequestBindingException ex){
 
-        return null;
-
+        return returnErrorMessage(ex.getLocalizedMessage());
     }
 
     @ExceptionHandler({Exception.class})
     public ModelAndView returnErrorMessages(Exception ex){
 
-        return null;
-
+        return returnErrorMessage(ex.getLocalizedMessage());
     }
 
 }

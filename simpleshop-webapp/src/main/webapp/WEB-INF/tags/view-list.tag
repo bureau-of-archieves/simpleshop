@@ -7,7 +7,7 @@
     ${f:_push(stack, "_viewId", viewId)}
     ${f:_push(stack, "_replace_id_marker", viewId)}
 
-    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" frameClass="${frameClass}">
+    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" frameClass="${frameClass}" cssClass="list-view">
         <jsp:attribute name="header">
 
         </jsp:attribute>

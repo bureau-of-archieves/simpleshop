@@ -47,8 +47,8 @@
      data-ng-controller="${controller}Controller">
 
     ${f:_push(stack, "_parentId", id)}
-
-    <div class="panel ${panelClass} ${cssClass}">
+    <c:set var="classes" value="panel ${panelClass} ${cssClass}" />
+    <div class="${classes}">
         <div class="panel-heading">
             <c:if test="${not empty icon}">
                 <ctrl:icon value="${icon}"/> &nbsp;

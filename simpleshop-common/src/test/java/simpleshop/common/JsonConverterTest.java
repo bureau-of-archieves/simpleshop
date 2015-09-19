@@ -46,7 +46,7 @@ public class JsonConverterTest {
 
         stan.setDateOfBirth(LocalDate.of(1999,1,1));
         result = converter.toJson(personTestObject);
-        assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":[{\"name\":\"Stan\",\"age\":8,\"gender\":true,\"children\":null,\"dateOfBirth\":\"915109200000\"}],\"dateOfBirth\":null}", result);
+        assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":[{\"name\":\"Stan\",\"age\":8,\"gender\":true,\"children\":null,\"dateOfBirth\":915109200000}],\"dateOfBirth\":null}", result);
     }
 
     @Test
@@ -88,6 +88,13 @@ public class JsonConverterTest {
         assertThat(personTestObject.getGender(), equalTo(true));
         assertThat(personTestObject.getDateOfBirth(), equalTo(LocalDate.of(1999, 1, 1)));
 
+        personTestObject = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":915109200000}", PersonTestObject.class);
+
+        assertThat(personTestObject.getName(), equalTo("Marsh"));
+        assertThat(personTestObject.getAge(), equalTo(36));
+        assertThat(personTestObject.getGender(), equalTo(true));
+        assertThat(personTestObject.getDateOfBirth(), equalTo(LocalDate.of(1999, 1, 1)));
+
         personTestObject = converter.fromJson("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"dateOfBirth\":\"\"}", PersonTestObject.class);
         assertThat(personTestObject.getDateOfBirth(), equalTo(null));
 
@@ -112,7 +119,7 @@ public class JsonConverterTest {
         JsonConverter converter = configuredJsonConverter();
         String result = converter.toJson(pair);
 
-        assertThat(result, equalTo("{\"key\":\"1317923717000\",\"value\":\"1317063317000\"}"));
+        assertThat(result, equalTo("{\"key\":1317923717000,\"value\":1317063317000}"));
         assertThat(converter.fromJson("1317923717000", LocalDateTime.class), equalTo(time1));
         assertThat(converter.fromJson("1317063317000", LocalDateTime.class), equalTo(time2));
 

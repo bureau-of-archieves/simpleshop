@@ -106,7 +106,7 @@ public class OrderDAOImplTest extends TransactionalTest {
     @Test
     public void quickSearchTest() {
         List<Order> orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
-        assertThat(orders.size(), equalTo(1));
+        assertThat(orders.size(), greaterThanOrEqualTo(1));
         assertThat(orders.get(0).getCustomer().getContact().getName(), equalTo(TestConstants.CUSTOMER_NAME_1));
 
         Employee employee = orders.get(0).getEmployee();

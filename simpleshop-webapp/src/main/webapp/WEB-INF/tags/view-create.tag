@@ -13,7 +13,7 @@
         <c:set var="title" value="Create New ${f:peek(stack, '_friendlyModelName')}" />
     </c:if>
 
-    <t:view-frame id="${viewId}" title="${title}" >
+    <t:view-frame id="${viewId}" title="${title}" cssClass="create-view" >
         <jsp:attribute name="header">
 
         </jsp:attribute>

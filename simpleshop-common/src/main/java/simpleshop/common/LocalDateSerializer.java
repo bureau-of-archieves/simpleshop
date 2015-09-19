@@ -17,6 +17,6 @@ public class LocalDateSerializer extends JsonSerializer<LocalDate> {
     public void serialize(LocalDate arg0, JsonGenerator arg1, SerializerProvider arg2) throws IOException {
 
         Long epoch = arg0.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        arg1.writeString(epoch.toString());
+        arg1.writeNumber(epoch);
     }
 }

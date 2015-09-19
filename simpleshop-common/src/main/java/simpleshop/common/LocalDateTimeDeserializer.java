@@ -19,6 +19,7 @@ public class LocalDateTimeDeserializer extends JsonDeserializer<LocalDateTime> {
         if(StringUtils.isNullOrEmpty(arg0.getText()))
             return null;
 
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(arg0.getLongValue()), ZoneId.systemDefault());
+        long milli = Long.parseLong(arg0.getText());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(milli), ZoneId.systemDefault());
     }
 }

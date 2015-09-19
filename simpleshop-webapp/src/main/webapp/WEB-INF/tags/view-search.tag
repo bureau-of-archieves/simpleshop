@@ -16,7 +16,7 @@
     ${f:_push(stack, "_friendlyModelName", friendlyModelName)}
     ${f:_push(stack, "_viewId", viewId)}
 
-    <t:view-frame id="${viewId}" title="${friendlyModelName}" icon="${f:smd(targetModelName).icon}" removable="false" hideRefresh="true" panelClass="panel-primary" >
+    <t:view-frame id="${viewId}" title="${friendlyModelName}" icon="${f:smd(targetModelName).icon}" removable="false" hideRefresh="true" panelClass="panel-primary" cssClass="search-view" >
         <ctrl:form name="${viewId}-form">
 
             <jsp:doBody/>
