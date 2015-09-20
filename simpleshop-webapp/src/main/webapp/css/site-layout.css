@@ -299,6 +299,7 @@ input.ng-valid ~ .pattern-validation {
 
 .carousel-container {
     margin-bottom: 1em;
+    text-align: center;
 }
 
 .carousel-container img{
@@ -308,6 +309,7 @@ input.ng-valid ~ .pattern-validation {
 
 .carousel-container a{
     text-decoration: none;
+    display:inline-block;
 }
 
 .carousel-container a:hover{

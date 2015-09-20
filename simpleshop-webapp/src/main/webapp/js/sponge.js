@@ -1384,6 +1384,9 @@
                         } else {
                             reportError(data.result["description"]);
                         }
+                    },
+                    error: function (data, status, e) {
+                        reportError(e);
                     }
                 });
 

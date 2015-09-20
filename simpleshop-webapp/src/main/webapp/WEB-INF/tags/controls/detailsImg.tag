@@ -33,7 +33,7 @@
         <c:url  var="url" value="${uploadUrl}" />
         <c:set var="parentId" value="${f:peek(stack, '_parentId')}"/>
         <c:set var="id" value="${f:fid(parentId, path)}_file"/>
-        <input id="${id}" type="file" name="image" data-url="${url}" style="display: none" >
+        <input id="${id}" type="file" name="image" data-url="${url}" style="position:absolute; width:0; height:0;overflow: hidden;opacity: 0;" >
     </c:if>
 
 </div>
