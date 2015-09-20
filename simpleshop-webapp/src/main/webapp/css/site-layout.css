@@ -297,6 +297,10 @@ input.ng-valid ~ .pattern-validation {
     color:orange;
 }
 
+.carousel-container {
+    margin-bottom: 1em;
+}
+
 .carousel-container img{
     margin:auto;
     height: 20em;

@@ -17,7 +17,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface SortProperty {
 
-     String alias() default "";
+     String alias() default AliasDeclaration.ROOT_CRITERIA_ALIAS;
      String propertyName();
      SortDirection sortDirection() default SortDirection.BOTH;
 

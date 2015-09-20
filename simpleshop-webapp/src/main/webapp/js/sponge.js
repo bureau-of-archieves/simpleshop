@@ -1355,16 +1355,40 @@
         };
     }]);
 
-
-    spongeApp.directive("spgUpload", [function(){
+    //data-spg-upload="${fieldRef}"
+    spongeApp.directive("spgUpload", ["spongeService", function(spongeService){
 
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
-                //todo implement
-                $(element).click(function(){
 
-                    alert("Not implemented yet.");
+                var fileElement = $(element).closest(".carousel-container").find("input[type=file]");
+                if(fileElement.size() == 0)
+                    return;
+
+                var filePathProperty = attrs["spgUpload"]; //set this property to the uploaded file name/path
+                if(!filePathProperty)
+                    return;
+
+                fileElement = $(fileElement.get(0));
+                var viewId = fileElement.closest(".view[data-ng-controller='viewController']").attr("id");
+                fileElement.fileupload({
+                    dataType: 'json',
+                    add: function (e, data) {
+                        data.url = fileElement.data("url");
+                        data.submit();
+                    },
+                    done: function (e, data) {
+                        if(data.result["status"] == "OK"){
+                            spongeService.refresh(viewId, 0);
+                        } else {
+                            reportError(data.result["description"]);
+                        }
+                    }
+                });
+
+                $(element).click(function(){
+                    fileElement.click();
                 });
             }
         };

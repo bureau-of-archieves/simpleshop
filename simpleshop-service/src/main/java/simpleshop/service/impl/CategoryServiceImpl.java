@@ -71,7 +71,9 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
     @Transactional(readOnly = true)
     public List<Category> search(@NotNull CategorySearch searchParams) {
         //default sort order
-        searchParams.setSortInfo(new SortInfo("name"));
+        if(searchParams.getSortInfo() == null){
+            searchParams.setSortInfo(new SortInfo("prefix"));
+        }
 
         List<Category> categories = super.search(searchParams);
 

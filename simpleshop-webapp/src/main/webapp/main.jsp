@@ -176,6 +176,8 @@
 <%--scripts--%>
 <script src="js/jquery.js"></script>
 <script src="js/jquery-ui.js"></script>
+<script src="js/jquery.iframe-transport.js"></script>
+<script src="js/jquery.fileupload.js"></script>
 <script src="js/moment.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/angular.js"></script>

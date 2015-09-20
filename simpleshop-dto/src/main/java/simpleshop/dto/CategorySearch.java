@@ -7,7 +7,6 @@ import simpleshop.domain.model.Category;
 /**
  * Search parameters for Category model.
  */
-@SortProperty(propertyName = "prefix")
 public class CategorySearch extends ModelSearch {
 
     private String name;
