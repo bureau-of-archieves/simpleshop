@@ -2,6 +2,6 @@
 
 <d:contact-form path="contact" />
 <ctrl:editField path="hireDate" />
-<ctrl:editSelect path="employmentType" />
+<ctrl:editEnumSelect path="employmentType" />
 
 

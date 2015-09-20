@@ -567,6 +567,42 @@
 
     spongeApp.factory("spongeService", ["$compile", function ($compile) {
 
+        var loadedLists = {};
+        /**
+         * Load a list of objects and send to the callback function.
+         * @param url where we retrieve the objects in json form.
+         * @param refresh re-retrieve the list if already cached.
+         * @param callback function (loadedList)
+         */
+        var loadList = function(url, refresh, callback){
+
+            if(!refresh && loadedLists.hasOwnProperty(url)){
+                callback(loadedLists[url].content);
+            }
+
+            var success = function(data, textStatus, jqXHR){
+                if(data["status"] == "OK"){
+                    loadedLists[url] = data;
+                    callback(loadedLists[url].content);
+                } else {
+                    reportError(data["description"]);
+                }
+
+            };
+
+            var error = function( jqXHR,  textStatus,  errorThrown){
+                reportError(textStatus + " - " + errorThrown);
+            };
+
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json",
+                url: url,
+                success: success,
+                error : error
+            });
+        };
+
         /**
          * All operations fired on the client side must execute beginOp and endOp in pair with the same token.
          * This will trigger a digest cycle at root level.
@@ -1110,6 +1146,7 @@
         };
 
         return {
+            loadList: loadList,
             getView: getView,
             save: save,
             remove: remove,
@@ -1277,6 +1314,34 @@
 
         };
 
+    }]);
+
+    //data-spg-load-list="${itemsVariableName},${url}"
+    spongeApp.directive("spgLoadList", ["spongeService", function(spongeService){
+
+        return {
+            restrict: 'A',
+            scope: true,
+            link: function (scope, element, attrs) {
+                var args = attrs["spgLoadList"];
+                if(!args)
+                    return;
+                args = args.split(",");
+                if(args.length < 2)
+                    return;//configuration error
+
+                var listPropertyName = args[0];
+                var listUrl = args[1];
+                var refresh = args.length > 2 ? args[2] : false;
+
+                scope[listPropertyName] = [];
+                spongeService.loadList(listUrl, refresh, function(loadedList){
+                    safeApply(scope, function(){
+                        scope[listPropertyName] = loadedList;
+                    });
+                });
+            }
+        };
     }]);
 
     //data-spg-indent="item,prefix,_,-1"

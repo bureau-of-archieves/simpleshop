@@ -1,6 +1,8 @@
 package simpleshop.domain.model;
 
 import simpleshop.Constants;
+import simpleshop.domain.metadata.DisplayFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -10,6 +12,7 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "countries")
+@DisplayFormat("concat:'name'")
 public class Country implements Comparable<Country>{
 
     private String countryCode;

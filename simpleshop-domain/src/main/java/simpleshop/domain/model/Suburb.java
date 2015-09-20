@@ -4,6 +4,7 @@ package simpleshop.domain.model;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
+import simpleshop.domain.metadata.Label;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -35,6 +36,7 @@ public class Suburb {
 
     @Column(name = "suburb", nullable = false, length = Constants.MID_STRING_LENGTH)
     @NotNull
+    @Label("Name")
     public String getSuburb() {
         return suburb;
     }
@@ -44,6 +46,7 @@ public class Suburb {
     }
 
     @Column(name = "city", length = Constants.MID_STRING_LENGTH)
+    @DisplayFormat("na")
     public String getCity() {
         return city;
     }
