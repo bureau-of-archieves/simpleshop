@@ -4,7 +4,7 @@
 
 <c:set var="viewId" value="${f:peek(stack, '_viewId')}" />
 
-<div class="col-xs-10">
+<div class="col-xs-11">
     <form name="${name}" class="form-horizontal" role="form" novalidate>
 
         <jsp:doBody/>

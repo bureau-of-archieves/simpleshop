@@ -23,14 +23,19 @@
 
 <c:set var="hideEmptyExpr" value=""/>
 <c:if test="${hideEmpty}">
-    <c:set var="hideEmptyExpr" value="data-ng-show='${fieldRef}'"/>
+    <c:set var="hideEmptyExpr" value="data-ng-hide='${fieldRef} == null || ${fieldRef}.length == 0'"/>
 </c:if>
 
 <div ${hideEmptyExpr} class="col-sm-12 carousel-container" >
 
+    <div class="alert alert-danger" role="alert">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        No image uploaded yet.
+    </div>
+
     <carousel interval="5000" no-wrap="false">
         <slide ng-repeat="slide in ${fieldRef}" >
-            <img ng-src="${pageContext.request.contextPath}assets/img/{{slide}}" style="margin:auto; height: 20em;;">
+            <img ng-src="${pageContext.request.contextPath}assets/img/{{slide}}" >
             <div class="carousel-caption">
                 <p>${label} <c:if test="${not empty title}"> title="${title}" </c:if></p>
             </div>

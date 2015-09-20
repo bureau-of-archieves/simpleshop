@@ -257,10 +257,6 @@ input.ng-valid ~ .pattern-validation {
     cursor: pointer;
 }
 
-div.carousel-container{
-    margin-bottom: 1em;
-}
-
 .inline-list span.label {
     margin-right:0.5em;
 }
@@ -299,4 +295,23 @@ div.carousel-container{
 
 .items-container span.glyphicon:hover{
     color:orange;
+}
+
+.carousel-container img{
+    margin:auto;
+    height: 20em;
+}
+
+.carousel-container a{
+    text-decoration: none;
+}
+
+.carousel-container a:hover{
+    text-decoration: none;
+    color: orange;
+    font-weight: 500;
+}
+
+.input-group .form-control{
+    top: 1px;
 }

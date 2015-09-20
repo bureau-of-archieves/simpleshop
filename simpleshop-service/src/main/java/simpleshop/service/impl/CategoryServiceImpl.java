@@ -1,5 +1,6 @@
 package simpleshop.service.impl;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,9 @@ import simpleshop.service.CategoryService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -21,6 +25,11 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
 
     @Autowired
     private CategoryDAO categoryDAO;
+
+    @Override
+    protected void initialize(@NotNull Category model) {
+        Hibernate.initialize(model.getParent()); //load direct parent as well.
+    }
 
     /**
      * {@inheritDoc}
@@ -42,6 +51,7 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
      * Update search prefix to the correct value.
      * @param model Category instance to save..
      */
+    @Transactional
     @Override
     public void save(@NotNull Category model) {
 

@@ -45,7 +45,7 @@
 <%--the angular expression we use to reference the javascript variable/property to assign the selected value to.---%>
 <c:set var="fieldRef" value="${base}${path}" />
 <c:if test="${empty showLink}" >
-    <c:set var="showLink" value="false" />
+    <c:set var="showLink" value="${false}"  />
 </c:if>
 
 <c:if test="${empty displayFormat}">
@@ -64,13 +64,22 @@
         >
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
 
+    <c:set var="showClear" value="${not propertyMetadata.required}" />
+    <c:set var="showInputGroup" value="${showLink || showClear}" />
     <div class="col-sm-9">
-        <c:if test="${showLink}">
+        <c:if test="${showInputGroup}">
         <div class="input-group">
         </c:if>
             <input id="${id}" type="text" class="form-control" autocomplete="off" name="${path}" >
-        <c:if test="${showLink}">
+
+            <c:if test="${showLink}">
             <span class="input-group-addon glyphicon glyphicon-share-alt cursor-pointer" title="Open in details view" data-spg-details='{"modelName":"${targetModelName}","modelId":"#${id}"}'></span>
+            </c:if>
+
+            <c:if test="${showClear}">
+                <span class="input-group-addon glyphicon glyphicon-remove cursor-pointer" title="Clear selection" data-ng-click="${fieldRef} = null"></span>
+            </c:if>
+        <c:if test="${showInputGroup}">
         </div>
         </c:if>
         <div class="combo-list" data-ng-show="showList" style="position:relative;" >

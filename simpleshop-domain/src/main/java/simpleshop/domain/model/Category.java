@@ -15,8 +15,8 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "categories")
-@DisplayFormat("concat:'id':' - ':'name'")
-@Icon("tags")//[sponge]searchable - searchable iff domain object has icon and a search object.
+@DisplayFormat("concat:'id':' - ':'name' | na")
+@Icon("th")//[sponge]searchable - searchable iff domain object has icon and a search object.
 public class Category {
 
     private Integer id;
@@ -85,6 +85,7 @@ public class Category {
         this.description = description;
     }
 
+    @Label("Category Image")
     @Column(name = "image_path", length = Constants.LONG_STRING_LENGTH)
     public String getImagePath() {
         return imagePath;

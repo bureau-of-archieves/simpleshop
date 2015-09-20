@@ -501,6 +501,9 @@
     spongeApp.filter('concat', function () {
         return function () {
             var input = arguments[0];
+            if(angular.isUndefined(input) || input === null)
+                return null;
+
             var result = "";
             if(angular.equals({}, input))
                 return result;
@@ -1274,6 +1277,32 @@
 
         };
 
+    }]);
+
+    //data-spg-indent="item,prefix,_,-1"
+    spongeApp.directive("spgIndent", [function(){
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                //todo implement
+            }
+        };
+    }]);
+
+
+    spongeApp.directive("spgUpload", [function(){
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                //todo implement
+                $(element).click(function(){
+
+                    alert("Not implemented yet.");
+                });
+            }
+        };
     }]);
 
     spongeApp.directive("spgSelect", ["$parse", function ($parse) {

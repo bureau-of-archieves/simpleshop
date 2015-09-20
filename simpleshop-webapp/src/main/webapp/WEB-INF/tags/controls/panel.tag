@@ -67,7 +67,7 @@
     </div>
     <div id="${name}Body" class="panel-body" data-ng-hide="hideBody">
         <c:if test="${isForm}">
-            <div class="col-xs-10">
+            <div class="col-xs-11">
                 <form name="${name}-form" class="form-horizontal" role="form" novalidate>
         </c:if>
 
