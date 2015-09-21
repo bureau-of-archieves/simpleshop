@@ -3,12 +3,13 @@
 <t:page>
     <t:view-list frameClass="col-xs-12">
 
+        <c:set var="imgBase" value="${f:peek(stack, '_imgBase')}" />
         <div class="row">
-            <div class="col-xs-12 col-md-6 col-lg-3 col-xl-3" data-ng-repeat="item in model"
+            <div class="col-xs-12 col-md-6 col-lg-3 col-xl-2" data-ng-repeat="item in model"
                  data-ng-init='makeCriteria(this, "Product", "category", item)'>
                 <a href="javascript:void(0);" class="thumbnail"
                    data-spg-list="{&quot;modelName&quot;:&quot;Product&quot;, &quot;criteriaPath&quot;:&quot;criteria&quot;}">
-                    <img data-ng-src="${pageContext.request.contextPath}assets/img/{{item.imagePath}}"
+                    <img style="min-width: 100%; height: auto;" data-ng-src="${imgBase}{{item.imagePath}}"
                          alt="{{item.description}}">
                 </a>
 

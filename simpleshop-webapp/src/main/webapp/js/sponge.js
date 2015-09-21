@@ -1474,6 +1474,8 @@
                 $(element).click(function ($event) {
                     var args = JSON.parse(attrs["spgList"]);
                     var modelName = args["modelName"];
+                    var variant = args["variant"];
+                    variant = variant ? "_" + variant : "";
                     var criteria = {};
                     var criteriaPath = args["criteriaPath"];
                     if (criteriaPath) {
@@ -1495,7 +1497,7 @@
                         }
                     }
                     scope["eventElement"] = element;
-                    spongeService.getView(modelName, "list", null, null, criteria, {
+                    spongeService.getView(modelName, "list" + variant, null, null, criteria, {
                         instanceIdInViewKey: true,
                         sortProperties: sortProperties
                     }, scope)

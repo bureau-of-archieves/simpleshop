@@ -221,6 +221,7 @@ public class TestDataInitializer {
         Category category = new Category();
         category.setName(name);
         category.setDescription(description);
+        category.setImagePath(name.toLowerCase().replaceAll("\\s", "-") + ".jpg");
         category.setParent(parent);
 
         session.save(category);

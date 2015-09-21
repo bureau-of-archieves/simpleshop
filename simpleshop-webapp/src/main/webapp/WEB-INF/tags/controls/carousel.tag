@@ -26,6 +26,8 @@
     <c:set var="hideEmptyExpr" value="data-ng-hide='${fieldRef} == null || ${fieldRef}.length == 0'"/>
 </c:if>
 
+<c:set var="imgBase" value="${f:peek(stack, '_imgBase')}" />
+
 <div ${hideEmptyExpr} class="col-sm-12 carousel-container" >
 
     <div class="alert alert-danger" role="alert">
@@ -35,7 +37,7 @@
 
     <carousel interval="5000" no-wrap="false">
         <slide ng-repeat="slide in ${fieldRef}" >
-            <img ng-src="${pageContext.request.contextPath}assets/img/{{slide}}" >
+            <img ng-src="${imgBase}{{slide}}" >
             <div class="carousel-caption">
                 <p>${label} <c:if test="${not empty title}"> title="${title}" </c:if></p>
             </div>

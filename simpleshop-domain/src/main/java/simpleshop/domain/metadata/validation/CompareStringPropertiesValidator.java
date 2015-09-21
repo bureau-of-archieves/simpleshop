@@ -4,7 +4,6 @@ import simpleshop.common.ReflectionUtils;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.util.Objects;
 
 /**
  * Implementation for @CompareStringProperties.
@@ -31,23 +30,29 @@ public class CompareStringPropertiesValidator implements ConstraintValidator<Com
             return true;
 
         Object leftValue = ReflectionUtils.getProperty(value, leftPropertyPath);
+        if(leftValue == null)
+            return true;
+
         Object rightValue = ReflectionUtils.getProperty(value, rightPropertyPath);
-        String left = leftValue == null ? null : leftValue.toString();
-        String right = rightValue == null ? null : rightValue.toString();
+        if(rightValue == null)
+            return true;
+
+        String left = leftValue.toString();
+        String right = rightValue.toString();
 
         boolean result = true;
         switch (comparisonMethod) {
             case START_WITH:
-                result = left == null || right == null || left.startsWith(right);
+                result = left.startsWith(right);
                 break;
             case END_WITH:
-                result = left == null || right == null || left.endsWith(right);
+                result = left.endsWith(right);
                 break;
             case CONTAINS:
-                result = left == null || right == null || left.contains(right);
+                result = left.contains(right);
                 break;
             case EQUALS:
-                result = Objects.equals(left, right);
+                result = left.compareTo(right) == 0;
                 break;
         }
         if(negate)

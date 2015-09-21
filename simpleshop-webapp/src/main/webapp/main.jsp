@@ -39,7 +39,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
 
-                <li ><a href="#" data-spg-list='{"modelName":"Category"}'>Categories</a></li>
+                <li ><a href="#" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
 
                 <li class="dropdown">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <span class="caret"></span>
@@ -131,7 +131,7 @@
 
         <section class="col-xs-12">
 
-            <section style="min-height: 60em" id="resultSection" class="hide-children row">
+            <section style="min-height: 65em" id="resultSection" class="hide-children row">
                 <%--views--%>
                 <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
                     There is no open view.
@@ -142,7 +142,7 @@
 
     </main>
     <%--page footer--%>
-    <footer>
+    <footer class="row">
         <hr>
         <div class="col-xs-8 col-xs-offset-2">
             <small class="text-info">Experimental SPA Web app demo based on Northwind database. Powered by

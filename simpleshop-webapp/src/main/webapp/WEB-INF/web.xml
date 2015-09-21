@@ -48,4 +48,18 @@
         <filter-name>httpPutFormFilter</filter-name>
         <servlet-name>sponge</servlet-name>
     </filter-mapping>
+    
+    <filter>
+        <filter-name>redirectingFilter</filter-name>
+        <filter-class>simpleshop.webapp.infrastructure.RedirectingFilter</filter-class>
+        <init-param>
+            <param-name>mapping</param-name>
+            <param-value>/assets/img/$,/img/no-image.png</param-value>
+        </init-param>
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>redirectingFilter</filter-name>
+        <url-pattern>/assets/img/</url-pattern>
+    </filter-mapping>
 </web-app>

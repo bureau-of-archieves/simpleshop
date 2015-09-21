@@ -142,6 +142,24 @@ input.ng-valid ~ .pattern-validation {
         padding-right: 10px;
         padding-left: 10px;
     }
+
+    .col-xl-3 {
+        float: left;
+        width: 25%;
+        position: relative;
+        min-height: 1px;
+        padding-right: 10px;
+        padding-left: 10px;
+    }
+
+    .col-xl-2 {
+        width: 16.66666667%;
+        float: left;
+        position: relative;
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
 }
 
 .col-md-6 {
@@ -326,4 +344,8 @@ input.ng-valid ~ .pattern-validation {
 
 .input-group .form-control{
     top: 1px;
+}
+
+footer>.col-xs-8 {
+    text-align:center;
 }
