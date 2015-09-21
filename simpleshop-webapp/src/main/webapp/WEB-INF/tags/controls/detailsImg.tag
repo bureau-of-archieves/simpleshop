@@ -20,20 +20,22 @@
 <c:set var="imgBase" value="${f:peek(stack, '_imgBase')}" />
 <c:set var="fieldRef" value="${base}${path}"/>
 
+<c:url  var="url" value="${uploadUrl}" />
+<c:set var="parentId" value="${f:peek(stack, '_parentId')}"/>
+<c:set var="id" value="${f:fid(parentId, path)}_file"/>
+
 <div class="col-sm-12 carousel-container">
 
-    <a href="javascript:void(0)" title="${label}" data-spg-upload="${fieldRef}">
-        <div class="alert alert-danger" role="alert" data-ng-show="${fieldRef}.length == 0" class="ng-hide">
+    <a href="javascript:void(0)" title="${label}" class="fileinput-button" onclick="$('#${id}').click()" >
+        <div class="alert alert-danger" role="alert" data-ng-show="${fieldRef} == null || ${fieldRef}.length == 0">
             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
             No image uploaded yet.
         </div>
-        <img data-ng-src="${imgBase}{{${fieldRef}}}" data-ng-show="${fieldRef}.length > 0" class="ng-hide">
-    </a>
-    <c:if test="${not empty uploadUrl}" >
-        <c:url  var="url" value="${uploadUrl}" />
-        <c:set var="parentId" value="${f:peek(stack, '_parentId')}"/>
-        <c:set var="id" value="${f:fid(parentId, path)}_file"/>
-        <input id="${id}" type="file" name="image" data-url="${url}" style="position:absolute; width:0; height:0;overflow: hidden;opacity: 0;" >
-    </c:if>
+        <img data-ng-src="${imgBase}{{${fieldRef}}}" data-ng-show="${fieldRef}.length > 0" >
 
+    </a>
+
+    <c:if test="${not empty uploadUrl}" >
+        <input id="${id}" type="file" name="image" data-url="${url}" data-spg-upload >
+    </c:if>
 </div>

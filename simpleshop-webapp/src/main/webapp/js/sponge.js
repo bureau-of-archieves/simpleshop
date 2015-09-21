@@ -1362,15 +1362,8 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                var fileElement = $(element).closest(".carousel-container").find("input[type=file]");
-                if(fileElement.size() == 0)
-                    return;
-
-                var filePathProperty = attrs["spgUpload"]; //set this property to the uploaded file name/path
-                if(!filePathProperty)
-                    return;
-
-                fileElement = $(fileElement.get(0));
+                var fileElement = $(element);
+                fileElement.css("position", "absolute").css("width", "0").css("height","0").css("overflow","hidden").css("opacity","0");
                 var viewId = fileElement.closest(".view[data-ng-controller='viewController']").attr("id");
                 fileElement.fileupload({
                     dataType: 'json',
@@ -1390,9 +1383,7 @@
                     }
                 });
 
-                $(element).click(function(){
-                    fileElement.click();
-                });
+
             }
         };
     }]);
