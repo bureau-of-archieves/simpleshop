@@ -1,5 +1,6 @@
 package simpleshop.dto;
 
+import simpleshop.Constants;
 import simpleshop.data.metadata.PropertyFilter;
 import simpleshop.data.metadata.SortProperty;
 import simpleshop.domain.model.Category;
@@ -12,6 +13,10 @@ public class CategorySearch extends ModelSearch {
     private String name;
     private Category parentCategory;
     private String prefix;
+
+    public CategorySearch(){
+        this.setPageSize(Constants.MAX_DROPDOWN_LIST_SIZE);
+    }
 
     @PropertyFilter.List({
             @PropertyFilter(property = "name", operator = PropertyFilter.Operator.LIKE),

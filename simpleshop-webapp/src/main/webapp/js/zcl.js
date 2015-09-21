@@ -526,6 +526,17 @@
         location.hash = '';
     };
 
+    //http://stackoverflow.com/a/4152613/355963
+    zcl.repeat = function repeat(pattern, count) {
+        if (count < 1) return '';
+        var result = '';
+        while (count > 1) {
+            if (count & 1) result += pattern;
+            count >>= 1, pattern += pattern;
+        }
+        return result + pattern;
+    };
+
     //endregion
 
 })();

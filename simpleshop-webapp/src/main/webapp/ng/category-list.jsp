@@ -4,7 +4,8 @@
 <t:page>
     <t:view-list>
         <ctrl:summaryList modelId="{{item.id | json}}">
-          <span data-spg-indent="item,prefix,_,-1"></span><span title="{{item.description}}">{{item.id}} - {{item.name}}</span>
+            <ctrl:indent source="item.prefix" pattern="_" delta="-1" />
+            <span title="{{item.description}}">{{item.id}} - {{item.name}}</span>
         </ctrl:summaryList>
     </t:view-list>
     <script>

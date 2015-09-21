@@ -419,6 +419,20 @@
         };
     });
 
+    //{{item.prefix|indent:'_':-1}}
+    spongeApp.filter("indent", [function(){
+
+        return function (val, separator,delta) {
+
+            var count = val.split(separator).length - 1;
+            count += delta;
+            if(count < 0)
+                count = 0;
+
+            return zcl.repeat("M", count);
+        };
+    }]);
+
     spongeApp.filter('url', function () {
         return function (input) {
             if (input) {
@@ -1340,17 +1354,6 @@
                         scope[listPropertyName] = loadedList;
                     });
                 });
-            }
-        };
-    }]);
-
-    //data-spg-indent="item,prefix,_,-1"
-    spongeApp.directive("spgIndent", [function(){
-
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                //todo implement
             }
         };
     }]);
