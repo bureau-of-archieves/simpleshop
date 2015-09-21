@@ -6,6 +6,7 @@ import java.lang.annotation.ElementType;
 
 /**
  * The min validation for a string.
+ * Validated value must >= the value specified here.
  */
 @java.lang.annotation.Target({ElementType.METHOD})
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
@@ -14,7 +15,7 @@ import java.lang.annotation.ElementType;
 public @interface MinString {
     String value();
 
-    String message() default "{quickshop.domain.metadata.validation.min_string}";
+    String message() default "{sponge.validation.validation.min_string}";
 
     Class<?>[] groups() default {};
 

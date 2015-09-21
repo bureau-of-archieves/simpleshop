@@ -23,7 +23,7 @@
         <property name="suffix" value=".jsp" />
     </bean>
 
-    <mvc:annotation-driven enable-matrix-variables="true" >
+    <mvc:annotation-driven enable-matrix-variables="true" conversion-service="conversionService" validator="validator" >
         <mvc:message-converters>
             <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
                 <property name="objectMapper" ref="objectMapper" />

@@ -1,6 +1,8 @@
 package simpleshop.webapp.mvc.aop;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -10,6 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import simpleshop.common.StringUtils;
 import simpleshop.dto.JsonResponse;
 import simpleshop.webapp.infrastructure.BaseJsonController;
+import simpleshop.webapp.infrastructure.WebUtils;
 
 @ControllerAdvice("simpleshop.webapp.mvc.controller")
 public class ExceptionHandlerAdvice {
@@ -25,11 +28,14 @@ public class ExceptionHandlerAdvice {
         return modelAndView;
     }
 
+    @Autowired
+    private MessageSource messageSource;
+
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ModelAndView returnErrorMessages(MethodArgumentNotValidException ex){
 
         BindingResult bindingResult = ex.getBindingResult();
-        String errorMessage = BaseJsonController.getBindingErrorMessage(bindingResult);
+        String errorMessage = WebUtils.getBindingErrorMessage(messageSource, bindingResult);
         return returnErrorMessage(errorMessage);
     }
 

@@ -119,4 +119,38 @@ public class CategoryServiceImplTest extends ServiceTransactionTest {
         assertThat(result.size(), greaterThanOrEqualTo(3));
 
     }
+
+
+    @Test
+    public void beanValidationIsNotEnabledInHibernate(){
+
+        //arrange
+        Category parent = new Category();
+        parent.setName("Parent");
+        parent.setDescription(TestConstants.CATEGORY_MARK);
+        categoryService.save(parent);
+        flush();
+
+        Category child = new Category();
+        child.setName("Child");
+        child.setDescription(TestConstants.CATEGORY_MARK);
+        child.setParent(parent);
+        categoryService.save(child);
+        flush();
+
+        //action
+        try {
+            parent.setName("P");
+            parent.setParent(child);
+            categoryService.save(parent);
+            flush();
+
+            //assertion no validation error
+
+        } finally {
+            categoryService.delete(child);
+            categoryService.delete(parent);
+        }
+
+    }
 }

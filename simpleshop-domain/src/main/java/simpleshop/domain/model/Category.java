@@ -3,9 +3,12 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.*;
+import simpleshop.domain.metadata.validation.CompareStringProperties;
+import simpleshop.domain.metadata.validation.StringComparison;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Category domain object.
@@ -17,6 +20,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "categories")
 @DisplayFormat("concat:'id':' - ':'name' | na")
 @Icon("th")//[sponge]searchable - searchable iff domain object has icon and a search object.
+@CompareStringProperties(leftProperty = "parent.prefix", negate = true, comparisonMethod = StringComparison.START_WITH, rightProperty = "prefix")
 public class Category {
 
     private Integer id;
@@ -67,6 +71,7 @@ public class Category {
 
     @Column(length = Constants.MID_STRING_LENGTH, nullable = false)
     @NotNull
+    @Size(min = 2)
     public String getName() {
         return name;
     }

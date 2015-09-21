@@ -82,7 +82,7 @@
         <c:if test="${showInputGroup}">
         </div>
         </c:if>
-        <div class="combo-list" data-ng-show="showList" style="position:relative;" >
+        <div class="combo-list ng-hide" data-ng-show="showList" style="position:relative;" >
 
             <ol class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em; list-style-type: none">
                 <li data-ng-show="loadingList" class="list-group-item display" > <img  style="width:5em;" src="${pageContext.request.contextPath}img/loading.gif" alt="Loading list..."></li>

@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface YesNo {
 
-    String message() default "{quickshop.domain.metadata.validation.yesno}";
+    String message() default "{sponge.validation.yesno}";
 
     Class<?>[] groups() default {};
 

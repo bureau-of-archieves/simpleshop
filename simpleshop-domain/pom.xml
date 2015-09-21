@@ -64,6 +64,11 @@
             <artifactId>aspectjrt</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>zhy2002</groupId>
+            <artifactId>simpleshop-common</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -19,7 +19,7 @@ import java.lang.annotation.*;
 @ReportAsSingleViolation
 public @interface Status {
 
-    String message()default "{quickshop.domain.metadata.validation.status}";
+    String message()default "{sponge.validation.status}";
 
     Class<?>[] groups() default {};
 

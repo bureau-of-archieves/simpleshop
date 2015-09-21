@@ -1,6 +1,8 @@
 package simpleshop.webapp.infrastructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -36,15 +38,11 @@ public abstract class BaseJsonController {
         return "json"; //call the json view.
     }
 
-    public static String getBindingErrorMessage(BindingResult bindingResult) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (ObjectError error : bindingResult.getAllErrors()) {
-            stringBuilder.append(error.getObjectName());
-            stringBuilder.append(":");
-            stringBuilder.append(error.getDefaultMessage());
-            stringBuilder.append("\r\n");
-        }
-        return stringBuilder.toString();
+    @Autowired
+    private MessageSource messageSource;
+
+    public String getBindingErrorMessage(BindingResult bindingResult) {
+        return WebUtils.getBindingErrorMessage(messageSource, bindingResult);
     }
 
     protected <T> JsonResponse<T> saveModel(T model, ModelService<T, ?> modelService, BindingResult bindingResult) {
