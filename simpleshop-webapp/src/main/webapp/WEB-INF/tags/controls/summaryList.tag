@@ -11,10 +11,10 @@
 <c:set var="friendlyMmodelName" value="${f:peek(stack, '_friendlyMmodelName')}"/>
 
 <div class="row">
-    <div class="${f:peek(stack, "_colPrefix")}8">
+    <div class="col-sm-8">
         <h4>Search result for ${friendlyMmodelName}</h4>
     </div>
-    <div class="${f:peek(stack, "_colPrefix")}4 clearfix">
+    <div class="col-sm-4 clearfix">
         <form class="form-inline pull-right" data-ng-show="sortProperties.length > 0">
             <div class="input-group">
                 <span class="input-group-addon" id="sizing-addon2">Sort By</span>

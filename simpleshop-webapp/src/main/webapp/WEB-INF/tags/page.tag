@@ -1,22 +1,19 @@
-<%@include file="_header.tag"%>
+<%@tag trimDirectiveWhitespaces="true"  %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
 <%--
     The root tag that all jsp pages should use to wrap all content
     All global config are set here.
 --%>
 
-<c:set var="imgBase" value="${pageContext.request.contextPath}assets/img/" />
-
-${f:_push(stack, "_base", "model.")}
-${f:_push(stack, "_colPrefix", "col-sm-")}
-${f:_push(stack, "_imgBase", imgBase)}
+<comm:push var="imgBase" value="${pageContext.request.contextPath}assets/img/"  />
+<comm:push var="base" value="model."  />
 
 <jsp:doBody/>
 
-${f:_pop(stack, "_base")}
-${f:_pop(stack, "_colPrefix")}
-${f:_pop(stack, "_imgBase")}
-<c:if test="${not empty f:peek(stack, '_replace_id_marker')}" >
-    <replace-id-marker>${f:peek(stack, "_replace_id_marker")}</replace-id-marker>
-</c:if>
+<comm:pop var="imgBase" />
+<comm:pop var="base" />
+
+<comm:replace-id-marker />
+
 
 

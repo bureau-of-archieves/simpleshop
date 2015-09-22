@@ -1,4 +1,5 @@
-<%@ tag import="java.util.Enumeration" %>
+<%@ tag import="java.util.Enumeration"  %>
+<%@attribute name="" rtexprvalue="false" %>
 <ul>
     <%
         Enumeration names = request.getAttributeNames();
