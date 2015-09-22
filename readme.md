@@ -28,18 +28,22 @@ Views have a model type, which is the type of model it can display.
 
 Todo List
 -----------
- * Check for modification before closing an edit/create view.
- * Implement watermark.
- * css/script bundling
- * Minification of sponge.js.
- * Display search criteria in the list view.
- * Upload of image.
- * Fix the many problems in error handling in JavaScript.
  * Improve validation messages.
+ * Upload of product image. 
+ * Support full internationalization.
+ * Implement watermark.
+ * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
+ 
+ * Check for modification before closing an edit/create view.
+
+
+ * Display search criteria in the list view.
+ * Fix the many problems in error handling in JavaScript.
+
  * Trim unnecessary parts of the request before posting json.
  * Add Spring Security.
  * Separate template and data. This way a type of template can be cached by the client.
- * Support full internationalization.
+
  * Replace Bootstrap view layout with masonry layout, e.g. http://w3bits.com/labs/css-masonry/
  * drag and drop swap view positions.
 

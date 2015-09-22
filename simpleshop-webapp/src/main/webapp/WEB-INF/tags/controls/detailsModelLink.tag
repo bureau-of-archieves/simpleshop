@@ -38,7 +38,15 @@
             <a href="javascript:void(0);" data-ng-init="targetObject = ${fieldRef}"
                data-spg-details='{"modelName":"${targetModelName}","modelId":"{{${fieldRef}.id}}"}'>
 
-                <jsp:doBody/>
+                <jsp:doBody var="body"/>
+                ${body}
+
+                <c:if test="${empty body}">
+                    <c:set var="displayFormat" value="${f:smd(targetModelName).displayFormat}" />
+                    <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
+
+                    {{targetObject <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if> }}
+                </c:if>
             </a>
         </div>
     </div>

@@ -27,8 +27,6 @@
 </c:if>
 
 <c:set var="propertyMetadata" value="${f:fmd(modelName, path)}" />
-
-
 <c:if test="${empty targetModelName}">
     <c:set var="targetModelName" value="${f:propertyTargetModelName(propertyMetadata)}" />
 </c:if>
@@ -51,13 +49,16 @@
 <c:if test="${empty displayFormat}">
     <c:set var="displayFormat" value="${f:smd(targetModelName).displayFormat}" />
 </c:if>
-
 <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
+
+<c:set var="required" value="${f:fmd(modelName, path).required}"/>
 
 <%--model update is totally controlled by data-spg-combo directive--%>
 <div class="form-group"
      data-ng-model="${fieldRef}"
+     data-name="${path}"
      data-ng-model-options="{updateOn:''}"
+     <c:if test="${required}"> data-ng-required="true" </c:if>
      data-spg-combo='{"targetModelName":"${targetModelName}",
      "displayFormat":"${fieldRef} <c:if test="${not empty displayFormat}"> | ${f:htmlEncodeSingleQuote(displayFormat)} </c:if>"}'
         <c:if test="${not empty prePostProcessor}">data-pre-post="${prePostProcessor}"</c:if>
@@ -70,7 +71,7 @@
         <c:if test="${showInputGroup}">
         <div class="input-group">
         </c:if>
-            <input id="${id}" type="text" class="form-control" autocomplete="off" name="${path}" >
+            <input id="${id}" type="text" class="form-control" autocomplete="off" name="${path}">
 
             <c:if test="${showLink}">
             <span class="input-group-addon glyphicon glyphicon-share-alt cursor-pointer" title="Open in details view" data-spg-details='{"modelName":"${targetModelName}","modelId":"#${id}"}'></span>
@@ -82,6 +83,8 @@
         <c:if test="${showInputGroup}">
         </div>
         </c:if>
+        <c:set var="formItemRef" value="this['${parentId}-form']['${path}']"/>
+        <c:if test="${required}"><p data-ng-show="${formItemRef}.$error.required"><spring:message code="editField.required" arguments="${path}" /></p></c:if>
         <div class="combo-list ng-hide" data-ng-show="showList" style="position:relative;" >
 
             <ol class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em; list-style-type: none">

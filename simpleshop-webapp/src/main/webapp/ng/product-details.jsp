@@ -15,6 +15,15 @@
             </span>
         </ctrl:detailsInlineList>
         <ctrl:detailsField path="stock" />
+
+        <ctrl:detailsChildList path="productSuppliers" >
+            <ctrl:detailsModelLink path="supplier" />
+            <ctrl:detailsField path="unitPrice"/>
+            <ctrl:detailsField path="unitPriceDate"/>
+            <ctrl:detailsField path="outOfStockDate"/>
+            <ctrl:detailsField path="note"/>
+        </ctrl:detailsChildList>
+
     </t:view-details>
     <script>
         <c:import url="/json/${f:urlModelNameFromUrl(pageContext.request.requestURL)}/${param.modelId}" />

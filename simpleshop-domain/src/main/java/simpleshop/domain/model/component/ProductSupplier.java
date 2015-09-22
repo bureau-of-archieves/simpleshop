@@ -1,8 +1,10 @@
 package simpleshop.domain.model.component;
 
 
+import org.hibernate.validator.constraints.URL;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.model.Supplier;
 
 import javax.persistence.Column;
@@ -38,6 +40,7 @@ public class ProductSupplier {
 
     @Column(name = "sell_price", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
     @DecimalMin(value = "0.0", inclusive = false)
+    @DisplayFormat("currency")
     public BigDecimal getUnitPrice() {
         return unitPrice;
     }
@@ -46,6 +49,7 @@ public class ProductSupplier {
         this.unitPrice = unitPrice;
     }
 
+    @URL
     @Column(name = "url", length = Constants.VERY_LONG_STRING_LENGTH)
     @Description("Product details page on the supplier's website")
     public String getUrl() {
@@ -56,6 +60,7 @@ public class ProductSupplier {
         this.url = url;
     }
 
+    @DisplayFormat("na")
     @Column(name = "out_of_stock_date")
     @Description("The last time this product was out of stock at the supplier")
     public LocalDateTime getOutOfStockDate() {

@@ -346,6 +346,10 @@ input.ng-valid ~ .pattern-validation {
     top: 1px;
 }
 
+.input-group.date .form-control{
+    top: 0px;
+}
+
 footer>.col-xs-8 {
     text-align:center;
 }

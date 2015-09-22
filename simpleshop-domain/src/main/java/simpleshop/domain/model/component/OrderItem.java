@@ -1,6 +1,7 @@
 package simpleshop.domain.model.component;
 
 import simpleshop.Constants;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.model.Product;
 import simpleshop.domain.model.Supplier;
 
@@ -49,6 +50,7 @@ public class OrderItem {
     @Column(name = "sell_price", nullable = false, precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
     @NotNull
     @DecimalMin(value = "0.0")
+    @DisplayFormat("currency")
     public BigDecimal getSellPrice() {
         return sellPrice;
     }
@@ -71,6 +73,7 @@ public class OrderItem {
 
     @Column(name = "buy_price", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
     @DecimalMin(value = "0.0")
+    @DisplayFormat("currency")
     public BigDecimal getBuyPrice() {
         return buyPrice;
     }

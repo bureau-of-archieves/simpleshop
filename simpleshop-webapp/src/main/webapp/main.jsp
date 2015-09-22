@@ -104,6 +104,8 @@
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
+                        <li><a href="javascript:alert('Not implemented yet.')">Options</a>
+                        </li>
                         <li><a href="javascript:showMessage('Modal message box test.')">About</a>
                         </li>
                         <li><a href="json.jsp">Test</a>

@@ -6,6 +6,7 @@ import simpleshop.common.StringUtils;
 import simpleshop.data.ProductDAO;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Product;
+import simpleshop.domain.model.component.ProductSupplier;
 import simpleshop.dto.ProductSearch;
 import simpleshop.service.ProductService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
@@ -35,6 +36,12 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
     static {
         LAZY_LOADED_PROPERTIES.add("categories");
         LAZY_LOADED_PROPERTIES.add("images");
+        LAZY_LOADED_PROPERTIES.add("productSuppliers");
+    }
+
+    @Override
+    public ProductSupplier createProductSupplier(){
+        return new ProductSupplier();
     }
 
     @Override

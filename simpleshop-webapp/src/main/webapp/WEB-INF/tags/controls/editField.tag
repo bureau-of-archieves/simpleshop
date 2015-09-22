@@ -28,6 +28,8 @@
     <c:set var="emptyStringAllowed" value="false"/>
 </c:if>
 
+<c:set var="fieldRef" value="${base}${path}"/>
+
 <%--field metadata--%>
 <c:set var="propertyType" value="${f:fmd(modelName, path).propertyType}"/>
 <c:set var="minLength" value="${f:fmd(modelName, path).minLength}"/>
@@ -49,7 +51,7 @@
             </c:if>
 
             <input id="${id}" type="text" class="form-control" name="${path}"
-                data-ng-model="${base}${path}"
+                data-ng-model="${fieldRef}"
                 <c:if test="${f:isDateTimeType(propertyType)}"> data-spg-date="${dateTimeFormat}" placeholder="${dateTimeFormat}" </c:if>
                 <c:if test="${not emptyStringAllowed}"> data-spg-no-empty-string </c:if>
                 <c:if test="${not empty minLength}"> data-ng-minlength="${minLength}" </c:if>
@@ -67,18 +69,14 @@
         </div>
         </c:if>
 
-        <c:set var="fieldRef" value="this['${parentId}-form']['${path}']"/>
-
-        <div class="errors" data-ng-show="${fieldRef}.$dirty && ${fieldRef}.$invalid || showError">
-            <c:if test="${not empty minLength}"><p data-ng-show="${fieldRef}.$error.minlength">Min length
-                is ${minLength}</p></c:if>
-            <c:if test="${not empty maxLength}"><p data-ng-show="${fieldRef}.$error.maxlength">Max length
-                is ${maxLength}</p></c:if>
-            <c:if test="${not empty pattern}"><p data-ng-show="${fieldRef}.$error.pattern">Not a valid ${propertyType}. Pattern
-                should be "<c:out value="${pattern}"/>".</p></c:if>
-            <c:if test="${required}"><p data-ng-show="${fieldRef}.$error.required"><spring:message code="editField.required" arguments="${path}" /></p></c:if>
-            <c:if test="${min != null}"><p data-ng-show="${fieldRef}.$error.min"><spring:message code="editField.min" arguments="${path},${min}" /> </p></c:if>
-            <c:if test="${max != null}"><p data-ng-show="${fieldRef}.$error.max">Max is ${max}</p></c:if>
+        <c:set var="formItemRef" value="this['${parentId}-form']['${path}']"/>
+        <div class="errors" data-ng-show="${formItemRef}.$dirty && ${formItemRef}.$invalid || showError">
+            <c:if test="${not empty minLength}"><p data-ng-show="${formItemRef}.$error.minlength">Min length is ${minLength}</p></c:if>
+            <c:if test="${not empty maxLength}"><p data-ng-show="${formItemRef}.$error.maxlength">Max length is ${maxLength}</p></c:if>
+            <c:if test="${not empty pattern}"><p data-ng-show="${formItemRef}.$error.pattern">Not a valid ${propertyType}. Pattern should be "<c:out value="${pattern}"/>".</p></c:if>
+            <c:if test="${required}"><p data-ng-show="${formItemRef}.$error.required"><spring:message code="editField.required" arguments="${path}" /></p></c:if>
+            <c:if test="${min != null}"><p data-ng-show="${formItemRef}.$error.min"><spring:message code="editField.min" arguments="${path},${min}" /> </p></c:if>
+            <c:if test="${max != null}"><p data-ng-show="${formItemRef}.$error.max">Max is ${max}</p></c:if>
         </div>
 
     </div>
