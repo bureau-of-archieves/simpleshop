@@ -463,7 +463,7 @@ public final class DomainUtils {
             if("BigDecimal".equals(propertyType)){
                 propertyMetadata.setInputFormat("^\\d+(\\.\\d+)?$");
             } else if(StringUtils.isIntegerType(propertyType) || StringUtils.isDateTimeType(propertyType)){//date is expressed as an integer in JSON.
-                propertyMetadata.setInputFormat("^[+-]*[1-9]\\d*$");
+                propertyMetadata.setInputFormat("^[+-]?([1-9]\\d*|0)$");
             }
         }
     }

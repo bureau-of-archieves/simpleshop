@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png"  href="img/site.png" >
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <link rel="icon" href="img/site.ico" type="image/x-icon">
-
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/jquery-ui.structure.css">
     <link rel="stylesheet" href="css/jquery-ui.theme.css">
