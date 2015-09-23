@@ -28,14 +28,13 @@ Views have a model type, which is the type of model it can display.
 
 Todo List
 -----------
+ * Support register spg view callback - when create new in a search window, might want to carry over some criteria.
  * Improve validation messages.
  * Upload of product image. 
  * Support full internationalization.
  * Implement watermark.
  * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
- 
  * Check for modification before closing an edit/create view.
-
 
  * Display search criteria in the list view.
  * Fix the many problems in error handling in JavaScript.

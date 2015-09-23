@@ -1,23 +1,30 @@
-<%@include file="_header.tag"%>
-<%--update view base tag.--%>
-<%@attribute name="modelId"%>
+<%-- All details views are wrapped in this tag.--%>
+<%@tag trimDirectiveWhitespaces="true"  %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="f" uri="sponge/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+
+<%--########################## ATTRIBUTES ################################--%>
 <%@attribute name="title"%>
 <%@attribute name="icon"%>
 
 
 <t:view>
-    <c:set var="modelName" value="${f:peek(stack, '_modelName')}" />
-
-    <c:if test="${empty modelId}">
-        <c:set var="modelId" value="${f:parseModelId(param.modelId, modelName) }" />
-    </c:if>
-
-    <c:set var="viewType" value="${f:peek(stack, '_viewType')}" />
-    <c:set var="viewId" value="${f:pascalNameToUrlName(modelName)}-${viewType}-${modelId}"/>
-
+    <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
+    <comm:peek var="modelName" />
+    <c:set var="modelId" value="${f:parseModelId(param.modelId, modelName) }" />
     <c:if test="${empty title}">
-        <c:set var="title" value="${f:peek(stack, '_friendlyModelName')} ${modelId} Details" />
+        <comm:peek var="friendlyModelName" />
+        <spring:message var="literal_details" code="jsp.literal.details" />
+        <c:set var="title" value="${friendlyModelName} ${modelId} ${literal_details}" />
     </c:if>
+
+    <%--########################## TAG CONTENT ################################--%>
+    <comm:peek var="viewType" />
+    <c:set var="viewId" value="${f:pascalNameToUrlName(modelName)}-${viewType}-${modelId}"/>
 
     <t:view-frame id="${viewId}" title="${title}" icon="${icon}" cssClass="details-view" >
         <jsp:attribute name="header">

@@ -1,9 +1,11 @@
+<%-- Defines the view html structure. --%>
 <%@tag trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
 <%@ taglib prefix="f" uri="sponge/functions" %>
 
+<%--########################## ATTRIBUTES  ################################--%>
 <%--the id of this view, must be unique in the page--%>
 <%@attribute name="id" required="true" %>
 <%--title text of the frame panel--%>
@@ -29,9 +31,7 @@
 <%--show the refresh button or not--%>
 <%@attribute name="hideRefresh" type="java.lang.Boolean" %>
 
-
-<comm:peekIfEmpty var="modelName" value="${modelName}" />
-
+<%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <c:if test="${empty controllerName}">
     <c:set var="controllerName" value="view"/>
 </c:if>
@@ -51,6 +51,9 @@
 <c:if test="${empty frameClass}">
     <c:set var="frameClass" value="col-xs-12 col-md-6 col-xl-4"/>
 </c:if>
+
+<%--########################## TAG CONTENT  ################################--%>
+<comm:peekIfEmpty var="modelName" value="${modelName}" />
 
 <div id="${id}" class="view display ${frameClass}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
      data-ng-controller="${controllerName}Controller">

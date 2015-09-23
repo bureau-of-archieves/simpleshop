@@ -29,8 +29,8 @@ http://www.javabeat.net/dynamic-attributes-in-tag-file-in-jsp-2-0/
 
  <h3>${pageContext.ELContext} -> ${pageContext.ELContext}</h3>
 
-<test:test test="#{pageContext.getAttribute('test1')}" />
-<test:test />
+<test:test test="#{test1}" />
+<test:test test="#{test1}" />
 ${test1}
 
 

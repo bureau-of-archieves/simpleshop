@@ -9,7 +9,7 @@
 <%@ variable alias="result" name-from-attribute="var" scope="AT_END" %>
 
 
-${f:push(stack, '_'.concat(var), value)}
+${f:_push(stack, '_'.concat(var), value)}
 <c:set var="result" value="${f:peek(stack,  '_'.concat(var))}" />
 
 

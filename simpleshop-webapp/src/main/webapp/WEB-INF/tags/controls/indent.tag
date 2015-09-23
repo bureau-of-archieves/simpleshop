@@ -1,5 +1,5 @@
-<%@include file="../_header.tag" %>
-<%--represents an icon--%>
+<%--Given a certain amount of indentation by placing invisible 'M' in the span.--%>
+<%@tag body-content="empty" trimDirectiveWhitespaces="true"  %>
 
 <%@attribute name="source" required="true" %>
 <%@attribute name="pattern" required="true"  %>

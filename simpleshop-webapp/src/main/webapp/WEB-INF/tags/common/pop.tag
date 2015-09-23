@@ -8,6 +8,6 @@
 <%@ variable alias="result" name-from-attribute="var" scope="AT_END" %>
 
 
-<c:set var="result" value="${f:pop(stack,  '_'.concat(var))}" />
+<c:set var="result" value="${f:_pop(stack,  '_'.concat(var))}" />
 
 

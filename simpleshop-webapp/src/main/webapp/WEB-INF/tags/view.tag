@@ -1,9 +1,9 @@
+<%-- All views are wrapped in this tag. It provides view specific stack values. --%>
 <%@tag trimDirectiveWhitespaces="true"  %>
 <%@ taglib prefix="f" uri="sponge/functions" %>
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
-<%---The common frame view logic of all views in the SPA page.--%>
 
-
+<%--########################## TAG CONTENT  ################################--%>
 <%--the model type name in space-separated, capitailised words, e.g. Member Account--%>
 <comm:push var="friendlyModelName" value="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" />
 <%--the model name--%>
