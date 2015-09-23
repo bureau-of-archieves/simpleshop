@@ -1,5 +1,6 @@
-<%@ tag import="java.util.Enumeration"  %>
-<%@attribute name="" rtexprvalue="false" %>
+<%@tag body-content="empty" %>
+<%@ tag import="java.util.Enumeration" %>
+
 <ul>
     <%
         Enumeration names = request.getAttributeNames();
@@ -11,3 +12,5 @@
         }
     %>
 </ul>
+
+<h2>${pageContext}</h2>
