@@ -162,3 +162,11 @@ a.list-group-item .label{
 .inline-list .label{
     font-weight:300;
 }
+
+.combo-list .list-group-item {
+    cursor: pointer;
+}
+
+.combo-list a:hover{
+    text-decoration: none;
+}

@@ -92,10 +92,10 @@ public class StringUtilsTest {
 
     @Test
     public void htmlEncodeSingleQuoteTest() {
-        assertThat(StringUtils.htmlEncodeSingleQuote(null), equalTo(null));
-        assertThat(StringUtils.htmlEncodeSingleQuote("This is a test."), equalTo("This is a test."));
-        assertThat(StringUtils.htmlEncodeSingleQuote("This is a' test."), equalTo("This is a&#39; test."));
-        assertThat(StringUtils.htmlEncodeSingleQuote("\"This is a' test.\""), equalTo("\\&#34;This is a&#39; test.\\&#34;"));
+        assertThat(StringUtils.htmlEncodeQuote(null), equalTo(null));
+        assertThat(StringUtils.htmlEncodeQuote("This is a test."), equalTo("This is a test."));
+        assertThat(StringUtils.htmlEncodeQuote("This is a' test."), equalTo("This is a&#39; test."));
+        assertThat(StringUtils.htmlEncodeQuote("\"This is a' test.\""), equalTo("\\&#34;This is a&#39; test.\\&#34;"));
 
     }
 

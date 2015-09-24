@@ -1742,7 +1742,7 @@
             link: function (scope, element, attrs, ngModel) {
 
                 scope.ngModel = ngModel;
-                var config = {delay: 500, validationErrorKey: "comboError"};
+                var config = {delay: 500, validationErrorKey: "spg-combo"};
                 var configOverride = JSON.parse(attrs["spgCombo"]);
                 $.extend(config, configOverride);
                 var input = $(element).find("input");
@@ -1824,11 +1824,21 @@
                     input.select();
                 });
 
-                input.blur(function () {
-                    setTimeout(closeComboList, config.delay);
-                });
+                //input.blur(function () {
+                //    setTimeout(closeComboList, config.delay);
+                //});
+
+                var handleSpecialKeys = function(event){
+                    //todo implement
+                    return false;
+                };
 
                 input.keypress(function (event) {
+
+                    if(handleSpecialKeys(event)){
+                        return;
+                    }
+
                     ngModel.$setValidity(config.validationErrorKey, false);
                     ngModel.$setViewValue(null);
 

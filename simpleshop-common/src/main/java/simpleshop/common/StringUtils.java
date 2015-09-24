@@ -74,7 +74,7 @@ public final class StringUtils {
      * @param src string that could contain single quote.
      * @return replaced string.
      */
-    public static String htmlEncodeSingleQuote(String src){
+    public static String htmlEncodeQuote(String src){
         if(src == null)
             return null;
 

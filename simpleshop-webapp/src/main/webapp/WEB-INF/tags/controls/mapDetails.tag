@@ -1,4 +1,4 @@
-<%@tag trimDirectiveWhitespaces="true"  %>
+<%@tag body-content="empty" trimDirectiveWhitespaces="true"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>

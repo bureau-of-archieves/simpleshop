@@ -5,7 +5,9 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%--########################## ATTRIBUTES ################################--%>
+<%--name used to refer to this form in AngularJs.--%>
 <%@attribute name="name" required="true" %>
+<%-- If this form is used to edit an model object or set search parameters. --%>
 <%@attribute name="editForm" type="java.lang.Boolean" %>
 
 <%--########################## TAG CONTENT ################################--%>
