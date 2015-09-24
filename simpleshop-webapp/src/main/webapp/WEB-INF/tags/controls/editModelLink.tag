@@ -102,8 +102,8 @@
         <div class="combo-list ng-hide" data-ng-show="showList" style="position:relative;" >
             <ol class="list-group hide-children" style="background-color: #fff; position: absolute; z-index: 100; width:100%; top: 0.1em; list-style-type: none">
                 <li data-ng-show="loadingList" class="list-group-item display" > <img  style="width:5em;" src="${pageContext.request.contextPath}img/loading.gif" alt="Loading list..."></li>
-                <li data-ng-repeat="comboItem in comboList" class="list-group-item display" data-ng-click="updateView(comboItem)"><a href="javascript:void(0);">
-                    {{comboItem <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if> }}</a>
+                <li data-ng-repeat="comboItem in comboList" class="list-group-item display {{$index == selectedIndex ? 'active' : ''}}" data-ng-click="updateView(comboItem)">
+                    <span>{{comboItem <c:if test="${not empty displayFormat}"> | ${displayFormat} </c:if> }}</span>
                 </li>
                 <li class="display no-display-predecessor">No result found.</li>
             </ol>

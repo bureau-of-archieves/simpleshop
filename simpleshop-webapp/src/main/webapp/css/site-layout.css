@@ -353,3 +353,7 @@ input.ng-valid ~ .pattern-validation {
 footer>.col-xs-8 {
     text-align:center;
 }
+
+.combo-list .list-group-item:hover {
+    cursor: pointer;
+}

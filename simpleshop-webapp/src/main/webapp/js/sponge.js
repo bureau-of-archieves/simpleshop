@@ -1752,6 +1752,7 @@
                     var text = input.val();
                     if (!text) {//clear list
                         scope.comboList = [];
+                        scope.selectedIndex = -1;
                         scope.showList = false;
                         scope.$digest();
                         return;
@@ -1760,6 +1761,7 @@
                     scope.showList = true;
                     scope.loadingList = true;
                     scope.comboList = [];
+                    scope.selectedIndex = -1;
                     scope.$digest();
 
                     var promise = input.data("pending-list-request");
@@ -1808,6 +1810,11 @@
                     }
                 };
 
+                input.focus(function () {
+                    ngModel.$setTouched();
+                    input.select();
+                });
+
                 var closeComboList = function () {
                     ngModel.$rollbackViewValue();
                     scope.showList = false;
@@ -1819,18 +1826,49 @@
                     ngModel.$setValidity(config.validationErrorKey, true);
                 };
 
-                input.focus(function () {
-                    ngModel.$setTouched();
-                    input.select();
+                input.blur(function () {
+                    setTimeout(closeComboList, config.delay);
                 });
 
-                //input.blur(function () {
-                //    setTimeout(closeComboList, config.delay);
-                //});
-
                 var handleSpecialKeys = function(event){
-                    //todo implement
-                    return false;
+                    var keyCode = event.keyCode;
+                    if(keyCode == 32)
+                        return true;
+
+                    if(scope.showList && !scope.loadingList){
+                        if(keyCode == 39 || keyCode == 40){
+                            if(scope.comboList.length > 0){
+                                scope.selectedIndex = (scope.selectedIndex + 1) % scope.comboList.length;
+                                if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
+                                    scope.$digest();
+                            }
+                            return true;
+                        }
+
+                        if(keyCode == 37 || keyCode == 38){
+                            if(scope.comboList.length > 0){
+                                if(scope.selectedIndex > 0){
+                                    scope.selectedIndex--;
+                                } else {
+                                    scope.selectedIndex = scope.comboList.length - 1;
+                                }
+                                if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
+                                    scope.$digest();
+                            }
+                            return true;
+                        }
+
+                        if(keyCode == 9 || keyCode == 13){
+
+                            if(scope.selectedIndex >= 0){
+                                scope.updateView(scope.comboList[scope.selectedIndex]);
+                                closeComboList();
+                            }
+                            return true;
+                        }
+                    }
+
+                    return !(event.key && event.key.length == 1);
                 };
 
                 input.keypress(function (event) {
