@@ -5,16 +5,13 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
-import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Country;
 import simpleshop.domain.model.Suburb;
-import simpleshop.dto.CategorySearch;
 import simpleshop.dto.SuburbSearch;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 public class SuburbServiceImplTest extends ServiceTransactionTest {

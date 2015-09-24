@@ -8,9 +8,9 @@ public class JsonResponse<T> {
     public static final String STATUS_OK = "OK";
     public static final String STATUS_ERROR = "ERROR";
 
-    private String status;//content type: e.g. model
-    private String description;//content name e.g. customer
-    private T content;
+    private final String status;//content type: e.g. model
+    private final String description;//content name e.g. customer
+    private final T content;
     private Map<String, Object> tags; //additional information about the model
 
     public JsonResponse(String status, String description, T content){

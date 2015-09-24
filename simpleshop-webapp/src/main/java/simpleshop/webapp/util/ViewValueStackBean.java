@@ -5,10 +5,7 @@ import java.util.Map;
 import java.util.Stack;
 
 /**
- * Created with IntelliJ IDEA.
- * User: JOHNZ
- * Date: 30/10/14
- * Time: 11:05 PM
+ * Request level value stacks used in jsp view.
  */
 public class ViewValueStackBean {
 

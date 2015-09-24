@@ -2,7 +2,6 @@ package simpleshop.data.impl;
 
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
-import simpleshop.Constants;
 import simpleshop.common.StringUtils;
 import simpleshop.data.CategoryDAO;
 import simpleshop.data.PageInfo;

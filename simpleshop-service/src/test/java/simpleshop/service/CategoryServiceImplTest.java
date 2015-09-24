@@ -4,17 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import simpleshop.data.CategoryDAO;
-import simpleshop.data.PageInfo;
-import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
 import simpleshop.domain.model.Category;
-import simpleshop.domain.model.Customer;
-import simpleshop.domain.model.Suburb;
-import simpleshop.domain.model.component.Address;
 import simpleshop.dto.CategorySearch;
-import simpleshop.dto.CustomerSearch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;

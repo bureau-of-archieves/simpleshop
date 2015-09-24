@@ -1,14 +1,9 @@
 package simpleshop.data.test;
 
-import junit.framework.Test;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import simpleshop.data.CategoryDAO;
+import org.hibernate.criterion.Restrictions;
 import simpleshop.domain.model.*;
-import simpleshop.domain.model.Order;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
 

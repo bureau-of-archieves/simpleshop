@@ -15,9 +15,6 @@ import simpleshop.service.CategoryService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Service

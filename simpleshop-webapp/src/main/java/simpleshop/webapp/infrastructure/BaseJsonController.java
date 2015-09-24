@@ -2,10 +2,8 @@ package simpleshop.webapp.infrastructure;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import simpleshop.common.StringUtils;
 import simpleshop.data.SortInfo;
 import simpleshop.data.metadata.ModelMetadata;
@@ -22,9 +20,6 @@ import java.util.List;
 
 /**
  * The base controller for all controllers that return json data.
- * User: JOHNZ
- * Date: 10/09/14
- * Time: 5:13 PM
  */
 
 public abstract class BaseJsonController {
@@ -57,7 +52,7 @@ public abstract class BaseJsonController {
                 modelService.save(model);
                 response = new JsonResponse<>(JsonResponse.STATUS_OK, null, model);
             } catch (Throwable ex) {
-                response = new JsonResponse<>(JsonResponse.STATUS_ERROR, ex.getMessage(), model);
+                response = new JsonResponse<>(JsonResponse.STATUS_ERROR, ex.getMessage() == null ? ex.toString() : ex.getMessage(), model);
             }
         }
         return response;

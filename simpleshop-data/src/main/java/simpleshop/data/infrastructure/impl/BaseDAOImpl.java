@@ -6,16 +6,14 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.metadata.ClassMetadata;
-import org.hibernate.metamodel.source.annotations.ReflectionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import simpleshop.common.StringUtils;
-import simpleshop.data.infrastructure.BaseDAO;
 import simpleshop.data.PageInfo;
-import simpleshop.data.util.DomainUtils;
+import simpleshop.data.infrastructure.BaseDAO;
 
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;

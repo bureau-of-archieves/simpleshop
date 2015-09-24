@@ -39,7 +39,7 @@ public final class StringUtils {
      * Get the sub string after the last appearance of separator.
      * @param master the master string.
      * @param separator the separator.
-     * @return
+     * @return the portion of master string which appears after the last occurance of separator.
      */
     public static String subStrAfterLast(String master, String separator){
         if(master == null || master.length() == 0 || separator == null || separator.length() == 0)

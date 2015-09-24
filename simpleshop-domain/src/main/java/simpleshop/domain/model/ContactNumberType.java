@@ -1,7 +1,7 @@
 package simpleshop.domain.model;
 
 /**
- * Created by JOHNZ on 18/06/2015.
+ * A list of default contact numbers which can be selected in the UI.
  */
 public enum ContactNumberType {
 

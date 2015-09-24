@@ -347,7 +347,7 @@ input.ng-valid ~ .pattern-validation {
 }
 
 .input-group.date .form-control{
-    top: 0px;
+    top: 0;
 }
 
 footer>.col-xs-8 {

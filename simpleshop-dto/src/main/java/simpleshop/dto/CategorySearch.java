@@ -2,7 +2,6 @@ package simpleshop.dto;
 
 import simpleshop.Constants;
 import simpleshop.data.metadata.PropertyFilter;
-import simpleshop.data.metadata.SortProperty;
 import simpleshop.domain.model.Category;
 
 /**

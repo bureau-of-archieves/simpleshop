@@ -11,7 +11,6 @@ import simpleshop.data.infrastructure.CriterionFactory;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.AliasDeclaration;
 import simpleshop.data.metadata.ModelMetadata;
-import simpleshop.data.metadata.PropertyFilter;
 import simpleshop.data.metadata.PropertyMetadata;
 import simpleshop.data.util.DomainUtils;
 

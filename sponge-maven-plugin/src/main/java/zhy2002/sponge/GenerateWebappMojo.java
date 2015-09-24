@@ -31,14 +31,13 @@ public class GenerateWebappMojo extends AbstractMojo {
     private String basePackage;
     private String domainClassPackage;
     private RythmEngine rythmEngine;
-    private String domainBuildDirectory;
     private String domainClassLocation;
     ClassLoader dirClassLoader;
 
     private void init(){
         basePackage = projectName.toLowerCase();
         buildDirectory = Paths.get(buildDirectory, "classes").toString();
-        domainBuildDirectory = buildDirectory.replace("-webapp" + File.separator, "-domain" + File.separator);
+        String domainBuildDirectory = buildDirectory.replace("-webapp" + File.separator, "-domain" + File.separator);
         dirClassLoader = new DirClassLoader(this.getClass().getClassLoader(), domainBuildDirectory);
         domainClassLocation = Paths.get(domainBuildDirectory, basePackage, "domain", "model").toString();
         domainClassPackage = basePackage + ".domain.model.";

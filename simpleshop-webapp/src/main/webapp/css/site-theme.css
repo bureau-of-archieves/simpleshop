@@ -59,27 +59,27 @@ input.ng-invalid.ng-dirty {
 /* Chrome, Safari, Opera */
 @-webkit-keyframes glow-frames {
     from {
-        -webkit-box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
-        -moz-box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
-        box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
+        -webkit-box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
+        -moz-box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
+        box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
     }
     to {
-        -webkit-box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
-        -moz-box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
-        box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
+        -webkit-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
+        -moz-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
+        box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
     }
 }
 
 @keyframes glow-frames {
     from {
-        -webkit-box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
-        -moz-box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
-        box-shadow: inset 0px 0px 0px 3px rgba(175, 209, 88, 0.7);
+        -webkit-box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
+        -moz-box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
+        box-shadow: inset 0 0 0 3px rgba(175, 209, 88, 0.7);
     }
     to {
-        -webkit-box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
-        -moz-box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
-        box-shadow: inset 0px 0px 8px 6px rgba(175, 209, 88, 0.7);
+        -webkit-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
+        -moz-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
+        box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
     }
 }
 

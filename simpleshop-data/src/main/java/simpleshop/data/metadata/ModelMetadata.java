@@ -124,7 +124,7 @@ public class ModelMetadata {
 
     /**
      * Check if this model is search DTO, which has additional metadata.
-     * @return
+     * @return true if this model is a search dto.
      */
     public boolean isSearchDTO(){
         return this.type == ModelType.DTO && this.name.endsWith("Search");

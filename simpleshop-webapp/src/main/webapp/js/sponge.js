@@ -1127,7 +1127,7 @@
         /**
          * Update model before posting it to the server.
          * @param model the model to post.
-         * @param formId the id of the form where the model originates.
+         * @param eventScope
          */
         var prePostHandler = function (model, eventScope) {
             var formElement = null;

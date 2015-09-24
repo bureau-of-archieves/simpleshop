@@ -1,23 +1,18 @@
 package simpleshop.service.impl;
 
 import org.springframework.stereotype.Service;
-import simpleshop.common.*;
-import simpleshop.data.metadata.*;
-import simpleshop.data.util.*;
-import simpleshop.domain.metadata.*;
+import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.data.util.DomainUtils;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
 import simpleshop.domain.model.component.ProductSupplier;
 import simpleshop.dto.*;
-import simpleshop.service.*;
+import simpleshop.service.MetadataService;
 import simpleshop.service.infrastructure.impl.BaseServiceImpl;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Get metadata of the domain models.

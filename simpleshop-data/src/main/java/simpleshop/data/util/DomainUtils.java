@@ -247,9 +247,7 @@ public final class DomainUtils {
         JsonIgnoreProperties jsonIgnoreProperties = clazz.getAnnotation(JsonIgnoreProperties.class); //only add this annotation at top level
         Set<String> ignoredProperties = new TreeSet<>();
         if(jsonIgnoreProperties != null){
-           for(String prop : jsonIgnoreProperties.value()){
-               ignoredProperties.add(prop);
-           }
+            Collections.addAll(ignoredProperties, jsonIgnoreProperties.value());
         }
         return ignoredProperties;
     }

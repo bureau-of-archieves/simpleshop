@@ -25,10 +25,7 @@ public class JsonConverterTest {
     public void toJsonTest(){
         JsonConverter converter = configuredJsonConverter();
 
-        PersonTestObject personTestObject = new PersonTestObject();
-        personTestObject.setName("Marsh");
-        personTestObject.setGender(Boolean.TRUE);
-        personTestObject.setAge(36);
+        PersonTestObject personTestObject = getPersonMarsh();
         String result = converter.toJson(personTestObject);
         assertEquals("{\"name\":\"Marsh\",\"age\":36,\"gender\":true,\"children\":null,\"dateOfBirth\":null}", result);
 
@@ -56,14 +53,19 @@ public class JsonConverterTest {
 
     @Test
     public void excludeFieldsTest(){
-        PersonTestObject personTestObject = new PersonTestObject();
-        personTestObject.setName("Marsh");
-        personTestObject.setGender(Boolean.TRUE);
-        personTestObject.setAge(36);
+        PersonTestObject personTestObject = getPersonMarsh();
 
         String[] excluded = {"children", "dateOfBirth"};
         String result = converter.toJson(personTestObject, excluded);
         assertThat(result, equalTo("{\"name\":\"Marsh\",\"age\":36,\"gender\":true}"));
+    }
+
+    private PersonTestObject getPersonMarsh() {
+        PersonTestObject personTestObject = new PersonTestObject();
+        personTestObject.setName("Marsh");
+        personTestObject.setGender(Boolean.TRUE);
+        personTestObject.setAge(36);
+        return personTestObject;
     }
 
     @Test(expected = RuntimeException.class)

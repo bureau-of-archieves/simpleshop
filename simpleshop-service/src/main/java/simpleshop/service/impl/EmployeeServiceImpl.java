@@ -7,7 +7,6 @@ import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Employee;
 import simpleshop.dto.EmployeeSearch;
 import simpleshop.service.EmployeeService;
-import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
 public class EmployeeServiceImpl extends ContactServiceImpl<Employee, EmployeeSearch> implements EmployeeService {

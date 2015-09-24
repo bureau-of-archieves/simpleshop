@@ -2,7 +2,6 @@ package simpleshop.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import simpleshop.common.StringUtils;
 import simpleshop.data.ProductDAO;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Product;

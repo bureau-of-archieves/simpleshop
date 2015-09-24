@@ -15,12 +15,9 @@ public class PropertyReflectorTest {
     @Test
     public void testInspection() {
         PropertyReflector inspector = new PropertyReflector(
-                new PropertyReflector.PropertyValueListener() {
-                    @Override
-                    public PropertyReflector.InspectionResult visit(Object target, Method getter, Object value, Throwable exception, int index) {
-                        System.out.printf("target=%s, getter=%s, value=%s,exception=%s, index=%d\n", target, getter == null ? "null" : getter.getName(), value, exception == null ? "null" : exception.getMessage(), index);
-                        return PropertyReflector.InspectionResult.CONTINUE;
-                    }
+                (target, getter, value, exception, index) -> {
+                    System.out.printf("target=%s, getter=%s, value=%s,exception=%s, index=%d\n", target, getter == null ? "null" : getter.getName(), value, exception == null ? "null" : exception.getMessage(), index);
+                    return PropertyReflector.InspectionResult.CONTINUE;
                 }, null
         );
 

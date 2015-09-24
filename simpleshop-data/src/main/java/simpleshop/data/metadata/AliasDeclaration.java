@@ -15,7 +15,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface AliasDeclaration {
 
-    public static final String ROOT_CRITERIA_ALIAS = "cri_root";
+    String ROOT_CRITERIA_ALIAS = "cri_root";
+
     /**
      * Default value is empty string, which represents the alias of the root persistence class.
      * @return must be "" or another alias previously defined on the class (in the annotation list).

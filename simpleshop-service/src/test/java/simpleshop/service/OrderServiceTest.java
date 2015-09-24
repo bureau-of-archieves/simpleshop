@@ -9,16 +9,16 @@ import simpleshop.data.PageInfo;
 import simpleshop.data.test.TestConstants;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.OrderItem;
-import simpleshop.domain.model.component.ProductSupplier;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.dto.EmployeeSearch;
 import simpleshop.dto.OrderSearch;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import static org.hamcrest.Matchers.*;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertThat;
 
 /**

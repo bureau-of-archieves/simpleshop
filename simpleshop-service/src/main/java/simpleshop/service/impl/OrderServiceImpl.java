@@ -10,7 +10,6 @@ import simpleshop.dto.OrderSearch;
 import simpleshop.service.OrderService;
 import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +31,7 @@ public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> imple
     }
 
     @Override
-    public OrderItem createOrderItem(){
+    public OrderItem createOrderItem() {
         OrderItem orderItem = new OrderItem();
         orderItem.setQuantity(1);
         return orderItem;
@@ -40,7 +39,7 @@ public class OrderServiceImpl extends ModelServiceImpl<Order, OrderSearch> imple
 
     private Collection<String> lazyLoadedProperties;
 
-    public OrderServiceImpl(){
+    public OrderServiceImpl() {
         lazyLoadedProperties = Collections.unmodifiableCollection(Arrays.asList("orderItems"));
     }
 

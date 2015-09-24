@@ -7,7 +7,6 @@ import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Supplier;
 import simpleshop.dto.SupplierSearch;
 import simpleshop.service.SupplierService;
-import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
 @Service
 public class SupplierServiceImpl extends ContactServiceImpl<Supplier, SupplierSearch> implements SupplierService {

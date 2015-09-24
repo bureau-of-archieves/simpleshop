@@ -1,19 +1,18 @@
 package simpleshop.service.impl;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import simpleshop.data.CustomerDAO;
-import simpleshop.data.PageInfo;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Customer;
 import simpleshop.dto.CustomerSearch;
 import simpleshop.service.CustomerService;
-import simpleshop.service.infrastructure.impl.ModelServiceImpl;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
+import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 @Service
 public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSearch> implements CustomerService {
@@ -37,4 +36,15 @@ public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSe
         return new Customer();
     }
 
+    @Override
+    protected void initialize(@NotNull Customer model) {
+        Hibernate.initialize(model.getOrders());
+    }
+
+    private static final String[] IGNORED_JSON_PROPERTIES = {"customer"};
+
+    @Override
+    public String[] ignoredJsonProperties() {
+        return IGNORED_JSON_PROPERTIES;
+    }
 }

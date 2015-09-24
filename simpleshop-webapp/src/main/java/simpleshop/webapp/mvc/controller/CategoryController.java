@@ -1,20 +1,12 @@
 package simpleshop.webapp.mvc.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import simpleshop.domain.model.Category;
-import simpleshop.dto.CategorySearch;
 import simpleshop.dto.JsonResponse;
-import simpleshop.dto.ModelQuickSearch;
-import simpleshop.service.CategoryService;
-import simpleshop.webapp.infrastructure.BaseJsonController;
 import simpleshop.webapp.mvc.controller.base.CategoryBaseController;
-
-import javax.validation.Valid;
-import java.io.Serializable;
 
 @Controller
 @RequestMapping(produces = "application/json")

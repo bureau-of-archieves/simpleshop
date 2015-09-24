@@ -12,9 +12,9 @@
     window.zcl = {};
 
 
-    var nestedPropRegex = /\[([\w0-9.\_$]+)\]/g;
+    var nestedPropRegex = /\[([\w0-9._$]+)]/g;
 
-    var placeholderRegex = /\{([\w0-9.\_$]+)\}/g;
+    var placeholderRegex = /\{([\w0-9._$]+)}/g;
 
     /**
      * Get the nested property of an object.
@@ -193,8 +193,8 @@
 
         var relativeIndex = j - start;
         if (relativeIndex == k) return list[start];
-        else if (relativeIndex < k) return kthStatistics(list, k - relativeIndex - 1, j + 1, end);
-        else return kthStatistics(list, k, start + 1, j);
+        else if (relativeIndex < k) return zcl.kthStatistics(list, k - relativeIndex - 1, j + 1, end);
+        else return zcl.kthStatistics(list, k, start + 1, j);
     };
 
 
@@ -204,6 +204,7 @@
      */
     zcl.moveMinAndMax = function (list) {
         var blockSize = 1;
+        var temp;
         while (blockSize < list.length) {
             for (var i = 0; i * blockSize < list.length; i += 2) {
                 var minLeft = i * blockSize;
@@ -212,7 +213,7 @@
                 if (minRight >= list.length) continue;
 
                 if (list[minRight] < list[minLeft]) {//swap
-                    var temp = list[minLeft];
+                    temp = list[minLeft];
                     list[minLeft] = list[minRight];
                     list[minRight] = temp;
                 }
@@ -224,7 +225,7 @@
                     maxRight = list.length - 1;
                 }
                 if (list[maxLeft] > list[maxRight]) {//swap
-                    var temp = list[maxRight];
+                    temp = list[maxRight];
                     list[maxRight] = list[maxLeft];
                     list[maxLeft] = temp;
                 }
@@ -363,7 +364,7 @@
      * @param {string} str - a string.
      * @returns {string} string with first char in lower case.
      */
-    var firstCharLower = function (str) {
+    zcl.firstCharLower = function (str) {
         if (!str)
             return str;
         return str[0].toLowerCase() + str.substr(1);

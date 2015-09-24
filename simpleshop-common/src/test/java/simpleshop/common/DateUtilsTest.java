@@ -2,8 +2,6 @@ package simpleshop.common;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 import static org.junit.Assert.*;

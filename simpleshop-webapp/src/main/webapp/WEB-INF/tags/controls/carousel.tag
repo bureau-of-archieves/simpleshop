@@ -37,7 +37,7 @@
 
     <carousel interval="5000" no-wrap="false">
         <slide ng-repeat="slide in ${fieldRef}" >
-            <img ng-src="${imgBase}{{slide}}" >
+            <img data-ng-src="${imgBase}{{slide}}" >
             <div class="carousel-caption">
                 <p>${label} <c:if test="${not empty title}"> title="${title}" </c:if></p>
             </div>
