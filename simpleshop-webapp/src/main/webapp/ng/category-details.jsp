@@ -7,7 +7,7 @@
         <ctrl:detailsField path="name" />
         <ctrl:detailsField path="description" />
         <ctrl:detailsField path="menuItem" displayFormat="yesno"/>
-        <ctrl:detailsField path="parent" />
+        <ctrl:detailsModelLink path="parent" />
 
     </t:view-details>
     <script>

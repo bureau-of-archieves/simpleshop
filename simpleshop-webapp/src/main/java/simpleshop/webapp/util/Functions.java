@@ -258,7 +258,7 @@ public class Functions {
                 String value = springBean.messageSource.getMessage(codePrefix + pair.getKey(), null, LocaleContextHolder.getLocale());
                 pair.setValue(value);
             } catch(NoSuchMessageException ex){
-                pair.setValue(pair.getKey());
+                pair.setValue(pair.getKey().replaceAll("_", " "));
             }
             options.add(pair);
         }
