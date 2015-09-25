@@ -20,7 +20,7 @@
     <comm:push value="${friendlyModelName}" var="targetFriendlyModelName" />
     <comm:peek var="viewType" />
 
-    <comm:push value="${f:pascalNameToUrlName(targetModelName)}-${viewType}" var="viewId" />
+    <comm:push value="${f:pascalToUrl(targetModelName)}-${viewType}" var="viewId" />
     <comm:push value="${targetModelName}Search" var="modelName" />
     <comm:push value="${targetFriendlyModelName} Search" var="friendlyModelName" />
 

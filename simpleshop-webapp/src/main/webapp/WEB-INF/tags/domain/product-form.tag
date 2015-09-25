@@ -16,3 +16,8 @@
     <ctrl:editField path="outOfStockDate" />
     <ctrl:editField path="note" />
 </ctrl:editChildList>
+
+<comm:ifViewType viewType="update">
+    <%--Upload requires the model id, so we cannot show this in the create view.--%>
+    <ctrl:editImageList path="images" />
+</comm:ifViewType>

@@ -11,8 +11,8 @@
 <%@attribute name="childModelName" required="false" %>
 <%@attribute name="base" required="false" %>
 <%@attribute name="modelName" required="false" %>
-<%@attribute name="label" required="false" %>
 <%@attribute name="parentId" required="false" %>
+<%@attribute name="label" required="false" %>
 <%@attribute name="itemName" required="false" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
@@ -50,7 +50,7 @@
                     <div class="panel-body">
                         <dl class="dl-horizontal">
                             <comm:push value="${f:concat(itemName, '.')}" var="base"  />
-                            <comm:push value="${childModelName})" var="modelName"  />
+                            <comm:push value="${childModelName}" var="modelName"  />
                             <comm:push value="${id})" var="parentId"  />
                             <jsp:doBody/>
                             <comm:pop var="base" />

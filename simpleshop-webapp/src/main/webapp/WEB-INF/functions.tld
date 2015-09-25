@@ -152,7 +152,7 @@
         <function-signature>java.lang.String camelNameToUrlName(java.lang.String)</function-signature>
     </function>
     <function>
-        <name>pascalNameToUrlName</name>
+        <name>pascalToUrl</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String pascalNameToUrlName(java.lang.String)</function-signature>
     </function>

@@ -1,5 +1,11 @@
-<%@include file="../_header.tag" %>
+<%-- A carousel control used to display a list of images.--%>
+<%@tag trimDirectiveWhitespaces="true"  %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
+<%@ taglib prefix="f" uri="sponge/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
+<%--########################## ATTRIBUTES ################################--%>
 <%@attribute name="path" required="true" %>
 <%@attribute name="base" required="false" %>
 <%@attribute name="modelName" required="false" %>
@@ -7,13 +13,9 @@
 <%@attribute name="hideEmpty" type="java.lang.Boolean" required="false" %>
 <%@attribute name="title" required="false" %>
 
-<c:if test="${base == null}">
-    <c:set var="base" value="${f:peek(stack, '_base')}"/>
-</c:if>
-
-<c:if test="${empty modelName}">
-    <c:set var="modelName" value="${f:peek(stack, '_modelName')}"/>
-</c:if>
+<%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
+<comm:peekIfEmpty var="base" value="${base}" />
+<comm:peekIfEmpty var="modelName" value="${modelName}" />
 
 <c:if test="${empty label}">
     <c:set var="label" value="${f:fmd(modelName, path).label}"/>
@@ -26,13 +28,13 @@
     <c:set var="hideEmptyExpr" value="data-ng-hide='${fieldRef} == null || ${fieldRef}.length == 0'"/>
 </c:if>
 
-<c:set var="imgBase" value="${f:peek(stack, '_imgBase')}" />
+<%--########################## TAG CONTENT ################################--%>
+<comm:peek var="imgBase" />
+<div ${hideEmptyExpr} class="col-sm-12 carousel-container spg-carousel" >
 
-<div ${hideEmptyExpr} class="col-sm-12 carousel-container" >
-
-    <div class="alert alert-danger" role="alert">
+    <div class="alert alert-danger ng-hide" role="alert" data-ng-show="${fieldRef} == null || ${fieldRef}.length == 0">
         <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-        No image uploaded yet.
+        <spring:message code="jsp.literal.noImageUploadedYet" />
     </div>
 
     <carousel interval="5000" no-wrap="false">
@@ -43,5 +45,4 @@
             </div>
         </slide>
     </carousel>
-
 </div>

@@ -15,7 +15,7 @@
 <t:view>
     <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
     <comm:peek var="modelName" />
-    <c:set var="modelId" value="${f:parseModelId(param.modelId, modelName) }" />
+    <comm:push value="${f:parseModelId(param.modelId, modelName) }" var="modelId" />
     <c:if test="${empty title}">
         <comm:peek var="friendlyModelName" />
         <spring:message var="literal_details" code="jsp.literal.details" />
@@ -24,7 +24,7 @@
 
     <%--########################## TAG CONTENT ################################--%>
     <comm:peek var="viewType" />
-    <c:set var="viewId" value="${f:pascalNameToUrlName(modelName)}-${viewType}-${modelId}"/>
+    <c:set var="viewId" value="${f:pascalToUrl(modelName)}-${viewType}-${modelId}"/>
 
     <t:view-frame id="${viewId}" title="${title}" icon="${icon}" cssClass="details-view" >
         <jsp:attribute name="header">
@@ -38,4 +38,6 @@
             <jsp:doBody/>
         </jsp:body>
     </t:view-frame>
+
+    <comm:pop var="modelId" />
 </t:view>

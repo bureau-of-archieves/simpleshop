@@ -103,7 +103,6 @@ public class Category {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     @BatchSize(size = Constants.BATCH_SIZE)
-    @DisplayFormat("na")
     public Category getParent() {
         return parent;
     }
@@ -115,6 +114,7 @@ public class Category {
     @Column(name = "menu_item", nullable = false)
     @NotNull
     @Description("Whether this category is a part of product menu tree")
+    @DisplayFormat("yesno")
     public Boolean getMenuItem() {
         return menuItem;
     }

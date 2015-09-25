@@ -178,13 +178,28 @@
         return deferred.promise();
     };
 
+    var bodyScope = null;
+
+    /**
+     * Get the scope at the view section level, which is the parent scope of all view scopes.
+     * @returns {*|jQuery}
+     */
+    var getBodyScope = function () {
+        if(bodyScope == null){
+            //var $body = angular.element(document.body);
+            //bodyScope = $body.injector().get('$rootScope');
+            bodyScope = $("#" + site.noViewElementId).scope();
+        }
+        return bodyScope;
+    };
+
     /**
      * Apply a function, if already in digest cycle just call it (it is already being applied).
      * todo should eventually eliminate all calls to this function.
-     * @param scope
      * @param func
      */
-    var safeApply = function (scope, func) {
+    var safeApply = function (func) {
+        var scope = getBodyScope();
         if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
             scope.$apply(func);
         } else {
@@ -260,14 +275,6 @@
             }
         }
         return null;
-    };
-
-    /**
-     * Get the scope at the view section level, which is the parent scope of all view scopes.
-     * @returns {*|jQuery}
-     */
-    var getBodyScope = function () {
-        return $("#" + site.noViewElementId).scope();
     };
 
     /**
@@ -627,7 +634,7 @@
             if ($.inArray(token, bodyScope.operationLocks) >= 0)
                 return createPromise("Operation is in progress, please wait.");
 
-            safeApply(bodyScope, function () {
+            safeApply(function () {
                 bodyScope.operationLocks.push(token); //trigger ui change, e.g. spinning wheel.
             });
             return createPromise(null);
@@ -644,7 +651,7 @@
             if (index < 0)
                 return createPromise("Operation '" + token + "' is not in progress.");
 
-            safeApply(bodyScope, function () {
+            safeApply(function () {
                 bodyScope.operationLocks.splice(index, 1);
             });
             return createPromise(null);
@@ -856,7 +863,7 @@
 
                 var parentScope = getBodyScope();
                 try {
-                    safeApply(parentScope, function () {
+                    safeApply(function () {
                         try {
                             nextElement.before(parseResult.domElements);
                             $compile(parseResult.domElements)(parentScope);
@@ -972,7 +979,7 @@
                             }
                         }
                         if (deleted >= 0) {
-                            safeApply(scope, function () {
+                            safeApply(function () {
                                 content.splice(deleted, 1);
                             });
                         }
@@ -1070,7 +1077,7 @@
                 return createRequest(jsonUrl, model).then(
                     function (json) {
                         //refresh result
-                        safeApply(getBodyScope(), function () {
+                        safeApply(function () {
                             viewDetails.model = json;
                             viewDetails.scope.master = viewDetails.model["content"];
                             viewDetails.scope.reset();
@@ -1091,7 +1098,7 @@
          */
         var close = function (viewId) {
 
-            safeApply(getBodyScope(), function () {
+            safeApply(function () {
                 var viewKey = findViewKey(viewId);
                 if (viewKey)
                     delete viewMap[viewKey];
@@ -1350,7 +1357,7 @@
 
                 scope[listPropertyName] = [];
                 spongeService.loadList(listUrl, refresh, function(loadedList){
-                    safeApply(scope, function(){
+                    safeApply(function(){
                         scope[listPropertyName] = loadedList;
                     });
                 });
@@ -1358,7 +1365,7 @@
         };
     }]);
 
-    //data-spg-upload="${fieldRef}"
+    //data-spg-upload
     spongeApp.directive("spgUpload", ["spongeService", function(spongeService){
 
         return {
@@ -1387,6 +1394,42 @@
                 });
 
 
+            }
+        };
+    }]);
+
+    //data-spg-upload-list="${fieldRef}" <- upload result is put into this collection
+    spongeApp.directive("spgUploadList", ["$parse", function($parse){
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var targetCollection = attrs["spgUploadList"];
+                var getter = $parse(targetCollection);
+                var setter = getter.assign;
+                var fileElement = $(element);
+
+                fileElement.fileupload({
+                    dataType: 'json',
+                    done: function (e, data) {
+                        if(data.result["status"] == "OK"){
+                            var collection = getter(scope);
+                            if(!collection){
+                                setter(scope, []);
+                            }
+                            collection = getter(scope);
+
+                            safeApply(function(){
+                                zcl.addAll(collection, data.result["content"]);
+                            });
+                        } else {
+                            reportError(data.result["description"]);
+                        }
+                    },
+                    error: function (data, status, e) {
+                        reportError(e);
+                    }
+                });
             }
         };
     }]);
@@ -1426,7 +1469,7 @@
 
                 $(element).change(function(){
 
-                    safeApply(scope, function(){
+                    safeApply(function(){
                         var val = $(element).val();
                         if(!val)
                             return;
@@ -1448,7 +1491,7 @@
                         contentType: "application/json"
                     }
                 ).then(function (result) {
-                        safeApply(scope, function () {
+                        safeApply(function () {
                             var list = result.content;
                             if(list == null){
                                 list = [];
@@ -1518,7 +1561,7 @@
 
                     if ($(element).closest("form").hasClass("ng-invalid")) {
                         reportError("Please correct error(s) in the form first.");
-                        safeApply(scope, function () {
+                        safeApply(function () {
                             scope.showError = true;
                         });
                         return false;
@@ -1530,7 +1573,7 @@
                             reportError(error);
                         })
                         .done(function () {
-                            safeApply(scope, function () {
+                            safeApply(function () {
                                 scope.showError = false;
                             });
                         });
@@ -1631,7 +1674,7 @@
                     var targetElement = $("#" + targetId);
                     var gotoId = goBackElementId(targetElement);
                     if (display(targetId, false)) {
-                        safeApply(getBodyScope(), function () {
+                        safeApply(function () {
                         });
                         scrollTo(gotoId);
                         return true;
@@ -1680,7 +1723,7 @@
 
                 var update = function () {
 
-                    safeApply(scope, function () {
+                    safeApply(function () {
                         var text = $(element).val();
                         ngModel.$setViewValue(text);
                         ngModel.$commitViewValue();
@@ -2152,7 +2195,7 @@
             var bodyScope = getBodyScope();
             var promise = ensureNewModel(bodyScope, modelName, null);
             promise.done(function () {
-                safeApply($scope, function () {
+                safeApply(function () {
                     var prototype = bodyScope.newModel[modelName];
                     collection.push(angular.copy(prototype));
                 });

@@ -16,6 +16,20 @@
 
     var placeholderRegex = /\{([\w0-9._$]+)}/g;
 
+    zcl.emptyFunc = function(){};
+
+    /**
+     * Add all items in src into dest.
+     * @param dest
+     * @param src
+     */
+    zcl.addAll = function(dest, src){
+
+        for(var i=0; i<src.length; i++){
+            dest.push(src[i]);
+        }
+    };
+
     /**
      * Get the nested property of an object.
      * @param {object} o - an object; must not be null.

@@ -245,6 +245,7 @@ input.ng-valid ~ .pattern-validation {
 .details-child-list{
     padding-left:0;
     padding-right:0;
+    margin-bottom: 0;
 }
 
 .pager{
@@ -325,10 +326,34 @@ input.ng-valid ~ .pattern-validation {
     margin-bottom:0;
 }
 
-.carousel-container img{
+.carousel-container img {
     margin:auto;
-    height: 20em;
 }
+
+.spg-carousel {
+
+}
+
+.carousel-container.details-img img{
+    max-width:100%;
+    height:auto;
+}
+
+.image-list img{
+    max-width:100%;
+    height:auto;
+}
+
+.image-list li{
+    list-style: none;
+    position: relative;
+}
+
+.image-list li .remove-handle{
+    position: absolute;
+    font-size: 1.5%;
+    cursor: pointer;
+} 
 
 .carousel-container a{
     text-decoration: none;
