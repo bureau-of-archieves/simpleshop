@@ -176,6 +176,8 @@ public abstract class AbstractCriterionContext implements CriterionContext {
                 DetachedCriteria parent = loadCriteria(propertyFilter.alias());
                 String fullPropertyPath = getFullPropertyPath(propertyFilter.alias(), targetPropertyName);
                 PropertyMetadata targetPropertyMetadata = modelMetadata.getPropertyMetadata(fullPropertyPath);
+                if(targetPropertyMetadata == null)
+                    throw new SpongeConfigurationException(String.format("Cannot find property '%s' in model '%s'.", fullPropertyPath, modelMetadata.getName()));
                 Class<?> targetType = targetPropertyMetadata.getReturnType();
 
                 //create Criterion

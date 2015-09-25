@@ -19,11 +19,9 @@ import java.math.BigDecimal;
 public class OrderItem {
 
     private Product product;
-    private BigDecimal buyPrice;
-    private Supplier supplier;
     private Integer quantity;
     private BigDecimal sellPrice;
-    private String paymentMethod;
+    private Supplier supplier;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id", nullable = false, updatable = false)
@@ -69,26 +67,6 @@ public class OrderItem {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
-    }
-
-    @Column(name = "buy_price", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
-    @DecimalMin(value = "0.0")
-    @DisplayFormat("currency")
-    public BigDecimal getBuyPrice() {
-        return buyPrice;
-    }
-
-    public void setBuyPrice(BigDecimal buyPrice) {
-        this.buyPrice = buyPrice;
-    }
-
-    @Column(name = "payment_method", length = Constants.MID_STRING_LENGTH)
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
     }
 
 }

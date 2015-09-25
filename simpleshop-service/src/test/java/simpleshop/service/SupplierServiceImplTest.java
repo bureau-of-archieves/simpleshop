@@ -81,10 +81,8 @@ public class SupplierServiceImplTest extends ServiceTransactionTest {
         result = supplierService.search(supplierSearch);
         assertThat(result.size(), equalTo(1));
 
-        testSuppliers.get(0).setStock(Boolean.TRUE);
         supplierService.save(testSuppliers.get(0));
         flush();
-        supplierSearch.setStock(true);
         result = supplierService.search(supplierSearch);
         assertThat(result.size(), equalTo(1));
 

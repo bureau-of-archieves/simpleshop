@@ -17,12 +17,12 @@
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <comm:peekIfEmpty var="base" value="${base}" />
 <comm:peekIfEmpty var="modelName" value="${modelName}" />
-
+<c:set var="propertyMetadata" value="${f:fmd(modelName, path)}" />
 <c:if test="${empty label}">
-    <c:set var="label" value="${f:fmd(modelName, path).label}"/>
+    <c:set var="label" value="${propertyMetadata.label}"/>
 </c:if>
 
-<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path), displayFormat)}"/>
+<c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
 
 <c:set var="fieldRef" value="${base}${path}"/>
 <c:set var="hideEmptyExpr" value=""/>

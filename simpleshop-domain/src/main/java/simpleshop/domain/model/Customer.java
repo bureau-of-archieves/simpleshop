@@ -22,13 +22,6 @@ public class Customer {
     private Contact contact = new Contact();
     private List<Order> orders = new ArrayList<>();
 
-    /**
-     * There can be at most 1 customer who is STOCK.
-     * When this customer buys the shop stock increases.
-     * //todo add a StockStorage domain object and change this flag to an id.
-     */
-    private Boolean stock = Boolean.FALSE;
-
     @Id
     @GeneratedValue
     @Column(nullable = false, insertable = false, updatable = false)
@@ -50,17 +43,6 @@ public class Customer {
 
     public void setContact(Contact contact) {
         this.contact = contact;
-    }
-
-    @Column(name = "stock", nullable = false)
-    @NotNull
-    @Description("True if this customer represents stock")
-    public Boolean getStock() {
-        return stock;
-    }
-
-    public void setStock(Boolean stock) {
-        this.stock = stock;
     }
 
     @OneToMany(mappedBy = "customer")

@@ -8,14 +8,4 @@ import simpleshop.data.metadata.PropertyFilter;
  */
 public class SupplierSearch extends ContactSearch {
 
-    private boolean stock = false;
-
-    @PropertyFilter
-    public boolean isStock() {
-        return stock;
-    }
-
-    public void setStock(boolean stock) {
-        this.stock = stock;
-    }
 }

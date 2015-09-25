@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @Table(name = "shippers")
 @Icon("plane")
 @InterpolateFormat("{{id}} - {{contact.name}}")
-//@DisplayFormat("concat:'id':' - ':'contact.name'")
 public class Shipper {
 
     private Integer id;

@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * Get metadata of the domain models.
+ * //todo code generation base class to inject all domain classes.
  */
 @Service
 public class MetadataServiceImpl extends BaseServiceImpl implements MetadataService {

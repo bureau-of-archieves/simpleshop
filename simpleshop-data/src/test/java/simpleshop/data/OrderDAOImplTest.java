@@ -46,6 +46,7 @@ public class OrderDAOImplTest extends TransactionalTest {
     @Test
     public void createDeleteTest() {
 
+        Country aus = new Country("AUS");
         List<Customer> customers = customerDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
         assertThat(customers.size(), greaterThanOrEqualTo(1));
 
@@ -58,6 +59,7 @@ public class OrderDAOImplTest extends TransactionalTest {
         Order order = new Order();
         order.setCustomer(customers.get(0));
         order.setEmployee(employees.get(0));
+        order.setCountry(aus);
         order.setShipName(TestConstants.ORDER_MARK + "aa");
         LocalDateTime orderTime = LocalDateTime.of(2015, 8, 17, 16, 22, 32);
         order.setOrderDate(orderTime);
@@ -95,6 +97,7 @@ public class OrderDAOImplTest extends TransactionalTest {
 
     @Test
     public void quickSearchTest() {
+        Country aus = new Country("AUS");
         List<Order> orders = orderDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
         assertThat(orders.size(), greaterThanOrEqualTo(1));
         assertThat(orders.get(0).getCustomer().getContact().getName(), equalTo(TestConstants.CUSTOMER_NAME_1));
@@ -114,6 +117,7 @@ public class OrderDAOImplTest extends TransactionalTest {
             Order order = new Order();
             order.setCustomer(customer);
             order.setEmployee(employee);
+            order.setCountry(aus);
             order.setShipName(TestConstants.ORDER_MARK + (i % 2 == 0 ? "_TypeA" : "_TypeB"));
             order.setShipper(shipper);
             orderDAO.save(order);

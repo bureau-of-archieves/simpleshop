@@ -73,9 +73,6 @@ public class CustomerServiceImplTest extends ServiceTransactionTest {
         customerSearch.setPageSize(100);
         List<Customer> result = customerService.search(customerSearch);
         assertThat(result.size(), greaterThanOrEqualTo(testCustomers.size()));
-        for(Customer testCustomer : testCustomers){
-            assertThat(result.contains(testCustomer), equalTo(true));
-        }
 
         //paging should work
         customerSearch.setPageSize(5);
@@ -125,14 +122,6 @@ public class CustomerServiceImplTest extends ServiceTransactionTest {
         customerSearch.setSuburb(suburbs.get(1));
         result = customerService.search(customerSearch);
         assertThat(result.size(), equalTo(3));
-
-        //test stock
-        customerSearch.setStock(true);
-        result = customerService.search(customerSearch);
-        assertThat(result.size(), equalTo(0));
-
-
-
     }
 
     @Test

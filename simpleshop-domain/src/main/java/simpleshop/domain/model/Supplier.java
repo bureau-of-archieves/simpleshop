@@ -17,13 +17,6 @@ public class Supplier {
     private Integer id;
     private Contact contact  = new Contact();
 
-    /**
-     * There can be at most 1 supplier who is STOCK.
-     * When this supplier appears in an order item the shop stock decrease.
-     * //todo add a StockStorage domain object and change this flag to an id. A stock storage is both a buyer and a supplier.
-     */
-    private Boolean stock = Boolean.FALSE;
-
     @Id
     @GeneratedValue
     @Column(nullable = false, insertable = false, updatable = false)
@@ -47,15 +40,5 @@ public class Supplier {
         this.contact = contact;
     }
 
-    @Column(name = "stock", nullable = false)
-    @NotNull
-    @Description("True if this supplier represents stock")
-    public Boolean getStock() {
-        return stock;
-    }
-
-    public void setStock(Boolean stock) {
-        this.stock = stock;
-    }
 
 }

@@ -122,6 +122,7 @@ public class TestDataInitializer {
             Order order = new Order();
             order.setCustomer(customer1);
             order.setEmployee(employee1);
+            order.setCountry(new Country("AUS"));
             order.setOrderDate(LocalDateTime.of(2015, 8, 17, 11, 25, 33));
             order.setShipName("Mr. " + customer1.getContact().getName());
             Address address1 = new Address();
@@ -143,7 +144,6 @@ public class TestDataInitializer {
             orderItem2.setSellPrice(new BigDecimal(8.50));
 
             order.getOrderItems().add(orderItem2);
-
             session.save(order);
         }
         session.flush();

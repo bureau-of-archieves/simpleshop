@@ -44,7 +44,6 @@ public class SupplierDAOImplTest extends TransactionalTest {
         supplier.getContact().setContactName("999 " + TestConstants.SUPPLIER_MARK);
         supplier.getContact().getContactNumbers().put("Phone", "11111");
         supplier.getContact().getContactNumbers().put("Fax", "222222");
-        supplier.setStock(Boolean.TRUE);
         Address address = new Address();
         address.setSuburb(suburbs.get(0));
         address.setAddressLine1("64 bit Address");
@@ -61,7 +60,6 @@ public class SupplierDAOImplTest extends TransactionalTest {
         assertNotNull(supplier);
         assertNotNull(supplier.getContact());
         assertEquals(TestConstants.JON_SNOW, supplier.getContact().getName());
-        assertEquals(Boolean.TRUE, supplier.getStock());
         assertThat(supplier.getContact().getContactNumbers().size(), equalTo(2));
         assertThat(supplier.getContact().getContactNumbers().get("Phone"), equalTo("11111"));
         assertThat(supplier.getContact().getContactNumbers().get("Fax"), equalTo("222222"));

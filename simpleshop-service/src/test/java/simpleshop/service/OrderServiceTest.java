@@ -55,6 +55,7 @@ public class OrderServiceTest extends ServiceTransactionTest{
     @Test
     public void createDeleteTest(){
 
+        Country aus = new Country("AUS");
         List<Customer> customers = customerService.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
         assertThat(customers.size(), greaterThanOrEqualTo(1));
 
@@ -70,6 +71,7 @@ public class OrderServiceTest extends ServiceTransactionTest{
         Order order = createOrder(customers.get(0), employees.get(0), suburbs.get(0), products.get(0));
         order.setCustomer(customers.get(0));
         order.setEmployee(employees.get(0));
+        order.setCountry(aus);
         order.setShipName(TestConstants.ORDER_MARK);
         order.setOrderDate(LocalDateTime.of(2010, 11, 5, 16, 30));
         order.getShipAddress().setAddressLine1("My Address 1");
@@ -89,9 +91,11 @@ public class OrderServiceTest extends ServiceTransactionTest{
 
 
     private Order createOrder(Customer customer, Employee employee, Suburb suburb, Product product){
+        Country aus = new Country("AUS");
         Order order = orderService.create();
         order.setCustomer(customer);
         order.setEmployee(employee);
+        order.setCountry(aus);
         order.setShipName(TestConstants.ORDER_MARK);
         order.setOrderDate(LocalDateTime.of(2010, 11, 5, 16, 30));
         order.getShipAddress().setAddressLine1("My Address 1");
@@ -204,8 +208,5 @@ public class OrderServiceTest extends ServiceTransactionTest{
         result = orderService.search(orderSearch);
         assertThat(result.size(), equalTo(0));
     }
-
-
-
 
 }

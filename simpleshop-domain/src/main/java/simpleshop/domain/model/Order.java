@@ -2,6 +2,7 @@ package simpleshop.domain.model;
 
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
+import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
@@ -26,6 +27,7 @@ public class Order {
     private Employee employee;
     private LocalDateTime orderDate;
     private LocalDateTime requiredDate;
+    private Country country;
     private List<OrderItem> orderItems = new ArrayList<>();
 
     //order result
@@ -87,6 +89,18 @@ public class Order {
         this.requiredDate = requiredDate;
     }
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "country_code", nullable = false)
+    @NotNull
+    @Description("Purchasing country")
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
     @ElementCollection
     @CollectionTable(name="order_items", joinColumns=@JoinColumn(name="order_id"))
     @OrderColumn(name = "item_index")
@@ -112,6 +126,7 @@ public class Order {
     }
 
     @Column(name = "shipped_date")
+    @Description("The order is complete when this is populated.")
     public LocalDateTime getShippedDate() {
         return shippedDate;
     }
