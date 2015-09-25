@@ -42,14 +42,15 @@
     </c:otherwise>
 </c:choose>
 
-<div class="form-group">
+<div class="form-group edit-image-list">
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
     <div class="col-sm-9">
         <input id="${id}" type="file" name="images" data-url="${url}" multiple data-spg-upload-list="${fieldRef}" >
-        <hr>
+
         <ol data-spg-removable-collection="${fieldRef}" class="image-list">
             <li data-ng-repeat="item in ${fieldRef}" >
-               <div ><span class="glyphicon glyphicon-remove" data-ng-click="remove(item)"></span></div>
+                <spring:message var="literal_removeImage" code="jsp.literal.removeImage" />
+               <div ><span class="glyphicon glyphicon-remove" data-ng-click="remove(item)" title="${literal_removeImage}"></span></div>
                 <img data-ng-src="${imgBase}{{item}}" >
             </li>
         </ol>

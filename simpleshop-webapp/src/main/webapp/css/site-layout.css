@@ -330,8 +330,8 @@ input.ng-valid ~ .pattern-validation {
     margin:auto;
 }
 
-.spg-carousel {
-
+.spg-carousel img {
+    height:25em !important;
 }
 
 .carousel-container.details-img img{
@@ -339,21 +339,36 @@ input.ng-valid ~ .pattern-validation {
     height:auto;
 }
 
+.image-list{
+    padding-left:0;
+}
+
 .image-list img{
     max-width:100%;
     height:auto;
 }
 
-.image-list li{
+.image-list>li{
     list-style: none;
     position: relative;
+    font-size:1.5em;
 }
 
-.image-list li .remove-handle{
+.image-list>li .glyphicon {
     position: absolute;
-    font-size: 1.5%;
     cursor: pointer;
-} 
+    margin:0.25em;
+}
+
+.image-list>li .glyphicon:hover {
+    color: #23527c;
+}
+
+.edit-image-list input[type="file"]{
+    color:transparent;
+    margin-bottom:1em;
+    margin-top:0.25em;
+}
 
 .carousel-container a{
     text-decoration: none;
