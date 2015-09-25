@@ -416,7 +416,7 @@
 
     spongeApp.filter('yn', function () {
         return function (input) {
-            return input == 'Y' ? '\u2713' : '\u2718';
+            return input && input !== 'N' ? '\u2713' : '\u2718';
         };
     });
 
@@ -466,7 +466,7 @@
 
     spongeApp.filter('yesno', function () {
         return function (input) {
-            return input == 'Y' ? 'Yes' : 'No';
+            return input && input !== 'N'  ? 'Yes' : 'No';
         };
     });
 
@@ -931,16 +931,14 @@
 
             var saveSuccess = function (response) {
                 if (response["status"] == "OK") {
-
-                    if (response["description"]) {
-                        scope.$apply(function () {
-                            scope["model"] = response["content"];
-                            viewDetails.model = response["content"];
-                        });
-                    }
-                    return cancel(viewId);
+                    return cancel(viewId, false, response["content"]);
+                } else {
+                    scope.$apply(function () {
+                        scope["model"] = response["content"];
+                        viewDetails.model = response["content"];
+                    });
+                    return createPromise(response["description"]);
                 }
-                return createPromise(response["description"]);
             };
 
             var saveFailed = function (p, s, e) {
@@ -1010,17 +1008,25 @@
          * Close create view or
          * Close update view and open details view.
          * @param viewId
+         * @param noOpenAnother true if should not open another view when the view is closed.
+         * @param model the latest model object from the view being closed.
          * @returns {*}
          */
-        var cancel = function (viewId, noOpenAnother) {
+        var cancel = function (viewId, noOpenAnother, model) {
 
             var viewDetails = findViewDetails(viewId);
             var modelName = viewDetails.modelName;
             var viewType = viewDetails.viewType;
-            if (isSubtypeOf(viewType, "create") || noOpenAnother)
+            if (noOpenAnother || isSubtypeOf(viewType, "create") && !model)
                 return close(viewId);
 
-            return getView(modelName, "details" + viewDetails.viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
+            if (isSubtypeOf(viewType, "create")){
+                return close(viewId).done(function(){
+                    var modelId = model[site.getMetadata(modelName)["idPropertyName"]];
+                    getView(modelName, "details" + viewType.substr(6), modelId, {modelId: modelId}, null, {removeExisting: true});
+                });
+            }
+            return getView(modelName, "details" + viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
         };
 
         /**
@@ -1909,6 +1915,11 @@
                             }
                             return true;
                         }
+
+                        if(keyCode == 27){
+                            closeComboList();
+                            return true;
+                        }
                     }
 
                     return !(event.key && event.key.length == 1);
@@ -2075,6 +2086,9 @@
                 //init metadata
                 var metadata = data.content;
                 $scope.metadata = metadata;
+                site.getMetadata = function(modelName){
+                    return metadata[modelName];
+                };
 
                 //init menu
                 var menu = [];
