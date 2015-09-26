@@ -187,6 +187,10 @@ input.ng-valid ~ .pattern-validation {
     margin-bottom: 1em;
 }
 
+.view>.panel{
+    padding-bottom:4px;
+}
+
 .dropdown-menu.result li.ng-scope{
     width:15em;
 }
@@ -207,7 +211,6 @@ input.ng-valid ~ .pattern-validation {
     float:right;
     margin-left:0.8em;
 }
-
 
 .dropdown-menu.result li.ng-scope span.glyphicon:hover {
     text-shadow: 0.2em 0.1em 0.3em #777;

@@ -98,6 +98,76 @@
 
         //angular js dependencies
         this.ajs = {};
+
+        var container = $("#" + this.noViewElementId).parent();
+
+        var countColumns = function(views){
+            var count = 0;
+            if(views.length > 0){
+
+                var view = $(views.get(0));
+                var lastLeft = view.position().left;
+                count = 1;
+                for(var i=1; i<views.length; i++){
+                    var newLeft = $(views.get(i)).position().left;
+                    if(newLeft > lastLeft){
+                        lastLeft = newLeft;
+                        count++;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            return count;
+        };
+
+        var findColumn = function(columnPositions, left){
+
+            for(var i=0; i<columnPositions.length; i++){
+                if(columnPositions[i].left >= left){
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        this.layout = function(){
+            var views = container.children(".view.display");
+            if(views.length == 0) {
+                return;
+            }
+
+            //redo layout
+            var columnPositions = [];
+            var currentColumnCount = countColumns(views);
+            if(currentColumnCount == 1){
+                columnPositions.push({});
+                views.css("margin-top", 0);
+                return;
+            }
+            var maxLeft = -1;
+            for(var i=0; i<views.length; i++){
+                var view = $(views.get(i));
+                var viewPos = view.position();
+                if(viewPos.left > maxLeft) {
+                    var newColumnPos = {};
+                    newColumnPos.left = viewPos.left;
+                    newColumnPos.top = viewPos.top;
+                    newColumnPos.bottom = viewPos.top + view.outerHeight();
+                    columnPositions.push(newColumnPos);
+                    maxLeft = viewPos.left;
+                    view.css("margin-top", 0);
+                } else {
+                    var columnIndex = findColumn(columnPositions, viewPos.left);
+                    var marginTop = columnPositions[columnIndex].bottom - viewPos.top;
+                    columnPositions[columnIndex].bottom += view.outerHeight();
+                    view.css("margin-top", marginTop);
+                }
+            }
+        };
+
+        $( window ).resize(this.layout);
     })();
 
     /**
@@ -147,20 +217,19 @@
                 elem.show();
             else
                 elem.hide();
-            return false;
-        }
-
-        var classes = elem.attr("class");
-        if (show) {
-            if (classes.indexOf("display") < 0) {
-                elem.addClass("display");
-            }
         } else {
-            if (classes.indexOf("display") >= 0) {
-                elem.removeClass("display");
+            var classes = elem.attr("class");
+            if (show) {
+                if (classes.indexOf("display") < 0) {
+                    elem.addClass("display");
+                }
+            } else {
+                if (classes.indexOf("display") >= 0) {
+                    elem.removeClass("display");
+                }
             }
         }
-
+        site.layout();
         return true;
     };
 
@@ -867,6 +936,7 @@
                         try {
                             nextElement.before(parseResult.domElements);
                             $compile(parseResult.domElements)(parentScope);
+                            site.layout();
                         }
                         catch (ex) {
                             delete viewMap[viewKey];
@@ -1110,6 +1180,7 @@
                     delete viewMap[viewKey];
             });
             $("#" + viewId).remove();
+            site.layout();
             return createPromise(null);
         };
 
@@ -1680,8 +1751,7 @@
                     var targetElement = $("#" + targetId);
                     var gotoId = goBackElementId(targetElement);
                     if (display(targetId, false)) {
-                        safeApply(function () {
-                        });
+                        safeApply(zcl.emptyFunc);
                         scrollTo(gotoId);
                         return true;
                     }
@@ -1777,6 +1847,7 @@
                     scope.$apply(function () {
                         scope[variable] = !scope[variable];
                     });
+                    site.layout();
                     return false;
                 });
             }

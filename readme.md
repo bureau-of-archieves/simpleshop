@@ -22,33 +22,29 @@ The page is divided into a menu area and a view area. The view area can display 
 * Update view - provides a form to update an object
 * Create view - provides a form to create an object
 
-Views have a model type, which is the type of model it can display.
+All views have a model type, which is the type of model it can display.Views have all their backing data stored in a central location on the client side, including content, open parameters and so on.
+Metadata is accessible on both server side and client side.
 
 <img src="img/screenshot1.png">
 
 Todo List
 -----------
  * Support register spg view callback - when create new in a search window, might want to carry over some criteria.
- * Improve validation messages.
- * Upload of product image. 
+ * Set up a server side error message reporting framework which can direct error messages to each field as well as the whole model.
  * Support full internationalization.
  * Implement watermark.
  * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
  * Check for modification before closing an edit/create view.
-
  * Display search criteria in the list view.
  * Fix the many problems in error handling in JavaScript.
-
  * Trim unnecessary parts of the request before posting json.
  * Add Spring Security.
  * Separate template and data. This way a type of template can be cached by the client.
-
- * Replace Bootstrap view layout with masonry layout, e.g. http://w3bits.com/labs/css-masonry/
  * drag and drop swap view positions.
 
 Future Todo List 
 -----------
- * Replace boilerplate code with a Maven code generation plugin.
+ * Use maven plugin to auto generate a base metadata service which lists all the model classes.
 
 Limitations
 -----------
