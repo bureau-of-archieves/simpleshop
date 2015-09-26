@@ -37,15 +37,15 @@
 
 <%--########################## TAG CONTENT ################################--%>
 <%--field metadata--%>
-<c:set var="propertyType" value="${f:fmd(modelName, path).propertyType}"/>
-<c:set var="minLength" value="${f:fmd(modelName, path).minLength}"/>
-<c:set var="maxLength" value="${f:fmd(modelName, path).maxLength}"/>
-<c:set var="required" value="${f:fmd(modelName, path).required}"/>
-<c:set var="min" value="${f:fmd(modelName, path).min}"/>
-<c:set var="max" value="${f:fmd(modelName, path).max}"/>
-<c:set var="pattern" value="${f:fmd(modelName, path).inputFormat}"/>
-<c:set var="displayFormat" value="${f:combineDisplayFormat(f:fmd(modelName, path), displayFormat)}"/>
-<c:set var="dateTimeFormat" value="${f:getDateFormatString(displayFormat, propertyType)}" />
+<c:set var="propertyMetadata" value="${f:fmd(modelName, path)}" />
+<c:set var="propertyType" value="${propertyMetadata.propertyType}"/>
+<c:set var="minLength" value="${propertyMetadata.minLength}"/>
+<c:set var="maxLength" value="${propertyMetadata.maxLength}"/>
+<c:set var="required" value="${propertyMetadata.required}"/>
+<c:set var="min" value="${propertyMetadata.min}"/>
+<c:set var="max" value="${propertyMetadata.max}"/>
+<c:set var="pattern" value="${propertyMetadata.inputFormat}"/>
+<c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
 
 <c:set var="fieldRef" value="${base}${path}"/>
 <comm:push value="${path}" var="path" />
@@ -58,7 +58,10 @@
         </c:if>
             <input id="${id}" type="text" class="form-control" name="${path}"
                 data-ng-model="${fieldRef}"
-                <c:if test="${f:isDateTimeType(propertyType)}"> data-spg-date="${dateTimeFormat}" placeholder="${dateTimeFormat}" </c:if>
+                <c:if test="${f:isDateTimeType(propertyType)}">
+                <c:set var="dateTimeFormat" value="${f:getDateFormatString(displayFormat, propertyType)}" />
+                   data-spg-date="${dateTimeFormat}" placeholder="${dateTimeFormat}"
+                </c:if>
                 <c:if test="${not emptyStringAllowed}"> data-spg-no-empty-string </c:if>
                 <c:if test="${not empty minLength}"> data-ng-minlength="${minLength}" </c:if>
                 <c:if test="${not empty maxLength}"> data-ng-maxlength="${maxLength}" </c:if>

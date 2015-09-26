@@ -41,10 +41,12 @@ public class Functions {
     @Resource(name = "messageSource")
     private MessageSource messageSource;
 
-    private static Pattern dateFormatPattern;
+    private static final Pattern dateFormatPattern1;
+    private static final Pattern dateFormatPattern2;
 
     static {
-        dateFormatPattern = Pattern.compile("moment\\s*:\\s*'(.+)'");
+        dateFormatPattern1 = Pattern.compile("moment\\s*:\\s*'([^']+)'");
+        dateFormatPattern2 = Pattern.compile("moment\\s*:\\s*\"([^\"]+)\"");
     }
 
     @PostConstruct
@@ -228,8 +230,12 @@ public class Functions {
     public static String getDateFormatString(String displayFormat, String propertyType) {
 
         if (!StringUtils.isNullOrEmpty(displayFormat)) {
-            Matcher matcher = dateFormatPattern.matcher(displayFormat);
-            if (matcher.matches()) {
+            Matcher matcher = dateFormatPattern1.matcher(displayFormat);
+            if (matcher.find()) { //grab the datetime format from the moment filter
+                return matcher.group(1);
+            }
+            matcher = dateFormatPattern2.matcher(displayFormat);
+            if (matcher.find()) { //grab the datetime format from the moment filter
                 return matcher.group(1);
             }
         }
