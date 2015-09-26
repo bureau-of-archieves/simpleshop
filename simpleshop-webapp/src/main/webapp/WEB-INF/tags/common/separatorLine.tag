@@ -1,4 +1,0 @@
-<%@attribute name="title" %>
-
-<hr>
-

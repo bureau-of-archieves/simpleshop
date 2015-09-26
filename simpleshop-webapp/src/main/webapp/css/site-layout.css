@@ -401,3 +401,14 @@ footer>.col-xs-8 {
     cursor: pointer;
     color: #23527c;
 }
+
+.panel-body>fieldset{
+    clear:both;
+}
+
+.panel-body>fieldset>legend {
+    margin-top:0.5em;
+    font-size:1.34em;
+    font-weight:400;
+    margin-bottom:0.5em;
+}

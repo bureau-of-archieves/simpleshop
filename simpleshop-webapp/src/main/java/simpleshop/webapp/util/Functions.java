@@ -7,6 +7,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 import simpleshop.common.Pair;
 import simpleshop.common.StringUtils;
+import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.metadata.ModelType;
 import simpleshop.data.metadata.PropertyMetadata;
@@ -17,6 +18,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -139,7 +141,11 @@ public class Functions {
     }
 
     public static Object peek(ViewValueStackBean stack, String key) {
-        return stack.peek(key);
+        try {
+            return stack.peek(key);
+        } catch (EmptyStackException ex){
+            throw new SpongeConfigurationException("Cannot find key in page value stack: " + key, ex);
+        }
     }
 
     public static Object pop(ViewValueStackBean stack, String key) {

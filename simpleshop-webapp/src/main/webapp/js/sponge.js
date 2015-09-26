@@ -1983,6 +1983,7 @@
                             if(scope.selectedIndex >= 0){
                                 scope.updateView(scope.comboList[scope.selectedIndex]);
                                 closeComboList();
+                                safeApply(zcl.emptyFunc);
                             }
                             return true;
                         }

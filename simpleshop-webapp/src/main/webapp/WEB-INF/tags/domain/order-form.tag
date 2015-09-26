@@ -13,13 +13,14 @@
     <ctrl:editModelLink path="supplier" />
 </ctrl:editChildList>
 
-<spring:message var="literal_deliveryDetails" code="jsp.literal.deliveryDetails" />
-<comm:separatorLine title="${literal_deliveryDetails}" />
+<fieldset>
+    <legend><spring:message code="jsp.literal.deliveryDetails" /></legend>
 
-<ctrl:editModelLink path="shipper" showLink="true" />
-<ctrl:editField path="shippedDate" />
-<ctrl:editField path="numberOfParcels" />
-<ctrl:editField path="freight" />
-<ctrl:editField path="shipName" />
-<d:address-form path="shipAddress" />
+    <ctrl:editModelLink path="shipper" showLink="true" />
+    <ctrl:editField path="shippedDate" />
+    <ctrl:editField path="numberOfParcels" />
+    <ctrl:editField path="freight" />
+    <ctrl:editField path="shipName" />
+    <d:address-form path="shipAddress" />
+</fieldset>
 

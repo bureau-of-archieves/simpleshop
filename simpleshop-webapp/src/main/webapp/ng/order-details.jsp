@@ -14,15 +14,17 @@
             <ctrl:detailsField path="sellPrice"/>
         </ctrl:detailsChildList>
 
-        <spring:message var="literal_deliveryDetails" code="jsp.literal.deliveryDetails" />
-        <comm:separatorLine title="${literal_deliveryDetails}" />
+        <fieldset>
+            <legend><spring:message code="jsp.literal.deliveryDetails" /></legend>
 
-        <ctrl:detailsModelLink path="shipper" />
-        <ctrl:detailsField path="shippedDate" />
-        <ctrl:detailsField path="numberOfParcels" />
-        <ctrl:detailsField path="freight" />
-        <ctrl:detailsField path="shipName" />
-        <d:address-details path="shipAddress" />
+            <ctrl:detailsModelLink path="shipper" />
+            <ctrl:detailsField path="shippedDate" />
+            <ctrl:detailsField path="numberOfParcels" />
+            <ctrl:detailsField path="freight" />
+            <ctrl:detailsField path="shipName" />
+            <d:address-details path="shipAddress" />
+
+        </fieldset>
 
     </t:view-details>
     <script>
