@@ -385,19 +385,36 @@ public final class DomainUtils {
         }
     }
 
-    private static void setDisplayFormat(PropertyMetadata propertyMetadata, Method method) {
-        DisplayFormat displayFormatAnnotation = method.getAnnotation(DisplayFormat.class);
-        if (displayFormatAnnotation != null){
-            propertyMetadata.setDisplayFormat(StringUtils.ngEscape(displayFormatAnnotation.value()));
-        }
-        if(propertyMetadata.getDisplayFormat() == null){
+    private static final String DEFAULT_DATE_DISPLAY_FORMAT = "moment:'YYYY-MM-DD'";
+    private static final String DEFAULT_DATETIME_DISPLAY_FORMAT = "moment:'YYYY-MM-DD hh:mm:ss'";
+    public static final String PLACEHOLDER_FILTER_NAME = "placeholder";
 
+    private static void setDisplayFormat(PropertyMetadata propertyMetadata, Method method) {
+
+        DisplayFormat displayFormatAnnotation = method.getAnnotation(DisplayFormat.class);
+        String propertyDisplayFormat;
+        if (displayFormatAnnotation != null){
+            propertyDisplayFormat = displayFormatAnnotation.value();
+            propertyDisplayFormat = propertyDisplayFormat.trim();
+            if(propertyDisplayFormat.startsWith("|")){
+                propertyDisplayFormat = PLACEHOLDER_FILTER_NAME + " " + propertyDisplayFormat;
+            }
+        } else {
+            propertyDisplayFormat = PLACEHOLDER_FILTER_NAME;
+        }
+
+        if(propertyDisplayFormat.startsWith("placeholder")){
             if(propertyMetadata.getPropertyType().endsWith("Date")){
-                propertyMetadata.setDisplayFormat("moment:'YYYY-MM-DD'");
+                propertyDisplayFormat = propertyDisplayFormat.replace(PLACEHOLDER_FILTER_NAME, DEFAULT_DATE_DISPLAY_FORMAT);
             } else if(propertyMetadata.getPropertyType().endsWith("DateTime")){
-                propertyMetadata.setDisplayFormat("moment:'YYYY-MM-DD hh:mm:ss'");
+                propertyDisplayFormat = propertyDisplayFormat.replace(PLACEHOLDER_FILTER_NAME, DEFAULT_DATETIME_DISPLAY_FORMAT);
             }
         }
+
+        if(PLACEHOLDER_FILTER_NAME.equals(propertyDisplayFormat)){
+            propertyDisplayFormat = null;
+        }
+        propertyMetadata.setDisplayFormat(propertyDisplayFormat);
     }
 
     private static void setWatermark(Method method, PropertyMetadata propertyMetadata) {

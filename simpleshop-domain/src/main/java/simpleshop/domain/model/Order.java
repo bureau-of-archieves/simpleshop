@@ -3,6 +3,7 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
+import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
@@ -80,6 +81,8 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    @DisplayFormat("| na")
+    @Description("The client what this order to be delivered on or before this date.")
     @Column(name = "required_date")
     public LocalDateTime getRequiredDate() {
         return requiredDate;

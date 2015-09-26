@@ -477,6 +477,12 @@
 
     //region filters
 
+    spongeApp.filter("placeholder", function () {
+        return function (input) {
+            return input;
+        };
+    });
+
     spongeApp.filter("status", function () {
         return function (input) {
             return input == 'A' ? "Active" : "Inactive";

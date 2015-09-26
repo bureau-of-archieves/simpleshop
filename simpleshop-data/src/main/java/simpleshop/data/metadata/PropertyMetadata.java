@@ -1,15 +1,14 @@
 package simpleshop.data.metadata;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import simpleshop.common.StringUtils;
+import simpleshop.data.util.DomainUtils;
 
 import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- * User: JOHNZ
- * Date: 20/10/14
- * Time: 2:19 PM
+ * Metadata for a domain object property.
  */
 @JsonIgnoreProperties({"getter", "returnType", "returnTypeMetadata", "propertyFilters"})
 public class PropertyMetadata {
@@ -255,8 +254,14 @@ public class PropertyMetadata {
 
     public void setReturnTypeMetadata(ModelMetadata returnTypeMetadata) {
         this.returnTypeMetadata = returnTypeMetadata;
-        if(returnTypeMetadata != null && this.displayFormat == null){
-            this.displayFormat = returnTypeMetadata.getDisplayFormat();
+        if(returnTypeMetadata != null){
+            if(this.displayFormat == null)
+                this.displayFormat = returnTypeMetadata.getDisplayFormat();
+            else if(this.displayFormat.startsWith(DomainUtils.PLACEHOLDER_FILTER_NAME)){
+                if(returnTypeMetadata.getDisplayFormat() == null){
+                    this.displayFormat = StringUtils.subStrAfterFirst(displayFormat, "|");
+                }
+            }
         }
     }
 
