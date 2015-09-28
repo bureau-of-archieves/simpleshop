@@ -118,6 +118,7 @@ public class Order {
 
     //order result
 
+    @DisplayFormat("na")
     @ManyToOne
     @JoinColumn(name = "shipper_id")
     public Shipper getShipper() {
@@ -128,6 +129,7 @@ public class Order {
         this.shipper = shipper;
     }
 
+    @DisplayFormat("| na")
     @Column(name = "shipped_date")
     @Description("The order is complete when this is populated.")
     public LocalDateTime getShippedDate() {
@@ -138,6 +140,7 @@ public class Order {
         this.shippedDate = shippedDate;
     }
 
+    @DisplayFormat("na")
     @Column(name = "number_of_parcels")
     @Min(1)
     public Integer getNumberOfParcels() {
@@ -148,6 +151,7 @@ public class Order {
         this.numberOfParcels = numberOfParcels;
     }
 
+    @DisplayFormat("currency | na")
     @Column(name = "freight", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
     @DecimalMin(value = "0.0")
     public BigDecimal getFreight() {
@@ -158,6 +162,7 @@ public class Order {
         this.freight = freight;
     }
 
+    @DisplayFormat("na")
     @Column(name = "ship_name", length = Constants.MID_STRING_LENGTH)
     public String getShipName() {
         return shipName;
@@ -167,6 +172,7 @@ public class Order {
         this.shipName = shipName;
     }
 
+    @DisplayFormat("na")
     @Embedded
     public Address getShipAddress() {
         return shipAddress;

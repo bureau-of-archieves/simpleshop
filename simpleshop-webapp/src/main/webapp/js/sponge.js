@@ -627,6 +627,11 @@
      */
     spongeApp.filter('interpolate', ['$interpolate', function ($interpolate) {
         return function (input, modelName) {
+
+            if(angular.isUndefined(input) || input === null){
+                return null;
+            }
+
             if (!modelName)
                 return input;
 
@@ -1730,6 +1735,12 @@
 
                 $(element).click(function () {
                     var targetElement = $("#" + targetId);
+
+                    if (targetElement.find("form").hasClass("ng-dirty")) {
+                        if (!confirm("Do you want to discard un-saved changes in the form?"))
+                            return false;
+                    }
+
                     var gotoId = goBackElementId(targetElement);
                     spongeService.close(targetId)
                         .done(function () {

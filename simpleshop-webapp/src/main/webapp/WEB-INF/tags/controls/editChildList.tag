@@ -37,7 +37,7 @@
 <c:set var="id" value="${f:fid(parentId, path)}"/>
 <c:set var="fieldRef" value="${base}${path}"/>
 <div class="form-group ">
-    <div class="col-sm-offset-3 col-sm-9">
+    <div class="col-sm-12">
 
         <div class="panel panel-default margin-bottom-0">
             <div class="panel-heading">${label} &nbsp;
@@ -51,7 +51,7 @@
                         <dl class="dl-horizontal">
                             <comm:push value="${f:concat(itemName, '.')}" var="base"  />
                             <comm:push value="${childModelName}" var="modelName"  />
-                            <comm:push value="${id})" var="parentId"  />
+                            <comm:push value="${id}" var="parentId"  />
                             <jsp:doBody/>
                             <comm:pop var="base" />
                             <comm:pop var="modelName" />

@@ -41,6 +41,7 @@ Todo List
  * Add Spring Security.
  * Separate template and data. This way a type of template can be cached by the client.
  * drag and drop swap view positions.
+ * replace ui text in scripts with message key.
 
 Future Todo List 
 -----------

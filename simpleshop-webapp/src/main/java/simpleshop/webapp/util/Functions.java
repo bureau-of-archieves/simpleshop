@@ -180,7 +180,7 @@ public class Functions {
                 String targetModelName = propertyTargetModelName(propertyMetadata);
                 format.append("interpolate:'");
                 format.append(targetModelName);
-                format.append("'");
+                format.append("'"); //will read interpolateFormat from client side metadata.
             }
         }
 
