@@ -11,6 +11,7 @@
 <%@attribute name="modelName" required="false" %>
 <%@attribute name="label" required="false" %>
 <%@attribute name="parentId" required="false" %>
+<%@attribute name="dataListEnum" required="false" type="java.lang.Class" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <comm:peekIfEmpty var="base" value="${base}" />
@@ -30,7 +31,19 @@
 
     <div class="col-sm-9">
         <div class="input-group">
-            <input id="${id}-text" type="text" class="form-control add_entry" aria-label="Add" data-spg-enter-to-click="span.glyphicon-plus">
+            <input id="${id}-text" type="text" class="form-control add_entry" aria-label="Add" data-spg-enter-to-click="span.glyphicon-plus"
+            <c:if test="${not empty dataListEnum}">
+                <c:set var="listId" value="${id}-list" />
+                list="${listId}"
+            </c:if>
+            >
+            <c:if test="${not empty dataListEnum}">
+                <datalist id="${listId}" >
+                    <c:forEach var="pair" items="${f:options(dataListEnum)}">
+                        <option value="${pair.value}" >
+                    </c:forEach>
+                </datalist>
+            </c:if>
             <span class="input-group-addon">
                 <span class="glyphicon glyphicon-plus cursor-pointer"  data-ng-click="addToMap(${fieldRef}, '#${id}')"></span>
             </span>
