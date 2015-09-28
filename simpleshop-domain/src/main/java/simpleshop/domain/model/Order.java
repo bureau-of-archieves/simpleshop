@@ -5,6 +5,7 @@ import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
+import simpleshop.domain.metadata.Watermark;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
 
@@ -151,6 +152,7 @@ public class Order {
         this.numberOfParcels = numberOfParcels;
     }
 
+    @Watermark("currency value in your locale")
     @DisplayFormat("currency | na")
     @Column(name = "freight", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
     @DecimalMin(value = "0.0")

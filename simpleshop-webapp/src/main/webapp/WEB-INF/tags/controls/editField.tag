@@ -39,6 +39,7 @@
 <%--field metadata--%>
 <c:set var="propertyMetadata" value="${f:fmd(modelName, path)}" />
 <c:set var="propertyType" value="${propertyMetadata.propertyType}"/>
+<c:set var="watermark" value="${propertyMetadata.watermark}"/>
 <c:set var="minLength" value="${propertyMetadata.minLength}"/>
 <c:set var="maxLength" value="${propertyMetadata.maxLength}"/>
 <c:set var="required" value="${propertyMetadata.required}"/>
@@ -58,10 +59,16 @@
         </c:if>
             <input id="${id}" type="text" class="form-control" name="${path}"
                 data-ng-model="${fieldRef}"
-                <c:if test="${f:isDateTimeType(propertyType)}">
-                <c:set var="dateTimeFormat" value="${f:getDateFormatString(displayFormat, propertyType)}" />
-                   data-spg-date="${dateTimeFormat}" placeholder="${dateTimeFormat}"
-                </c:if>
+                <c:choose>
+                    <c:when test="${f:isDateTimeType(propertyType)}">
+                        <c:set var="dateTimeFormat" value="${f:getDateFormatString(displayFormat, propertyType)}" />
+                        data-spg-date="${dateTimeFormat}" placeholder="${dateTimeFormat}"
+                    </c:when>
+                    <c:when test="${not empty watermark}">
+                        placeholder="${watermark}"
+                    </c:when>
+                </c:choose>
+
                 <c:if test="${not emptyStringAllowed}"> data-spg-no-empty-string </c:if>
                 <c:if test="${not empty minLength}"> data-ng-minlength="${minLength}" </c:if>
                 <c:if test="${not empty maxLength}"> data-ng-maxlength="${maxLength}" </c:if>

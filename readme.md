@@ -32,23 +32,17 @@ Configuration data for other locale is not set up in this demo project.
 
 Todo List
 -----------
- * Support register spg view callback - when create new in a search window, might want to carry over some criteria.
  * Set up a server side error message reporting framework which can direct error messages to each field as well as the whole model.
- * Implement watermark.
  * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
- * Check for modification before closing an edit/create view.
  * Display search criteria in the list view.
  * Fix the many problems in error handling in JavaScript.
  * Trim unnecessary parts of the request before posting json.
  * Add Spring Security.
- * Separate template and data. This way a type of template can be cached by the client.
- * drag and drop swap view positions.
  * replace ui text in scripts with message key.
  * support layout bigger views e.g. category display
  * support for named inline representation - a property annotation that combines interpolate and displayFormat with a name
- * disabled state for edit controls - e.g. editngselect will not need to retrive a list when disabled. this disabled state is stored on server side as well.
- * create a model afer searching will copy certain search parameters
- * a fixed system locale configured at startup time, currently only support aus
+ * disabled state for edit controls - e.g. editngselect will not need to retrieve a list when disabled. this disabled state is stored on server side as well.
+ * create a model after searching will copy certain search parameters
  * a changeable user locale, first set at login time. it affects ui language, default payment currency
  * allow adding purchase - from supplier, by employee, product list and amount, price per unit
  * calculate stock, pending amount - ordered but not delivered
@@ -60,7 +54,9 @@ Todo List
 Future Todo List 
 -----------
  * Support full internationalization - in jsp and angular.
-
+ * Separate template and data. This way a type of template can be cached by the client.
+ * drag and drop swap view positions.
+ 
 Limitations
 -----------
 The following architectural limitations are accepted and no attempt will be made to address them.
