@@ -1,5 +1,6 @@
 package simpleshop.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.*;
 import simpleshop.domain.metadata.*;
 
@@ -45,6 +46,7 @@ public class Customer {
         this.contact = contact;
     }
 
+    @JsonIgnoreProperties("customer")
     @OneToMany(mappedBy = "customer")
     @OrderBy("orderDate")
     public List<Order> getOrders() {

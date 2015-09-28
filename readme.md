@@ -50,6 +50,7 @@ Todo List
  * implement sub-list and sub-details views. e.g. product sales list and details. additional view model and search model.
  * auditing - object created, field changed, object deleted, user logins, top level controller actions
  * shopping cart and watch product. notification when price change or become in stock. check out and record transaction.
+ * spgCombo - commonly used values when the control is focused but no keywords typed yet.
 
 Future Todo List 
 -----------
