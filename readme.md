@@ -27,11 +27,13 @@ Metadata is accessible on both server side and client side.
 
 <img src="img/screenshot1.png">
 
+Server locale is set via JVM options. Please ensure they are <code>java -Duser.country=AU -Duser.language=en</code> which is the only supported server locale at the moment.
+Configuration data for other locale is not set up in this demo project. 
+
 Todo List
 -----------
  * Support register spg view callback - when create new in a search window, might want to carry over some criteria.
  * Set up a server side error message reporting framework which can direct error messages to each field as well as the whole model.
- * Support full internationalization.
  * Implement watermark.
  * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
  * Check for modification before closing an edit/create view.
@@ -42,10 +44,22 @@ Todo List
  * Separate template and data. This way a type of template can be cached by the client.
  * drag and drop swap view positions.
  * replace ui text in scripts with message key.
+ * support layout bigger views e.g. category display
+ * support for named inline representation - a property annotation that combines interpolate and displayFormat with a name
+ * disabled state for edit controls - e.g. editngselect will not need to retrive a list when disabled. this disabled state is stored on server side as well.
+ * create a model afer searching will copy certain search parameters
+ * a fixed system locale configured at startup time, currently only support aus
+ * a changeable user locale, first set at login time. it affects ui language, default payment currency
+ * allow adding purchase - from supplier, by employee, product list and amount, price per unit
+ * calculate stock, pending amount - ordered but not delivered
+ * pricing module - price can depend on purchase or preset supplier price. also implement discount and rebate rules.
+ * implement sub-list and sub-details views. e.g. product sales list and details. additional view model and search model.
+ * auditing - object created, field changed, object deleted, user logins, top level controller actions
+ * shopping cart and watch product. notification when price change or become in stock. check out and record transaction.
 
 Future Todo List 
 -----------
- * Use maven plugin to auto generate a base metadata service which lists all the model classes.
+ * Support full internationalization - in jsp and angular.
 
 Limitations
 -----------

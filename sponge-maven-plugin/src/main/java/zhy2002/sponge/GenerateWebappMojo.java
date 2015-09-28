@@ -1,60 +1,28 @@
 package zhy2002.sponge;
 
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
-import org.rythmengine.RythmEngine;
 import simpleshop.domain.metadata.Icon;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Sponge code generation plugin.
  */
 @Mojo( name = "webapp")
-public class GenerateWebappMojo extends AbstractMojo {
+public class GenerateWebappMojo extends BaseMojo {
 
-    @Parameter(property = "webapp.projectName", required = true)
-    private String projectName;
-
-    @Parameter(defaultValue = "${project.build.sourceDirectory}")
-    private String buildSourceDirectory;
-
-    @Parameter(defaultValue = "${project.build.directory}")
-    private String buildDirectory;
-
-    private String basePackage;
-    private String domainClassPackage;
-    private RythmEngine rythmEngine;
-    private String domainClassLocation;
-    ClassLoader dirClassLoader;
-
-    private void init(){
-        basePackage = projectName.toLowerCase();
-        buildDirectory = Paths.get(buildDirectory, "classes").toString();
-        String domainBuildDirectory = buildDirectory.replace("-webapp" + File.separator, "-domain" + File.separator);
-        dirClassLoader = new DirClassLoader(this.getClass().getClassLoader(), domainBuildDirectory);
-        domainClassLocation = Paths.get(domainBuildDirectory, basePackage, "domain", "model").toString();
-        domainClassPackage = basePackage + ".domain.model.";
-        Map<String, Object> config = new HashMap<>();
-        config.put("codegen.compact", false);
-        rythmEngine = new RythmEngine(config);
+    public GenerateWebappMojo(){
+        super("webapp");
     }
 
-    private static File[] getFilesInDirectory(String dir){
-        File directory = new File(dir);
-        return directory.listFiles();
-    }
-
-    private void generateBaseControllers(){
+    @Override
+    protected void generateCode(){
         getLog().info("Generating base controllers for project " + projectName + "...");
 
-        File[] domainClassFiles = getFilesInDirectory(domainClassLocation);
+        File[] domainClassFiles = MojoUtils.getFilesInDirectory(domainClassLocation);
         if(domainClassFiles == null || domainClassFiles.length == 0){
             getLog().info("No domain class found in: " + domainClassLocation);
             return;
@@ -70,12 +38,6 @@ public class GenerateWebappMojo extends AbstractMojo {
         }
     }
 
-    public void execute() throws MojoExecutionException
-    {
-        init();
-        generateBaseControllers();
-    }
-
     private void generateBaseController(File domainClassFile, String outputDir, ClassLoader dirClassLoader) {
 
         if(!domainClassFile.getName().endsWith(".class"))
@@ -83,12 +45,7 @@ public class GenerateWebappMojo extends AbstractMojo {
 
         //load the resource
         String templateFileName = "BaseController.java";
-        String template;
-        try {
-            template = readContent(templateFileName);
-        } catch (IOException ex){
-            throw new RuntimeException(ex);
-        }
+        String template = getClassPathResource(templateFileName);
 
         //generate file
         String className = domainClassFile.getName().substring(0, domainClassFile.getName().length() - 6);
@@ -113,49 +70,4 @@ public class GenerateWebappMojo extends AbstractMojo {
         }
     }
 
-    /**
-     * Read the content of a class path resource file.
-     * @param templateFileName absolute path to the file.
-     * @return the content.
-     * @throws IOException
-     */
-    private String readContent(String templateFileName) throws IOException{
-
-        InputStream inputStream = null;
-        BufferedReader reader = null;
-
-        try {
-            inputStream = this.getClass().getClassLoader().getResourceAsStream(templateFileName);
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder out = new StringBuilder();
-            String newLine = System.getProperty("line.separator");
-            String line;
-            while ((line = reader.readLine()) != null) {
-                out.append(line);
-                out.append(newLine);
-            }
-            return out.toString();
-        }finally {
-            if(reader != null){
-                reader.close();
-            }
-            if(inputStream != null){
-                inputStream.close();
-            }
-        }
-    }
-
-    /**
-     * Save the content as a file.
-     * @param fileName location of the file.
-     * @param content content of the file.
-     */
-    private void saveTo(String fileName, String content){
-
-        try(FileWriter fileWriter = new FileWriter(fileName)){
-           fileWriter.write(content);
-        }catch (IOException ex){
-            getLog().error(ex);
-        }
-    }
 }

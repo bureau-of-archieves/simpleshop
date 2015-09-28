@@ -3,6 +3,8 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.Cascade;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
+import simpleshop.domain.model.type.EmploymentType;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;

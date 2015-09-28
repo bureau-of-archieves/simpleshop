@@ -1,4 +1,4 @@
-package simpleshop.domain.model;
+package simpleshop.domain.model.type;
 
 /**
  * A list of default contact numbers which can be selected in the UI.

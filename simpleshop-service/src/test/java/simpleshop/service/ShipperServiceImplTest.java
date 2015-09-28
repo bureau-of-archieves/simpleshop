@@ -7,7 +7,7 @@ import simpleshop.data.PageInfo;
 import simpleshop.data.ShipperDAO;
 import simpleshop.data.SuburbDAO;
 import simpleshop.data.test.TestConstants;
-import simpleshop.domain.model.ContactNumberType;
+import simpleshop.domain.model.type.ContactNumberType;
 import simpleshop.domain.model.Shipper;
 import simpleshop.domain.model.Suburb;
 import simpleshop.domain.model.component.Address;

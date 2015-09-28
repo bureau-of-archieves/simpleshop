@@ -14,6 +14,7 @@ import simpleshop.data.test.TransactionalTest;
 import simpleshop.data.util.DomainUtils;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.Address;
+import simpleshop.domain.model.type.ContactNumberType;
 
 import java.util.ArrayList;
 import java.util.HashMap;

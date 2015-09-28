@@ -1,4 +1,4 @@
-package simpleshop.domain.model;
+package simpleshop.domain.model.type;
 
 /**
  * Employment type.

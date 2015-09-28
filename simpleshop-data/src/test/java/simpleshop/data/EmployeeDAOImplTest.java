@@ -3,13 +3,11 @@ package simpleshop.data;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import simpleshop.Constants;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
 import simpleshop.domain.model.Contact;
-import simpleshop.domain.model.ContactNumberType;
+import simpleshop.domain.model.type.ContactNumberType;
 import simpleshop.domain.model.Employee;
 
 import java.util.List;
