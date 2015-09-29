@@ -113,7 +113,6 @@ public class CategoryServiceImplTest extends ServiceTransactionTest {
 
     }
 
-
     @Test
     public void beanValidationIsNotEnabledInHibernate(){
 

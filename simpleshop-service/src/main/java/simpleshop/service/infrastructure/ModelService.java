@@ -66,13 +66,7 @@ public interface ModelService<T, S extends ModelSearch> extends BaseService {
     @NotNull List<T> quickSearch(String keywords, PageInfo pageInfo);
 
     /**
-     * A list of properties that should be ignored by the JSON serializer.
-     * @return array of property names.
-     */
-    @NotNull String[] ignoredJsonProperties();
-
-    /**
-     * List of properties that should be automatically loaded.
+     * List of properties that should be automatically loaded if they are lazy. This is triggered for both details and list actions.
      * @return list of property names.
      */
     Collection<String> lazyLoadedProperties(); //can return null

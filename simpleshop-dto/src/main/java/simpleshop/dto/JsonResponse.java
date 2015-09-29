@@ -5,15 +5,27 @@ import java.util.TreeMap;
 
 public class JsonResponse<T> {
 
-    public static final String STATUS_OK = "OK";
-    public static final String STATUS_ERROR = "ERROR";
+    private static final String STATUS_OK = "OK";
+    private static final String STATUS_ERROR = "ERROR";
+
+    public static <T> JsonResponse<T> createSuccess(T content){
+       return new JsonResponse<>(STATUS_OK, null, content);
+    }
+
+    public static JsonResponse<?> createError(Throwable ex){
+        return new JsonResponse<>(STATUS_ERROR, ex.getLocalizedMessage(), null);
+    }
+
+    public static <T> JsonResponse<T> createError(String msg, T content){
+        return new JsonResponse<>(STATUS_ERROR, msg, content);
+    }
 
     private final String status;//content type: e.g. model
     private final String description;//content name e.g. customer
     private final T content;
     private Map<String, Object> tags; //additional information about the model
 
-    public JsonResponse(String status, String description, T content){
+    private JsonResponse(String status, String description, T content){
         this.status = status;
         this.description = description;
         this.content = content;

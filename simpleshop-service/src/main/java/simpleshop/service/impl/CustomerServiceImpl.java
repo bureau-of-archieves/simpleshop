@@ -41,10 +41,4 @@ public class CustomerServiceImpl extends ContactServiceImpl<Customer, CustomerSe
         Hibernate.initialize(model.getOrders());
     }
 
-    private static final String[] IGNORED_JSON_PROPERTIES = {"orders.customer"};
-
-    @Override
-    public String[] ignoredJsonProperties() {
-        return IGNORED_JSON_PROPERTIES;
-    }
 }

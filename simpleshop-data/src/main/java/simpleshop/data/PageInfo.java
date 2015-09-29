@@ -2,7 +2,6 @@ package simpleshop.data;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.collections.ListUtils;
 import simpleshop.Constants;
 
 import java.io.Serializable;

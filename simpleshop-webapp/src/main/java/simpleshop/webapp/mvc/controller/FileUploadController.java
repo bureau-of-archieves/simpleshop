@@ -5,10 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import simpleshop.common.StringUtils;
 import simpleshop.domain.model.Category;
@@ -71,8 +68,15 @@ public class FileUploadController extends BaseJsonController {
         return savedFilename;
     }
 
+    private void checkImageExtension(@RequestParam("image") MultipartFile imageFile) {
+        String extension = StringUtils.subStrAfterLast(imageFile.getOriginalFilename(), ".");
+        if(StringUtils.isNullOrEmpty(extension) || !IMAGE_EXTENSIONS.contains(extension.toLowerCase())){
+            throw new IllegalArgumentException("Can only accept: " + org.apache.commons.lang3.StringUtils.join(IMAGE_EXTENSIONS, ","));
+        }
+    }
+
     @RequestMapping(value = "/category/{id}/image_path", method = RequestMethod.POST)
-    public String uploadCategoryImage(@PathVariable("id") int id, @RequestParam("image") MultipartFile imageFile, Model model){
+    public @ResponseBody JsonResponse<String>  uploadCategoryImage(@PathVariable("id") int id, @RequestParam("image") MultipartFile imageFile, Model model){
 
         //check extension
         checkImageExtension(imageFile);
@@ -86,19 +90,11 @@ public class FileUploadController extends BaseJsonController {
         categoryService.save(category);
 
         //return result
-        JsonResponse<String> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, category.getImagePath());
-        return super.outputJson(model, response, null);
-    }
-
-    private void checkImageExtension(@RequestParam("image") MultipartFile imageFile) {
-        String extension = StringUtils.subStrAfterLast(imageFile.getOriginalFilename(), ".");
-        if(StringUtils.isNullOrEmpty(extension) || !IMAGE_EXTENSIONS.contains(extension.toLowerCase())){
-            throw new IllegalArgumentException("Can only accept: " + org.apache.commons.lang3.StringUtils.join(IMAGE_EXTENSIONS, ","));
-        }
+        return JsonResponse.createSuccess(category.getImagePath());
     }
 
     @RequestMapping(value = "/product/{id}/images", method = RequestMethod.POST)
-    public String uploadProductImages(@PathVariable("id") int id, @RequestParam("images") List<MultipartFile> imageFiles, Model model){
+    public @ResponseBody JsonResponse<List<String>> uploadProductImages(@PathVariable("id") int id, @RequestParam("images") List<MultipartFile> imageFiles, Model model){
 
         //check extension
         imageFiles.forEach(this::checkImageExtension);
@@ -116,7 +112,7 @@ public class FileUploadController extends BaseJsonController {
 //        productService.save(product);
 
         //return result
-        JsonResponse<List<String>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, savedFilenames);
-        return super.outputJson(model, response, null);
+        return JsonResponse.createSuccess(savedFilenames);
     }
+
 }

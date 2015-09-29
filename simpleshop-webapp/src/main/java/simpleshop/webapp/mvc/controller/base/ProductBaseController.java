@@ -3,12 +3,8 @@ package simpleshop.webapp.mvc.controller.base;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import simpleshop.domain.model.Product;
 import simpleshop.dto.ProductSearch;
 import simpleshop.dto.JsonResponse;
@@ -21,50 +17,43 @@ import java.io.Serializable;
 
 @Controller
 @RequestMapping(produces = "application/json")
-public abstract class ProductBaseController extends BaseJsonController {
+public abstract class ProductBaseController extends BaseJsonController<Product> {
 
     @Autowired
     protected ProductService productService;
 
     @RequestMapping(value = "/product/search", method = RequestMethod.GET)
-    public String productSearch(Model model) {
-        JsonResponse<ProductSearch> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, new ProductSearch());
-        return super.outputJson(model, response, productService.ignoredJsonProperties());
+    public @ResponseBody JsonResponse<ProductSearch> productSearch() {
+        return JsonResponse.createSuccess(new ProductSearch());
     }
 
     @RequestMapping(value = "/product/search", method = RequestMethod.POST, consumes = "application/json")
-    public String productSearch(@Valid @RequestBody final ProductSearch productSearch, BindingResult bindingResult, Model model) {
-        JsonResponse<Iterable<Product>> response = modelSearch(productSearch, productService, bindingResult);
-        return super.outputJson(model, response, productService.ignoredJsonProperties());
+    public @ResponseBody JsonResponse<Iterable<Product>> productSearch(@Valid @RequestBody final ProductSearch productSearch, BindingResult bindingResult) {
+        return modelSearch(productSearch, bindingResult, productService);
     }
 
     @RequestMapping(value = "/product/new", method = RequestMethod.GET)
-    public String productCreate(Model model) {
-        JsonResponse<Product> response = new JsonResponse<>(JsonResponse.STATUS_OK, null, productService.create());
-        return super.outputJson(model, response, productService.ignoredJsonProperties());
+    public @ResponseBody JsonResponse<Product> productCreate() {
+        return modelCreate(productService);
     }
 
     @RequestMapping(value = "/product/save", method = RequestMethod.POST, consumes = "application/json")
-    public String productSave(@Valid @RequestBody final Product product, BindingResult bindingResult, Model model) {
-        JsonResponse<Product>  response =  saveModel(product, productService, bindingResult);
-        return super.outputJson(model, response, productService.ignoredJsonProperties());
+    public @ResponseBody JsonResponse<Product> productSave(@Valid @RequestBody final Product product, BindingResult bindingResult) {
+        return modelSave(product, bindingResult, productService);
     }
 
     @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
-    public String productDetails(@PathVariable int id, Model model) {
-        JsonResponse<Product> response = modelDetails(id, productService);
-        return super.outputJson(model, response, productService.ignoredJsonProperties());
+    public @ResponseBody JsonResponse<Product> productDetails(@PathVariable int id) {
+        return modelDetails(id, productService);
     }
 
     @RequestMapping(value = "/product/delete", method = RequestMethod.POST, consumes = "application/json")
-    public String productDelete(@Valid @RequestBody final int id, Model model) {
-        JsonResponse<Serializable> response = deleteModel(id, productService);
-        return super.outputJson(model, response, null);
+    public @ResponseBody JsonResponse<Serializable> productDelete(@Valid @RequestBody final int id) {
+        return modelDelete(id, productService);
     }
 
     @RequestMapping(value = "/product/list", method = RequestMethod.POST, consumes = "application/json")
-    public String productList(@Valid @RequestBody final ModelQuickSearch quickSearch, Model model){
-        JsonResponse<Iterable<Product>> response = new JsonResponse<>(JsonResponse.STATUS_OK, null,productService.quickSearch(quickSearch.getKeywords(), quickSearch));
-        return super.outputJson(model, response, null);
+    public @ResponseBody JsonResponse<Iterable<Product>> productList(@Valid @RequestBody final ModelQuickSearch quickSearch){
+        return modelList(quickSearch, productService);
     }
 }

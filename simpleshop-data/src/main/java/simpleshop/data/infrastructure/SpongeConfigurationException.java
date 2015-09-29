@@ -13,6 +13,4 @@ public class SpongeConfigurationException extends RuntimeException {
         super(msg, ex);
     }
 
-
-
 }

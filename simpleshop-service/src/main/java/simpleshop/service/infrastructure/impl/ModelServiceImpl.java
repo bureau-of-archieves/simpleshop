@@ -195,15 +195,6 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
         return getModelDAO().quickSearch(keywords, pageInfo);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @NotNull String[] ignoredJsonProperties(){
-        return StringUtils.emptyArray();
-    }
-
-
     @Transactional(propagation = Propagation.MANDATORY)
     public void resolveLookupValues(Object domainObject, final Collection<String> exceptProperties) {
 

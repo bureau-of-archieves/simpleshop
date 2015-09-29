@@ -18,7 +18,6 @@ import java.util.Map;
 /**
  * Get metadata of the domain models.
  */
-@@Service
 public abstract class BaseMetadataService extends BaseServiceImpl implements MetadataService {
 
     private final Class<?>[] classes;

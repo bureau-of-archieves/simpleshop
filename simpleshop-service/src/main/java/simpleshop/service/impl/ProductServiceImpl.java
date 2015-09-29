@@ -48,13 +48,4 @@ public class ProductServiceImpl extends ModelServiceImpl<Product, ProductSearch>
         return LAZY_LOADED_PROPERTIES;
     }
 
-    private static final String[] jsonIgnored = {"parent"}; //category.parent
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public @NotNull
-    String[] ignoredJsonProperties(){
-        return jsonIgnored;
-    }
 }

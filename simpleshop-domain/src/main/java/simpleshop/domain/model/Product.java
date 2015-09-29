@@ -1,5 +1,6 @@
 package simpleshop.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.Description;
@@ -69,6 +70,7 @@ public class Product {
         this.quantityPerUnit = quantityPerUnit;
     }
 
+    @JsonIgnoreProperties("parent")
     @ManyToMany()
     @JoinTable(name = "product_categories", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     @BatchSize(size = Constants.BATCH_SIZE)
