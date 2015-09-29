@@ -19,6 +19,7 @@
         <ctrl:detailsChildList path="productSuppliers" >
             <ctrl:detailsModelLink path="supplier" />
             <ctrl:detailsField path="unitPrice"/>
+            <ctrl:detailsField path="url"/>
             <ctrl:detailsField path="unitPriceDate"/>
             <ctrl:detailsField path="outOfStockDate"/>
             <ctrl:detailsField path="note"/>

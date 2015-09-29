@@ -60,7 +60,7 @@ public class ProductSupplier {
         this.url = url;
     }
 
-    @DisplayFormat("na")
+    @DisplayFormat("| na")
     @Column(name = "out_of_stock_date")
     @Description("The last time this product was out of stock at the supplier")
     public LocalDateTime getOutOfStockDate() {
@@ -80,6 +80,7 @@ public class ProductSupplier {
         this.note = note;
     }
 
+    @DisplayFormat("| na")
     @Column(name = "unit_price_date")
     @Description("The last time this record was updated.")
     public LocalDateTime getUnitPriceDate() {

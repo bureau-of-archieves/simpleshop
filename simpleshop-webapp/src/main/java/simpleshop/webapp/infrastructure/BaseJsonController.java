@@ -10,6 +10,7 @@ import simpleshop.service.infrastructure.ModelService;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Random;
 
 /**
  * The base controller for all controllers that return json data.
@@ -24,7 +25,7 @@ public abstract class BaseJsonController<T> {
     }
 
     protected JsonResponse<T> modelCreate(ModelService<T, ?> modelService){
-        return JsonResponse.createSuccess( modelService.create());
+        return JsonResponse.createSuccess(modelService.create());
     }
 
     protected JsonResponse<T> modelSave(T model, BindingResult bindingResult, ModelService<T, ?> modelService) {
@@ -38,7 +39,6 @@ public abstract class BaseJsonController<T> {
     }
 
     protected JsonResponse<T> modelDetails(Serializable id, ModelService<T, ?> modelService) {
-        if((Integer)id < 100000) throw new RuntimeException();    //todo removethis
         T domainObject = modelService.getById(id);
         if (domainObject != null) {
             return JsonResponse.createSuccess(domainObject);

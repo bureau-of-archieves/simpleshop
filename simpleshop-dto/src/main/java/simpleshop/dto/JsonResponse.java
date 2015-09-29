@@ -1,5 +1,7 @@
 package simpleshop.dto;
 
+import simpleshop.common.StringUtils;
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,7 +15,11 @@ public class JsonResponse<T> {
     }
 
     public static JsonResponse<?> createError(Throwable ex){
-        return new JsonResponse<>(STATUS_ERROR, ex.getLocalizedMessage(), null);
+        String errorMessage = ex.getLocalizedMessage();
+        if(StringUtils.isNullOrEmpty(errorMessage)){
+            errorMessage = ex.getClass().getName();
+        }
+        return new JsonResponse<>(STATUS_ERROR, errorMessage, null);
     }
 
     public static <T> JsonResponse<T> createError(String msg, T content){

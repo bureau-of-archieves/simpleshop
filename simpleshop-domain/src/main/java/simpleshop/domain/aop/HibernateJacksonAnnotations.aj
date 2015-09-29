@@ -1,6 +1,4 @@
-
 package simpleshop.domain.aop;
-
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

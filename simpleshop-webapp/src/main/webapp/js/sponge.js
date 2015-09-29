@@ -963,10 +963,6 @@
                 return createPromise(null);
             };
 
-            var createViewFailure = function (jqXHR, textStatus) {
-                return createPromise("Failed to retrieve view " + viewName + ": " + textStatus);
-            };
-
             return beginOp(operationKey)
                 .fail(function () {
                     reportError("Cannot begin operation.");
@@ -974,7 +970,9 @@
                 .then(function () {
                     return createRequest().then(
                         createView,
-                        createViewFailure
+                        function (jqXHR, textStatus, description) {
+                            return createPromise("Failed to retrieve view " + viewName + ": " + (description ? description : textStatus));
+                        }
                     ).always(
                         function () {
                             return endOp(operationKey);
@@ -1171,8 +1169,8 @@
                         });
                         return createPromise(null);
                     },
-                    function (jqXHR, textStatus) {
-                        return createPromise("Failed to refresh view " + viewId + ": " + textStatus);
+                    function (jqXHR, textStatus, description) {
+                        return createPromise("Failed to refresh view " + viewId + ": " + (description ? description : textStatus));
                     }
                 ).always(function () {
                         return endOp(operationKey);
