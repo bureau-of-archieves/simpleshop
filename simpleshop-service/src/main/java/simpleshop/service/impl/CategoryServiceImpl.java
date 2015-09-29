@@ -1,6 +1,5 @@
 package simpleshop.service.impl;
 
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import simpleshop.Constants;
@@ -20,7 +19,7 @@ public class CategoryServiceImpl extends CategoryBaseService implements Category
 
     @Override
     protected void initialize(@NotNull Category model) {
-        Hibernate.initialize(model.getParent()); //load direct parent as well.
+        categoryDAO.initialize(model.getParent()); //load direct parent as well.
     }
 
     /**

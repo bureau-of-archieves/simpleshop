@@ -12,6 +12,7 @@ import java.util.HashSet;
 public final class ReflectionUtils {
 
     private ReflectionUtils(){}
+
     private static final HashSet<String> primitiveConversions = new HashSet<>();
 
     static {
@@ -87,13 +88,20 @@ public final class ReflectionUtils {
          throw new IllegalArgumentException("returnType"); //not supported
     }
 
+    /**
+     * Call toString on value and then parse it as a returnType value.
+     * @param value if this value is already returnType then no conversion will take place.
+     * @param returnType desired type.
+     * @param <T> type parameter.
+     * @return parsed object.
+     */
     @SuppressWarnings("unchecked")
-    public static <T> T  parseObject(Object value, Class<T> returnType){
+    public static <T> T parseObject(Object value, Class<T> returnType){
 
         if(value == null)
             return null;
 
-        if(returnType == value.getClass())
+        if(returnType.isInstance(value))
             return (T)value;
 
         return ReflectionUtils.parseString(value.toString(), returnType);

@@ -5,10 +5,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
- * Created with IntelliJ IDEA.
- * User: JOHNZ
- * Date: 3/09/14
- * Time: 5:05 PM
+ * Util methods for date and time data types.
  */
 public final class DateUtils {
 
@@ -57,4 +54,5 @@ public final class DateUtils {
         }
         return age;
     }
+
 }

@@ -3,6 +3,9 @@ package simpleshop.common;
 
 import java.util.UUID;
 
+/**
+ * A util class for string related operations.
+ */
 public final class StringUtils {
 
     private StringUtils(){}
@@ -115,6 +118,11 @@ public final class StringUtils {
         return Character.toLowerCase(accessorName.charAt(startIndex)) + accessorName.substring(startIndex + 1);
     }
 
+    /**
+     * The first char is lowered.
+     * @param simpleName input.
+     * @return result.
+     */
     public static String firstCharLower(String simpleName) {
         if (simpleName == null)
             return null;
@@ -125,6 +133,11 @@ public final class StringUtils {
         return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
     }
 
+    /**
+     * The first char is converted to upper case.
+     * @param simpleName input.
+     * @return result.
+     */
     public static String firstCharUpper(String simpleName) {
         if (simpleName == null)
             return null;
@@ -137,18 +150,18 @@ public final class StringUtils {
 
     private static final String[] EMPTY_STRING_ARRAY = {};
 
+    /**
+     * Empty String array constant.
+     * @return empty string array.
+     */
     public static String[] emptyArray(){
         return EMPTY_STRING_ARRAY;
     }
 
-    public static boolean startWith(String name, String s) {
-        return !(name == null || s == null) && name.startsWith(s);
-    }
-
-    public static boolean endWith(String name, String s) {
-        return !(name == null || s == null) && name.endsWith(s);
-    }
-
+    /**
+     * Get a random uuid string.
+     * @return uuid string.
+     */
     public static String uuid(){
         return UUID.randomUUID().toString();
     }
@@ -312,6 +325,11 @@ public final class StringUtils {
         return stringBuilder.toString();
     }
 
+    /**
+     * Pascal name to Url name.
+     * @param camelName e.g. PascalName.
+     * @return e.g. pascal_name.
+     */
     public static String pascalNameToUrlName(String camelName){
         if(isNullOrEmpty(camelName))
             return camelName;
@@ -345,6 +363,11 @@ public final class StringUtils {
         return name.replaceAll("\\s+", "");
     }
 
+    /**
+     * Wrap the search input in a pattern.
+     * @param param input.
+     * @return search pattern.
+     */
     public static String wrapLikeKeywords(String param) {
         if(param == null)
             param = "";
@@ -358,6 +381,11 @@ public final class StringUtils {
         return param.replaceAll("-", "");
     }
 
+    /**
+     * Match strings start with the keyword.
+     * @param param keyword.
+     * @return search pattern.
+     */
     public static String wrapStartWithKeywords(String param){
         if(param == null)
             param = "";

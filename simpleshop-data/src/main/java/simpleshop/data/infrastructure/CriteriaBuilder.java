@@ -1,6 +1,5 @@
 package simpleshop.data.infrastructure;
 
-import org.hibernate.Criteria;
 import org.hibernate.criterion.DetachedCriteria;
 import simpleshop.data.PageInfo;
 

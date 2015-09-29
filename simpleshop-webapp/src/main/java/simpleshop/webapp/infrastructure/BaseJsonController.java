@@ -38,7 +38,7 @@ public abstract class BaseJsonController<T> {
     }
 
     protected JsonResponse<T> modelDetails(Serializable id, ModelService<T, ?> modelService) {
-
+        if((Integer)id < 100000) throw new RuntimeException();    //todo removethis
         T domainObject = modelService.getById(id);
         if (domainObject != null) {
             return JsonResponse.createSuccess(domainObject);

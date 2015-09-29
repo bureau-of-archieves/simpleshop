@@ -61,6 +61,12 @@ public final class CollectionUtils {
         return values;
     }
 
+    /**
+     * Convert an object into an object array.
+     * @param value object whose real type is unknown.
+     * @param targetType if value is not a collection then convert it to a string and then parse into a target type array.
+     * @return array.
+     */
     public static Object[] objectToObjectArray(Object value, Class<?> targetType){
         Object[] values;
         if(value instanceof Iterable){
@@ -71,6 +77,13 @@ public final class CollectionUtils {
         return values;
     }
 
+    /**
+     * Compare if two iterable objects are equal by element.
+     * @param i1 sequence 1.
+     * @param i2 sequence 2.
+     * @param <T> type.
+     * @return true if all elements at the same index are equal.
+     */
     public static <T> boolean iterableEquals(Iterable<T> i1, Iterable<T> i2){
 
         if(Objects.equals(i1, i2))
@@ -95,8 +108,6 @@ public final class CollectionUtils {
             }
         }
 
-        if(iterator2.hasNext())
-            return false;
-        return true;
+        return !iterator2.hasNext();
     }
 }

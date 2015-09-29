@@ -1,6 +1,5 @@
 package simpleshop.service.impl;
 
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import simpleshop.domain.model.Product;
 import simpleshop.domain.model.component.ProductSupplier;
@@ -14,8 +13,8 @@ public class ProductServiceImpl extends ProductBaseService implements ProductSer
 
     @Override
     protected void initialize(@NotNull Product model) {
-        Hibernate.initialize(model.getImages());
-        Hibernate.initialize(model.getProductSuppliers());
+        productDAO.initialize(model.getImages());
+        productDAO.initialize(model.getProductSuppliers());
     }
 
     @Override

@@ -22,4 +22,6 @@ public interface ModelDAO<T> extends BaseDAO{
     List<T> search(ModelMetadata searchMetadata, ModelMetadata modelMetadata, PageInfo searchObject);
 
     List<T> quickSearch(String keywords, PageInfo pageInfo);
+
+    Class<T> getModelClass();
 }

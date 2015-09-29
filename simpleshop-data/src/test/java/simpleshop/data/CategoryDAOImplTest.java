@@ -17,6 +17,17 @@ public class CategoryDAOImplTest extends TransactionalTest {
     private CategoryDAO categoryDAO;
 
     @Test
+    public void canGetModelClass(){
+
+        //action
+        Class<?> modelClazz = categoryDAO.getModelClass();
+
+        //assertion
+        assertThat(modelClazz, sameInstance(Category.class));
+
+    }
+
+    @Test
     public void quickSearchTest() {
         List<Category> categories = categoryDAO.quickSearch(TestConstants.SUB_CATEGORY_1, new PageInfo());
 

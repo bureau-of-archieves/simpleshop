@@ -1,6 +1,5 @@
 package simpleshop.service.impl;
 
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import simpleshop.domain.model.Customer;
 import simpleshop.service.CustomerService;
@@ -13,7 +12,7 @@ public class CustomerServiceImpl extends CustomerBaseService implements Customer
 
     @Override
     protected void initialize(@NotNull Customer model) {
-        Hibernate.initialize(model.getOrders());
+        customerDAO.initialize(model.getOrders());
     }
 
 }

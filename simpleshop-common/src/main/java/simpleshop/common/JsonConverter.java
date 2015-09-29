@@ -6,9 +6,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
- * User: JOHNZ
- * Date: 8/09/14
- * Time: 12:59 PM
+ * Convert to and from JSON.
  */
 public class JsonConverter {
 

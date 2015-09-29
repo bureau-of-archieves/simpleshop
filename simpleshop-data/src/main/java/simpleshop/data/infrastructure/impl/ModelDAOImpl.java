@@ -11,6 +11,7 @@ import simpleshop.data.SortInfo;
 import simpleshop.data.metadata.*;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 
 
@@ -23,7 +24,9 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
      * @return the proxy to the domain object.
      */
     @Override
-    public abstract T load(Serializable id);
+    public T load(Serializable id){
+        return load(getModelClass(), id);
+    }
 
     /**
      * Cannot implement at ModelDAOImpl level because Java generic type erasure.
@@ -31,7 +34,9 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
      * @return the domain object or null if cannot find.
      */
     @Override
-    public abstract T get(Serializable id);
+    public T get(Serializable id){
+        return get(getModelClass(), id);
+    }
 
     public void save(T domainObject) {
         super.saveDomainObject(domainObject);
@@ -73,6 +78,17 @@ public abstract class ModelDAOImpl<T> extends BaseDAOImpl implements ModelDAO<T>
     @Override
     public List<T> quickSearch(String keywords, PageInfo pageInfo){
         throw new UnsupportedOperationException("Quick search is not implemented for " + this.getClass().getSimpleName());
+    }
+
+    /**
+     * Get the model class of this DAO class.
+     * @return model class.
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public Class<T> getModelClass(){
+        ParameterizedType concreteSuperClass = (ParameterizedType)this.getClass().getGenericSuperclass();
+        return (Class<T>)concreteSuperClass.getActualTypeArguments()[0];
     }
 
     ///////////////////////// protected methods //////////////////////////////////////////
