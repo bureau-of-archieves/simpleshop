@@ -836,17 +836,6 @@
             //jquery initialization for the view
             $(elements).find("ul.nav.nav-tabs").makeTab();
 
-
-            $(elements).find("*[data-spg-date]").each(function (index, element) {//make date pickers
-                var input = $(element);
-                var dateFormat = input.data("spgDate");
-                input.closest(".date")
-                    .datetimepicker({format: dateFormat})
-                    .on("dp.change", function () {
-                        setTimeout(input.data("update"), 0);
-                    });
-            });
-
         };
 
         /**
@@ -1824,6 +1813,16 @@
                 ngModel.$parsers.push(dateParser);
                 ngModel.$formatters.push(dateFormatter);
                 $(element).data("update", update);
+
+                setTimeout(function(){
+                    var input = $(element);
+                    var dateFormat = input.data("spgDate");
+                    input.closest(".date")
+                        .datetimepicker({format: dateFormat})
+                        .on("dp.change", function () {
+                            setTimeout(input.data("update"), 0);
+                        });
+                }, 50);
             }
         };
     }]);
