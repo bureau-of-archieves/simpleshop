@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Test <code>MetadataServiceImpl</code> methods.
+ * Test <code>ShipperServiceImpl</code> methods.
  */
 public class ShipperServiceImplTest extends ServiceTransactionTest {
 

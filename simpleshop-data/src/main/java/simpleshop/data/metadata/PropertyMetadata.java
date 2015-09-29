@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Metadata for a domain object property.
  */
-@JsonIgnoreProperties({"getter", "returnType", "returnTypeMetadata", "propertyFilters"})
+@JsonIgnoreProperties({"getter", "returnType", "returnTypeMetadata", "propertyFilters", "idProperty"})
 public class PropertyMetadata {
 
     /**
@@ -22,18 +22,6 @@ public class PropertyMetadata {
      * The Java simple type name of the field.
      */
     private String propertyType = "";
-
-    /**
-     * true if this property is a part of the primary key.
-     */
-    private boolean idProperty = false;
-
-    /**
-     * true if this property is a party of summary (list) view.
-     * If false this property will be cleared if the northwind object is retrieved as a property value or in a collection.
-     */
-    private boolean summaryProperty = false;
-
 
     /**
      * true if this property cannot be null from the client's point of view.
@@ -106,7 +94,7 @@ public class PropertyMetadata {
     private boolean maxExclusive = false;
 
     //the properties below are not sent to the client side.
-
+    private boolean idProperty = false;
     private Method getter;
     private Class<?> returnType;
     private  ModelMetadata returnTypeMetadata;
@@ -126,14 +114,6 @@ public class PropertyMetadata {
 
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
-    }
-
-    public boolean isIdProperty() {
-        return idProperty;
-    }
-
-    public void setIdProperty(boolean idProperty) {
-        this.idProperty = idProperty;
     }
 
     public boolean isRequired() {
@@ -192,14 +172,6 @@ public class PropertyMetadata {
         this.label = label;
     }
 
-    public boolean isSummaryProperty() {
-        return summaryProperty;
-    }
-
-    public void setSummaryProperty(boolean summaryProperty) {
-        this.summaryProperty = summaryProperty;
-    }
-
     public String getWatermark() {
         return watermark;
     }
@@ -246,6 +218,14 @@ public class PropertyMetadata {
 
     public void setGetter(Method getter) {
         this.getter = getter;
+    }
+
+    public boolean isIdProperty() {
+        return idProperty;
+    }
+
+    public void setIdProperty(boolean idProperty) {
+        this.idProperty = idProperty;
     }
 
     public ModelMetadata getReturnTypeMetadata() {

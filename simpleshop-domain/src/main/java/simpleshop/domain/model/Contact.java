@@ -3,6 +3,7 @@ package simpleshop.domain.model;
 import org.hibernate.annotations.*;
 import org.hibernate.annotations.CascadeType;
 import simpleshop.Constants;
+import simpleshop.domain.metadata.AutoLoad;
 import simpleshop.domain.model.component.Address;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
 
+@AutoLoad("contactNumbers")
 @Entity
 @Table(name = "contacts")
 public class Contact {

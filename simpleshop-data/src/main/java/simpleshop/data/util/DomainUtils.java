@@ -216,6 +216,7 @@ public final class DomainUtils {
 
         ModelMetadata modelMetadata = new ModelMetadata(clazz);
 
+        setAutoLoadProperties(modelMetadata, clazz); //set auto load properties
         setIcon(modelMetadata, clazz); //set icon
         setDisplayFormat(modelMetadata, clazz);//set display format
         setInterpolateFormat(modelMetadata, clazz);
@@ -241,6 +242,18 @@ public final class DomainUtils {
         }
         modelMetadata.setPropertyMetadataMap(Collections.unmodifiableMap(propertyMap));
         return modelMetadata;
+    }
+
+    private static void setAutoLoadProperties(ModelMetadata modelMetadata, Class<?> clazz) {
+        HashSet<String> autoLoadProperties = new HashSet<>();
+        while (clazz != null){
+            AutoLoad autoLoad = clazz.getAnnotation(AutoLoad.class);
+            if(autoLoad != null){
+                autoLoadProperties.addAll(Arrays.asList(autoLoad.value()));
+            }
+            clazz = clazz.getSuperclass();
+        }
+        modelMetadata.setAutoLoadProperties(autoLoadProperties);
     }
 
     private static Set<String> getJsonIgnoreProperties(Class<?> clazz) {

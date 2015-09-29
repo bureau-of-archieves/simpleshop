@@ -1,15 +1,11 @@
 package simpleshop.service.infrastructure.impl;
 
-import org.hibernate.Hibernate;
-import org.hibernate.collection.internal.PersistentMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.ReflectionUtils;
 import simpleshop.common.PropertyReflector;
-import simpleshop.common.StringUtils;
-import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.util.DomainUtils;
@@ -19,10 +15,8 @@ import simpleshop.service.infrastructure.ModelService;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Base model service class.
@@ -35,15 +29,6 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
      * @return the DAO used by the implementation class.
      */
     protected abstract ModelDAO<T> getModelDAO();
-
-    /**
-     * The list of properties of the model class which should be loaded in the pre-return traversal phase.
-     * [convention:lookup resolution]Before return an object to the caller of the service layer, an object graph traversal is performed. During this time all not initialised (hibernate) properties will be set to null except the ones listed in here.
-     * @return a list of properties that should not be null-out but be lazy loaded.
-     */
-    public Collection<String> lazyLoadedProperties(){
-        return null;
-    }
 
     /**
      * Manually lazy load model properties if additional processing is required.
@@ -69,7 +54,7 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
             T model = modelDAO.get(id);
             if(model != null){
                 initialize(model);
-                resolveLookupValues(model, lazyLoadedProperties());
+                resolveLookupValues(model);
                 modelDAO.detach(model);
             }
             return model;
@@ -102,7 +87,7 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
             List<T> result = daoSearch(searchParams);
             for(T item : result){
                 //initialize(item); initialise is for getById only.
-                resolveLookupValues(item, lazyLoadedProperties());
+                resolveLookupValues(item);
                 modelDAO.detach(item);
             }
             return result;
@@ -181,7 +166,7 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
 
         List<T> list = daoQuickSearch(keywords, pageInfo);
         for (Object obj : list){
-            resolveLookupValues(obj, this.lazyLoadedProperties());
+            resolveLookupValues(obj);
             getModelDAO().detach(obj);
         }
 
@@ -195,48 +180,15 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
         return getModelDAO().quickSearch(keywords, pageInfo);
     }
 
+    public void resolveLookupValues(Object domainObject){
+        resolveLookupValues(domainObject, null);
+    }
+
     @Transactional(propagation = Propagation.MANDATORY)
     public void resolveLookupValues(Object domainObject, final Collection<String> exceptProperties) {
 
-        PropertyReflector inspector = new PropertyReflector(
-                (Object target, Method getter, Object value, Throwable exception, int index) -> {
-                    //root case
-                    if (getter == null)
-                        return PropertyReflector.InspectionResult.CONTINUE;
-
-                    //go into initialised object only
-                    if (Hibernate.isInitialized(value)) {
-                        if (value != null) { //exclude primitives and java types.
-                            if (value.getClass().getPackage() == null || value.getClass().getPackage().getName().startsWith("java.") || value instanceof Map)
-                                return PropertyReflector.InspectionResult.BYPASS; //bypass system types
-                        }
-                        return PropertyReflector.InspectionResult.CONTINUE;
-                    }
-
-                    //for uninitialised properties, resolve lookup objects or trigger loading (lazy property) or set to null (all others).
-                    Class<?> valueClass = DomainUtils.getProxiedClass(value);
-                    Class<?> targetClass = DomainUtils.getProxiedClass(target);
-                    String propertyName = StringUtils.getPropertyName(getter.getName());
-                    Method setter = simpleshop.common.ReflectionUtils.getSetter(targetClass, propertyName, valueClass);
-                    if (setter != null) {
-                        boolean exceptProperty = exceptProperties != null && exceptProperties.contains(propertyName);
-                        if (exceptProperty) {
-                            if(value instanceof PersistentMap){
-                                Hibernate.initialize(value);
-                                return PropertyReflector.InspectionResult.BYPASS;
-                            }
-                            return PropertyReflector.InspectionResult.CONTINUE;
-                        } else {
-                            ReflectionUtils.invokeMethod(setter, target, new Object[]{null});
-                        }
-                        return PropertyReflector.InspectionResult.BYPASS;
-                    } else {
-                        throw new RuntimeException("No setter found for uninitialised property getter:" + propertyName);
-                    }
-                },
-                DomainUtils::getProxiedClass
-        );
-
+        PropertyReflector inspector = new PropertyReflector(new ResolveLookupValuesListener(), DomainUtils::getProxiedClass);
         inspector.inspect(domainObject);
+
     }
 }

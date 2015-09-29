@@ -1,16 +1,16 @@
-@args List<String> modelNames;
-package simpleshop.service.impl;
+@args String projectName, List<String> modelNames;
+@{String basePackage = projectName.toLowerCase()}
+package simpleshop.service.impl.base;
 
-import org.springframework.stereotype.Service;
-import simpleshop.data.metadata.ModelMetadata;
-import simpleshop.data.util.DomainUtils;
-import simpleshop.domain.model.*;
-import simpleshop.domain.model.component.Address;
-import simpleshop.domain.model.component.OrderItem;
-import simpleshop.domain.model.component.ProductSupplier;
-import simpleshop.dto.*;
-import simpleshop.service.MetadataService;
-import simpleshop.service.infrastructure.impl.BaseServiceImpl;
+import @(basePackage).data.metadata.ModelMetadata;
+import @(basePackage).data.util.DomainUtils;
+import @(basePackage).domain.model.*;
+import @(basePackage).domain.model.component.Address;
+import @(basePackage).domain.model.component.OrderItem;
+import @(basePackage).domain.model.component.ProductSupplier;
+import @(basePackage).dto.*;
+import @(basePackage).service.MetadataService;
+import @(basePackage).service.infrastructure.impl.BaseServiceImpl;
 
 import javax.annotation.PostConstruct;
 import java.util.Map;
@@ -18,11 +18,11 @@ import java.util.Map;
 /**
  * Get metadata of the domain models.
  */
-public abstract class BaseMetadataService extends BaseServiceImpl implements MetadataService {
+public abstract class MetadataBaseService extends BaseServiceImpl implements MetadataService {
 
     private final Class<?>[] classes;
 
-    public BaseMetadataService() {
+    public MetadataBaseService() {
 
         this.classes = new Class<?>[]{
             @for(int i=0; i<modelNames.size(); i++) {

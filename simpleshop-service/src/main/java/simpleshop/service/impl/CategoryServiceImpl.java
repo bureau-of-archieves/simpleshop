@@ -1,47 +1,26 @@
 package simpleshop.service.impl;
 
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import simpleshop.Constants;
 import simpleshop.common.StringUtils;
-import simpleshop.data.CategoryDAO;
 import simpleshop.data.SortInfo;
-import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.domain.model.Category;
 import simpleshop.dto.CategorySearch;
 import simpleshop.service.CategoryService;
-import simpleshop.service.infrastructure.impl.ModelServiceImpl;
+import simpleshop.service.impl.base.CategoryBaseService;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Service
-public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySearch> implements CategoryService {
+public class CategoryServiceImpl extends CategoryBaseService implements CategoryService {
 
-    @Autowired
-    private CategoryDAO categoryDAO;
 
     @Override
     protected void initialize(@NotNull Category model) {
         Hibernate.initialize(model.getParent()); //load direct parent as well.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected ModelDAO<Category> getModelDAO() {
-        return categoryDAO;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Category create() {
-        return new Category();
     }
 
     /**
@@ -88,7 +67,7 @@ public class CategoryServiceImpl extends ModelServiceImpl<Category, CategorySear
 
         List<Category> categories = categoryDAO.getDropdownItems(Constants.MAX_DROPDOWN_LIST_SIZE);
         for (Object obj : categories){
-            resolveLookupValues(obj, this.lazyLoadedProperties());
+            resolveLookupValues(obj, null);
             getModelDAO().detach(obj);
         }
         return categories;

@@ -5,17 +5,22 @@ import simpleshop.common.Pair;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
  * Model metadata extracted from the domain model.
  * Some information is only available on the server side (i.e. json ignored).
  */
-@JsonIgnoreProperties({"modelClass", "aliasDeclarations", "sortProperties"})
+@JsonIgnoreProperties({"modelClass", "aliases", "sortProperties", "autoLoadProperties"})
 public class ModelMetadata {
 
     public ModelMetadata(){}
 
+    /**
+     * Automatically set the name, type and modelClass fields.
+     * @param modelClass which model class this metadata is for.
+     */
     public ModelMetadata(Class<?> modelClass){
 
         this.modelClass = modelClass;
@@ -66,7 +71,7 @@ public class ModelMetadata {
 
     /**
      * Name of the id property.
-     * In Sponge framework all models should have a single property for the primary key.
+     * [sponge]In Sponge framework all models should have a single property for the primary key.
      */
     private String idPropertyName;
 
@@ -77,9 +82,10 @@ public class ModelMetadata {
 
     //region Server side information
 
+    private Class<?> modelClass;
     private Map<String, AliasDeclaration> aliases;
     private List<SortProperty> sortProperties;
-    private Class<?> modelClass;
+    private Set<String> autoLoadProperties;
 
     //endregion
 
@@ -196,6 +202,8 @@ public class ModelMetadata {
         PropertyMetadataMap = propertyMetadataMap;
     }
 
+    /////////////////////////////// SERVER SIDE ONLY METADATA /////////////////////////////////////////////
+
     public Map<String, AliasDeclaration> getAliases() {
         return aliases;
     }
@@ -220,7 +228,14 @@ public class ModelMetadata {
         this.modelClass = modelClass;
     }
 
+    public Set<String> getAutoLoadProperties() {
+        return autoLoadProperties;
+    }
 
-    //endregion
+    public void setAutoLoadProperties(Set<String> autoLoadProperties) {
+        this.autoLoadProperties = autoLoadProperties;
+    }
+
+//endregion
 
 }

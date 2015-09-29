@@ -3,7 +3,6 @@ package zhy2002.sponge;
 import org.apache.maven.plugins.annotations.Mojo;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public class GenerateServiceMojo extends BaseMojo {
 
     public GenerateServiceMojo(){
-        super("service");
+        super("service", new String[]{"service", "impl", "base"});
     }
 
     @Override
@@ -23,21 +22,18 @@ public class GenerateServiceMojo extends BaseMojo {
         getLog().info("Generating base services for project " + projectName + "...");
         getLog().debug("Domain classes are found under: " + domainClassLocation);
 
-        generateBaseMetadataService();
+        generateMetadataBaseService();
+        generateModelBaseServices();
     }
 
-    private void generateBaseMetadataService() {
-
-        //ensure dir exists
-        Path outputDirPath = Paths.get(buildSourceDirectory, basePackage, "service", "impl", "base");
-        outputDirPath.toFile().mkdirs();
+    private void generateMetadataBaseService() {
 
         //load the resource
-        String templateFileName = "BaseMetadataService.java";
+        String templateFileName = "MetadataBaseService.java";
         String template = getClassPathResource(templateFileName);
 
         //generate file
-        getLog().debug("Generating BaseMetadataService in: " + outputDirPath);
+        getLog().debug("Generating MetadataBaseService in: " + outputDirPath);
         List<File> domainClassFiles = MojoUtils.getFilesUnderDirectory(domainClassLocation, ".class", new String[]{"type"});
         ArrayList<String> modelNames = new ArrayList<>();
         domainClassFiles.forEach(f -> modelNames.add(f.getName()));
@@ -45,9 +41,25 @@ public class GenerateServiceMojo extends BaseMojo {
         List<File> dtoClassFiles = MojoUtils.getFilesUnderDirectory(dtoClassLocation, "Search.class", null);
         dtoClassFiles.forEach(f -> modelNames.add(f.getName()));
 
-        String result = rythmEngine.render(template, modelNames);
+        String result = rythmEngine.render(template, projectName, modelNames);
         saveTo(Paths.get(outputDirPath.toString(), templateFileName).toString(), result);
         getLog().info(templateFileName + " is created.");
+    }
+
+    private void generateModelBaseServices(){
+        getLog().debug("Generating base services for project " + projectName + "...");
+
+        File[] domainClassFiles = MojoUtils.getFilesInDirectory(domainClassLocation);
+        if(domainClassFiles == null || domainClassFiles.length == 0){
+            getLog().info("No domain class found in: " + domainClassLocation);
+            return;
+        }
+
+        getLog().debug("Generating base service classes for domain classes in: " + domainClassLocation);
+        getLog().debug("Generating source files in: " + outputDirPath);
+        for(File file : domainClassFiles){
+            generateModelFile(file, "BaseService.java", outputDirPath.toString(), dirClassLoader);
+        }
     }
 
 

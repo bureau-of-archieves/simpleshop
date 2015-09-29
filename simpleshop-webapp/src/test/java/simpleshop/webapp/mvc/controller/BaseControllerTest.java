@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration("classpath:spring-simpleshop-webapp-test.xml")
-public class BaseControllerTest {
+public abstract class BaseControllerTest {
 
 
     @Autowired

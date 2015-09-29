@@ -1,6 +1,6 @@
-package simpleshop.service.impl;
 
-import org.springframework.stereotype.Service;
+package simpleshop.service.impl.base;
+
 import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.util.DomainUtils;
 import simpleshop.domain.model.*;
@@ -17,11 +17,11 @@ import java.util.Map;
 /**
  * Get metadata of the domain models.
  */
-public abstract class BaseMetadataService extends BaseServiceImpl implements MetadataService {
+public abstract class MetadataBaseService extends BaseServiceImpl implements MetadataService {
 
     private final Class<?>[] classes;
 
-    public BaseMetadataService() {
+    public MetadataBaseService() {
 
         this.classes = new Class<?>[]{
 Category.class

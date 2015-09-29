@@ -73,37 +73,33 @@ public class Functions {
         if (modelMetadata == null)
             throw new IllegalArgumentException();
 
-        for (PropertyMetadata PropertyMetadata : modelMetadata.getPropertyMetadataMap().values()) {
-            if (PropertyMetadata.isIdProperty()) { //[convention]a model must have a single id column
-                String fieldType = PropertyMetadata.getPropertyType();
-                if ("Integer".equals(fieldType)) {
-                    return new Integer(modelId);
-                }
+        String idPropertyName = modelMetadata.getIdPropertyName();
+        PropertyMetadata PropertyMetadata = modelMetadata.getPropertyMetadata(idPropertyName);
 
-                if ("Long".equals(fieldType)) {
-                    return new Long(modelId);
-                }
+        String fieldType = PropertyMetadata.getPropertyType();
+        if ("Integer".equals(fieldType)) {
+            return new Integer(modelId);
+        }
 
-                if ("BigDecimal".equals(fieldType)) {
-                    return new BigDecimal(modelId);
-                }
+        if ("Long".equals(fieldType)) {
+            return new Long(modelId);
+        }
 
-                if ("String".equals(fieldType)) {
-                    String pattern = PropertyMetadata.getInputFormat();
-                    if (!StringUtils.isNullOrEmpty(pattern)) {
-                        Pattern regex = Pattern.compile(pattern);//strip of the / at the beginning and end which are required by ng-pattern.
-                        if (!regex.matcher(modelId).matches())
-                            throw new IllegalArgumentException();
-                        return "\"" + modelId + "\"";
-                    }
+        if ("BigDecimal".equals(fieldType)) {
+            return new BigDecimal(modelId);
+        }
 
-                }
-                break;
+        if ("String".equals(fieldType)) {
+            String pattern = PropertyMetadata.getInputFormat();
+            if (!StringUtils.isNullOrEmpty(pattern)) {
+                Pattern regex = Pattern.compile(pattern);//strip of the / at the beginning and end which are required by ng-pattern.
+                if (!regex.matcher(modelId).matches())
+                    throw new IllegalArgumentException();
+                return "\"" + modelId + "\"";
             }
         }
 
         throw new NotImplementedException();//do not support id fieldType.
-
 
     }
 

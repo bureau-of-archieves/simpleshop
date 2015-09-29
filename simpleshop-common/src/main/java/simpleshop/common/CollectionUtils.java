@@ -10,6 +10,21 @@ public final class CollectionUtils {
     private CollectionUtils(){}
 
     /**
+     * Concatenate two String arrays.
+     * @param array1 cannot be null.
+     * @param array2 cannot be null.
+     * @return result.
+     */
+    public static String[] concat(String[] array1, String[] array2){
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(Arrays.asList(array1));
+        result.addAll(Arrays.asList(array2));
+        String[] array = new String[result.size()];
+        result.toArray(array);
+        return array;
+    }
+
+    /**
      * Array to unmodifiable list.
      * @param values an array.
      * @param <T> type of array element.

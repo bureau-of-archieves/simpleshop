@@ -65,10 +65,4 @@ public interface ModelService<T, S extends ModelSearch> extends BaseService {
      */
     @NotNull List<T> quickSearch(String keywords, PageInfo pageInfo);
 
-    /**
-     * List of properties that should be automatically loaded if they are lazy. This is triggered for both details and list actions.
-     * @return list of property names.
-     */
-    Collection<String> lazyLoadedProperties(); //can return null
-
 }
