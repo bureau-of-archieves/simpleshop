@@ -5,8 +5,8 @@ import java.util.TreeMap;
 
 public class JsonResponse<T> {
 
-    private static final String STATUS_OK = "OK";
-    private static final String STATUS_ERROR = "ERROR";
+    public static final String STATUS_OK = "OK";
+    public static final String STATUS_ERROR = "ERROR";
 
     public static <T> JsonResponse<T> createSuccess(T content){
        return new JsonResponse<>(STATUS_OK, null, content);
@@ -20,10 +20,14 @@ public class JsonResponse<T> {
         return new JsonResponse<>(STATUS_ERROR, msg, content);
     }
 
-    private final String status;//content type: e.g. model
-    private final String description;//content name e.g. customer
-    private final T content;
+    private String status;//content type: e.g. model
+    private String description;//content name e.g. customer
+    private T content;
     private Map<String, Object> tags; //additional information about the model
+
+    public JsonResponse(){
+
+    }
 
     private JsonResponse(String status, String description, T content){
         this.status = status;
@@ -41,6 +45,18 @@ public class JsonResponse<T> {
 
     public T getContent() {
         return content;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setContent(T content) {
+        this.content = content;
     }
 
     public Map<String, Object> getTags() {
