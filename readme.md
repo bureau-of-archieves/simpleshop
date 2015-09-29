@@ -34,7 +34,6 @@ Bugs
 -------------
 open customer, open customer via order link -> duplicate.
 list view sort options is not working
-close all is not working.
 support layout bigger views e.g. category display
 
 Todo List

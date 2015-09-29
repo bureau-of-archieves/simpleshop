@@ -59,10 +59,10 @@
                     <ul role="menu" class="dropdown-menu">
 
                         <li>
-                            <a href="javascript:void(0);">
+                            <a href="javascript:void(0);" data-ng-click="closeOthers('')">
                                 <div class="row">
                                     <table>
-                                        <tr><td><span data-ng-click="closeOthers('')">Close All</span></td></tr>
+                                        <tr><td><span >Close All</span></td></tr>
                                     </table>
                                 </div>
 
@@ -79,7 +79,7 @@
                                             <td>
                                                 <span data-ng-click="scrollTo(resultName)" style="display:inline-block; margin-right:4.5em;">{{resultName | pascal}}</span>
 
-                                                <div class="btn-group btn-group-xs" style="position:absolute; right:0.5em"   role="menuitem" aria-label="Menu item options">
+                                                <div class="btn-group btn-group-xs" style="position:absolute; right:0.5em" role="menuitem" aria-label="Menu item options">
                                                     <div class="btn btn-default" role="button" aria-label="Close Others" data-ng-click="closeOthers(resultName)" >
                                                         <span class="glyphicon glyphicon-remove-sign" title="Close Others"></span>
                                                     </div>

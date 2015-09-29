@@ -1720,8 +1720,9 @@
                 if (!targetId)
                     return;
 
+                var targetElement = $("#" + targetId);
+                //var viewTitle = targetElement.find(".panel-heading .title-text").text();
                 $(element).click(function () {
-                    var targetElement = $("#" + targetId);
 
                     if (targetElement.find("form").hasClass("ng-dirty")) {
                         if (!confirm("Do you want to discard un-saved changes in the form?"))
@@ -2093,44 +2094,6 @@
         };
     });
 
-    //todo reivew this directive
-    spongeApp.directive("spgCancelLinkRequest", function (spongeService) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var targetId = attrs["spgCancelLinkRequest"];
-                $(element).click(function () {
-                    spongeService.cancelLinkRequest(targetId)
-                        .fail(function (error) {
-                            reportError(error);
-                        });
-                    return false;
-                });
-            }
-        };
-    });
-
-    //todo reivew this directive
-    spongeApp.directive("spgEndLinkRequest", function (spongeService) {
-        return {
-            restrict: 'A',
-            link: function (scope, element) {
-                $(element).click(function () {
-                    var targetId = null;
-                    if (scope.linkRequests.length > 0) {//prototyping
-                        targetId = scope.linkRequests[0].sourceFieldId;
-                    }
-
-                    spongeService.endLinkRequest(element, targetId)
-                        .fail(function (error) {
-                            reportError(error);
-                        });
-                    return false;
-                });
-            }
-        };
-    });
-
     spongeApp.directive("spgMin", function (spongeService) {
         return {
             restrict: 'A',
@@ -2195,6 +2158,13 @@
         };
 
         $scope.closeResult = function (resultName) {
+
+            var targetElement = $("#" + resultName);
+            if (targetElement.find("form").hasClass("ng-dirty")) {
+                if (!confirm("Do you want to discard un-saved changes in the form?"))
+                    return false;
+            }
+
             spongeService.close(resultName);
         };
 
@@ -2222,10 +2192,19 @@
 
         $scope.closeOthers = function (resultName) {
             var resultNames = $scope.getViewIds();
+            var alertShown = false;
             for (var i = 0; i < resultNames.length; i++) {
                 var otherName = resultNames[i];
-                if (otherName != resultName)
+                if (otherName != resultName) {
+                    if (!alertShown) {
+                        if(!confirm("Do you want to close all " + (resultName ? "other" : "") + " views? All unsaved changes will be lost.")){
+                            return;
+                        } else {
+                            alertShown = true;
+                        }
+                    }
                     spongeService.close(otherName);
+                }
             }
         };
 
