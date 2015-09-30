@@ -880,7 +880,7 @@
                 viewId = existingViewDetails.viewId;
                 display(viewId, true);
                 scrollTo(viewId);
-                return existingViewDetails.viewType == viewType ? createPromise(null) : createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
+                return createPromise(null);//existingViewDetails.viewType == viewType ? createPromise(null) : createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
             }
 
             if (!viewId) {
@@ -1350,7 +1350,7 @@
                     if (!modelId)
                         return;
 
-                    spongeService.getView(modelName, "details", modelId, {modelId: modelId}, null, {removeExisting: true})
+                    spongeService.getView(modelName, "details", modelId, {modelId: modelId}, null, {removeExisting: false})
                         .fail(function (error) {
                             reportError(error);
                         });

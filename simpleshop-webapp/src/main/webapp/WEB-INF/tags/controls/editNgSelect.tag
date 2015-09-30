@@ -47,6 +47,9 @@
                 data-ng-model="${fieldRef}"
                 data-ng-options="${optionsExpression}"
                 <c:if test="${required}"> data-ng-required="true" </c:if>>
+            <c:if test="${not required}" >
+                <option></option>
+            </c:if>
         </select>
 
         <ctrl:fieldErrorGroup>

@@ -4,7 +4,7 @@
 <t:page>
     <t:view-search>
         <ctrl:editField path="keywords"/>
-        <ctrl:editNgSelect path="country" optionsUrl="/json/countries" optionsExpression="country.name for country in items"  />
+        <d:selectCountry path="country" />
     </t:view-search>
 
     <script>
