@@ -34,8 +34,8 @@
     </div>
 </div>
 
-<div class="list-group">
-    <a href="javascript:void(0);" data-spg-details='{"modelName":"${modelName}","modelId":${modelId}}' class="list-group-item clearfix" data-ng-repeat="item in model">
+<div class="list-group">                          <%-- data-spg-details: wrap id in a string--%>
+    <a href="javascript:void(0);" data-spg-details='{"modelName":"${modelName}","modelId":"${modelId}"}' class="list-group-item clearfix" data-ng-repeat="item in model">
         <jsp:doBody/>
         <button class="btn btn-sm btn-warning pull-right" data-ng-mouseover="$event.stopPropagation();" data-spg-delete='{"modelName":"${modelName}","modelId":${modelId}}'>
             <spring:message code="jsp.literal.delete" />

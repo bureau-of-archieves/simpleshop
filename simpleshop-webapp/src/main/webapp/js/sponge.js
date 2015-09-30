@@ -1336,8 +1336,7 @@
                     if (typeof modelId == "string") {
                         if (modelId.substring(0, 1) == "#") {
                             modelId = $(modelId).val();
-                            modelId = parseInt(modelId);
-                            if (isNaN(modelId)) {
+                            if (isNaN(parseInt(modelId))) {
                                 modelId = zcl.subStrBeforeFirst($(args["modelId"]).val(), '-', true);
                             }
                         }

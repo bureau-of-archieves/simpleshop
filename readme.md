@@ -32,7 +32,6 @@ Configuration data for other locale is not set up in this demo project.
 
 Bugs
 -------------
-open customer, open customer via order link -> duplicate.
 list view sort options is not working
 support layout bigger views e.g. category display
 
