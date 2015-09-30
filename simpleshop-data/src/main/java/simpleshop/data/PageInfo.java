@@ -2,6 +2,7 @@ package simpleshop.data;
 
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Sort;
 import simpleshop.Constants;
 
 import java.io.Serializable;
@@ -12,14 +13,16 @@ import java.util.List;
  * This is a simple bean that contains how to sort a list and which page is being requested.
  */
 @JsonFilter("propNameFilter")
-@JsonIgnoreProperties({"pageSizePlusOne", "sortInfoList"})
+@JsonIgnoreProperties({"pageSizePlusOne"})
 public class PageInfo implements Serializable{
     private int pageIndex;
     private int pageSize;
-    private SortInfo sortInfo;
-
-    private boolean pageSizePlusOne = false;
     private List<SortInfo> sortInfoList;
+
+    /**
+     * Whether to retrieve 1 additional record to find out if this page is the last one.
+     */
+    private boolean pageSizePlusOne = false;
 
     public PageInfo(){
         pageIndex = 0;
@@ -34,6 +37,19 @@ public class PageInfo implements Serializable{
     public PageInfo(int pageIndex, int pageSize){
         setPageIndex(pageIndex);
         setPageSize(pageSize);
+    }
+
+    /**
+     * Add a SortInfo instance. Order matters of course.
+     * @param sortInfo what to sort on.
+     */
+    public void addSortInfo(SortInfo sortInfo){
+        if(sortInfo == null)
+            return;
+        if(this.sortInfoList == null){
+            this.sortInfoList = new ArrayList<>();
+        }
+        sortInfoList.add(sortInfo);
     }
 
 
@@ -61,19 +77,7 @@ public class PageInfo implements Serializable{
         this.pageSizePlusOne = pageSizePlusOne;
     }
 
-    public SortInfo getSortInfo() {
-        return sortInfo;
-    }
-
-    public void setSortInfo(SortInfo sortInfo) {
-        this.sortInfo = sortInfo;
-    }
-
     public List<SortInfo> getSortInfoList() {
-        if(sortInfoList == null && sortInfo != null){
-            sortInfoList = new ArrayList<>();
-            sortInfoList.add(sortInfo);
-        }
         return sortInfoList;
     }
 
@@ -90,8 +94,7 @@ public class PageInfo implements Serializable{
 
         if (pageIndex != pageInfo.pageIndex) return false;
         if (pageSize != pageInfo.pageSize) return false;
-        if (pageSizePlusOne != pageInfo.pageSizePlusOne) return false;
-        return !(sortInfo != null ? !sortInfo.equals(pageInfo.sortInfo) : pageInfo.sortInfo != null);
+        return !(sortInfoList != null ? !sortInfoList.equals(pageInfo.sortInfoList) : pageInfo.sortInfoList != null);
 
     }
 
@@ -99,8 +102,7 @@ public class PageInfo implements Serializable{
     public int hashCode() {
         int result = pageIndex;
         result = 31 * result + pageSize;
-        result = 31 * result + (pageSizePlusOne ? 1 : 0);
-        result = 31 * result + (sortInfo != null ? sortInfo.hashCode() : 0);
+        result = 31 * result + (sortInfoList != null ? sortInfoList.hashCode() : 0);
         return result;
     }
 }

@@ -17,17 +17,18 @@
 <comm:peek var="viewId" />
 <c:set var="idPrefix" value="${parentId}-smylst-" />
 <div class="row">
-    <div class="col-sm-8">
-        <h4><spring:message code="jsp.literal.searchResultFor" /> ${friendlyMmodelName}</h4>
-    </div>
-    <div class="col-sm-4 clearfix">
-        <form class="form-inline pull-right" data-ng-show="sortProperties.length > 0">
+    <div class="col-xs-12 clearfix">
+        <div class="pull-left">
+            <h4><spring:message code="jsp.literal.searchResult" /> ${friendlyMmodelName}</h4>
+        </div>
+
+        <form class="pull-right form-inline" data-ng-show="sortProperties.length > 0">
             <div class="input-group">
                 <c:set var="sortSelectId" value="${idPrefix}sortBy" />
                 <label for="${sortSelectId}" class="input-group-addon" >
                     <spring:message code="jsp.literal.sortBy" />
                 </label>
-                <select id="${sortSelectId}" class="selectpicker form-control" data-ng-model="postData.sortInfo" data-ng-options="item.text for item in sortProperties">
+                <select id="${sortSelectId}" class="selectpicker form-control" data-ng-model="selectedSortProperties[0]" data-ng-options="item as (item | formatSortInfo) for item in sortProperties">
                 </select>
             </div>
         </form>

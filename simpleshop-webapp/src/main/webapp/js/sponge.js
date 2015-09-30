@@ -483,6 +483,12 @@
         };
     });
 
+    spongeApp.filter("formatSortInfo", function () {
+        return function (item) {
+            return zcl.camelNameToSpacedName(item["property"]) + (item["ascending"] ? " Asc" : " Desc" )
+        };
+    });
+
     spongeApp.filter("status", function () {
         return function (input) {
             return input == 'A' ? "Active" : "Inactive";
@@ -871,14 +877,6 @@
             var viewUrl = site.viewUrl(viewName, params);
             var operationKey = "get-" + viewId;
 
-            var sortProperties = getViewOptions.sortProperties;
-            if (!sortProperties) {
-                sortProperties = [];
-            }
-            if (sortProperties.length > 0) {
-                model.sortInfo = sortProperties[0];
-            }
-
             var createRequest = function () {
                 if (model) { //need to post
 
@@ -899,7 +897,6 @@
                 }
             };
 
-
             var createView = function (viewHtml) {
 
                 var parseResult = parseViewHtml(viewHtml, viewId);
@@ -913,10 +910,8 @@
                     $(existingViewDetails.viewElements).remove();
                 }
 
-                var copyOfPostData = angular.copy(model);
-                if (sortProperties.length > 0) {
-                    copyOfPostData["sortInfo"] = sortProperties[0];
-                }
+                var postData = angular.copy(model);
+
                 viewMap[viewKey] = { //set newViewDetails
                     viewKey: viewKey,
                     viewId: viewId,
@@ -924,18 +919,17 @@
                     viewType: viewType,
                     instanceId: instanceId,
                     params: params,
-                    postData: copyOfPostData,
+                    postData: postData,
                     model: parseResult.dataObject,
                     viewElements: parseResult.domElements,
                     getViewOptions: getViewOptions
                 };
 
-                var parentScope = getBodyScope();
                 try {
                     safeApply(function () {
                         try {
                             nextElement.before(parseResult.domElements);
-                            $compile(parseResult.domElements)(parentScope);
+                            $compile(parseResult.domElements)(getBodyScope());
                             site.layout();
                         }
                         catch (ex) {
@@ -1587,14 +1581,16 @@
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
+                var args = JSON.parse(attrs["spgList"]);
+                var modelName = args["modelName"];
+                var variant = args["variant"];
+                variant = variant ? "_" + variant : ""; //keep the variant of the initiating view
+                var criteriaPath = args["criteriaPath"];
+                var containingViewId = element.closest(".view").attr("id");
 
                 $(element).click(function ($event) {
-                    var args = JSON.parse(attrs["spgList"]);
-                    var modelName = args["modelName"];
-                    var variant = args["variant"];
-                    variant = variant ? "_" + variant : "";
+                    //get criteria.
                     var criteria = {};
-                    var criteriaPath = args["criteriaPath"];
                     if (criteriaPath) {
                         criteria = scope[criteriaPath];
                         if (angular.isUndefined(criteria) || criteria == null) {
@@ -1602,21 +1598,11 @@
                             return false;
                         }
                     }
-                    var sortProperties = [];
-                    var id = $(element).closest(".view").attr("id");
-                    if (id) {
-                        var viewDetails = findViewDetails(id);
-                        if (viewDetails) {
-                            var tags = viewDetails.model["tags"];
-                            if (tags && !angular.isUndefined(tags["sortProperties"])) {
-                                sortProperties = tags["sortProperties"];
-                            }
-                        }
-                    }
+
                     scope["eventElement"] = element;
                     spongeService.getView(modelName, "list" + variant, null, null, criteria, {
                         instanceIdInViewKey: true,
-                        sortProperties: sortProperties
+                        initiatingViewId: containingViewId
                     }, scope)
                         .fail(function (error) {
                             reportError(error);
@@ -1695,7 +1681,7 @@
 
                 $(element).click(function () {
 
-                    if ($(element).closest("form").hasClass("ng-dirty")) {
+                    if ($(element).closest("form.spg-form").hasClass("ng-dirty")) {
                         if (!confirm("Do you want to discard un-saved changes in the form?"))
                             return false;
                     }
@@ -1723,7 +1709,7 @@
                 //var viewTitle = targetElement.find(".panel-heading .title-text").text();
                 $(element).click(function () {
 
-                    if (targetElement.find("form").hasClass("ng-dirty")) {
+                    if (targetElement.find("form.spg-form").hasClass("ng-dirty")) {
                         if (!confirm("Do you want to discard un-saved changes in the form?"))
                             return false;
                     }
@@ -2159,7 +2145,7 @@
         $scope.closeResult = function (resultName) {
 
             var targetElement = $("#" + resultName);
-            if (targetElement.find("form").hasClass("ng-dirty")) {
+            if (targetElement.find("form.spg-form").hasClass("ng-dirty")) {
                 if (!confirm("Do you want to discard un-saved changes in the form?"))
                     return false;
             }
@@ -2229,12 +2215,16 @@
         viewDetails.scope = $scope;
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
-        if (!angular.isUndefined(viewDetails.getViewOptions.sortProperties)) {
-            $scope.sortProperties = viewDetails.getViewOptions.sortProperties;
-            $scope.postData = viewDetails.postData;
-            for (var i = 0; i < $scope.sortProperties.length; i++) {
-                var item = $scope.sortProperties[i];
-                item.text = zcl.camelNameToSpacedName(item["property"]) + (item["ascending"] ? " Asc" : " Desc" );
+
+        //copy sort properties from initiating view.
+        if(viewDetails.getViewOptions.initiatingViewId){
+            var initiatingViewDetails = findViewDetails(viewDetails.getViewOptions.initiatingViewId);
+            if(initiatingViewDetails && initiatingViewDetails.model["tags"]["sortProperties"]){  //not closed yet and has sortProperties
+                $scope.sortProperties = initiatingViewDetails.model["tags"]["sortProperties"];
+                $scope.selectedSortProperties = [];
+                if(viewDetails.postData && viewDetails.postData["pageSize"]) {
+                    viewDetails.postData["sortInfoList"] = $scope.selectedSortProperties;//wire up with the selected sort
+                }
             }
         }
 

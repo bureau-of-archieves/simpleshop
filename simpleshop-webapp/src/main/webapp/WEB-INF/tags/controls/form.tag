@@ -13,7 +13,7 @@
 <%--########################## TAG CONTENT ################################--%>
 <comm:peek var="viewId" />
 <div class="col-xs-11">
-    <form name="${name}" class="form-horizontal" role="form" novalidate>
+    <form name="${name}" class="form-horizontal spg-form" role="form" novalidate>
 
         <jsp:doBody/>
 

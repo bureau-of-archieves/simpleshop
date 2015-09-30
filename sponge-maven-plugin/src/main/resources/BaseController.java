@@ -27,7 +27,9 @@ public abstract class @(modelName)BaseController extends BaseJsonController<@mod
 
     @@RequestMapping(value = "/@(modelNameUrl)/search", method = RequestMethod.GET)
     public @@ResponseBody JsonResponse<@(modelName)Search> @(modelNameCamel)Search() {
-        return JsonResponse.createSuccess(new @(modelName)Search());
+        JsonResponse<@(modelName)Search> jsonResponse = JsonResponse.createSuccess(new @(modelName)Search());
+        populateSortInfoList(@(modelName)Search.class, jsonResponse);
+        return jsonResponse;
     }
 
     @@RequestMapping(value = "/@(modelNameUrl)/search", method = RequestMethod.POST, consumes = "application/json")

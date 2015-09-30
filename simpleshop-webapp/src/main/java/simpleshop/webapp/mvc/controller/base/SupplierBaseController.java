@@ -24,7 +24,9 @@ public abstract class SupplierBaseController extends BaseJsonController<Supplier
 
     @RequestMapping(value = "/supplier/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<SupplierSearch> supplierSearch() {
-        return JsonResponse.createSuccess(new SupplierSearch());
+        JsonResponse<SupplierSearch> jsonResponse = JsonResponse.createSuccess(new SupplierSearch());
+        populateSortInfoList(SupplierSearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/supplier/search", method = RequestMethod.POST, consumes = "application/json")

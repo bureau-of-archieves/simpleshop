@@ -24,7 +24,9 @@ public abstract class CategoryBaseController extends BaseJsonController<Category
 
     @RequestMapping(value = "/category/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<CategorySearch> categorySearch() {
-        return JsonResponse.createSuccess(new CategorySearch());
+        JsonResponse<CategorySearch> jsonResponse = JsonResponse.createSuccess(new CategorySearch());
+        populateSortInfoList(CategorySearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/category/search", method = RequestMethod.POST, consumes = "application/json")

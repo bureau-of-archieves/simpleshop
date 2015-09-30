@@ -385,7 +385,7 @@ input.ng-valid ~ .pattern-validation {
     font-weight: 500;
 }
 
-.input-group .form-control{
+.input-group input.form-control{
     top: 1px;
 }
 

@@ -46,9 +46,7 @@ public class CategoryServiceImpl extends CategoryBaseService implements Category
     @Transactional(readOnly = true)
     public List<Category> search(@NotNull CategorySearch searchParams) {
         //default sort order
-        if(searchParams.getSortInfo() == null){
-            searchParams.setSortInfo(new SortInfo("prefix"));
-        }
+        searchParams.addSortInfo(new SortInfo("prefix"));
 
         List<Category> categories = super.search(searchParams);
 

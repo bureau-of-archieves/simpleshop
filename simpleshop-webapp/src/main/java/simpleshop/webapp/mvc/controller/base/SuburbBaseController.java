@@ -24,7 +24,9 @@ public abstract class SuburbBaseController extends BaseJsonController<Suburb> {
 
     @RequestMapping(value = "/suburb/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<SuburbSearch> suburbSearch() {
-        return JsonResponse.createSuccess(new SuburbSearch());
+        JsonResponse<SuburbSearch> jsonResponse = JsonResponse.createSuccess(new SuburbSearch());
+        populateSortInfoList(SuburbSearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/suburb/search", method = RequestMethod.POST, consumes = "application/json")

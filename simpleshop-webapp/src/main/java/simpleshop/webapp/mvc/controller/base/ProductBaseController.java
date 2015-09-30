@@ -24,7 +24,9 @@ public abstract class ProductBaseController extends BaseJsonController<Product> 
 
     @RequestMapping(value = "/product/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<ProductSearch> productSearch() {
-        return JsonResponse.createSuccess(new ProductSearch());
+        JsonResponse<ProductSearch> jsonResponse = JsonResponse.createSuccess(new ProductSearch());
+        populateSortInfoList(ProductSearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/product/search", method = RequestMethod.POST, consumes = "application/json")

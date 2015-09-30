@@ -24,7 +24,9 @@ public abstract class EmployeeBaseController extends BaseJsonController<Employee
 
     @RequestMapping(value = "/employee/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<EmployeeSearch> employeeSearch() {
-        return JsonResponse.createSuccess(new EmployeeSearch());
+        JsonResponse<EmployeeSearch> jsonResponse = JsonResponse.createSuccess(new EmployeeSearch());
+        populateSortInfoList(EmployeeSearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/employee/search", method = RequestMethod.POST, consumes = "application/json")

@@ -6,6 +6,7 @@ import org.hibernate.collection.internal.PersistentSet;
 import org.hibernate.validator.constraints.URL;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.common.StringUtils;
+import simpleshop.data.SortInfo;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.*;
 import simpleshop.domain.metadata.*;
@@ -307,27 +308,20 @@ public final class DomainUtils {
 
     private static void setSortProperties(ModelMetadata modelMetadata, Class<?> clazz) {
 
-        //get all super classes
-        Stack<Class<?>> classes = new Stack<>();
-        Class<?> superClass = clazz;
-        while (superClass != Object.class){
-            classes.push(superClass);
-            superClass = superClass.getSuperclass();
-        }
-
         //get all sort properties
         List<SortProperty> sortProperties = new ArrayList<>();
-        while (!classes.isEmpty()){
-            superClass = classes.pop();
-            SortProperty sortProperty = superClass.getAnnotation(SortProperty.class);
+        while (clazz != Object.class){
+            SortProperty sortProperty = clazz.getAnnotation(SortProperty.class);
             if(sortProperty != null)
                 sortProperties.add(sortProperty);
-            SortProperty.List sortPropertyList = superClass.getAnnotation(SortProperty.List.class);
+            SortProperty.List sortPropertyList = clazz.getAnnotation(SortProperty.List.class);
             if(sortPropertyList != null) {
                 sortProperties.addAll(Arrays.asList(sortPropertyList.value()));
             }
+            clazz = clazz.getSuperclass();
         }
 
+        sortProperties.sort((x, y) -> x.propertyName().compareTo(y.propertyName()));
         modelMetadata.setSortProperties(Collections.unmodifiableList(sortProperties));
     }
 

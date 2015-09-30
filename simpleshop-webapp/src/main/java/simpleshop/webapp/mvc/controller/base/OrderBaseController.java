@@ -24,7 +24,9 @@ public abstract class OrderBaseController extends BaseJsonController<Order> {
 
     @RequestMapping(value = "/order/search", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<OrderSearch> orderSearch() {
-        return JsonResponse.createSuccess(new OrderSearch());
+        JsonResponse<OrderSearch> jsonResponse = JsonResponse.createSuccess(new OrderSearch());
+        populateSortInfoList(OrderSearch.class, jsonResponse);
+        return jsonResponse;
     }
 
     @RequestMapping(value = "/order/search", method = RequestMethod.POST, consumes = "application/json")

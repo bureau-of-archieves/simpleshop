@@ -3,14 +3,19 @@ package simpleshop.webapp.infrastructure;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
+import simpleshop.data.SortInfo;
+import simpleshop.data.metadata.ModelMetadata;
+import simpleshop.data.metadata.SortDirection;
+import simpleshop.data.metadata.SortProperty;
 import simpleshop.dto.JsonResponse;
 import simpleshop.dto.ModelQuickSearch;
 import simpleshop.dto.ModelSearch;
+import simpleshop.service.MetadataService;
 import simpleshop.service.infrastructure.ModelService;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * The base controller for all controllers that return json data.
@@ -76,6 +81,35 @@ public abstract class BaseJsonController<T> {
 
         List<T> result = modelService.quickSearch(quickSearch.getKeywords(), quickSearch);
         return JsonResponse.createSuccess(result);
+    }
+
+    @Autowired
+    private MetadataService metadataService;
+
+    protected <S extends ModelSearch> void populateSortInfoList(Class<S> searchClass, JsonResponse<?> jsonResponse) {
+
+        ModelMetadata searchMetadata = metadataService.getMetadata(searchClass.getSimpleName());
+        List<SortInfo> sortInfoList = new ArrayList<>();
+        for(SortProperty sortProperty : searchMetadata.getSortProperties()){
+            SortInfo sortInfo = new SortInfo();
+            sortInfo.setAlias(sortProperty.alias());
+            sortInfo.setProperty(sortProperty.propertyName());
+            if(sortProperty.sortDirection() == SortDirection.DESC){
+                sortInfo.setAscending(false);
+            } else {
+                sortInfo.setAscending(true);
+            }
+            sortInfoList.add(sortInfo);
+
+            if(sortProperty.sortDirection() == SortDirection.BOTH){
+                sortInfo = new SortInfo();
+                sortInfo.setAlias(sortProperty.alias());
+                sortInfo.setProperty(sortProperty.propertyName());
+                sortInfo.setAscending(false);
+                sortInfoList.add(sortInfo);
+            }
+        }
+        jsonResponse.getTags().put("sortProperties", sortInfoList);
     }
 
 }
