@@ -30,6 +30,17 @@
         }
     };
 
+    zcl.toString = function(obj){
+        var type = typeof obj;
+        if(type == "undefined" || type == "string")
+            return obj;
+
+        if(obj === null)
+            return obj;
+
+        return obj.toString();
+    };
+
     /**
      * Get the nested property of an object.
      * @param {object} o - an object; must not be null.

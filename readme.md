@@ -32,7 +32,7 @@ Configuration data for other locale is not set up in this demo project.
 
 Bugs
 -------------
-support layout bigger views e.g. category display
+ * attempt to open details view should not continue if there is an open edit view.
 
 Todo List
 -----------

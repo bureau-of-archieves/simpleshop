@@ -101,25 +101,20 @@
 
         var container = $("#" + this.noViewElementId).parent();
 
-        var countColumns = function(views){
-            var count = 0;
+        var singleColumn = function(views){
             if(views.length > 0){
 
                 var view = $(views.get(0));
                 var lastLeft = view.position().left;
-                count = 1;
                 for(var i=1; i<views.length; i++){
                     var newLeft = $(views.get(i)).position().left;
                     if(newLeft > lastLeft){
-                        lastLeft = newLeft;
-                        count++;
-                    } else {
-                        break;
+                        return false;
                     }
                 }
             }
 
-            return count;
+            return true;
         };
 
         var findColumn = function(columnPositions, left){
@@ -133,25 +128,26 @@
         };
 
         this.layout = function(){
-            var views = container.children(".view.display");
+            var views = container.children(".view.display"); //only get visible ones
             if(views.length == 0) {
                 return;
             }
 
-            //redo layout
+            //only one row
             var columnPositions = [];
-            var currentColumnCount = countColumns(views);
-            if(currentColumnCount == 1){
+            if(singleColumn(views)){
                 columnPositions.push({});
                 views.css("margin-top", 0);
                 return;
             }
+
+            //cal layout
             var maxLeft = -1;
             for(var i=0; i<views.length; i++){
                 var view = $(views.get(i));
                 var viewPos = view.position();
                 if(viewPos.left > maxLeft) {
-                    var newColumnPos = {};
+                    var newColumnPos = {};//create new column
                     newColumnPos.left = viewPos.left;
                     newColumnPos.top = viewPos.top;
                     newColumnPos.bottom = viewPos.top + view.outerHeight();
@@ -160,9 +156,24 @@
                     view.css("margin-top", 0);
                 } else {
                     var columnIndex = findColumn(columnPositions, viewPos.left);
-                    var marginTop = columnPositions[columnIndex].bottom - viewPos.top;
-                    columnPositions[columnIndex].bottom += view.outerHeight();
-                    view.css("margin-top", marginTop);
+                    var viewPosRight = viewPos.left + view.outerWidth();
+                    var newMarginTop = columnPositions[columnIndex].bottom - viewPos.top;
+                    var viewHeight = view.outerHeight();
+                    var newBottom = columnPositions[columnIndex].bottom + viewHeight;
+                    var toIndex = columnIndex + 1;
+                    for(;toIndex < columnPositions.length; toIndex++) {
+                        if(columnPositions[toIndex].left >= viewPosRight)
+                            break;
+                        var thisMarginTop = columnPositions[toIndex].bottom - viewPos.top;
+                        newMarginTop = Math.max(newMarginTop, thisMarginTop);
+                        var thisBottom = columnPositions[toIndex].bottom + viewHeight;
+                        newBottom = Math.max(newBottom, thisBottom);
+                    }
+
+                    for(var j=columnIndex; j<toIndex; j++){
+                        columnPositions[j].bottom = newBottom;
+                    }
+                    view.css("margin-top", newMarginTop);
                 }
             }
         };
@@ -856,6 +867,7 @@
          */
         var getView = function (modelName, viewType, instanceId, params, model, getViewOptions, eventScope) {
 
+            instanceId = zcl.toString(instanceId);
             getViewOptions = $.extend($.extend({}, defaultGetViewOption), getViewOptions);
             var viewName = getViewName(modelName, viewType);
             var viewKey = createViewKey(modelName, viewType, instanceId, model, getViewOptions);
@@ -1084,11 +1096,11 @@
 
             if (isSubtypeOf(viewType, "create")){
                 return close(viewId).done(function(){
-                    var modelId = model[site.getMetadata(modelName)["idPropertyName"]];
+                    var modelId = zcl.toString(model[site.getMetadata(modelName)["idPropertyName"]]);
                     getView(modelName, "details" + viewType.substr(6), modelId, {modelId: modelId}, null, {removeExisting: true});
                 });
             }
-            return getView(modelName, "details" + viewType.substr(6), viewDetails.instanceId, viewDetails.params, null, viewDetails.getViewOptions);
+            return getView(modelName, "details" + viewType.substr(6), zcl.toString(viewDetails.instanceId), viewDetails.params, null, viewDetails.getViewOptions);
         };
 
         /**
