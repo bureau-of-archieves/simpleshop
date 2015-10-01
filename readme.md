@@ -45,7 +45,6 @@ Todo List
  * Add Spring Security.
  * a changeable user locale, first set at login time. it affects ui language, default payment currency
  * replace ui text in scripts with message key.
- * support for named inline representation - a property annotation that combines interpolate and displayFormat with a name
  * disabled state for edit controls - e.g. editngselect will not need to retrieve a list when disabled. this disabled state is stored on server side as well.
  * allow adding purchase - from supplier, by employee, product list and amount, price per unit
  * calculate stock, pending amount - ordered but not delivered
@@ -58,6 +57,7 @@ Todo List
 
 Future Todo List 
 -----------
+ * support for named inline representation - a property annotation that combines interpolate and displayFormat with a name
  * Support full internationalization - in jsp and angular.
  * Separate template and data. This way a type of template can be cached by the client.
  * drag and drop swap view positions.

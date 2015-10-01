@@ -26,6 +26,11 @@
         <function-signature>java.lang.Object parseModelId(java.lang.String,java.lang.String)</function-signature>
     </function>
     <function>
+        <name>userLocale</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>java.lang.String userLocale()</function-signature>
+    </function>
+    <function>
         <name>validateViewId</name>
         <function-class>simpleshop.webapp.util.Functions</function-class>
         <function-signature>void validateViewId(java.lang.String,java.lang.String)</function-signature>

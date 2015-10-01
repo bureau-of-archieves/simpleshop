@@ -33,13 +33,13 @@
 
     <!--saves the current locale setting in cookie (there is another one for session).-->
     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" >
-        <property name="defaultLocale" value="en_US" />
+        <property name="defaultLocale" value="en_AU" />
     </bean>
 
     <mvc:interceptors>
         <!--this interceptor extract locale information and sets the locale in localeResolver-->
         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-            <property name="paramName" value="language" />
+            <property name="paramName" value="locale" />
         </bean>
     </mvc:interceptors>
 

@@ -182,6 +182,7 @@
 <script src="js/moment.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/angular.js"></script>
+<script src="js/i18n/angular-locale_${f:userLocale()}.js"
 <script src="js/angular-animate.js"></script>
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/bootstrap-datetimepicker.js"></script>

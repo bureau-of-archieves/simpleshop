@@ -274,4 +274,9 @@ public class Functions {
         return options;
     }
 
+    public static String userLocale(){
+
+        return LocaleContextHolder.getLocale().toString().toLowerCase().replaceAll("_", "-");
+
+    }
 }
