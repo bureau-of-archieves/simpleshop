@@ -187,7 +187,7 @@
                     view.css("margin-top", 0);
                 } else {
                     var columnIndex = findColumn(columnPositions, viewPos.left);
-                    var viewPosRight = viewPos.left + view.outerWidth();
+                    var viewPosRight = viewPos.left + view.outerWidth() - 2; //give a rounding tolerance so this will not happen: view right end at 704, next column left starts from 703.667.
                     var newMarginTop = columnPositions[columnIndex].bottom - viewPos.top;
                     var viewHeight = view.outerHeight();
                     var newBottom = columnPositions[columnIndex].bottom + viewHeight;
