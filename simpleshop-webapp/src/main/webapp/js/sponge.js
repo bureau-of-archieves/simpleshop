@@ -4,7 +4,23 @@
  */
 (function () {
 
-    var message = {"requestFailed": "Failed to send request to server."};
+    //temporarily use this map to store all the UI string literals.
+    var message = {
+        "requestFailed": "Failed to send request to server.",
+        "errorOccurred": "An error has occurred.",
+        "operationInProgress": "Operation is in progress, please wait.",
+        "operationNotInProgress":"Operation '{0}' is not in progress.",
+        "cannotFindViewInsertionPosition": "Could not determine the insert position for the view being created.",
+        "viewCompilationFailed": "View compilation failed: {0}",
+        "cannotBeginOperation": "Cannot begin operation.",
+        "failedToRetrieveView": "Failed to retrieve view {0}: {1}",
+        "cannotRemoveViewIdMissing": "View Id is not passed.",
+        "failedToRefreshView": "Failed to refresh view {0}: {1}",
+        "propertyNameArgMissing": "propertyValue pre-post processor requires a property name argument.",
+        "discardUnsavedChanges": "Do you want to discard un-saved changes in the form?",
+        "failedToLoadMetadata": "Failed to load application metadata, please retry later. Error: {0}",
+        "closeAllViewConfirmation" : "Do you want to close all {0} views? All unsaved changes will be lost."
+    };
 
     /**
      * All references to UI layer element id or url are defined in this object.
@@ -92,13 +108,25 @@
             return jsonPath + "metadata";
         };
 
+        //inject angular js components for external access.
+        this.ajs = {};
+
+        /**
+         * Get a message from localized resource.
+         * @param messageCode
+         * @param args a plain object of message parameters.
+         * @returns {string}
+         */
+        this.getMessage = function(messageCode, args){
+
+            return zcl.formatObject(message[messageCode], args, false); //todo use internationalized message resource.
+        };
+
         //page element dependencies
         this.noViewElementId = "messageNoView"; //id of the message element which is shown where there is no view in the view section. The main section is divided into search view section and view section.
         this.headerElementId = "pageHeader"; //header element id, the header is fix positioned.
 
-        //angular js dependencies
-        this.ajs = {};
-
+        //resize logic
         var container = $("#" + this.noViewElementId).parent();
 
         var singleColumn = function(views){
@@ -127,6 +155,9 @@
             return -1;
         };
 
+        /**
+         * Call this whenever the layout is changed, e.g. open, close, change size of a view.
+         */
         this.layout = function(){
             var views = container.children(".view.display"); //only get visible ones
             if(views.length == 0) {
@@ -266,9 +297,7 @@
      */
     var getBodyScope = function () {
         if(bodyScope == null){
-            //var $body = angular.element(document.body);
-            //bodyScope = $body.injector().get('$rootScope');
-            bodyScope = $("#" + site.noViewElementId).scope();
+            bodyScope = site.ajs["$scope"]; //passed in from controller.
         }
         return bodyScope;
     };
@@ -287,17 +316,9 @@
         }
     };
 
-    /**
-     * Report an error.This is usually called on the endOp promise.
-     * @param error error object.
-     */
-    var reportError = function (error) {
-        if (!error)
+    window.showMessage = function(args){
+        if (!args)
             return;
-
-        if (typeof(error) == "object") {
-            error = message["requestFailed"];
-        }
 
         var instance = site.ajs.$modal.open({
             backdrop: true,
@@ -307,11 +328,26 @@
             controller: 'messageBoxController'
         });
 
-        instance.data = {title: "An error has occurred", message: error};
-
+        instance.data = args;
     };
 
-    window.showMessage = reportError;
+    /**
+     * Report an error. This is usually called on the endOp promise.
+     * @param error error message string.
+     */
+    var reportError = function (error) {
+
+        if(error instanceof Object){
+            error = JSON.stringify(error);
+        }
+
+        var showMessageArgs = {
+            title : site.getMessage("errorOccurred"),
+            message : error
+        };
+
+        window.showMessage(showMessageArgs);
+    };
 
     /**
      * Check if a viewType is a subtype of parentViewType.
@@ -411,12 +447,13 @@
     };
 
     /**
-     * Update new model cache.
-     * @param bodyScope body scope.
+     * Update the global new model cache.
      * @param modelName model name.
      * @param model pass null if want to retrieve from server.
      */
-    var ensureNewModel = function (bodyScope, modelName, model) {
+    var ensureNewModel = function (modelName, model) {
+
+        var bodyScope = getBodyScope();
         if (!bodyScope.newModel) {
             bodyScope.newModel = {};
         }
@@ -448,11 +485,12 @@
 
     /**
      * Update search model cache.
-     * @param bodyScope body scope.
      * @param modelName model name.
      * @param model pass null if want to retrieve from server.
      */
-    var ensureSearchModel = function (bodyScope, modelName, model) {
+    var ensureSearchModel = function (modelName, model) {
+
+        var bodyScope = getBodyScope();
         if (!bodyScope.searchModel) {
             bodyScope.searchModel = {};
         }
@@ -705,7 +743,6 @@
                 } else {
                     reportError(data["description"]);
                 }
-
             };
 
             var error = function( jqXHR,  textStatus,  errorThrown){
@@ -729,7 +766,7 @@
         var beginOp = function (token) {
             var bodyScope = getBodyScope();
             if ($.inArray(token, bodyScope.operationLocks) >= 0)
-                return createPromise("Operation is in progress, please wait.");
+                return createPromise(site.getMessage("operationInProgress"));
 
             safeApply(function () {
                 bodyScope.operationLocks.push(token); //trigger ui change, e.g. spinning wheel.
@@ -746,7 +783,7 @@
             var bodyScope = getBodyScope();
             var index = $.inArray(token, bodyScope.operationLocks);
             if (index < 0)
-                return createPromise("Operation '" + token + "' is not in progress.");
+                return createPromise(site.getMessage("operationNotInProgress", [token]));
 
             safeApply(function () {
                 bodyScope.operationLocks.splice(index, 1);
@@ -863,6 +900,7 @@
          * @param params query string parameters as properties of a plain object.
          * @param model the content to post to the server in order to generate the view and its data. If this is not null a post instead of a get will occur.
          * @param getViewOptions - removeExisting whether to remove existing view with the same id.
+         * @param eventScope the ng scope of the element which triggered this getView call.
          * @returns {*} the promise of this operation.
          */
         var getView = function (modelName, viewType, instanceId, params, model, getViewOptions, eventScope) {
@@ -915,7 +953,7 @@
 
                 var nextElement = existingViewDetails ? $(existingViewDetails.viewElements).last().next() : $("#" + site.noViewElementId);
                 if (!nextElement) {
-                    return createPromise("Could not determine the insert position for the view being created.");
+                    return createPromise(site.getMessage("cannotFindViewInsertionPosition"));
                 }
 
                 if (existingViewDetails) { //remove old view
@@ -950,7 +988,7 @@
                         }
                     });
                 } catch (ex) {
-                    return createPromise("View compilation failed:" + ex);
+                    return createPromise(site.getMessage("viewCompilationFailed", [ex]));
                 }
 
                 initViewElements(viewMap[viewKey]);
@@ -960,13 +998,13 @@
 
             return beginOp(operationKey)
                 .fail(function () {
-                    reportError("Cannot begin operation.");
+                    reportError(site.getMessage("cannotBeginOperation"));
                 })
                 .then(function () {
                     return createRequest().then(
                         createView,
                         function (jqXHR, textStatus, description) {
-                            return createPromise("Failed to retrieve view " + viewName + ": " + (description ? description : textStatus));
+                            return createPromise(site.getMessage("failedToRetrieveView", [viewName, (description ? description : textStatus)]));
                         }
                     ).always(
                         function () {
@@ -976,21 +1014,22 @@
                 });
         };
 
-        /**
-         * Create a json post request.
-         * @param url
-         * @param data json object.
-         * @returns {*}
-         */
-        var createJsonPostRequest = function (url, data) {
-
-            return $.ajax(url,
-                {
-                    type: "POST",
-                    data: JSON.stringify(data),
-                    contentType: "application/json",
-                    dataType: "json"
-                });
+        var createRequest = function (jsonUrl, model) {
+            var ajaxPromise;
+            if (model) { //need to post
+                ajaxPromise = $.ajax(
+                    jsonUrl,
+                    {
+                        type: "POST",
+                        data: JSON.stringify(model),
+                        contentType: "application/json",
+                        dataType: "json"
+                    }
+                );
+            } else {
+                ajaxPromise = $.get(jsonUrl);
+            }
+            return ajaxPromise;
         };
 
         /**
@@ -1023,7 +1062,7 @@
             var url = site.saveJsonUrl(viewDetails.modelName);
             return beginOp(operationKey).then(
                 function () {
-                    return createJsonPostRequest(url, scope["model"])
+                    return createRequest(url, scope["model"])
                         .then(saveSuccess, saveFailed)
                         .always(function () {
                             endOp(operationKey);
@@ -1035,7 +1074,7 @@
         var remove = function (modelName, modelId, viewId) {
 
             if (!viewId)
-                return createPromise("View Id is not passed.");
+                return createPromise(site.getMessage("cannotRemoveViewIdMissing"));
 
             var deleteSuccess = function (response) {
                 if (response["status"] == "OK") {
@@ -1069,7 +1108,7 @@
             var url = site.deleteJsonUrl(modelName);
             return beginOp(operationKey).then(
                 function () {
-                    return createJsonPostRequest(url, modelId)
+                    return createRequest(url, modelId)
                         .then(deleteSuccess)
                         .always(function () {
                             endOp(operationKey);
@@ -1133,24 +1172,6 @@
                 model["pageIndex"] += pageDelta;
             }
 
-            var createRequest = function (jsonUrl, model) {
-                var ajaxPromise;
-                if (model) { //need to post
-                    ajaxPromise = $.ajax(
-                        jsonUrl,
-                        {
-                            type: "POST",
-                            data: JSON.stringify(model),
-                            contentType: "application/json",
-                            dataType: "json"
-                        }
-                    );
-                } else {
-                    ajaxPromise = $.get(jsonUrl);
-                }
-                return ajaxPromise;
-            };
-
             return beginOp(operationKey).fail(function () {
                 reportError("Cannot begin operation.");
             }).then(function () {
@@ -1165,7 +1186,7 @@
                         return createPromise(null);
                     },
                     function (jqXHR, textStatus, description) {
-                        return createPromise("Failed to refresh view " + viewId + ": " + (description ? description : textStatus));
+                        return createPromise(site.getMessage("failedToRefreshView", [viewId, (description ? description : textStatus)]));
                     }
                 ).always(function () {
                         return endOp(operationKey);
@@ -1175,6 +1196,8 @@
 
         /**
          * Close a view.
+         * @param viewId - the view to close.
+         * @returns {*} the promise.
          */
         var close = function (viewId) {
 
@@ -1190,16 +1213,23 @@
 
         var prePostProcessors = {
 
+            /**
+             * Property value pre-post processor. The target property value will be replaced by its property value.
+             * @param model - the model to post.
+             * @param path - path to the target property value.
+             * @param args - an array of arguments - the required arguments is defined by the prepost pressor.
+             */
             propertyValue: function (model, path, args) {
 
-                if (args.length == 0)
-                    throw {message: "propertyValue pre-post processor requires a property name argument."};
 
-                var propertyName = args[0];
+                if (!args || !args.length || !args[0])
+                    throw {message: site.getMessage("propertyNameArgMissing")};
+
+                var propertyName = args[0]; //the first arg is the property name.
                 try {
                     var target = zcl.getProp(model, path);
                 } catch (ex) {
-
+                    throw {message: ex};
                 }
                 if (angular.isObject(target)) {
                     var value = target[propertyName];
@@ -1215,7 +1245,7 @@
         /**
          * Update model before posting it to the server.
          * @param model the model to post.
-         * @param eventScope
+         * @param eventScope the scope of the element where this event is triggered.
          */
         var prePostHandler = function (model, eventScope) {
             var formElement = null;
@@ -1227,6 +1257,7 @@
                 return;
             }
 
+            //run all defined pre-post processors defined on the form fields.
             $(formElement[0]).closest("form").find("[data-pre-post]").each(function (index, element) {
                 element = $(element);
                 var path = element.data("ngModel");
@@ -1584,7 +1615,6 @@
             }
         };
     }]);
-
 
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
@@ -2074,23 +2104,6 @@
         };
     });
 
-    //todo review this directive
-    spongeApp.directive("spgBeginLinkRequest", function (spongeService) {
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var targetId = attrs["spgBeginLinkRequest"];
-                $(element).click(function () {
-                    spongeService.beginLinkRequest(targetId)
-                        .fail(function (error) {
-                            reportError(error);
-                        });
-                    return false;
-                });
-            }
-        };
-    });
-
     spongeApp.directive("spgMin", function (spongeService) {
         return {
             restrict: 'A',
@@ -2115,13 +2128,12 @@
 
     spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", function ($scope, $http, spongeService, $modal) {
 
-        $scope.linkRequests = []; //need to select an model to complete the operation.
-
         $scope.operationLocks = []; //in-progress long running operations
 
         $scope.scrollTo = scrollTo;
 
         site.ajs.$modal = $modal;
+        site.ajs.$scope = $scope;
 
         /**
          * load application metadata which sponge.js depends on.
@@ -2139,9 +2151,11 @@
                 //init menu
                 var menu = [];
                 for (var modelName in metadata) {
-                    var model = metadata[modelName];
-                    if (model["searchable"]) {
-                        menu.push(model);
+                    if(metadata.hasOwnProperty(modelName)){
+                        var model = metadata[modelName];
+                        if (model["searchable"]) {
+                            menu.push(model);
+                        }
                     }
                 }
                 menu.sort(function (m1, m2) {
@@ -2150,7 +2164,7 @@
                 $scope.menu = menu;
 
             }).error(function (data, status, headers) {
-                reportError('Failed to load application metadata, please retry later. Error:' + status);
+                reportError(site.getMessage("failedToLoadMetadata", [status]));
             });
         };
 
@@ -2158,7 +2172,7 @@
 
             var targetElement = $("#" + resultName);
             if (targetElement.find("form.spg-form").hasClass("ng-dirty")) {
-                if (!confirm("Do you want to discard un-saved changes in the form?"))
+                if (!confirm(site.getMessage("discardUnsavedChanges")))
                     return false;
             }
 
@@ -2194,7 +2208,7 @@
                 var otherName = resultNames[i];
                 if (otherName != resultName) {
                     if (!alertShown) {
-                        if(!confirm("Do you want to close all " + (resultName ? "other" : "") + " views? All unsaved changes will be lost.")){
+                        if(!confirm(site.getMessage("closeAllViewConfirmation", [(resultName ? "other" : "")]))){
                             return;
                         } else {
                             alertShown = true;
@@ -2207,7 +2221,7 @@
 
         $scope.makeCriteria = function (scope, modelName, propertyName, value) {
             var bodyScope = getBodyScope();
-            var promise = ensureSearchModel(bodyScope, modelName, null);
+            var promise = ensureSearchModel(modelName, null);
             promise.done(function () {
                 var prototype = bodyScope.searchModel[modelName];
                 scope.criteria = angular.copy(prototype);
@@ -2272,8 +2286,8 @@
         };
 
         $scope.addToCollection = function (collection, modelName) {
-            var bodyScope = getBodyScope();
-            var promise = ensureNewModel(bodyScope, modelName, null);
+
+            var promise = ensureNewModel(modelName, null);
             promise.done(function () {
                 safeApply(function () {
                     var prototype = bodyScope.newModel[modelName];
@@ -2328,7 +2342,6 @@
 
         $scope.reset();
     }]);
-
 
     spongeApp.controller('messageBoxController', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
 

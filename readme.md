@@ -38,13 +38,10 @@ Todo List
 -----------
  * Direct error messages to each field as well as the whole model.
  * create a model after searching will copy certain search parameters
- * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
  * Display search criteria in the list view.
- * Fix the many problems in error handling in JavaScript.
  * Trim unnecessary parts of the request before posting json.
  * Add Spring Security.
  * a changeable user locale, first set at login time. it affects ui language, default payment currency
- * replace ui text in scripts with message key.
  * disabled state for edit controls - e.g. editngselect will not need to retrieve a list when disabled. this disabled state is stored on server side as well.
  * allow adding purchase - from supplier, by employee, product list and amount, price per unit
  * calculate stock, pending amount - ordered but not delivered
@@ -57,6 +54,7 @@ Todo List
 
 Future Todo List 
 -----------
+ * css/script bundling -> https://spring.io/blog/2014/07/24/spring-framework-4-1-handling-static-web-resources
  * support for named inline representation - a property annotation that combines interpolate and displayFormat with a name
  * Support full internationalization - in jsp and angular.
  * Separate template and data. This way a type of template can be cached by the client.
