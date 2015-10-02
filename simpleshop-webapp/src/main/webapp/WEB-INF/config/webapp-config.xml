@@ -2,11 +2,14 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:security="http://www.springframework.org/schema/security"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context.xsd">
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
 
     <import resource="classpath:spring-simpleshop-service.xml" />
 
@@ -22,4 +25,33 @@
     <bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <property name="registerDefaultFormatters" value="true" />
     </bean>
+
+
+    <!--Spring Security config-->
+    <security:http auto-config="true" use-expressions="true" >
+
+        <!--have to disable this now otherwise post will not work.-->
+        <security:csrf disabled="true" />
+        <!--this has to be the last one-->
+        <security:intercept-url pattern="/json/**" access="permitAll()" />
+        <security:intercept-url pattern="/**" access="permitAll()" />
+
+        <!--<security:http-basic />-->
+        <security:form-login login-page="/login.do" login-processing-url="/j_spring_security_check.do" authentication-failure-url="/loginFailed.do" default-target-url="/" username-parameter="j_username" password-parameter="j_password" />
+        <security:logout logout-url="/logout.do" logout-success-url="/loggedOut.do" invalidate-session="true" />
+        <security:access-denied-handler error-page="/403.html" />
+    </security:http>
+
+    <security:authentication-manager>
+
+        <security:authentication-provider >
+            <!-- <security:password-encoder hash="bcrypt" />hash="md5"-->
+            <!--xml based users  -->
+            <security:user-service>
+                <security:user name="zhy2002" password="zhy2002" authorities="ROLE_USER" />
+            </security:user-service>
+
+        </security:authentication-provider>
+    </security:authentication-manager>
+
 </beans>

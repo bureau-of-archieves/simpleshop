@@ -1,0 +1,104 @@
+.error {
+    color: red;
+}
+
+.errorblock {
+    color: #000;
+    background-color: #ffeeee;
+    border: 3px solid red;
+    margin: 16px;
+}
+
+footer{
+    margin-top: 3em;
+    opacity: 0.8;
+    font-size: small;
+}
+
+section.main {
+    min-height: 20em;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.panel-collapse .panel-body {
+    display: none;
+}
+
+.well h4 {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.logout-block span {
+    color: #4A7C59;
+    position:relative;
+    top:2px
+}
+
+.logout-block div{
+    margin-top: 0.2em;
+}
+
+.logout-block form {
+    display: inline-block;
+}
+
+
+div.app-options .btn {
+    width: 100%;
+    margin-top:0.5em;
+}
+
+.go-back-link{
+    margin-top: 2em;
+}
+
+#predefined_users_table{
+    min-width: 625px;
+}
+
+#predefined_users_panel{
+    min-width: 650px;
+}
+
+.form-inline .form-control{
+    margin-top: 0.5em;
+    margin-bottom:0.5em;
+}
+
+.strong {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    border-bottom:1px solid rgb(180,180,180);
+    margin-bottom:1em;
+    font-weight:bold
+}
+
+.row.not-default .selected {
+    display: none;
+}
+
+span.tag{
+    color:#5Ba884;
+    font-size:small;
+    font-weight:bold;
+    display:inline-block;
+    padding-right: 1em;
+}
+
+body {
+    background: #fafafd url("../img/bg_main.jpg") repeat scroll 0 0;
+}
+
+.page-header {
+    background: #ebeaef url("../img/header_bg.png") repeat scroll 0 0;
+    border-radius: 0.5em;
+    margin-bottom: 10px;
+    padding-bottom: 12px;
+    padding-left: 2em;
+    margin-top: 23px;
+    padding-top: 15px;
+}

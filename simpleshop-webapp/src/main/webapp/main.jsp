@@ -1,10 +1,20 @@
-<%@include file="WEB-INF/_header.jspf" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" trimDirectiveWhitespaces="true" session="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
+<%@ taglib prefix="f" uri="sponge/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html data-ng-app="spongeApp" data-ng-controller="spongeController">
 <head>
     <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/png"  href="img/favicon.png" >
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/png"  href="img/site.png" >
+    <sec:csrfMetaTags/>
+
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
@@ -27,7 +37,7 @@
         <div class="navbar-header">
             <button class="navbar-toggle collapsed" type="button" data-toggle="collapse"
                     data-target="#navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
+                <span class="sr-only"><spring:message code="jsp.literal.toggleNavigation" /></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -112,6 +122,18 @@
                         </li>
                     </ul>
                 </li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge">0</span></a></li>
+
+
+                <comm:hasUser>
+                    <li><a href="#">Logout</a></li>
+                    <li><a href="#">${username}</a></li>
+                </comm:hasUser>
+
             </ul>
         </div>
     </div>
@@ -147,7 +169,7 @@
         <hr>
         <div class="col-xs-8 col-xs-offset-2">
             <small class="text-info">Experimental SPA Web app demo based on Northwind database. Powered by
-                AngularJS, Spring Hibernate and Drools; created by John Zhang, 2015.
+                AngularJS, Spring Hibernate and Drools; created by Hanyang Zhang, 2015.
             </small>
         </div>
     </footer>
@@ -182,7 +204,7 @@
 <script src="js/moment.js"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/angular.js"></script>
-<script src="js/i18n/angular-locale_${f:userLocale()}.js"
+<script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
 <script src="js/angular-animate.js"></script>
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/bootstrap-datetimepicker.js"></script>

@@ -2036,7 +2036,7 @@
                         }
                     }
 
-                    return !(event.key && event.key.length == 1);
+                    return !(event.key && event.key.length == 1) && event.charCode == 0;
                 };
 
                 input.keypress(function (event) {
