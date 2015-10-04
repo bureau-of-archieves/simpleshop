@@ -524,6 +524,10 @@
 
     var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
 
+    spongeApp.config(['$compileProvider', function ($compileProvider) {
+        $compileProvider.debugInfoEnabled(false);
+    }]);
+
     //region filters
 
     spongeApp.filter("placeholder", function () {
