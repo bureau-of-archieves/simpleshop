@@ -536,6 +536,15 @@
         };
     });
 
+    spongeApp.filter("defaultImage", function () {
+        return function (input) {
+            if(input && input.length > 0){
+                return input[0];
+            }
+            return "";
+        };
+    });
+
     spongeApp.filter("formatSortInfo", function () {
         return function (item) {
             return zcl.camelNameToSpacedName(item["property"]) + (item["ascending"] ? " Asc" : " Desc" )

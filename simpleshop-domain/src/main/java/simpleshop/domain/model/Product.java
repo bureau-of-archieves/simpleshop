@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.AutoLoad;
-import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.component.ProductSupplier;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 
-@AutoLoad("categories")
+@AutoLoad({"categories", "images"})
 @Entity
 @Table(name = "products")
 @Icon("shopping-cart")
