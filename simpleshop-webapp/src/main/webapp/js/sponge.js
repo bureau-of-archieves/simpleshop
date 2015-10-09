@@ -1382,7 +1382,8 @@
                     var args = JSON.parse(attrs["spgDetails"]);
                     var modelName = args["modelName"];
                     var modelId = args["modelId"];
-
+                    var variant = args["variant"];
+                    variant = variant ? "_" + variant : ""; //keep the variant of the initiating view
                     if (typeof modelId == "string") {
                         if (modelId.substring(0, 1) == "#") {
                             modelId = $(modelId).val();
@@ -1394,7 +1395,7 @@
                     if (!modelId)
                         return;
 
-                    spongeService.getView(modelName, "details", modelId, {modelId: modelId}, null, {removeExisting: false})
+                    spongeService.getView(modelName, "details" + variant, modelId, {modelId: modelId}, null, {removeExisting: false})
                         .fail(function (error) {
                             reportError(error);
                         });
