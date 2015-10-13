@@ -61,6 +61,10 @@
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/save";
         };
 
+        this.addToCartUrl = function(){
+            return jsonPath + "cart/add";
+        };
+
         /**
          * Construct a url for a model name what you can use to delete a model with a 'POST'.
          * @param modelName
@@ -1291,6 +1295,23 @@
 
         };
 
+        var addToCart = function(productId){
+            createRequest(site.addToCartUrl(), {productId : productId})
+                .fail(function (error) {
+                    reportError(error);
+                })
+                .done(function(response){
+                    var bodyScope = getBodyScope();
+                    if(!bodyScope["cart"]){
+                        bodyScope["cart"] = [];
+                    }
+                    safeApply(function(){
+                        bodyScope["cart"].push(productId);
+                    });
+
+                });
+        };
+
         return {
             loadList: loadList,
             getView: getView,
@@ -1299,6 +1320,7 @@
             cancel: cancel,
             refresh: refresh,
             close: close,
+            addToCart: addToCart,
             prePost: prePostHandler,
             sequenceNumbers: {}
         };
@@ -1365,6 +1387,19 @@
                             reportError(error);
                         });
                     //$event.preventDefault();
+                });
+            }
+        };
+    }]);
+
+    spongeApp.directive("spgCartAdd", ["spongeService", function(spongeService){
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                $(element).click(function(){
+                    var productId = parseInt(attrs["spgCartAdd"]);
+                    spongeService.addToCart(productId);
                 });
             }
         };
@@ -2143,7 +2178,6 @@
     spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", function ($scope, $http, spongeService, $modal) {
 
         $scope.operationLocks = []; //in-progress long running operations
-
         $scope.scrollTo = scrollTo;
 
         site.ajs.$modal = $modal;
@@ -2244,6 +2278,7 @@
         };
 
         $scope.loadMetadata();
+        $scope.cart = [];
 
     }]);
 

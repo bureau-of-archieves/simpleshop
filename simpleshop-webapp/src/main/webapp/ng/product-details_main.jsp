@@ -17,7 +17,8 @@
         <ctrl:detailsField path="stock" />
 
         <div class="col-sm-12">
-            <button type="button" class="btn btn-primary" ><spring:message code="jsp.literal.addToCart" /></button>
+            <comm:peek var="base" />
+            <button type="button" class="btn btn-primary" data-spg-cart-add="{{${base}id}}" ><spring:message code="jsp.literal.addToCart" /></button>
         </div>
 
     </t:view-details>

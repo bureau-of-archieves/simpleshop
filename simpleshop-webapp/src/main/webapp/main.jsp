@@ -126,7 +126,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge">0</span></a></li>
+                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge">{{cart.length |number:0}}</span></a></li>
 
 
                 <comm:hasUser>
