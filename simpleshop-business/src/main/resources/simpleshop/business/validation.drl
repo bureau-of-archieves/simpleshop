@@ -4,7 +4,7 @@ dialect  "java"
 import simpleshop.domain.model.Product;
 import simpleshop.dto.CartItem;
 global simpleshop.data.ProductDAO productDAO;
-global simpleshop.business.BusinessErrors errors;
+global org.springframework.validation.Errors errors;
 
 
 rule "cartItemShouldHaveValidProductId"
@@ -14,5 +14,5 @@ when
     CartItem($productId : productId != null)
     not Product(id == $productId)
 then
-    errors.raise(drools.getRule(), "CartItem", "productId");
+    errors.rejectValue("productId", drools.getRule().getName());
 end
