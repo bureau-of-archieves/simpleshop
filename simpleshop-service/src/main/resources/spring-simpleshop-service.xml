@@ -8,6 +8,6 @@
        http://www.springframework.org/schema/aop
        http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <import resource="classpath:spring-simpleshop-data.xml"/>
+    <import resource="spring-simpleshop-business.xml" />
 
 </beans>

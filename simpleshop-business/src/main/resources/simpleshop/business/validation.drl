@@ -1,0 +1,18 @@
+package simpleshop.business;
+dialect  "java"
+
+import simpleshop.domain.model.Product;
+import simpleshop.dto.CartItem;
+global simpleshop.data.ProductDAO productDAO;
+global simpleshop.business.BusinessErrors errors;
+
+
+rule "cartItemShouldHaveValidProductId"
+    salience 1000
+    ruleflow-group "validation"
+when
+    CartItem($productId : productId != null)
+    not Product(id == $productId)
+then
+    errors.raise(drools.getRule(), "CartItem", "productId");
+end

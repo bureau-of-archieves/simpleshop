@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<process xmlns="http://drools.org/drools-5.0/process"
+         type="RuleFlow" name="validationFlow" id="validationFlow"
+         package-name="simpleshop.business">
+
+    <nodes>
+        <start      id="10000" name="Start" />
+        <ruleSet    id="20000" name="Preload" ruleFlowGroup="preload"/>
+        <ruleSet    id="30000" name="Validation" ruleFlowGroup="validation"/>
+        <end        id="40000" name="End" />
+    </nodes>
+
+    <connections>
+        <connection from="10000" to="20000"/>
+        <connection from="20000" to="30000"/>
+        <connection from="30000" to="40000"/>
+    </connections>
+
+</process>

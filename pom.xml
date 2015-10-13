@@ -20,6 +20,7 @@
         <module>simpleshop-service</module>
         <module>simpleshop-data</module>
         <module>sponge-maven-plugin</module>
+        <module>simpleshop-business</module>
     </modules>
 
     <properties>
@@ -44,7 +45,7 @@
 
         <version.h2>1.4.185</version.h2>
         <version.dozer>5.4.0</version.dozer>
-        <version.drools>6.1.0.Final</version.drools>
+        <version.drools>6.3.0.Final</version.drools>
         <version.junit>4.11</version.junit>
         <version.mockito>1.9.5</version.mockito>
         <version.hamcrest>1.3</version.hamcrest>
@@ -84,6 +85,12 @@
 
             <dependency>
                 <groupId>zhy2002</groupId>
+                <artifactId>simpleshop-business</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>zhy2002</groupId>
                 <artifactId>simpleshop-service</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -109,6 +116,21 @@
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.1</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-bom</artifactId>
+                <type>pom</type>
+                <version>${version.drools}</version>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jbpm</groupId>
+                <artifactId>jbpm-flow-builder</artifactId>
+                <version>${version.drools}</version>
+            </dependency>
+
 
             <!--data-->
             <dependency>
