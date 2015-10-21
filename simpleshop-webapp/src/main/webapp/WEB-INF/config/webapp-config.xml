@@ -49,6 +49,7 @@
             <!--xml based users  -->
             <security:user-service>
                 <security:user name="zhy2002" password="zhy2002" authorities="ROLE_USER" />
+                <security:user name="zhy2003" password="zhy2003" authorities="ROLE_USER,ROLE_ADMIN" />
             </security:user-service>
 
         </security:authentication-provider>

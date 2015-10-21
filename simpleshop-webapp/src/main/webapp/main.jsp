@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/bootstrap-theme.css">
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
+    <link rel="stylesheet" href="css/toastr.css" >
     <link rel="stylesheet" href="css/site-layout.css">
     <link rel="stylesheet" href="css/site-theme.css">
 </head>
@@ -50,18 +51,20 @@
 
                 <li ><a href="#" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
 
-                <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <span class="caret"></span>
-                    </a>
+                <comm:hasRole role="ADMIN" >
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <span class="caret"></span>
+                        </a>
 
-                    <ul role="menu" class="dropdown-menu">
-                        <li data-ng-repeat="item in menu">
-                            <a href="#" class="icon"
-                               data-spg-search="{{item.name}}">
-                                <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
-                        </li>
-                    </ul>
-                </li>
+                        <ul role="menu" class="dropdown-menu">
+                            <li data-ng-repeat="item in menu">
+                                <a href="#" class="icon"
+                                   data-spg-search="{{item.name}}">
+                                    <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
+                            </li>
+                        </ul>
+                    </li>
+                </comm:hasRole>
 
                 <li class="dropdown result" data-ng-show="getViewIds().length">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Views <span class="caret"></span>
@@ -128,10 +131,14 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge">{{cart.length |number:0}}</span></a></li>
 
-
                 <comm:hasUser>
-                    <li><a href="#">Logout</a></li>
-                    <li><a href="#">${username}</a></li>
+                    <jsp:attribute name="isFalse">
+                        <li><a href="login.do">Login</a></li>
+                    </jsp:attribute>
+                    <jsp:body>
+                        <li><a href="logout.do">Logout</a></li>
+                        <li><a href="#">${username}</a></li>
+                    </jsp:body>
                 </comm:hasUser>
 
             </ul>
@@ -208,6 +215,7 @@
 <script src="js/angular-animate.js"></script>
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/bootstrap-datetimepicker.js"></script>
+<script src="js/toastr.js" ></script>
 <script src="js/zcl.js"></script>
 <script src="js/sponge.js"></script>
 
