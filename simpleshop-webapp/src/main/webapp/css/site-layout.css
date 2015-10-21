@@ -412,3 +412,7 @@ footer>.col-xs-8 {
     font-weight:400;
     margin-bottom:0.5em;
 }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}

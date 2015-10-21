@@ -1,7 +1,7 @@
 <%@include file="../WEB-INF/_header.jspf" %>
 
 <t:page>
-    <t:view-details>
+    <t:view-details frameClass="col-xs-12">
         <ctrl:carousel path="images" hideEmpty="true" />
         <ctrl:detailsField path="name" />
         <ctrl:detailsField path="quantityPerUnit" />

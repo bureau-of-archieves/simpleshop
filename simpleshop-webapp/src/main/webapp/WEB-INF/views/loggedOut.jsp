@@ -13,7 +13,10 @@
 
             <hr>
             <c:url var="loginUrl"  value="/login.do"  />
-            <a href="${loginUrl}">Login again</a>
+            <c:url var="mainUrl"  value="/"  />
+            <a href="${loginUrl}">Login again</a> | <a href="${mainUrl}">Go to main page</a>
+
+
         </div>
     </div>
 

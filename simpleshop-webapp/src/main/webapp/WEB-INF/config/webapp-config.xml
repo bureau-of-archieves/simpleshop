@@ -37,9 +37,11 @@
         <security:intercept-url pattern="/**" access="permitAll()" />
 
         <!--<security:http-basic />-->
-        <security:form-login login-page="/login.do" login-processing-url="/j_spring_security_check.do" authentication-failure-url="/loginFailed.do" default-target-url="/" username-parameter="j_username" password-parameter="j_password" />
+        <security:form-login login-page="/login.do"  login-processing-url="/j_spring_security_check.do" authentication-failure-url="/loginFailed.do" default-target-url="/" username-parameter="j_username" password-parameter="j_password" />
         <security:logout logout-url="/logout.do" logout-success-url="/loggedOut.do" invalidate-session="true" />
         <security:access-denied-handler error-page="/403.html" />
+
+        <security:session-management session-fixation-protection="migrateSession" />
     </security:http>
 
     <security:authentication-manager>

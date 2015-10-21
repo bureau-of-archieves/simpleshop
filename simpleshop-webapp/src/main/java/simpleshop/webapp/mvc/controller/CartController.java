@@ -21,6 +21,8 @@ public class CartController {
     @Autowired
     private BusinessValidator businessValidator;
 
+    public static final String SHOPPING_CART_SESSION_KEY = "shoppingCart";
+
     @InitBinder("cartItem")
     public void initBinder(WebDataBinder binder){
         binder.addValidators(businessValidator);
@@ -29,19 +31,23 @@ public class CartController {
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public JsonResponse<String> addToCart(HttpSession session, @Valid @RequestBody final CartItem cartItem){
 
-        ShoppingCart cart = (ShoppingCart)session.getAttribute("shoppingCart");
+        ShoppingCart cart = (ShoppingCart)session.getAttribute(SHOPPING_CART_SESSION_KEY);
         if(cart == null){
             cart = new ShoppingCart();
-            session.setAttribute("shoppingCart", cart);
+            session.setAttribute(SHOPPING_CART_SESSION_KEY, cart);
         }
 
         cart.getItems().add(cartItem);
         return JsonResponse.createSuccess("OK");
     }
 
-    @RequestMapping("get")
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
     public JsonResponse<ShoppingCart> getCart(HttpSession session){
-        ShoppingCart cart = (ShoppingCart)session.getAttribute("shoppingCart");
+        ShoppingCart cart = (ShoppingCart)session.getAttribute(SHOPPING_CART_SESSION_KEY);
+        if(cart == null){
+            cart = new ShoppingCart();
+            session.setAttribute(SHOPPING_CART_SESSION_KEY, cart);
+        }
         return JsonResponse.createSuccess(cart);
     }
 

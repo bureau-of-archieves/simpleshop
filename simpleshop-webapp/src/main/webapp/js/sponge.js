@@ -19,7 +19,9 @@
         "propertyNameArgMissing": "propertyValue pre-post processor requires a property name argument.",
         "discardUnsavedChanges": "Do you want to discard un-saved changes in the form?",
         "failedToLoadMetadata": "Failed to load application metadata, please retry later. Error: {0}",
-        "closeAllViewConfirmation" : "Do you want to close all {0} views? All unsaved changes will be lost."
+        "closeAllViewConfirmation" : "Do you want to close all {0} views? All unsaved changes will be lost.",
+        "cartInitFailed": "Failed to initialize the shopping cart. Please refresh page later.",
+        "itemAddedToCart": "Selected item is successfully added to cart."
     };
 
     /**
@@ -63,6 +65,10 @@
 
         this.addToCartUrl = function(){
             return jsonPath + "cart/add";
+        };
+
+        this.getCartUrl = function(){
+            return jsonPath + "cart/get";
         };
 
         /**
@@ -1303,10 +1309,22 @@
                 .done(function(response){
                     var bodyScope = getBodyScope();
                     if(!bodyScope["cart"]){
-                        bodyScope["cart"] = [];
+                        bodyScope["cart"] = {items:[]};
                     }
                     safeApply(function(){
-                        bodyScope["cart"].push(productId);
+                        var items = bodyScope["cart"]["items"];
+                        var added = false;
+                        for(var i=0; i<items.length; i++){
+                            if(items[i].productId == productId){
+                                items[i].quantity++;
+                                added = true;
+                                break;
+                            }
+                        }
+                        if(!added){
+                            items.push({productId: productId, quantity: 1});
+                        }
+                        toastr["success"](site.getMessage("itemAddedToCart"));
                     });
 
                 });
@@ -2278,7 +2296,13 @@
         };
 
         $scope.loadMetadata();
-        $scope.cart = [];
+
+        $http.get(site.getCartUrl()).then(function(response){
+            $scope.cart = response.data.content;
+        }).catch(function(){
+            reportError(site.getMessage("cartInitFailed"));
+        });
+
 
     }]);
 

@@ -8,6 +8,8 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <%--########################## ATTRIBUTES ################################--%>
+<%--bootstrap view frame css class--%>
+<%@attribute name="frameClass" %>
 <%@attribute name="title"%>
 <%@attribute name="icon"%>
 
@@ -26,7 +28,7 @@
     <comm:peek var="viewType" />
     <c:set var="viewId" value="${f:pascalToUrl(modelName)}-${viewType}-${modelId}"/>
 
-    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" cssClass="details-view" >
+    <t:view-frame id="${viewId}" title="${title}" icon="${icon}" frameClass="${frameClass}" cssClass="details-view" >
         <jsp:attribute name="header">
            <ctrl:icon value="pencil" cssClass="cursor-pointer" alignRight="true">
                <jsp:attribute name="attributes">
