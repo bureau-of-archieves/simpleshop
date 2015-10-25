@@ -1252,7 +1252,7 @@
                 try {
                     var target = zcl.getProp(model, path);
                 } catch (ex) {
-                    throw {message: ex};
+                    //do nothing
                 }
                 if (angular.isObject(target)) {
                     var value = target[propertyName];
