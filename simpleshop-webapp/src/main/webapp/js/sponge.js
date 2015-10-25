@@ -1029,7 +1029,8 @@
                         }
                     });
                 } catch (ex) {
-                    return createPromise(site.getMessage("viewCompilationFailed", [ex]));
+                    var errorMessage = site.getMessage("viewCompilationFailed", [ex]);
+                    return createPromise(errorMessage);
                 }
 
                 initViewElements(viewMap[viewKey]);

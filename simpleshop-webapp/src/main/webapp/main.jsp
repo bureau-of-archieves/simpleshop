@@ -18,16 +18,13 @@
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <link rel="stylesheet" href="css/jquery-ui.css">
-    <link rel="stylesheet" href="css/jquery-ui.structure.css">
-    <link rel="stylesheet" href="css/jquery-ui.theme.css">
-
-    <link rel="stylesheet" href="css/bootstrap.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.css">
+    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/theme.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
-    <link rel="stylesheet" href="css/toastr.css" >
-    <link rel="stylesheet" href="css/site-layout.css">
-    <link rel="stylesheet" href="css/site-theme.css">
+    <link rel="stylesheet" href="components/toastr/toastr.css" >
+    <link rel="stylesheet" href="css/site.css">
 </head>
 
 <body>
@@ -66,7 +63,7 @@
                     </li>
                 </comm:hasRole>
 
-                <li class="dropdown result" data-ng-show="getViewIds().length">
+                <li class="dropdown result ng-cloak" data-ng-show="getViewIds().length">
                     <a href="#" data-toggle="dropdown" class="dropdown-toggle">Views <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
@@ -204,18 +201,18 @@
 
 
 <%--scripts--%>
-<script src="js/jquery.js"></script>
-<script src="js/jquery-ui.js"></script>
+<script src="components/jquery/dist/jquery.js"></script>
+<script src="components/jquery-ui/jquery-ui.js"></script>
 <script src="js/jquery.iframe-transport.js"></script>
 <script src="js/jquery.fileupload.js"></script>
 <script src="js/moment.js"></script>
-<script src="js/bootstrap.js"></script>
-<script src="js/angular.js"></script>
+<script src="components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="components/angular/angular.js"></script>
 <script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
-<script src="js/angular-animate.js"></script>
+<%--<script src="js/angular-animate.js"></script>--%>
 <script src="js/ui-bootstrap-tpls.js"></script>
 <script src="js/bootstrap-datetimepicker.js"></script>
-<script src="js/toastr.js" ></script>
+<script src="components/toastr/toastr.js" ></script>
 <script src="js/zcl.js"></script>
 <script src="js/sponge.js"></script>
 
