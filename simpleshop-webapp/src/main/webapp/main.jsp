@@ -18,12 +18,12 @@
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.min.css">
     <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/theme.css">
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
-    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="css/bootstrap-datetimepicker.css">
-    <link rel="stylesheet" href="components/toastr/toastr.css" >
+    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="components/toastr/toastr.min.css" >
     <link rel="stylesheet" href="css/site.css">
 </head>
 
@@ -201,18 +201,18 @@
 
 
 <%--scripts--%>
-<script src="components/jquery/dist/jquery.js"></script>
-<script src="components/jquery-ui/jquery-ui.js"></script>
+<script src="components/jquery/dist/jquery.min.js"></script>
+<script src="components/jquery-ui/jquery-ui.min.js"></script>
 <script src="js/jquery.iframe-transport.js"></script>
 <script src="js/jquery.fileupload.js"></script>
-<script src="js/moment.js"></script>
-<script src="components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="components/moment/min/moment.min.js"></script>
+<script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="components/angular/angular.js"></script>
 <script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
 <%--<script src="js/angular-animate.js"></script>--%>
 <script src="js/ui-bootstrap-tpls.js"></script>
-<script src="js/bootstrap-datetimepicker.js"></script>
-<script src="components/toastr/toastr.js" ></script>
+<script src="components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="components/toastr/toastr.min.js" ></script>
 <script src="js/zcl.js"></script>
 <script src="js/sponge.js"></script>
 
