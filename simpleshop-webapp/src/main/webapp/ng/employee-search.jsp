@@ -11,7 +11,4 @@
         <ctrl:editField path="hireDateUpper" />
     </t:view-search>
 
-    <script>
-        <c:import url="/json/${f:urlModelNameFromUrl(pageContext.request.requestURL)}/search" />
-    </script>
 </t:page>

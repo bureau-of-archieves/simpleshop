@@ -26,7 +26,5 @@
         </ctrl:detailsChildList>
 
     </t:view-details>
-    <script>
-        <c:import url="/json/${f:urlModelNameFromUrl(pageContext.request.requestURL)}/${param.modelId}" />
-    </script>
+
 </t:page>

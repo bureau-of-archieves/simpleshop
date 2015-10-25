@@ -890,9 +890,27 @@
             //separate view and model
             var json = null;
             for (var i = elements.length - 1; i >= 0; i--) {
-                if (elements[i] && elements[i].tagName == "SCRIPT") {
-                    json = elements[i].innerHTML;
-                    elements.splice(i, 1);//remove last script tag
+                var element = $(elements[i]);
+                if(!element.is("*")){
+                    continue; //continue is not element
+                }
+
+                var dataContainer = null;
+                if(element.is("script#embeddedData")){
+                    dataContainer = element;
+                    json = dataContainer.html();
+                    elements.splice(i, 1);
+                    break;
+                } else {
+                    var result = element.find("script#embeddedData");
+                    if(result.length > 0){
+                        dataContainer = $(result.get(0));
+                        json = dataContainer.html();
+                        dataContainer.remove();
+                    }
+                }
+
+                if(dataContainer != null){
                     break;
                 }
             }

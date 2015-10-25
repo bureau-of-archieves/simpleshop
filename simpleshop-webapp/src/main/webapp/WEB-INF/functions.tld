@@ -71,6 +71,16 @@
         <function-signature>java.lang.String viewNameFromUrl(java.lang.String)</function-signature>
     </function>
     <function>
+        <name>isSubViewTypeOf</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>boolean isSubViewTypeOf(java.lang.String,java.lang.String)</function-signature>
+    </function>
+    <function>
+        <name>throwIfNotNull</name>
+        <function-class>simpleshop.webapp.util.Functions</function-class>
+        <function-signature>void throwIfNotNull(java.lang.Throwable)</function-signature>
+    </function>
+    <function>
         <name>htmlEncodeQuote</name>
         <function-class>simpleshop.common.StringUtils</function-class>
         <function-signature>java.lang.String htmlEncodeQuote(java.lang.String)</function-signature>

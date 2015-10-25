@@ -112,6 +112,18 @@ public class Functions {
         StringUtils.parseId(viewId.substring(viewName.length() + 1));
     }
 
+    public static boolean isSubViewTypeOf(String viewType, String rootViewType){
+        if(viewType == null || viewType.length() == 0)
+            return false;
+
+        return viewType.equals(rootViewType) || viewType.startsWith(rootViewType + "_");
+    }
+
+    public static void throwIfNotNull(Throwable ex) throws Throwable {
+        if(ex != null)
+            throw ex;
+    }
+
     public static Map<String, ModelMetadata> getMetadata() {
         return springBean.metadataService.getMetadata();
     }

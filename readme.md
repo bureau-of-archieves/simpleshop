@@ -40,7 +40,6 @@ Todo List
  * create a model after searching will copy certain search parameters
  * Display search criteria in the list view.
  * Trim unnecessary parts of the request before posting json.
- * Add Spring Security.
  * a changeable user locale, first set at login time. it affects ui language, default payment currency
  * disabled state for edit controls - e.g. editngselect will not need to retrieve a list when disabled. this disabled state is stored on server side as well.
  * allow adding purchase - from supplier, by employee, product list and amount, price per unit
