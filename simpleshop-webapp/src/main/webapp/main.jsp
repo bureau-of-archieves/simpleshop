@@ -18,8 +18,8 @@
     <title>SimpleShop Demo Web App</title>
 
     <%--stylesheets--%>
-    <%--<link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.min.css">--%>
-    <%--<link rel="stylesheet" href="components/jquery-ui/themes/smoothness/theme.css">--%>
+    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.min.css"><!--required by the upload js-->
+    <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/theme.css">
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
@@ -202,7 +202,7 @@
 
 <%--scripts--%>
 <script src="components/jquery/dist/jquery.min.js"></script>
-<%--<script src="components/jquery-ui/jquery-ui.min.js"></script>--%>
+<script src="components/jquery-ui/jquery-ui.min.js"></script>
 <script src="js/jquery.iframe-transport.js"></script>
 <script src="js/jquery.fileupload.js"></script>
 <script src="components/moment/min/moment.min.js"></script>

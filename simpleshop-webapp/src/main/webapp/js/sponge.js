@@ -4,8 +4,10 @@
  */
 (function () {
 
+    var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
+
     //temporarily use this map to store all the UI string literals.
-    var message = {
+    spongeApp.constant("message", {
         "requestFailed": "Failed to send request to server.",
         "errorOccurred": "An error has occurred.",
         "operationInProgress": "Operation is in progress, please wait.",
@@ -22,12 +24,15 @@
         "closeAllViewConfirmation" : "Do you want to close all {0} views? All unsaved changes will be lost.",
         "cartInitFailed": "Failed to initialize the shopping cart. Please refresh page later.",
         "itemAddedToCart": "Selected item is successfully added to cart."
-    };
+    });
+
+    spongeApp.service("site", ["message", SiteConstructor]);
 
     /**
      * All references to UI layer element id or url are defined in this object.
      */
-    var site = new (function () {
+    function SiteConstructor(message) {
+        var site = this;
         var jsonPath = "json/"; //the root path for json related operations, e.g. save object, refresh object or search.
         var viewPath = "ng/"; //the root path of all views
 
@@ -63,11 +68,11 @@
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/save";
         };
 
-        this.addToCartUrl = function(){
+        this.addToCartUrl = function () {
             return jsonPath + "cart/add";
         };
 
-        this.getCartUrl = function(){
+        this.getCartUrl = function () {
             return jsonPath + "cart/get";
         };
 
@@ -127,7 +132,7 @@
          * @param args a plain object of message parameters.
          * @returns {string}
          */
-        this.getMessage = function(messageCode, args){
+        this.getMessage = function (messageCode, args) {
 
             return zcl.formatObject(message[messageCode], args, false); //todo use internationalized message resource.
         };
@@ -139,14 +144,14 @@
         //resize logic
         var container = $("#" + this.noViewElementId).parent();
 
-        var singleColumn = function(views){
-            if(views.length > 0){
+        var singleColumn = function (views) {
+            if (views.length > 0) {
 
                 var view = $(views.get(0));
                 var lastLeft = view.position().left;
-                for(var i=1; i<views.length; i++){
+                for (var i = 1; i < views.length; i++) {
                     var newLeft = $(views.get(i)).position().left;
-                    if(newLeft > lastLeft){
+                    if (newLeft > lastLeft) {
                         return false;
                     }
                 }
@@ -155,10 +160,10 @@
             return true;
         };
 
-        var findColumn = function(columnPositions, left){
+        var findColumn = function (columnPositions, left) {
 
-            for(var i=0; i<columnPositions.length; i++){
-                if(columnPositions[i].left >= left){
+            for (var i = 0; i < columnPositions.length; i++) {
+                if (columnPositions[i].left >= left) {
                     return i;
                 }
             }
@@ -168,15 +173,15 @@
         /**
          * Call this whenever the layout is changed, e.g. open, close, change size of a view.
          */
-        this.layout = function(){
+        this.layout = function () {
             var views = container.children(".view.display"); //only get visible ones
-            if(views.length == 0) {
+            if (views.length == 0) {
                 return;
             }
 
             //only one row
             var columnPositions = [];
-            if(singleColumn(views)){
+            if (singleColumn(views)) {
                 columnPositions.push({});
                 views.css("margin-top", 0);
                 return;
@@ -184,10 +189,10 @@
 
             //cal layout
             var maxLeft = -1;
-            for(var i=0; i<views.length; i++){
+            for (var i = 0; i < views.length; i++) {
                 var view = $(views.get(i));
                 var viewPos = view.position();
-                if(viewPos.left > maxLeft) {
+                if (viewPos.left > maxLeft) {
                     var newColumnPos = {};//create new column
                     newColumnPos.left = viewPos.left;
                     newColumnPos.top = viewPos.top;
@@ -202,8 +207,8 @@
                     var viewHeight = view.outerHeight();
                     var newBottom = columnPositions[columnIndex].bottom + viewHeight;
                     var toIndex = columnIndex + 1;
-                    for(;toIndex < columnPositions.length; toIndex++) {
-                        if(columnPositions[toIndex].left >= viewPosRight)
+                    for (; toIndex < columnPositions.length; toIndex++) {
+                        if (columnPositions[toIndex].left >= viewPosRight)
                             break;
                         var thisMarginTop = columnPositions[toIndex].bottom - viewPos.top;
                         newMarginTop = Math.max(newMarginTop, thisMarginTop);
@@ -211,7 +216,7 @@
                         newBottom = Math.max(newBottom, thisBottom);
                     }
 
-                    for(var j=columnIndex; j<toIndex; j++){
+                    for (var j = columnIndex; j < toIndex; j++) {
                         columnPositions[j].bottom = newBottom;
                     }
                     view.css("margin-top", newMarginTop);
@@ -219,8 +224,239 @@
             }
         };
 
-        $( window ).resize(this.layout);
-    })();
+        $(window).resize(this.layout);
+
+        var headerHeight = $("#" + this.headerElementId).height(); //header is fix positioned
+
+        /**
+         * Scroll to an element.
+         * @param id
+         */
+        this.scrollTo = function (id) {
+            if (!id) { //scroll to top
+                window.location.href = "#";
+            }
+
+            var elem = document.getElementById(id);
+            if (!elem)
+                return;
+
+            window.location.href = "#" + id;
+            window.scrollBy(0, -headerHeight); //header is fixed positioned
+        };
+
+        var bodyScope = null;
+
+        /**
+         * Get the scope at the view section level, which is the parent scope of all view scopes.
+         * @returns {*|jQuery}
+         */
+        var getBodyScope = function () {
+            if(bodyScope == null){
+                bodyScope = site.ajs["$scope"]; //passed in from controller.
+            }
+            return bodyScope;
+        };
+        this.getBodyScope = getBodyScope;
+
+        /**
+         * Apply a function, if already in digest cycle just call it (it is already being applied).
+         * todo should eventually eliminate all calls to this function.
+         * @param func
+         */
+        var safeApply = function (func) {
+            var scope = getBodyScope();
+            if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
+                scope.$apply(func);
+            } else {
+                func();
+            }
+        };
+        this.safeApply = safeApply;
+
+        /**
+         * Report an error. This is usually called on the endOp promise.
+         * @param error error message string.
+         */
+        var reportError = function (error) {
+
+            if(error instanceof Object){
+                error = JSON.stringify(error);
+            }
+
+            var showMessageArgs = {
+                title : site.getMessage("errorOccurred"),
+                message : error
+            };
+
+            window.showMessage(showMessageArgs);
+        };
+        this.reportError = reportError;
+
+        /**
+         * Check if a viewType is a subtype of parentViewType.
+         * Example: sub-list type -> list_detailed
+         * @param viewType string.
+         * @param parentViewType string.
+         * @returns {boolean}
+         */
+        var isSubtypeOf = function (viewType, parentViewType) {
+            if (viewType == parentViewType)
+                return true;
+
+            return viewType.indexOf(parentViewType + "_") == 0;
+        };
+        this.isSubtypeOf = isSubtypeOf;
+
+        /**
+         * Find the view key by viewId. Logically this finds the content being displayed by the view.
+         * @param viewId
+         * @returns {*}
+         */
+        var findViewKey = function (viewId) {
+            var ownProperties = zcl.getOwnProperties(viewMap);
+            for (var i = 0; i < ownProperties.length; i++) {
+                var key = ownProperties[i];
+                var viewDetails = viewMap[key];
+                if (viewDetails && viewDetails.viewId == viewId) {
+                    return key;
+                }
+            }
+            return null;
+        };
+        this.findViewKey = findViewKey;
+
+        /**
+         * Find the view details of a view.
+         * @param viewId
+         * @returns {*} returns null if viewId does not exist or is already disposed.
+         */
+        var findViewDetails = function (viewId) {
+            var key = findViewKey(viewId);
+            if (key) {
+                return viewMap[key];
+            }
+            return null;
+        };
+        this.findViewDetails = findViewDetails;
+
+        /**
+         * The element to go to when a view is closed.
+         * @param targetElement the element to be closed.
+         */
+        var goBackElementId = function (targetElement) {
+            var gotoId = "";
+            var nextElement = targetElement.next(".display");
+            if (nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId) {
+                gotoId = nextElement.attr("id");
+            }
+            if (!gotoId) {
+                var prevElement = targetElement.prev(".display");
+                if (prevElement && prevElement.length == 1) {
+                    gotoId = prevElement.attr("id");
+                }
+            }
+            return gotoId;
+        };
+        this.goBackElementId = goBackElementId;
+
+        //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
+
+        /**
+         * Set if an element is visible.
+         * There are a few different different techniques used to set element visibility in sponge, this method consider them all.
+         * @param id
+         * @param show true to show.
+         * @returns {boolean} true if the operation is successful.
+         */
+        var display = function (id, show) {
+            var elem = document.getElementById(id);
+            if (!elem)
+                return false;
+
+            elem = $(elem);
+            if (!elem.parent().hasClass("hide-children")) {
+                if (show)
+                    elem.show();
+                else
+                    elem.hide();
+            } else {
+                var classes = elem.attr("class");
+                if (show) {
+                    if (classes.indexOf("display") < 0) {
+                        elem.addClass("display");
+                    }
+                } else {
+                    if (classes.indexOf("display") >= 0) {
+                        elem.removeClass("display");
+                    }
+                }
+            }
+            site.layout();
+            return true;
+        };
+        this.display = display;
+
+        /**
+         * A utility function to simplify functional programming.
+         * @param rejectReason pass null to indicate success.
+         * @returns {*} returns a promise that has already been resolved or rejected.
+         */
+        var createPromise = function (rejectReason) {
+            var deferred = $.Deferred();
+            if (rejectReason)
+                deferred.reject(rejectReason);
+            else
+                deferred.resolve();
+            return deferred.promise();
+        };
+        this.createPromise = createPromise;
+
+        window.showMessage = function(args){
+            if (!args)
+                return;
+
+            var instance = site.ajs.$modal.open({
+                backdrop: true,
+                templateUrl: "messageBox.html",
+                size: "md",
+                windowClass: "msgbox",
+                controller: 'messageBoxController'
+            });
+
+            instance.data = args;
+        };
+
+
+        /**
+         * Resolve the real model id from the input.
+         * @param modelId could be an id selector of the input field which contains the model id.
+         * @returns {*} model id resolved.
+         */
+        var resolveModelId = function (modelId) {
+            if (!modelId)
+                return modelId;
+
+            if (typeof modelId == "string") {
+                if (modelId.substring(0, 1) == "#") {
+                    var input = $(modelId);
+                    modelId = input.val();
+                    modelId = parseInt(modelId);
+                    if (isNaN(modelId)) {
+                        modelId = zcl.subStrBeforeFirst(input.val(), '-', true);
+                    }
+                }
+            }
+
+            return modelId;
+        };
+        this.resolveModelId = resolveModelId;
+
+    }
+
+
+
+
 
     /**
      * A map from view key to viewDetails.
@@ -229,310 +465,6 @@
      * @type {{}} the global view details map.
      */
     var viewMap = {};
-
-    //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
-
-    var headerHeight = $("#" + site.headerElementId).height(); //header is fix positioned
-
-    /**
-     * Scroll to an element.
-     * @param id
-     */
-    var scrollTo = function (id) {
-        if (!id) { //scroll to top
-            window.location.href = "#";
-        }
-
-        var elem = document.getElementById(id);
-        if (!elem)
-            return;
-
-        window.location.href = "#" + id;
-        window.scrollBy(0, -headerHeight); //header is fixed positioned
-    };
-
-    /**
-     * Set if an element is visible.
-     * There are a few different different techniques used to set element visibility in sponge, this method consider them all.
-     * @param id
-     * @param show true to show.
-     * @returns {boolean} true if the operation is successful.
-     */
-    var display = function (id, show) {
-        var elem = document.getElementById(id);
-        if (!elem)
-            return false;
-
-        elem = $(elem);
-        if (!elem.parent().hasClass("hide-children")) {
-            if (show)
-                elem.show();
-            else
-                elem.hide();
-        } else {
-            var classes = elem.attr("class");
-            if (show) {
-                if (classes.indexOf("display") < 0) {
-                    elem.addClass("display");
-                }
-            } else {
-                if (classes.indexOf("display") >= 0) {
-                    elem.removeClass("display");
-                }
-            }
-        }
-        site.layout();
-        return true;
-    };
-
-    /**
-     * A utility function to simplify functional programming.
-     * @param rejectReason pass null to indicate success.
-     * @returns {*} returns a promise that has already been resolved or rejected.
-     */
-    var createPromise = function (rejectReason) {
-        var deferred = $.Deferred();
-        if (rejectReason)
-            deferred.reject(rejectReason);
-        else
-            deferred.resolve();
-        return deferred.promise();
-    };
-
-    var bodyScope = null;
-
-    /**
-     * Get the scope at the view section level, which is the parent scope of all view scopes.
-     * @returns {*|jQuery}
-     */
-    var getBodyScope = function () {
-        if(bodyScope == null){
-            bodyScope = site.ajs["$scope"]; //passed in from controller.
-        }
-        return bodyScope;
-    };
-
-    /**
-     * Apply a function, if already in digest cycle just call it (it is already being applied).
-     * todo should eventually eliminate all calls to this function.
-     * @param func
-     */
-    var safeApply = function (func) {
-        var scope = getBodyScope();
-        if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
-            scope.$apply(func);
-        } else {
-            func();
-        }
-    };
-
-    window.showMessage = function(args){
-        if (!args)
-            return;
-
-        var instance = site.ajs.$modal.open({
-            backdrop: true,
-            templateUrl: "messageBox.html",
-            size: "md",
-            windowClass: "msgbox",
-            controller: 'messageBoxController'
-        });
-
-        instance.data = args;
-    };
-
-    /**
-     * Report an error. This is usually called on the endOp promise.
-     * @param error error message string.
-     */
-    var reportError = function (error) {
-
-        if(error instanceof Object){
-            error = JSON.stringify(error);
-        }
-
-        var showMessageArgs = {
-            title : site.getMessage("errorOccurred"),
-            message : error
-        };
-
-        window.showMessage(showMessageArgs);
-    };
-
-    /**
-     * Check if a viewType is a subtype of parentViewType.
-     * Example: sub-list type -> list_detailed
-     * @param viewType string.
-     * @param parentViewType string.
-     * @returns {boolean}
-     */
-    var isSubtypeOf = function (viewType, parentViewType) {
-        if (viewType == parentViewType)
-            return true;
-
-        return viewType.indexOf(parentViewType + "_") == 0;
-    };
-
-    /**
-     * Find the view details of a view.
-     * @param viewId
-     * @returns {*} returns null if viewId does not exist or is already disposed.
-     */
-    var findViewDetails = function (viewId) {
-        var key = findViewKey(viewId);
-        if (key) {
-            return viewMap[key];
-        }
-        return null;
-    };
-
-    /**
-     * Find the view key by viewId. Logically this finds the content being displayed by the view.
-     * @param viewId
-     * @returns {*}
-     */
-    var findViewKey = function (viewId) {
-        var ownProperties = zcl.getOwnProperties(viewMap);
-        for (var i = 0; i < ownProperties.length; i++) {
-            var key = ownProperties[i];
-            var viewDetails = viewMap[key];
-            if (viewDetails && viewDetails.viewId == viewId) {
-                return key;
-            }
-        }
-        return null;
-    };
-
-    /**
-     * The element to go to when a view is closed.
-     * @param targetElement the element to be closed.
-     */
-    var goBackElementId = function (targetElement) {
-        var gotoId = "";
-        var nextElement = targetElement.next(".display");
-        if (nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId) {
-            gotoId = nextElement.attr("id");
-        }
-        if (!gotoId) {
-            var prevElement = targetElement.prev(".display");
-            if (prevElement && prevElement.length == 1) {
-                gotoId = prevElement.attr("id");
-            }
-        }
-        return gotoId;
-    };
-
-
-    /**
-     * Defines the relationship between viewName and modelName and viewType.
-     * @param modelName the model name.
-     * @param viewType the full view type.
-     * @returns {string} the view name.
-     */
-    var getViewName = function (modelName, viewType) {
-        return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
-    };
-
-    /**
-     * Resolve the real model id from the input.
-     * @param modelId could be an id selector of the input field which contains the model id.
-     * @returns {*} model id resolved.
-     */
-    var resolveModelId = function (modelId) {
-        if (!modelId)
-            return modelId;
-
-        if (typeof modelId == "string") {
-            if (modelId.substring(0, 1) == "#") {
-                var input = $(modelId);
-                modelId = input.val();
-                modelId = parseInt(modelId);
-                if (isNaN(modelId)) {
-                    modelId = zcl.subStrBeforeFirst(input.val(), '-', true);
-                }
-            }
-        }
-
-        return modelId;
-    };
-
-    /**
-     * Update the global new model cache.
-     * @param modelName model name.
-     * @param model pass null if want to retrieve from server.
-     */
-    var ensureNewModel = function (modelName, model) {
-
-        var bodyScope = getBodyScope();
-        if (!bodyScope.newModel) {
-            bodyScope.newModel = {};
-        }
-
-        if (!angular.isUndefined(model) && model != null) {
-            bodyScope.newModel[modelName] = model;
-            return createPromise(null);
-        }
-
-        model = bodyScope.newModel[modelName];
-        if (!angular.isUndefined(model) && model != null) {
-            return createPromise(null);
-        }
-
-        //get from server
-        var url = site.newJsonUrl(modelName);
-        return $.ajax(url, {
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json"
-        }).done(function (response) {
-            if (response.status == "OK") {
-                bodyScope.newModel[modelName] = response.content;
-            } else {
-                bodyScope.newModel[modelName] = {};
-            }
-        });
-    };
-
-    /**
-     * Update search model cache.
-     * @param modelName model name.
-     * @param model pass null if want to retrieve from server.
-     */
-    var ensureSearchModel = function (modelName, model) {
-
-        var bodyScope = getBodyScope();
-        if (!bodyScope.searchModel) {
-            bodyScope.searchModel = {};
-        }
-
-        if (!angular.isUndefined(model) && model != null) {
-            bodyScope.searchModel[modelName] = model;
-            return createPromise(null);
-        }
-
-        model = bodyScope.searchModel[modelName];
-        if (!angular.isUndefined(model) && model != null) {
-            return createPromise(null);
-        }
-
-        //get from server
-        var url = site.searchJsonUrl(modelName);
-        return $.ajax(url, {
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json"
-        }).done(function (response) {
-            if (response.status == "OK") {
-                bodyScope.searchModel[modelName] = response.content;
-            } else {
-                bodyScope.searchModel[modelName] = {};
-            }
-        });
-    };
-
-    //endregion
-
-    var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
 
     spongeApp.config(['$compileProvider', function ($compileProvider) {
         $compileProvider.debugInfoEnabled(false);
@@ -703,7 +635,7 @@
     /**
      * Transform input object into a formatted string.
      */
-    spongeApp.filter('interpolate', ['$interpolate', function ($interpolate) {
+    spongeApp.filter('interpolate', ['$interpolate', "site", function ($interpolate, site) {
         return function (input, modelName) {
 
             if(angular.isUndefined(input) || input === null){
@@ -713,7 +645,7 @@
             if (!modelName)
                 return input;
 
-            var bodyScope = getBodyScope();
+            var bodyScope = site.getBodyScope();
             var format = zcl.getProp(bodyScope, "metadata[" + modelName + "].interpolateFormat");
             if (!format)
                 return input;
@@ -744,7 +676,10 @@
 
     //region service
 
-    spongeApp.factory("spongeService", ["$compile", function ($compile) {
+    spongeApp.factory("spongeService", ["$compile", "site", function ($compile, site) {
+
+
+
 
         var loadedLists = {};
         /**
@@ -764,12 +699,12 @@
                     loadedLists[url] = data;
                     callback(loadedLists[url].content);
                 } else {
-                    reportError(data["description"]);
+                    site.reportError(data["description"]);
                 }
             };
 
             var error = function( jqXHR,  textStatus,  errorThrown){
-                reportError(textStatus + " - " + errorThrown);
+                site.reportError(textStatus + " - " + errorThrown);
             };
 
             $.ajax({
@@ -787,14 +722,14 @@
          * @param token used to identity an operation.
          */
         var beginOp = function (token) {
-            var bodyScope = getBodyScope();
+            var bodyScope = site.getBodyScope();
             if ($.inArray(token, bodyScope.operationLocks) >= 0)
-                return createPromise(site.getMessage("operationInProgress"));
+                return site.createPromise(site.getMessage("operationInProgress"));
 
-            safeApply(function () {
+            site.safeApply(function () {
                 bodyScope.operationLocks.push(token); //trigger ui change, e.g. spinning wheel.
             });
-            return createPromise(null);
+            return site.createPromise(null);
         };
 
         /**
@@ -803,15 +738,15 @@
          * @param token the operation to end.
          */
         var endOp = function (token) {
-            var bodyScope = getBodyScope();
+            var bodyScope = site.getBodyScope();
             var index = $.inArray(token, bodyScope.operationLocks);
             if (index < 0)
-                return createPromise(site.getMessage("operationNotInProgress", [token]));
+                return site.createPromise(site.getMessage("operationNotInProgress", [token]));
 
-            safeApply(function () {
+            site.safeApply(function () {
                 bodyScope.operationLocks.splice(index, 1);
             });
-            return createPromise(null);
+            return site.createPromise(null);
         };
 
         var sequenceNumbers = {};
@@ -934,6 +869,16 @@
         };
 
         /**
+         * Defines the relationship between viewName and modelName and viewType.
+         * @param modelName the model name.
+         * @param viewType the full view type.
+         * @returns {string} the view name.
+         */
+        var getViewName = function (modelName, viewType) {
+            return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
+        };
+
+        /**
          * Get a view with its model (in JSON) embedded from the server.
          * @param modelName model name in pascal casing.
          * @param viewType type of the view; e.g. search, create, details, update, list.
@@ -957,9 +902,9 @@
             if (!getViewOptions.removeExisting && existingViewDetails) {
 
                 viewId = existingViewDetails.viewId;
-                display(viewId, true);
-                scrollTo(viewId);
-                return createPromise(null);//existingViewDetails.viewType == viewType ? createPromise(null) : createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
+                site.display(viewId, true);
+                site.scrollTo(viewId);
+                return site.createPromise(null);//existingViewDetails.viewType == viewType ? createPromise(null) : createPromise(zcl.formatObject("The content of view '{0}' is already being displayed in another view.", [viewType]));
             }
 
             if (!viewId) {
@@ -994,7 +939,7 @@
 
                 var nextElement = existingViewDetails ? $(existingViewDetails.viewElements).last().next() : $("#" + site.noViewElementId);
                 if (!nextElement) {
-                    return createPromise(site.getMessage("cannotFindViewInsertionPosition"));
+                    return site.createPromise(site.getMessage("cannotFindViewInsertionPosition"));
                 }
 
                 if (existingViewDetails) { //remove old view
@@ -1017,10 +962,10 @@
                 };
 
                 try {
-                    safeApply(function () {
+                    site.safeApply(function () {
                         try {
                             nextElement.before(parseResult.domElements);
-                            $compile(parseResult.domElements)(getBodyScope());
+                            $compile(parseResult.domElements)(site.getBodyScope());
                             site.layout();
                         }
                         catch (ex) {
@@ -1030,23 +975,23 @@
                     });
                 } catch (ex) {
                     var errorMessage = site.getMessage("viewCompilationFailed", [ex]);
-                    return createPromise(errorMessage);
+                    return site.createPromise(errorMessage);
                 }
 
                 initViewElements(viewMap[viewKey]);
-                scrollTo(viewId);
-                return createPromise(null);
+                site.scrollTo(viewId);
+                return site.createPromise(null);
             };
 
             return beginOp(operationKey)
                 .fail(function () {
-                    reportError(site.getMessage("cannotBeginOperation"));
+                    site.reportError(site.getMessage("cannotBeginOperation"));
                 })
                 .then(function () {
                     return createRequest().then(
                         createView,
                         function (jqXHR, textStatus, description) {
-                            return createPromise(site.getMessage("failedToRetrieveView", [viewName, (description ? description : textStatus)]));
+                            return site.createPromise(site.getMessage("failedToRetrieveView", [viewName, (description ? description : textStatus)]));
                         }
                     ).always(
                         function () {
@@ -1081,7 +1026,7 @@
          */
         var save = function (viewId) {
 
-            var viewDetails = findViewDetails(viewId);
+            var viewDetails = site.findViewDetails(viewId);
             var scope = viewDetails.scope;
 
             var saveSuccess = function (response) {
@@ -1092,12 +1037,12 @@
                         scope["model"] = response["content"];
                         viewDetails.model = response["content"];
                     });
-                    return createPromise(response["description"]);
+                    return site.createPromise(response["description"]);
                 }
             };
 
             var saveFailed = function (p, s, e) {
-                return createPromise(s + " - " + e);
+                return site.createPromise(s + " - " + e);
             };
 
             var operationKey = "save-" + viewId;
@@ -1116,11 +1061,11 @@
         var remove = function (modelName, modelId, viewId) {
 
             if (!viewId)
-                return createPromise(site.getMessage("cannotRemoveViewIdMissing"));
+                return site.createPromise(site.getMessage("cannotRemoveViewIdMissing"));
 
             var deleteSuccess = function (response) {
                 if (response["status"] == "OK") {
-                    var viewDetails = findViewDetails(viewId);
+                    var viewDetails = site.findViewDetails(viewId);
                     var scope = viewDetails.scope;
                     var content = scope["model"];
                     if (angular.isArray(content)) {
@@ -1132,17 +1077,17 @@
                             }
                         }
                         if (deleted >= 0) {
-                            safeApply(function () {
+                            site.safeApply(function () {
                                 content.splice(deleted, 1);
                             });
                         }
-                        return createPromise(null);
+                        return site.createPromise(null);
                     } else {
                         return cancel(viewId, true);
                     }
 
                 }
-                return createPromise(response["description"]);
+                return site.createPromise(response["description"]);
 
             };
 
@@ -1169,13 +1114,13 @@
          */
         var cancel = function (viewId, noOpenAnother, model) {
 
-            var viewDetails = findViewDetails(viewId);
+            var viewDetails = site.findViewDetails(viewId);
             var modelName = viewDetails.modelName;
             var viewType = viewDetails.viewType;
-            if (noOpenAnother || isSubtypeOf(viewType, "create") && !model)
+            if (noOpenAnother || site.isSubtypeOf(viewType, "create") && !model)
                 return close(viewId);
 
-            if (isSubtypeOf(viewType, "create")){
+            if (site.isSubtypeOf(viewType, "create")){
                 return close(viewId).done(function(){
                     var modelId = zcl.toString(model[site.getMetadata(modelName)["idPropertyName"]]);
                     getView(modelName, "details" + viewType.substr(6), modelId, {modelId: modelId}, null, {removeExisting: true});
@@ -1194,14 +1139,14 @@
 
             var element = $("#" + viewId);
             if (element.size() == 0)
-                return createPromise(null);
+                return site.createPromise(null);
 
-            var viewDetails = findViewDetails(viewId);
+            var viewDetails = site.findViewDetails(viewId);
 
             //get the url to retrieve json data.
             var jsonUrl = null;
             var viewType = viewDetails.viewType;
-            if (isSubtypeOf(viewType, "list")) {
+            if (site.isSubtypeOf(viewType, "list")) {
                 jsonUrl = site.searchJsonUrl(viewDetails.modelName);
             } else {
                 jsonUrl = site.modelJsonUrl(viewDetails.modelName, viewDetails.instanceId);
@@ -1215,20 +1160,20 @@
             }
 
             return beginOp(operationKey).fail(function () {
-                reportError("Cannot begin operation.");
+                site.reportError("Cannot begin operation.");
             }).then(function () {
                 return createRequest(jsonUrl, model).then(
                     function (json) {
                         //refresh result
-                        safeApply(function () {
+                        site.safeApply(function () {
                             viewDetails.model = json;
                             viewDetails.scope.master = viewDetails.model["content"];
                             viewDetails.scope.reset();
                         });
-                        return createPromise(null);
+                        return site.createPromise(null);
                     },
                     function (jqXHR, textStatus, description) {
-                        return createPromise(site.getMessage("failedToRefreshView", [viewId, (description ? description : textStatus)]));
+                        return site.createPromise(site.getMessage("failedToRefreshView", [viewId, (description ? description : textStatus)]));
                     }
                 ).always(function () {
                         return endOp(operationKey);
@@ -1243,14 +1188,14 @@
          */
         var close = function (viewId) {
 
-            safeApply(function () {
-                var viewKey = findViewKey(viewId);
+            site.safeApply(function () {
+                var viewKey = site.findViewKey(viewId);
                 if (viewKey)
                     delete viewMap[viewKey];
             });
             $("#" + viewId).remove();
             site.layout();
-            return createPromise(null);
+            return site.createPromise(null);
         };
 
         var prePostProcessors = {
@@ -1323,14 +1268,14 @@
         var addToCart = function(productId){
             createRequest(site.addToCartUrl(), {productId : productId})
                 .fail(function (error) {
-                    reportError(error);
+                    site.reportError(error);
                 })
                 .done(function(response){
-                    var bodyScope = getBodyScope();
+                    var bodyScope = site.getBodyScope();
                     if(!bodyScope["cart"]){
                         bodyScope["cart"] = {items:[]};
                     }
-                    safeApply(function(){
+                    site.safeApply(function(){
                         var items = bodyScope["cart"]["items"];
                         var added = false;
                         for(var i=0; i<items.length; i++){
@@ -1371,7 +1316,7 @@
     /**
      * This directive enables an element to open a search view for a model when clicked.
      */
-    spongeApp.directive("spgSearch", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgSearch", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1380,7 +1325,7 @@
                     var modelName = attrs["spgSearch"];
                     spongeService.getView(modelName, "search", null, null, null, {viewTypeInViewKey: true})
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     $event.preventDefault();
                 });
@@ -1391,7 +1336,7 @@
     /**
      * This directive enables an element to open a create view for a model when clicked.
      */
-    spongeApp.directive("spgCreate", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgCreate", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1400,7 +1345,7 @@
                     var modelName = attrs["spgCreate"];
                     spongeService.getView(modelName, "create", null, null, null, {viewTypeInViewKey: true})
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     $event.preventDefault();
                 });
@@ -1411,7 +1356,7 @@
     /**
      * Annotate an element so that when clicked the update view of a model is opened and its details view closed (if one is open)..
      */
-    spongeApp.directive("spgUpdate", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgUpdate", ["spongeService", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1421,7 +1366,7 @@
                     var modelId = args["modelId"];
                     spongeService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting: true})
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     //$event.preventDefault();
                 });
@@ -1445,7 +1390,7 @@
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
-    spongeApp.directive("spgDetails", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgDetails", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1469,7 +1414,7 @@
 
                     spongeService.getView(modelName, "details" + variant, modelId, {modelId: modelId}, null, {removeExisting: false})
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     //$event.preventDefault();
                 });
@@ -1481,7 +1426,7 @@
      * Annotate an element so that when clicked the object is deleted.
      * If successful then will also delete first .list-group-item abcestor.
      */
-    spongeApp.directive("spgDelete", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgDelete", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1492,13 +1437,13 @@
                     var args = JSON.parse(attrs["spgDelete"]);
                     var modelName = args["modelName"];
                     var modelId = args["modelId"];
-                    modelId = resolveModelId(modelId);
+                    modelId = site.resolveModelId(modelId);
                     if (!modelId)
                         return;
 
                     spongeService.remove(modelName, modelId, jqElem.closest(".view").attr("id"))
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                 });
             }
@@ -1535,7 +1480,7 @@
     }]);
 
     //data-spg-load-list="${itemsVariableName},${url}"
-    spongeApp.directive("spgLoadList", ["spongeService", function(spongeService){
+    spongeApp.directive("spgLoadList", ["spongeService", "site", function(spongeService, site){
 
         return {
             restrict: 'A',
@@ -1554,7 +1499,7 @@
 
                 scope[listPropertyName] = [];
                 spongeService.loadList(listUrl, refresh, function(loadedList){
-                    safeApply(function(){
+                    site.safeApply(function(){
                         scope[listPropertyName] = loadedList;
                     });
                 });
@@ -1563,7 +1508,7 @@
     }]);
 
     //data-spg-upload
-    spongeApp.directive("spgUpload", ["spongeService", function(spongeService){
+    spongeApp.directive("spgUpload", ["spongeService", "site", function(spongeService, site){
 
         return {
             restrict: 'A',
@@ -1582,11 +1527,11 @@
                         if(data.result["status"] == "OK"){
                             spongeService.refresh(viewId, 0);
                         } else {
-                            reportError(data.result["description"]);
+                            site.reportError(data.result["description"]);
                         }
                     },
                     error: function (data, status, e) {
-                        reportError(e);
+                        site.reportError(e);
                     }
                 });
 
@@ -1596,7 +1541,7 @@
     }]);
 
     //data-spg-upload-list="${fieldRef}" <- upload result is put into this collection
-    spongeApp.directive("spgUploadList", ["$parse", function($parse){
+    spongeApp.directive("spgUploadList", ["$parse", "site", function($parse, site){
 
         return {
             restrict: 'A',
@@ -1616,22 +1561,22 @@
                             }
                             collection = getter(scope);
 
-                            safeApply(function(){
+                            site.safeApply(function(){
                                 zcl.addAll(collection, data.result["content"]);
                             });
                         } else {
-                            reportError(data.result["description"]);
+                            site.reportError(data.result["description"]);
                         }
                     },
                     error: function (data, status, e) {
-                        reportError(e);
+                        site.reportError(e);
                     }
                 });
             }
         };
     }]);
 
-    spongeApp.directive("spgSelect", ["$parse", function ($parse) {
+    spongeApp.directive("spgSelect", ["$parse", "site", function ($parse, site) {
 
         return {
             restrict: 'A',
@@ -1666,7 +1611,7 @@
 
                 $(element).change(function(){
 
-                    safeApply(function(){
+                    site.safeApply(function(){
                         var val = $(element).val();
                         if(!val)
                             return;
@@ -1688,7 +1633,7 @@
                         contentType: "application/json"
                     }
                 ).then(function (result) {
-                        safeApply(function () {
+                        site.safeApply(function () {
                             var list = result.content;
                             if(list == null){
                                 list = [];
@@ -1705,7 +1650,7 @@
     /**
      * Annotate an element so that when clicked the details view of a model is opened.
      */
-    spongeApp.directive("spgList", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgList", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1722,7 +1667,7 @@
                     if (criteriaPath) {
                         criteria = scope[criteriaPath];
                         if (angular.isUndefined(criteria) || criteria == null) {
-                            reportError("Criteria is not set.");
+                            site.reportError("Criteria is not set.");
                             return false;
                         }
                     }
@@ -1733,14 +1678,14 @@
                         initiatingViewId: containingViewId
                     }, scope)
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                 });
             }
         };
     }]);
 
-    spongeApp.directive("spgSave", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgSave", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1748,8 +1693,8 @@
                 $(element).click(function ($event) {
 
                     if ($(element).closest("form").hasClass("ng-invalid")) {
-                        reportError("Please correct error(s) in the form first.");
-                        safeApply(function () {
+                        site.reportError("Please correct error(s) in the form first.");
+                        site.safeApply(function () {
                             scope.showError = true;
                         });
                         return false;
@@ -1758,10 +1703,10 @@
                     var viewId = attrs["spgSave"];
                     spongeService.save(viewId)
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         })
                         .done(function () {
-                            safeApply(function () {
+                            site.safeApply(function () {
                                 scope.showError = false;
                             });
                         });
@@ -1775,7 +1720,7 @@
     /**
      * Can refresh update., details and list
      */
-    spongeApp.directive("spgRefresh", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgRefresh", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1793,7 +1738,7 @@
 
                     spongeService.refresh(viewId, args["pageDelta"])
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     return false;
 
@@ -1802,7 +1747,7 @@
         };
     }]);
 
-    spongeApp.directive("spgCancel", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgCancel", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1816,7 +1761,7 @@
 
                     spongeService.cancel(attrs["spgCancel"])
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
 
                     return false;
@@ -1825,7 +1770,7 @@
         };
     }]);
 
-    spongeApp.directive("spgClose", ["spongeService", function (spongeService) {
+    spongeApp.directive("spgClose", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1842,13 +1787,13 @@
                             return false;
                     }
 
-                    var gotoId = goBackElementId(targetElement);
+                    var gotoId = site.goBackElementId(targetElement);
                     spongeService.close(targetId)
                         .done(function () {
-                            scrollTo(gotoId);
+                            site.scrollTo(gotoId);
                         })
                         .fail(function (error) {
-                            reportError(error);
+                            site.reportError(error);
                         });
                     return false;
                 });
@@ -1857,7 +1802,7 @@
     }]);
 
     //data-spg-hide="hide_element_id"
-    spongeApp.directive("spgHide", function () {
+    spongeApp.directive("spgHide", ["site", function (site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1867,10 +1812,10 @@
 
                 $(element).click(function () {
                     var targetElement = $("#" + targetId);
-                    var gotoId = goBackElementId(targetElement);
-                    if (display(targetId, false)) {
-                        safeApply(zcl.emptyFunc);
-                        scrollTo(gotoId);
+                    var gotoId = site.goBackElementId(targetElement);
+                    if (site.display(targetId, false)) {
+                        site.safeApply(zcl.emptyFunc);
+                        site.scrollTo(gotoId);
                         return true;
                     }
                     return false;
@@ -1878,22 +1823,22 @@
 
             }
         };
-    });
+    }]);
 
     //data-spg-show="show_element_id"
-    spongeApp.directive("spgShow", function () {
+    spongeApp.directive("spgShow", ["site", function (site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 var targetId = attrs["spgShow"];
                 $(element).click(function () {
-                    display(targetId, true);
+                    site.display(targetId, true);
                 });
             }
         };
-    });
+    }]);
 
-    spongeApp.directive("spgDate", ["$filter", function ($filter) {
+    spongeApp.directive("spgDate", ["$filter", "site", function ($filter, site) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -1917,7 +1862,7 @@
 
                 var update = function () {
 
-                    safeApply(function () {
+                    site.safeApply(function () {
                         var text = $(element).val();
                         ngModel.$setViewValue(text);
                         ngModel.$commitViewValue();
@@ -1942,17 +1887,17 @@
     }]);
 
     //data-spg-toTop
-    spongeApp.directive("spgToTop", function () {
+    spongeApp.directive("spgToTop", ["site", function (site) {
         return {
             restrict: 'A',
             link: function (scope, element) {
                 $(element).click(function () {
-                    scrollTo("");
+                    site.scrollTo("");
                     return false;
                 });
             }
         };
-    });
+    }]);
 
     //data-spg-new-scope
     spongeApp.directive("spgNewScope", function () {
@@ -1982,7 +1927,7 @@
         };
     });
 
-    spongeApp.directive("spgCombo", function (spongeService) {
+    spongeApp.directive("spgCombo", ["site", function (site) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -2111,7 +2056,7 @@
                             if(scope.selectedIndex >= 0){
                                 scope.updateView(scope.comboList[scope.selectedIndex]);
                                 closeComboList();
-                                safeApply(zcl.emptyFunc);
+                                site.safeApply(zcl.emptyFunc);
                             }
                             return true;
                         }
@@ -2144,7 +2089,7 @@
                 });
             }
         };
-    });
+    }]);
 
     //http://stackoverflow.com/questions/25344368/angular-ng-model-empty-strings-should-be-null
     /**
@@ -2212,7 +2157,44 @@
 
     //region controllers
 
-    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", function ($scope, $http, spongeService, $modal) {
+    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", "site", function ($scope, $http, spongeService, $modal, site) {
+
+        /**
+         * Update search model cache.
+         * @param modelName model name.
+         * @param model pass null if want to retrieve from server.
+         */
+        var ensureSearchModel = function (modelName, model) {
+
+            var bodyScope = site.getBodyScope();
+            if (!bodyScope.searchModel) {
+                bodyScope.searchModel = {};
+            }
+
+            if (!angular.isUndefined(model) && model != null) {
+                bodyScope.searchModel[modelName] = model;
+                return site.createPromise(null);
+            }
+
+            model = bodyScope.searchModel[modelName];
+            if (!angular.isUndefined(model) && model != null) {
+                return site.createPromise(null);
+            }
+
+            //get from server
+            var url = site.searchJsonUrl(modelName);
+            return $.ajax(url, {
+                type: "GET",
+                contentType: "application/json",
+                dataType: "json"
+            }).done(function (response) {
+                if (response.status == "OK") {
+                    bodyScope.searchModel[modelName] = response.content;
+                } else {
+                    bodyScope.searchModel[modelName] = {};
+                }
+            });
+        };
 
         $scope.operationLocks = []; //in-progress long running operations
         $scope.scrollTo = scrollTo;
@@ -2249,7 +2231,7 @@
                 $scope.menu = menu;
 
             }).error(function (data, status, headers) {
-                reportError(site.getMessage("failedToLoadMetadata", [status]));
+                site.reportError(site.getMessage("failedToLoadMetadata", [status]));
             });
         };
 
@@ -2305,7 +2287,7 @@
         };
 
         $scope.makeCriteria = function (scope, modelName, propertyName, value) {
-            var bodyScope = getBodyScope();
+            var bodyScope = site.getBodyScope();
             var promise = ensureSearchModel(modelName, null);
             promise.done(function () {
                 var prototype = bodyScope.searchModel[modelName];
@@ -2319,24 +2301,61 @@
         $http.get(site.getCartUrl()).then(function(response){
             $scope.cart = response.data.content;
         }).catch(function(){
-            reportError(site.getMessage("cartInitFailed"));
+            site.reportError(site.getMessage("cartInitFailed"));
         });
 
 
     }]);
 
-    spongeApp.controller("viewController", ["$scope", "$element", function ($scope, $element) {
+    spongeApp.controller("viewController", ["$scope", "$element", "site", function ($scope, $element, site) {
+
+        /**
+         * Update the global new model cache.
+         * @param modelName model name.
+         * @param model pass null if want to retrieve from server.
+         */
+        var ensureNewModel = function (modelName, model) {
+
+            var bodyScope = site.getBodyScope();
+            if (!bodyScope.newModel) {
+                bodyScope.newModel = {};
+            }
+
+            if (!angular.isUndefined(model) && model != null) {
+                bodyScope.newModel[modelName] = model;
+                return site.createPromise(null);
+            }
+
+            model = bodyScope.newModel[modelName];
+            if (!angular.isUndefined(model) && model != null) {
+                return site.createPromise(null);
+            }
+
+            //get from server
+            var url = site.newJsonUrl(modelName);
+            return $.ajax(url, {
+                type: "GET",
+                contentType: "application/json",
+                dataType: "json"
+            }).done(function (response) {
+                if (response.status == "OK") {
+                    bodyScope.newModel[modelName] = response.content;
+                } else {
+                    bodyScope.newModel[modelName] = {};
+                }
+            });
+        };
 
         var id = $element.attr("id");
         var forms = $element.find("form");
-        var viewDetails = findViewDetails(id);
+        var viewDetails = site.findViewDetails(id);
         viewDetails.scope = $scope;
         $scope.hideBody = false;
         $scope.master = viewDetails.model["content"];
 
         //copy sort properties from initiating view.
         if(viewDetails.getViewOptions.initiatingViewId){
-            var initiatingViewDetails = findViewDetails(viewDetails.getViewOptions.initiatingViewId);
+            var initiatingViewDetails = site.findViewDetails(viewDetails.getViewOptions.initiatingViewId);
             if(initiatingViewDetails && initiatingViewDetails.model["tags"]["sortProperties"]){  //not closed yet and has sortProperties
                 $scope.sortProperties = initiatingViewDetails.model["tags"]["sortProperties"];
                 $scope.selectedSortProperties = [];
@@ -2346,16 +2365,16 @@
             }
         }
 
-        if (isSubtypeOf(viewDetails.viewType, "list")) {
+        if (site.isSubtypeOf(viewDetails.viewType, "list")) {
             $scope.previousEnabled = function () {
-                var viewDetails = findViewDetails(id);
+                var viewDetails = site.findViewDetails(id);
                 if (viewDetails && viewDetails.model["tags"]["prevPage"])
                     return "";
                 return "disabled";
             };
 
             $scope.nextEnabled = function () {
-                var viewDetails = findViewDetails(id);
+                var viewDetails = site.findViewDetails(id);
                 if (viewDetails && viewDetails.model["tags"]["nextPage"])
                     return "";
                 return "disabled";
@@ -2381,8 +2400,8 @@
 
             var promise = ensureNewModel(modelName, null);
             promise.done(function () {
-                safeApply(function () {
-                    var prototype = bodyScope.newModel[modelName];
+                site.safeApply(function () {
+                    var prototype = site.getBodyScope().newModel[modelName];
                     collection.push(angular.copy(prototype));
                 });
             });
