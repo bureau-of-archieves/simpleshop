@@ -26,6 +26,7 @@
         "itemAddedToCart": "Selected item is successfully added to cart."
     });
 
+    //client side service methods
     spongeApp.service("site", ["message", SiteConstructor]);
 
     /**
@@ -264,7 +265,7 @@
          * todo should eventually eliminate all calls to this function.
          * @param func
          */
-        var safeApply = function (func) {
+        this.safeApply = function (func) {
             var scope = getBodyScope();
             if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
                 scope.$apply(func);
@@ -272,13 +273,12 @@
                 func();
             }
         };
-        this.safeApply = safeApply;
 
         /**
          * Report an error. This is usually called on the endOp promise.
          * @param error error message string.
          */
-        var reportError = function (error) {
+        this.reportError = function (error) {
 
             if(error instanceof Object){
                 error = JSON.stringify(error);
@@ -291,7 +291,6 @@
 
             window.showMessage(showMessageArgs);
         };
-        this.reportError = reportError;
 
         /**
          * Check if a viewType is a subtype of parentViewType.
@@ -300,13 +299,12 @@
          * @param parentViewType string.
          * @returns {boolean}
          */
-        var isSubtypeOf = function (viewType, parentViewType) {
+        this.isSubtypeOf = function (viewType, parentViewType) {
             if (viewType == parentViewType)
                 return true;
 
             return viewType.indexOf(parentViewType + "_") == 0;
         };
-        this.isSubtypeOf = isSubtypeOf;
 
         /**
          * Find the view key by viewId. Logically this finds the content being displayed by the view.
@@ -331,20 +329,19 @@
          * @param viewId
          * @returns {*} returns null if viewId does not exist or is already disposed.
          */
-        var findViewDetails = function (viewId) {
+        this.findViewDetails = function (viewId) {
             var key = findViewKey(viewId);
             if (key) {
                 return viewMap[key];
             }
             return null;
         };
-        this.findViewDetails = findViewDetails;
 
         /**
          * The element to go to when a view is closed.
          * @param targetElement the element to be closed.
          */
-        var goBackElementId = function (targetElement) {
+        this.goBackElementId = function (targetElement) {
             var gotoId = "";
             var nextElement = targetElement.next(".display");
             if (nextElement && nextElement.length == 1 && nextElement.attr("id") != site.noViewElementId) {
@@ -358,7 +355,6 @@
             }
             return gotoId;
         };
-        this.goBackElementId = goBackElementId;
 
         //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
 
@@ -369,7 +365,7 @@
          * @param show true to show.
          * @returns {boolean} true if the operation is successful.
          */
-        var display = function (id, show) {
+        this.display = function (id, show) {
             var elem = document.getElementById(id);
             if (!elem)
                 return false;
@@ -395,14 +391,13 @@
             site.layout();
             return true;
         };
-        this.display = display;
 
         /**
          * A utility function to simplify functional programming.
          * @param rejectReason pass null to indicate success.
          * @returns {*} returns a promise that has already been resolved or rejected.
          */
-        var createPromise = function (rejectReason) {
+        this.createPromise = function (rejectReason) {
             var deferred = $.Deferred();
             if (rejectReason)
                 deferred.reject(rejectReason);
@@ -410,7 +405,6 @@
                 deferred.resolve();
             return deferred.promise();
         };
-        this.createPromise = createPromise;
 
         window.showMessage = function(args){
             if (!args)
@@ -433,7 +427,7 @@
          * @param modelId could be an id selector of the input field which contains the model id.
          * @returns {*} model id resolved.
          */
-        var resolveModelId = function (modelId) {
+        this.resolveModelId = function (modelId) {
             if (!modelId)
                 return modelId;
 
@@ -450,13 +444,8 @@
 
             return modelId;
         };
-        this.resolveModelId = resolveModelId;
 
     }
-
-
-
-
 
     /**
      * A map from view key to viewDetails.
@@ -674,12 +663,8 @@
 
     //endregion
 
-    //region service
-
+    //server side service methods
     spongeApp.factory("spongeService", ["$compile", "site", function ($compile, site) {
-
-
-
 
         var loadedLists = {};
         /**
@@ -1309,7 +1294,6 @@
 
     }]);
 
-    //endregion
 
     //region directives
 
