@@ -4,9 +4,17 @@
  */
 (function () {
 
+    /**
+     * A map from view key to viewDetails.
+     * A view key is a unique code of a set of content. It concisely indicate what content is being displayed in the view.The same content can only be displayed in one view at a time.
+     *A viewDetails object is compound object which contains all backing data of a view.
+     * @type {{}} the global view details map.
+     */
+    var viewMap = {};
+
     var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
 
-    //temporarily use this map to store all the UI string literals.
+    //todo externalize this service - at load time we get the one for the current locale.
     spongeApp.constant("message", {
         "requestFailed": "Failed to send request to server.",
         "errorOccurred": "An error has occurred.",
@@ -27,15 +35,18 @@
     });
 
     //client side service methods
-    spongeApp.service("site", ["message", SiteConstructor]);
+    spongeApp.service("site", ["message", "$uibModal", "$q", SiteConstructor]);
 
     /**
      * All references to UI layer element id or url are defined in this object.
      */
-    function SiteConstructor(message) {
-        var site = this;
+    function SiteConstructor(message, $uibModal, $q) {
+
+        var site = this; //use site variable in nested function scope as 'this' would be something else.
         var jsonPath = "json/"; //the root path for json related operations, e.g. save object, refresh object or search.
         var viewPath = "ng/"; //the root path of all views
+
+        //region the service endpoint urls
 
         /**
          * Construct the url to get a single model in json format.
@@ -67,14 +78,6 @@
          */
         this.saveJsonUrl = function (modelName) {
             return jsonPath + zcl.pascalNameToUrlName(modelName) + "/save";
-        };
-
-        this.addToCartUrl = function () {
-            return jsonPath + "cart/add";
-        };
-
-        this.getCartUrl = function () {
-            return jsonPath + "cart/get";
         };
 
         /**
@@ -124,8 +127,15 @@
             return jsonPath + "metadata";
         };
 
-        //inject angular js components for external access.
-        this.ajs = {};
+        this.addToCartUrl = function () {
+            return jsonPath + "cart/add";
+        };
+
+        this.getCartUrl = function () {
+            return jsonPath + "cart/get";
+        };
+
+        //endregion
 
         /**
          * Get a message from localized resource.
@@ -135,7 +145,7 @@
          */
         this.getMessage = function (messageCode, args) {
 
-            return zcl.formatObject(message[messageCode], args, false); //todo use internationalized message resource.
+            return zcl.formatObject(message[messageCode], args, false);
         };
 
         //page element dependencies
@@ -248,17 +258,18 @@
 
         var bodyScope = null;
 
+        //passed in from the controller
+        this.setBodyScope = function(scope){
+            bodyScope = scope;
+        };
+
         /**
          * Get the scope at the view section level, which is the parent scope of all view scopes.
          * @returns {*|jQuery}
          */
-        var getBodyScope = function () {
-            if(bodyScope == null){
-                bodyScope = site.ajs["$scope"]; //passed in from controller.
-            }
+        this.getBodyScope = function () {
             return bodyScope;
         };
-        this.getBodyScope = getBodyScope;
 
         /**
          * Apply a function, if already in digest cycle just call it (it is already being applied).
@@ -266,7 +277,7 @@
          * @param func
          */
         this.safeApply = function (func) {
-            var scope = getBodyScope();
+            var scope = site.getBodyScope();
             if (scope.$root.$$phase != '$apply' && scope.$root.$$phase != '$digest') {
                 scope.$apply(func);
             } else {
@@ -356,8 +367,6 @@
             return gotoId;
         };
 
-        //region util functions - these are specific to the sponge ui layer. Generic ones should be added to zcl.js.
-
         /**
          * Set if an element is visible.
          * There are a few different different techniques used to set element visibility in sponge, this method consider them all.
@@ -398,21 +407,21 @@
          * @returns {*} returns a promise that has already been resolved or rejected.
          */
         this.createPromise = function (rejectReason) {
-            var deferred = $.Deferred();
+            var deferred = $q.defer();
             if (rejectReason)
                 deferred.reject(rejectReason);
             else
-                deferred.resolve();
-            return deferred.promise();
+                deferred.resolve(null);
+            return deferred.promise;
         };
 
         window.showMessage = function(args){
             if (!args)
                 return;
 
-            var instance = site.ajs.$modal.open({
+            var instance = $uibModal.open({
                 backdrop: true,
-                templateUrl: "messageBox.html",
+                templateUrl: "messageBox.html", //defined in main.jsp
                 size: "md",
                 windowClass: "msgbox",
                 controller: 'messageBoxController'
@@ -447,16 +456,8 @@
 
     }
 
-    /**
-     * A map from view key to viewDetails.
-     * A view key is a unique code of a set of content. It concisely indicate what content is being displayed in the view.The same content can only be displayed in one view at a time.
-     *A viewDetails object is compound object which contains all backing data of a view.
-     * @type {{}} the global view details map.
-     */
-    var viewMap = {};
-
     spongeApp.config(['$compileProvider', function ($compileProvider) {
-        $compileProvider.debugInfoEnabled(false);
+        $compileProvider.debugInfoEnabled(false); //for performance reason
     }]);
 
     //region filters
@@ -664,9 +665,10 @@
     //endregion
 
     //server side service methods
-    spongeApp.factory("spongeService", ["$compile", "site", function ($compile, site) {
+    spongeApp.factory("spongeService", ["$compile", "site", "$http", "$q", function ($compile, site, $http, $q) {
 
         var loadedLists = {};
+
         /**
          * Load a list of objects and send to the callback function.
          * @param url where we retrieve the objects in json form.
@@ -677,28 +679,24 @@
 
             if(!refresh && loadedLists.hasOwnProperty(url)){
                 callback(loadedLists[url].content);
+                return;
             }
 
-            var success = function(data, textStatus, jqXHR){
+            return $http({url: url}).then(success, error);
+
+            function success (response){
+                var data = response.data;
                 if(data["status"] == "OK"){
                     loadedLists[url] = data;
                     callback(loadedLists[url].content);
                 } else {
                     site.reportError(data["description"]);
                 }
-            };
+            }
 
-            var error = function( jqXHR,  textStatus,  errorThrown){
-                site.reportError(textStatus + " - " + errorThrown);
-            };
-
-            $.ajax({
-                dataType: "json",
-                contentType: "application/json",
-                url: url,
-                success: success,
-                error : error
-            });
+            function error (response){
+                site.reportError(response.status + " - " + response.statusText);
+            }
         };
 
         /**
@@ -711,10 +709,9 @@
             if ($.inArray(token, bodyScope.operationLocks) >= 0)
                 return site.createPromise(site.getMessage("operationInProgress"));
 
-            site.safeApply(function () {
+            return site.createPromise(null).then(function(){
                 bodyScope.operationLocks.push(token); //trigger ui change, e.g. spinning wheel.
             });
-            return site.createPromise(null);
         };
 
         /**
@@ -728,10 +725,9 @@
             if (index < 0)
                 return site.createPromise(site.getMessage("operationNotInProgress", [token]));
 
-            site.safeApply(function () {
+            return site.createPromise(null).then(function(){
                 bodyScope.operationLocks.splice(index, 1);
             });
-            return site.createPromise(null);
         };
 
         var sequenceNumbers = {};
@@ -850,7 +846,6 @@
 
             //jquery initialization for the view
             $(elements).find("ul.nav.nav-tabs").makeTab();
-
         };
 
         /**
@@ -968,12 +963,9 @@
                 return site.createPromise(null);
             };
 
-            return beginOp(operationKey)
-                .fail(function () {
-                    site.reportError(site.getMessage("cannotBeginOperation"));
-                })
-                .then(function () {
-                    return createRequest().then(
+            return beginOp(operationKey).then(
+                function () {
+                    var jqPromise = createRequest().then(
                         createView,
                         function (jqXHR, textStatus, description) {
                             return site.createPromise(site.getMessage("failedToRetrieveView", [viewName, (description ? description : textStatus)]));
@@ -983,25 +975,24 @@
                             return endOp(operationKey);
                         }
                     );
-                });
+                    return $q.when(jqPromise); //wrap in $q promise
+                }).catch(site.reportError);
         };
 
         var createRequest = function (jsonUrl, model) {
-            var ajaxPromise;
             if (model) { //need to post
-                ajaxPromise = $.ajax(
-                    jsonUrl,
-                    {
-                        type: "POST",
-                        data: JSON.stringify(model),
-                        contentType: "application/json",
-                        dataType: "json"
-                    }
-                );
+                return $http.post(jsonUrl, model);
             } else {
-                ajaxPromise = $.get(jsonUrl);
+                return $http.get(jsonUrl);
             }
-            return ajaxPromise;
+        };
+
+        var handleFailedRequest = function (reason) {
+            return site.createPromise(reason);
+        };
+
+        var handleFailedOperation = function (reason) {
+            return site.createPromise(reason);
         };
 
         /**
@@ -1015,6 +1006,7 @@
             var scope = viewDetails.scope;
 
             var saveSuccess = function (response) {
+                response = response.data;
                 if (response["status"] == "OK") {
                     return cancel(viewId, false, response["content"]);
                 } else {
@@ -1026,21 +1018,18 @@
                 }
             };
 
-            var saveFailed = function (p, s, e) {
-                return site.createPromise(s + " - " + e);
-            };
-
             var operationKey = "save-" + viewId;
             var url = site.saveJsonUrl(viewDetails.modelName);
             return beginOp(operationKey).then(
                 function () {
                     return createRequest(url, scope["model"])
-                        .then(saveSuccess, saveFailed)
-                        .always(function () {
+                        .then(saveSuccess)
+                        .catch(handleFailedRequest)
+                        .finally(function () {
                             endOp(operationKey);
                         });
                 }
-            );
+            ).catch(handleFailedOperation);
         };
 
         var remove = function (modelName, modelId, viewId) {
@@ -1049,6 +1038,7 @@
                 return site.createPromise(site.getMessage("cannotRemoveViewIdMissing"));
 
             var deleteSuccess = function (response) {
+                response = response.data;
                 if (response["status"] == "OK") {
                     var viewDetails = site.findViewDetails(viewId);
                     var scope = viewDetails.scope;
@@ -1082,11 +1072,12 @@
                 function () {
                     return createRequest(url, modelId)
                         .then(deleteSuccess)
-                        .always(function () {
+                        .catch(handleFailedRequest)
+                        .finally(function () {
                             endOp(operationKey);
                         });
                 }
-            );
+            ).catch(handleFailedOperation);
         };
 
         /**
@@ -1106,7 +1097,7 @@
                 return close(viewId);
 
             if (site.isSubtypeOf(viewType, "create")){
-                return close(viewId).done(function(){
+                return close(viewId).then(function(){
                     var modelId = zcl.toString(model[site.getMetadata(modelName)["idPropertyName"]]);
                     getView(modelName, "details" + viewType.substr(6), modelId, {modelId: modelId}, null, {removeExisting: true});
                 });
@@ -1144,26 +1135,23 @@
                 model["pageIndex"] += pageDelta;
             }
 
-            return beginOp(operationKey).fail(function () {
-                site.reportError("Cannot begin operation.");
-            }).then(function () {
-                return createRequest(jsonUrl, model).then(
-                    function (json) {
-                        //refresh result
-                        site.safeApply(function () {
-                            viewDetails.model = json;
-                            viewDetails.scope.master = viewDetails.model["content"];
-                            viewDetails.scope.reset();
-                        });
-                        return site.createPromise(null);
-                    },
-                    function (jqXHR, textStatus, description) {
-                        return site.createPromise(site.getMessage("failedToRefreshView", [viewId, (description ? description : textStatus)]));
-                    }
-                ).always(function () {
+            var refreshSuccess = function (response) {
+                var json = response.data;
+                //refresh result
+                viewDetails.model = json;
+                viewDetails.scope.master = viewDetails.model["content"];
+                viewDetails.scope.reset();
+                return site.createPromise(null);
+            };
+
+            return beginOp(operationKey).then(function () {
+                return createRequest(jsonUrl, model)
+                    .then(refreshSuccess)
+                    .catch(handleFailedRequest)
+                    .finally(function () {
                         return endOp(operationKey);
                     });
-            });
+            }).catch(handleFailedOperation);
         };
 
         /**
@@ -1173,14 +1161,13 @@
          */
         var close = function (viewId) {
 
-            site.safeApply(function () {
+            return site.createPromise(null).then(function(){
                 var viewKey = site.findViewKey(viewId);
                 if (viewKey)
                     delete viewMap[viewKey];
+                $("#" + viewId).remove();
+                site.layout();
             });
-            $("#" + viewId).remove();
-            site.layout();
-            return site.createPromise(null);
         };
 
         var prePostProcessors = {
@@ -1191,7 +1178,7 @@
              * @param path - path to the target property value.
              * @param args - an array of arguments - the required arguments is defined by the prepost pressor.
              */
-            propertyValue: function (model, path, args) {
+            "propertyValue": function (model, path, args) {
 
 
                 if (!args || !args.length || !args[0])
@@ -1251,32 +1238,38 @@
         };
 
         var addToCart = function(productId){
-            createRequest(site.addToCartUrl(), {productId : productId})
-                .fail(function (error) {
-                    site.reportError(error);
-                })
-                .done(function(response){
-                    var bodyScope = site.getBodyScope();
-                    if(!bodyScope["cart"]){
-                        bodyScope["cart"] = {items:[]};
-                    }
-                    site.safeApply(function(){
-                        var items = bodyScope["cart"]["items"];
-                        var added = false;
-                        for(var i=0; i<items.length; i++){
-                            if(items[i].productId == productId){
-                                items[i].quantity++;
-                                added = true;
-                                break;
-                            }
-                        }
-                        if(!added){
-                            items.push({productId: productId, quantity: 1});
-                        }
-                        toastr["success"](site.getMessage("itemAddedToCart"));
-                    });
 
-                });
+            function addToCartSuccess(){
+                var bodyScope = site.getBodyScope();
+                if(!bodyScope["cart"]){
+                    bodyScope["cart"] = {items:[]};
+                }
+
+                var items = bodyScope["cart"]["items"];
+                var added = false;
+                for(var i=0; i<items.length; i++){
+                    if(items[i].productId == productId){
+                        items[i].quantity++;
+                        added = true;
+                        break;
+                    }
+                }
+                if(!added){
+                    items.push({productId: productId, quantity: 1});
+                }
+                toastr["success"](site.getMessage("itemAddedToCart"));
+
+            }
+
+            return beginOp("addToCart").then(function(){
+                return createRequest(site.addToCartUrl(), {productId : productId})
+                    .then(addToCartSuccess)
+                    .catch(handleFailedRequest)
+                    .finally(function(){
+                        return endOp("addToCart");
+                    });
+            }).catch(handleFailedOperation);
+
         };
 
         return {
@@ -1307,10 +1300,7 @@
 
                 $(element).click(function ($event) {
                     var modelName = attrs["spgSearch"];
-                    spongeService.getView(modelName, "search", null, null, null, {viewTypeInViewKey: true})
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.getView(modelName, "search", null, null, null, {viewTypeInViewKey: true}).catch(site.reportError);
                     $event.preventDefault();
                 });
             }
@@ -1327,10 +1317,7 @@
 
                 $(element).click(function ($event) {
                     var modelName = attrs["spgCreate"];
-                    spongeService.getView(modelName, "create", null, null, null, {viewTypeInViewKey: true})
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.getView(modelName, "create", null, null, null, {viewTypeInViewKey: true}).catch(site.reportError);
                     $event.preventDefault();
                 });
             }
@@ -1340,7 +1327,7 @@
     /**
      * Annotate an element so that when clicked the update view of a model is opened and its details view closed (if one is open)..
      */
-    spongeApp.directive("spgUpdate", ["spongeService", function (spongeService, site) {
+    spongeApp.directive("spgUpdate", ["spongeService", "site", function (spongeService, site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1348,10 +1335,7 @@
                 $(element).click(function ($event) {
                     var args = JSON.parse(attrs["spgUpdate"]);
                     var modelId = args["modelId"];
-                    spongeService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting: true})
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting: true}).catch(site.reportError);
                     //$event.preventDefault();
                 });
             }
@@ -1379,7 +1363,7 @@
             restrict: 'A',
             link: function (scope, element, attrs) {
 
-                $(element).click(function ($event) {
+                $(element).click(function (/*$event*/) {
                     var args = JSON.parse(attrs["spgDetails"]);
                     var modelName = args["modelName"];
                     var modelId = args["modelId"];
@@ -1396,10 +1380,7 @@
                     if (!modelId)
                         return;
 
-                    spongeService.getView(modelName, "details" + variant, modelId, {modelId: modelId}, null, {removeExisting: false})
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.getView(modelName, "details" + variant, modelId, {modelId: modelId}, null, {removeExisting: false}).catch(site.reportError);
                     //$event.preventDefault();
                 });
             }
@@ -1425,10 +1406,7 @@
                     if (!modelId)
                         return;
 
-                    spongeService.remove(modelName, modelId, jqElem.closest(".view").attr("id"))
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.remove(modelName, modelId, jqElem.closest(".view").attr("id")).catch(site.reportError);
                 });
             }
         };
@@ -1464,7 +1442,7 @@
     }]);
 
     //data-spg-load-list="${itemsVariableName},${url}"
-    spongeApp.directive("spgLoadList", ["spongeService", "site", function(spongeService, site){
+    spongeApp.directive("spgLoadList", ["spongeService", function(spongeService){
 
         return {
             restrict: 'A',
@@ -1483,9 +1461,7 @@
 
                 scope[listPropertyName] = [];
                 spongeService.loadList(listUrl, refresh, function(loadedList){
-                    site.safeApply(function(){
-                        scope[listPropertyName] = loadedList;
-                    });
+                    scope[listPropertyName] = loadedList;
                 });
             }
         };
@@ -1609,23 +1585,14 @@
                 if (!modelName)
                     return;
                 var url = site.dropdownJsonUrl(modelName);
-
-                $.ajax(
-                    url,
-                    {
-                        type: "GET",
-                        contentType: "application/json"
+                $http.get(url).then(function (result) {
+                    var list = result.content;
+                    if(list == null){
+                        list = [];
                     }
-                ).then(function (result) {
-                        site.safeApply(function () {
-                            var list = result.content;
-                            if(list == null){
-                                list = [];
-                            }
-                            list.unshift({});
-                            scope.dropdownList = list;
-                        });
-                    });
+                    list.unshift({});
+                    scope.dropdownList = list;
+                });
 
             }
         };
@@ -1645,7 +1612,7 @@
                 var criteriaPath = args["criteriaPath"];
                 var containingViewId = element.closest(".view").attr("id");
 
-                $(element).click(function ($event) {
+                $(element).click(function () {
                     //get criteria.
                     var criteria = {};
                     if (criteriaPath) {
@@ -1660,10 +1627,7 @@
                     spongeService.getView(modelName, "list" + variant, null, null, criteria, {
                         instanceIdInViewKey: true,
                         initiatingViewId: containingViewId
-                    }, scope)
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    }, scope).catch(site.reportError);
                 });
             }
         };
@@ -1686,14 +1650,9 @@
 
                     var viewId = attrs["spgSave"];
                     spongeService.save(viewId)
-                        .fail(function (error) {
-                            site.reportError(error);
-                        })
-                        .done(function () {
-                            site.safeApply(function () {
-                                scope.showError = false;
-                            });
-                        });
+                        .then(function () {
+                            scope.showError = false;
+                        }).catch(site.reportError);
 
                     return false;
                 });
@@ -1720,10 +1679,7 @@
                     if ($(this).parent().hasClass("disabled"))
                         return false;
 
-                    spongeService.refresh(viewId, args["pageDelta"])
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.refresh(viewId, args["pageDelta"]).catch(site.reportError);
                     return false;
 
                 });
@@ -1743,10 +1699,7 @@
                             return false;
                     }
 
-                    spongeService.cancel(attrs["spgCancel"])
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                    spongeService.cancel(attrs["spgCancel"]).catch(site.reportError);
 
                     return false;
                 });
@@ -1773,12 +1726,9 @@
 
                     var gotoId = site.goBackElementId(targetElement);
                     spongeService.close(targetId)
-                        .done(function () {
+                        .then(function () {
                             site.scrollTo(gotoId);
-                        })
-                        .fail(function (error) {
-                            site.reportError(error);
-                        });
+                        }).catch(site.reportError);
                     return false;
                 });
             }
@@ -1892,7 +1842,7 @@
     });
 
     //data-toggle
-    spongeApp.directive("spgToggle", function () {
+    spongeApp.directive("spgToggle", ["site", function (site) {
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
@@ -1909,7 +1859,7 @@
                 });
             }
         };
-    });
+    }]);
 
     spongeApp.directive("spgCombo", ["site", function (site) {
         return {
@@ -2141,7 +2091,7 @@
 
     //region controllers
 
-    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "$modal", "site", function ($scope, $http, spongeService, $modal, site) {
+    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "site", function ($scope, $http, spongeService, site) {
 
         /**
          * Update search model cache.
@@ -2167,11 +2117,8 @@
 
             //get from server
             var url = site.searchJsonUrl(modelName);
-            return $.ajax(url, {
-                type: "GET",
-                contentType: "application/json",
-                dataType: "json"
-            }).done(function (response) {
+            return $http.get(url).then(function (response) {
+                response = response.data;
                 if (response.status == "OK") {
                     bodyScope.searchModel[modelName] = response.content;
                 } else {
@@ -2183,14 +2130,13 @@
         $scope.operationLocks = []; //in-progress long running operations
         $scope.scrollTo = scrollTo;
 
-        site.ajs.$modal = $modal;
-        site.ajs.$scope = $scope;
+        site.setBodyScope($scope);
 
         /**
          * load application metadata which sponge.js depends on.
          */
         $scope.loadMetadata = function () {
-            $http.get(site.metadataUrl()).success(function (data, status, headers) {
+            $http.get(site.metadataUrl()).success(function (data) {
 
                 //init metadata
                 var metadata = data.content;
@@ -2214,7 +2160,7 @@
                 });
                 $scope.menu = menu;
 
-            }).error(function (data, status, headers) {
+            }).error(function (data, status) {
                 site.reportError(site.getMessage("failedToLoadMetadata", [status]));
             });
         };
@@ -2273,7 +2219,7 @@
         $scope.makeCriteria = function (scope, modelName, propertyName, value) {
             var bodyScope = site.getBodyScope();
             var promise = ensureSearchModel(modelName, null);
-            promise.done(function () {
+            promise.then(function () {
                 var prototype = bodyScope.searchModel[modelName];
                 scope.criteria = angular.copy(prototype);
                 scope.criteria[propertyName] = value;
@@ -2284,10 +2230,7 @@
 
         $http.get(site.getCartUrl()).then(function(response){
             $scope.cart = response.data.content;
-        }).catch(function(){
-            site.reportError(site.getMessage("cartInitFailed"));
-        });
-
+        }).catch(site.reportError);
 
     }]);
 
@@ -2317,11 +2260,8 @@
 
             //get from server
             var url = site.newJsonUrl(modelName);
-            return $.ajax(url, {
-                type: "GET",
-                contentType: "application/json",
-                dataType: "json"
-            }).done(function (response) {
+            return $http(url).then(function (response) {
+                response = response.data;
                 if (response.status == "OK") {
                     bodyScope.newModel[modelName] = response.content;
                 } else {
@@ -2383,11 +2323,9 @@
         $scope.addToCollection = function (collection, modelName) {
 
             var promise = ensureNewModel(modelName, null);
-            promise.done(function () {
-                site.safeApply(function () {
-                    var prototype = site.getBodyScope().newModel[modelName];
-                    collection.push(angular.copy(prototype));
-                });
+            promise.then(function () {
+                var prototype = site.getBodyScope().newModel[modelName];
+                collection.push(angular.copy(prototype));
             });
         };
 
@@ -2438,17 +2376,17 @@
         $scope.reset();
     }]);
 
-    spongeApp.controller('messageBoxController', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+    spongeApp.controller('messageBoxController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
 
-        $scope.title = $modalInstance.data.title;
-        $scope.message = $modalInstance.data.message;
+        $scope.title = $uibModalInstance.data.title;
+        $scope.message = $uibModalInstance.data.message;
 
         $scope.ok = function () {
-            $modalInstance.close(null);
+            $uibModalInstance.close(null);
         };
 
         $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
+            $uibModalInstance.dismiss('cancel');
         };
     }]);
 
