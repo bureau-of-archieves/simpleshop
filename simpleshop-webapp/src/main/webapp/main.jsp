@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="css/site.css">
 </head>
 
-<body>
+<body >
 
 <%--top menu--%>
 <nav id="topNav" class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -46,7 +46,7 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
 
-                <li ><a href="#" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
+                <li ><a href="#" data-toggle="collapse" data-target="#navbar-collapse" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
 
                 <comm:hasRole role="ADMIN" >
                     <li class="dropdown">
@@ -55,7 +55,7 @@
 
                         <ul role="menu" class="dropdown-menu">
                             <li data-ng-repeat="item in menu">
-                                <a href="#" class="icon"
+                                <a href="#" class="icon" data-toggle="collapse" data-target="#navbar-collapse"
                                    data-spg-search="{{item.name}}">
                                     <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
                             </li>
@@ -72,7 +72,7 @@
                             <a href="javascript:void(0);" data-ng-click="closeOthers('')">
                                 <div class="row">
                                     <table>
-                                        <tr><td><span >Close All</span></td></tr>
+                                        <tr><td><span data-toggle="collapse" data-target="#navbar-collapse" >Close All</span></td></tr>
                                     </table>
                                 </div>
 
@@ -80,13 +80,13 @@
                         </li>
 
                         <li class="ng-scope" data-ng-repeat="resultName in getViewIds()">
-                            <a class="ng-binding result-menu-item" href="javascript:void(0);">
+                            <a class="ng-binding result-menu-item" data-toggle="collapse" data-target="#navbar-collapse" href="javascript:void(0);">
 
                                 <div class="row">
 
                                     <table>
                                         <tr>
-                                            <td>
+                                            <td data-toggle="collapse" data-target="#navbar-collapse"  >
                                                 <span data-ng-click="scrollTo(resultName)" style="display:inline-block; margin-right:4.5em;">{{resultName | pascal}}</span>
 
                                                 <div class="btn-group btn-group-xs" style="position:absolute; right:0.5em" role="menuitem" aria-label="Menu item options">
