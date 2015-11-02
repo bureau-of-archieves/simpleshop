@@ -102,3 +102,16 @@ body {
     margin-top: 23px;
     padding-top: 15px;
 }
+
+.page-header a {
+    color: #555;
+    font-size: 0.9em;
+}
+
+.page-header a:hover {
+    position: relative;
+    left: -1px;
+    top: -1px;
+    text-shadow: #aaa 0.07em 0.04em 0.02em;
+    text-decoration: none;
+}

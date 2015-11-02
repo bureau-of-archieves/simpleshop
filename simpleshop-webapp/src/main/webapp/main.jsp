@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <sec:csrfMetaTags/>
 
-    <title>SimpleShop Demo Web App</title>
+    <title><spring:message code="jsp.literal.appName" /></title>
 
     <%--stylesheets--%>
     <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/jquery-ui.min.css"><!--required by the upload js-->
@@ -146,14 +146,7 @@
 
 <div class="container-fluid page-body">
 
-    <%--page header--%>
-    <header id="pageHeader" class="page-header row">
-        <h1>
-            <a href=" "> <%--refresh main page--%>
-                <small>SimpleShop SPA Web App</small>
-            </a>
-        </h1>
-    </header>
+    <t:header/>
 
     <main class="row">
 

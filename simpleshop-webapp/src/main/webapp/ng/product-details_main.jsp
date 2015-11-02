@@ -8,7 +8,7 @@
 
         <div class="row">
             <div class="col-lg-6 clearfix">
-                <ctrl:carousel path="images" hideEmpty="true" />
+                <ctrl:carousel path="images"  />
             </div>
             <div class="col-lg-6">
                 <ctrl:detailsField path="name" />
@@ -17,7 +17,7 @@
 
             <span class="label label-primary" data-ng-init='makeCriteria(this, "Product", "category", item)'>
                 <a href="javascript:void(0);" title="{{item.description}}"
-                   data-spg-list="{&quot;modelName&quot;:&quot;Product&quot;, &quot;criteriaPath&quot;:&quot;criteria&quot;}">
+                   data-spg-list='{"modelName":"Product", "criteriaPath":"criteria","variant":"main"}'>
                     {{item.name}}
                 </a>
             </span>

@@ -30,11 +30,13 @@
 
     <t:view-frame id="${viewId}" title="${title}" icon="${icon}" frameClass="${frameClass}" cssClass="details-view" >
         <jsp:attribute name="header">
-           <ctrl:icon value="pencil" cssClass="cursor-pointer" alignRight="true">
-               <jsp:attribute name="attributes">
-                   data-spg-update='{"modelName":"${modelName}","modelId":${modelId}}'
-               </jsp:attribute>
-           </ctrl:icon>
+            <comm:hasRole role="ADMIN" >
+               <ctrl:icon value="pencil" cssClass="cursor-pointer" alignRight="true">
+                   <jsp:attribute name="attributes">
+                       data-spg-update='{"modelName":"${modelName}","modelId":${modelId}}'
+                   </jsp:attribute>
+               </ctrl:icon>
+            </comm:hasRole>
         </jsp:attribute>
         <jsp:body>
             <jsp:doBody/>
