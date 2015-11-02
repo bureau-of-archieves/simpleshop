@@ -4,6 +4,7 @@
 <%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
 <%@ taglib prefix="f" uri="sponge/functions" %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -158,7 +159,7 @@
 
         <section class="col-xs-12">
 
-            <section style="min-height: 65em" id="resultSection" class="hide-children row">
+            <section style="min-height: 40em" id="resultSection" class="hide-children row">
                 <%--views--%>
                 <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
                     There is no open view.
@@ -169,14 +170,7 @@
 
     </main>
     <%--page footer--%>
-    <footer class="row">
-        <hr>
-        <div class="col-xs-8 col-xs-offset-2">
-            <small class="text-info">Experimental SPA Web app demo based on Northwind database. Powered by
-                AngularJS, Spring Hibernate and Drools; created by Hanyang Zhang, 2015.
-            </small>
-        </div>
-    </footer>
+    <t:footer />
 
 </div>
 

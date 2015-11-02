@@ -19,11 +19,17 @@
 <%@attribute name="itemName" required="false" %>
 <%@attribute name="label" required="false" %>
 <%@attribute name="title" required="false" %>
+<%@attribute name="fieldCss" required="false" %>
+<%@attribute name="labelCss" required="false" %>
+<%@attribute name="detailsCss" required="false" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <comm:peekIfEmpty var="base" value="${base}" />
 <comm:peekIfEmpty var="modelName" value="${modelName}" />
 <comm:peekIfEmpty var="parentId" value="${parentId}" />
+<comm:peekIfEmpty var="fieldCss" value="${fieldCss}" />
+<comm:peekIfEmpty var="labelCss" value="${labelCss}" />
+<comm:peekIfEmpty var="detailsCss" value="${detailsCss}" />
 
 <c:set var="propertyMetadata" value="${f:fmd(modelName, path)}"/>
 <c:if test="${empty childModelName}">
@@ -41,11 +47,11 @@
 <%--########################## TAG CONTENT ################################--%>
 <c:set var="id" value="${f:fid(parentId, path)}"/>
 <c:set var="fieldRef" value="${base}${path}"/>
-<div class="col-sm-6 inline-list details-inline-list">
+<div class="${fieldCss} inline-list details-inline-list">
 
     <div class="row">
-        <div class="col-sm-5"><label> ${label}</label></div>
-        <div class="col-sm-7 clearfix"  <c:if test="${not empty title}"> title="${title}" </c:if>>
+        <div class="${labelCss}"><label> ${label}</label></div>
+        <div class="${detailsCss} clearfix"  <c:if test="${not empty title}"> title="${title}" </c:if>>
 
             <span class="pull-left" data-ng-repeat="${itemName} in ${fieldRef}">
                 <jsp:doBody/>

@@ -340,9 +340,6 @@ body {
 @media (max-width: 767px) {
   .navbar-header {
     background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
-@media (min-width: 768px) {
-  #topNav {
-    background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
 .errors p {
   color: red; }
 

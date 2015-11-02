@@ -20,24 +20,19 @@
 <body>
 <div class="container">
 
-    <div class="page-header">
-        <h2>Simpleshop&nbsp;
-            <small>${headerText}</small>
-        </h2>
-    </div>
+    <header id="pageHeader" class="page-header row">
+        <h1>
+            <a href=" "> <%--refresh main page--%>
+                SimpleShop <small> ${headerText}</small>
+            </a>
+        </h1>
+    </header>
 
     <section class="main">
         <jsp:doBody/>
     </section>
 
-    <footer>
-        <hr>
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2">
-                This is footer.
-            </div>
-        </div>
-    </footer>
+    <t:footer />
 </div>
 </body>
 </html>

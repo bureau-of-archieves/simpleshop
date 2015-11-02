@@ -13,6 +13,9 @@
 <%@attribute name="displayFormat" required="false" %>
 <%@attribute name="hideEmpty" type="java.lang.Boolean" required="false" %>
 <%@attribute name="title" required="false" %>
+<%@attribute name="fieldCss" required="false" %>
+<%@attribute name="labelCss" required="false" %>
+<%@attribute name="detailsCss" required="false" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <comm:peekIfEmpty var="base" value="${base}" />
@@ -21,6 +24,9 @@
 <c:if test="${empty label}">
     <c:set var="label" value="${propertyMetadata.label}"/>
 </c:if>
+<comm:peekIfEmpty var="fieldCss" value="${fieldCss}" />
+<comm:peekIfEmpty var="labelCss" value="${labelCss}" />
+<comm:peekIfEmpty var="detailsCss" value="${detailsCss}" />
 
 <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
 
@@ -31,11 +37,11 @@
 </c:if>
 
 <%--########################## TAG CONTENT ################################--%>
-<div ${hideEmptyExpr} class="col-sm-6 details-field">
+<div ${hideEmptyExpr} class="${fieldCss} details-field">
 
     <div class="row">
-        <div class="col-sm-5"><label> ${label}</label></div>
-        <div class="col-sm-7" <c:if test="${not empty title}"> title="${title}" </c:if>>
+        <div class="${labelCss}"><label> ${label}</label></div>
+        <div class="${detailsCss}" <c:if test="${not empty title}"> title="${title}" </c:if>>
             <c:choose>
                 <c:when test="${displayFormat == 'url'}">
                     <a target="_blank" href="{{${fieldRef} | url}}">{{${fieldRef} | url_label}}</a>
