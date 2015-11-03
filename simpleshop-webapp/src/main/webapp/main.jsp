@@ -51,7 +51,7 @@
 
                 <comm:hasRole role="ADMIN" >
                     <li class="dropdown">
-                        <a href="#" >Search <span class="caret"></span>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Search <span class="caret"></span>
                         </a>
 
                         <ul role="menu" class="dropdown-menu">
@@ -65,7 +65,7 @@
                 </comm:hasRole>
 
                 <li class="dropdown result ng-cloak" data-ng-show="getViewIds().length">
-                    <a href="#" >Views <span class="caret"></span>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Views <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
 
@@ -111,7 +111,7 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" >
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
@@ -206,6 +206,14 @@
 <%--page initialization script--%>
 <script>
      zcl.removeAnchor();
+
+     $(function(){
+         $(document).on('click','.navbar-collapse.in',function(e) {
+             if( $(e.target).is('a') || $(e.target).is('span')) {
+                 $(this).collapse('hide');
+             }
+         });
+     });
 </script>
 
 </body>

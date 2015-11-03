@@ -417,7 +417,6 @@ footer>.col-xs-8 {
   display: none !important;
 }
 
-
 body {
   background: #fafafd url("../img/bg_main.jpg");
 }
@@ -429,18 +428,26 @@ body {
   letter-spacing: 0.04em;
 }
 
-@media (max-width: 767px) {
+@mixin headerBackground {
+  background: linear-gradient(to bottom, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%);
+}
+
+#topNav {
+
+  .container-fluid{
+    @media (min-width: 768px) {
+      @include headerBackground;
+    }
+  }
+
   .navbar-header {
-    background: linear-gradient(to bottom, rgba(246, 248, 249, 1) 0%, rgba(229, 235, 238, 1) 50%, rgba(215, 222, 227, 1) 51%, rgba(245, 247, 249, 1) 100%);
+    @media (max-width: 767px) {
+      @include headerBackground;
+    }
   }
 
 }
 
-@media (min-width: 768px) {
-  #topNav{
-    background: linear-gradient(to bottom, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%);
-  }
-}
 
 .errors p {
   color: red;
@@ -515,6 +522,7 @@ input.ng-invalid.ng-dirty {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
+
 
 #pageHeader {
   background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
