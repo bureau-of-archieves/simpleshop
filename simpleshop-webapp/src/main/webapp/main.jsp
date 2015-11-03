@@ -127,7 +127,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge ng-cloak" >{{cart.items.length |number:0}}</span></a></li>
+                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge ng-cloak" data-ng-show="itemQuantity() >= 0" >{{itemQuantity() |number:0}}</span></a></li>
 
                 <comm:hasUser>
                     <jsp:attribute name="isFalse">
@@ -168,7 +168,7 @@
 </div>
 
 <%--link requests--%>
-<ul id="notification_list" class="nav nav-pills nav-stacked">
+<ul id="notification_list" class="status-bar nav nav-pills nav-stacked">
     <li data-ng-show="operationLocks.length" style="background-color: transparent">
         <img class="pull-right" src="img/progress.gif" alt="progress indicator">
     </li>

@@ -31,7 +31,7 @@
 
         <div class="col-sm-12">
             <comm:peek var="base" />
-            <button type="button" class="btn btn-primary" data-spg-cart-add="{{${base}id}}" ><spring:message code="jsp.literal.addToCart" /></button>
+            <button type="button" class="btn btn-warning" data-spg-cart-add="{{${base}id}}" ><spring:message code="jsp.literal.addToCart" /></button>
         </div>
 
     </t:view-details>

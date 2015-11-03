@@ -37,12 +37,12 @@
         <spring:message code="jsp.literal.noImageUploadedYet" />
     </div>
 
-    <carousel interval="5000" no-wrap="false">
-        <slide ng-repeat="slide in ${fieldRef}" >
+    <uib-carousel interval="5000" no-wrap="false">
+        <uib-slide ng-repeat="slide in ${fieldRef}" >
             <img data-ng-src="${imgBase}{{slide}}" >
             <div class="carousel-caption">
                 <p>${label} <c:if test="${not empty title}"> title="${title}" </c:if></p>
             </div>
-        </slide>
-    </carousel>
+        </uib-slide>
+    </uib-carousel>
 </div>

@@ -36,9 +36,21 @@ public class CartController {
             cart = new ShoppingCart();
             session.setAttribute(SHOPPING_CART_SESSION_KEY, cart);
         }
+        synchronized (cart){
+            boolean added = false;
+            for(CartItem item : cart.getItems()){
+                if(item.getProductId().equals(cartItem.getProductId())){
+                    item.setQuantity(item.getQuantity() + cartItem.getQuantity());
+                    added = true;
+                    break;
+                }
+            }
+            if(!added)
+                cart.getItems().add(cartItem);
 
-        cart.getItems().add(cartItem);
+        }
         return JsonResponse.createSuccess("OK");
+
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)

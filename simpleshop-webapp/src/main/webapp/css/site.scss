@@ -1,45 +1,20 @@
-//////////////////////////////////////// COLOURS //////////////////////////////////////////////
-
+//region COLOURS
 $color-arrow: #262626;
+//endregion
 
-//////////////////////////////////////// GLOBAL //////////////////////////////////////////////
-
-html {
-  overflow-y: scroll;
-}
-
-body {
-  background: #fafafd url("../img/bg_main.jpg");
-}
-
+//region HELPERS
 .cursor-pointer {
   cursor: pointer;
   padding-left: 1em;
 }
 
-.cursor-pointer:hover{
+.cursor-pointer:hover {
   color: orange;
-  font-weight:600;
-}
-
-.page-body {
-  margin: 2em 0.5em;
+  font-weight: 600;
 }
 
 .visibility-hidden {
   visibility: hidden;
-}
-
-.hide-children>*:not(.display){
-  display: none;
-}
-
-.display~.no-display-predecessor {
-  display: none;
-}
-
-.pager{
-  margin-top: 0;
 }
 
 .margin-top-1em {
@@ -55,7 +30,34 @@ body {
 }
 
 .padding-bottom-1em {
-  padding-bottom:1em;
+  padding-bottom: 1em;
+}
+
+//endregion
+
+//region GLOBAL
+html {
+  overflow-y: scroll;
+}
+
+body {
+  background: #fafafd url("../img/bg_main.jpg");
+
+  &.in-progress {
+    cursor: progress;
+  }
+}
+
+.page-body {
+  margin: 2em 0.5em;
+}
+
+.hide-children > *:not(.display) {
+  display: none;
+}
+
+.display ~ .no-display-predecessor {
+  display: none;
 }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
@@ -70,8 +72,133 @@ body {
   text-decoration: none;
 }
 
-body.in-progress {
-  cursor: progress;
+@mixin col-xl {
+  float: left;
+  position: relative;
+  min-height: 1px;
+}
+
+@media (min-width: 1600px) {
+  .col-xl-4 {
+    @include col-xl;
+    width: 33.33333333%;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .col-xl-3 {
+    @include col-xl;
+    width: 25%;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .col-xl-2 {
+    @include col-xl;
+    width: 16.66666667%;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
+
+.col-md-6 {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+//endregion
+
+//region HEADER
+.page-header {
+  background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
+  border-radius: 0.5em;
+  padding-left: 2em;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+
+  small {
+    color: #555;
+    font-size: 0.9em;
+
+    &:hover {
+      position: relative;
+      left: -1px;
+      top: -1px;
+      text-shadow: #aaa 0.07em 0.04em 0.02em;
+    }
+  }
+
+  a:hover, a:focus {
+    text-decoration: none;
+  }
+}
+
+@mixin headerBackground {
+  background: linear-gradient(to bottom, rgba(246, 248, 249, 1) 0%, rgba(229, 235, 238, 1) 50%, rgba(215, 222, 227, 1) 51%, rgba(245, 247, 249, 1) 100%);
+}
+
+.navbar-fixed-top {
+
+  .navbar-brand {
+    font-family: Oswald, Arial, sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  .container-fluid {
+    @media (min-width: 768px) {
+      @include headerBackground;
+    }
+  }
+
+  .navbar-header {
+    @media (max-width: 767px) {
+      @include headerBackground;
+    }
+  }
+
+  .dropdown-menu.result li.ng-scope {
+    width: 15em;
+  }
+
+  .dropdown-menu.result li.ng-scope a {
+    overflow: hidden;
+    border-top: 1px solid #ccc;
+    padding-right: 5px;
+  }
+
+  .dropdown-menu.result li.ng-scope span {
+    float: left;
+  }
+
+  .dropdown-menu.result li.ng-scope span.glyphicon {
+    float: right;
+    margin-left: 0.8em;
+  }
+
+  .dropdown-menu.result li.ng-scope span.glyphicon:hover {
+    text-shadow: 0.2em 0.1em 0.3em #777;
+    position: relative;
+    left: -0.2em;
+    top: -0.1em;
+    border-radius: 0.5em;
+  }
+}
+
+//endregion
+
+//region NOTIFICATION
+.status-bar {
+  position: fixed;
+  right: 1em;
+  bottom: 1em;
+  width: 20em;
+
+  li {
+    background-color: floralwhite;
+  }
 }
 
 #messageNoView {
@@ -84,249 +211,138 @@ body.in-progress {
   position: fixed;
 }
 
-.msgbox{
-  margin-top:1.5em;
+.msgbox {
+  margin-top: 1.5em;
 }
 
-//////////////////////////////////////// HEADER //////////////////////////////////////////////
+//endregion
 
-.page-header a:hover,.page-header a:focus {
-  text-decoration: none;
-}
-
-.navbar-brand {
-  font-family: Oswald, Arial, sans-serif;
-  font-size: 1.1em;
-  font-weight: 300;
-  letter-spacing: 0.04em;
-}
-
-@mixin headerBackground {
-  background: linear-gradient(to bottom, rgba(246,248,249,1) 0%,rgba(229,235,238,1) 50%,rgba(215,222,227,1) 51%,rgba(245,247,249,1) 100%);
-}
-
-#topNav {
-
-  .container-fluid{
-    @media (min-width: 768px) {
-      @include headerBackground;
-    }
-  }
-
-  .navbar-header {
-    @media (max-width: 767px) {
-      @include headerBackground;
-    }
-  }
-
-}
-
-.dropdown-menu.result li.ng-scope{
-  width:15em;
-}
-
-.dropdown-menu.result li.ng-scope a {
-  overflow: hidden;
-  border-top: 1px solid #ccc;
-  padding-right:5px;
-}
-
-.dropdown-menu.result li.ng-scope span {
-  float: left;
-}
-
-.dropdown-menu.result li.ng-scope span.glyphicon {
-  float:right;
-  margin-left:0.8em;
-}
-
-.dropdown-menu.result li.ng-scope span.glyphicon:hover {
-  text-shadow: 0.2em 0.1em 0.3em #777;
-  position: relative;
-  left: -0.2em;
-  top: -0.1em;
-  border-radius:0.5em;
-
-}
-
-#pageHeader {
-  background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
-  border-radius: 0.5em;
-  padding-left: 2em;
-  padding-bottom: 12px;
-  margin-bottom: 10px;
-}
-
-.page-header small {
-  color: #555;
-  font-size: 0.9em;
-}
-
-.page-header small:hover {
-  position: relative;
-  left: -1px;
-  top: -1px;
-  text-shadow: #aaa 0.07em 0.04em 0.02em;
-}
-
-//////////////////////////////////////// NOTIFICATION //////////////////////////////////////////////
-#notification_list {
-  position: fixed;
-  right: 1em;
-  bottom: 1em;
-  width: 20em;
-}
-
-#notification_list li{
-  background-color: floralwhite;
-}
-
-//////////////////////////////////////// VIEW & PANEL //////////////////////////////////////////////
-@media (min-width: 1600px) {
-  .col-xl-4 {
-    float: left;
-    width: 33.33333333%;
-    position: relative;
-    min-height: 1px;
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
-  .col-xl-3 {
-    float: left;
-    width: 25%;
-    position: relative;
-    min-height: 1px;
-    padding-right: 10px;
-    padding-left: 10px;
-  }
-
-  .col-xl-2 {
-    width: 16.66666667%;
-    float: left;
-    position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
-  }
-}
-
-.col-md-6 {
-  padding-right: 10px;
-  padding-left: 10px;
-}
-
-.create-view>.panel-body{
-  padding-bottom: 0;
-}
-
-.list-view>.panel-body{
-  padding-bottom: 0;
-}
-
-.update-view>.panel-body{
-  padding-bottom: 0;
-}
-
-.search-view>.panel-body{
-  padding-bottom: 0;
-}
-
-.panel {
-  margin-bottom: 1em;
-}
-
+//region VIEW & PANEL
 .view {
-  padding:0.1em;
-}
+  padding: 0.1em;
 
-.view>.panel{
-  padding-bottom:4px;
-}
+  .create-view > .panel-body {
+    padding-bottom: 0;
+  }
 
-.view > .panel > .panel-heading {
-  background-image: url("../img/title_bg.png");
-}
+  .list-view > .panel-body {
+    padding-bottom: 0;
+  }
 
-.view > .panel {
-  box-shadow: 5px 3px 4px rgba(128, 128, 128, 0.85);
-}
+  .update-view > .panel-body {
+    padding-bottom: 0;
+  }
 
-.panel {
-  background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(47%, #fffffd), color-stop(100%, #effffd));
-  background: -webkit-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -ms-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#effffd', GradientType=0);
-}
+  .search-view > .panel-body {
+    padding-bottom: 0;
+  }
 
-.panel-body{
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f3f3f3+31,ededed+36,ffffff+100 */
-  background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(31%,#f3f3f3), color-stop(36%,#ededed), color-stop(100%,#ffffff)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #ffffff 0%,#f3f3f3 31%,#ededed 36%,#ffffff 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #ffffff 0%,#f3f3f3 31%,#ededed 36%,#ffffff 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #ffffff 0%,#f3f3f3 31%,#ededed 36%,#ffffff 100%); /* IE10+ */
-  background: linear-gradient(to bottom, #ffffff 0%,#f3f3f3 31%,#ededed 36%,#ffffff 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 ); /* IE6-9 */
-}
+  > .panel {
+    padding-bottom: 4px;
+    box-shadow: 5px 3px 4px rgba(128, 128, 128, 0.85);
 
-.tile-main .caption {
-  position:relative;
-  top:-2.5em;
-  right:2em;
-  float:right;
-}
+    > .panel-heading {
+      background-image: url("../img/title_bg.png");
+    }
+  }
 
-//////////////////////////////////////// CONTROLS //////////////////////////////////////////////
+  .panel {
+    margin-bottom: 1em;
+    background: #ffffff;
+    background: -moz-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(47%, #fffffd), color-stop(100%, #effffd));
+    background: -webkit-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    background: -o-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    background: -ms-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    background: linear-gradient(to bottom, #ffffff 0%, #fffffd 47%, #effffd 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#effffd', GradientType=0);
 
-.combo-list .list-group-item:hover {
-  cursor: pointer;
-  color: #23527c;
-}
+    .panel-heading .glyphicon {
+      font-size: 1.3em;
+    }
 
-a.list-group-item:hover{
-  color:#428bca;
-}
+    .panel-body {
+      /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f3f3f3+31,ededed+36,ffffff+100 */
+      background: #ffffff; /* Old browsers */
+      background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(31%, #f3f3f3), color-stop(36%, #ededed), color-stop(100%, #ffffff)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* IE10+ */
+      background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=0); /* IE6-9 */
+    }
+  }
 
-a.list-group-item .label{
-  font-weight: 300;
+  .tile-main .caption {
+    position: relative;
+    top: -2.5em;
+    right: 2em;
+    float: right;
+  }
 }
+//endregion
 
-.inline-list .label{
-  font-weight:300;
-}
+//region CONTROLS
 
-.combo-list .list-group-item {
-  cursor: pointer;
-}
-
-.combo-list a:hover{
-  text-decoration: none;
-}
-
-.panel-body>fieldset{
-  clear:both;
-}
-
-.panel-body>fieldset>legend {
-  margin-top:0.5em;
-  font-size:1.34em;
-  font-weight:400;
-  margin-bottom:0.5em;
-}
 
 .bg-info {
   padding: 1.5em;
 }
 
-.input-group .input-group-addon .glyphicon
-{
-  padding-left: 0;
+.label a {
+  color: #fbfbfb;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.label a:hover {
+  color: orange;
+  text-decoration: none;
+}
+
+.title-text {
+  font-weight: 600;
+}
+
+.combo-list {
+  .list-group-item {
+    cursor: pointer;
+
+    &:hover {
+      color: #23527c;
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+
+}
+
+.list-group-item {
+  background-color: transparent;
+}
+
+a.list-group-item {
+  &:hover {
+    color: #428bca;
+  }
+
+  .label {
+    font-weight: 300;
+  }
+}
+
+.panel-body > fieldset {
+  clear: both;
+
+  > legend {
+    margin-top: 0.5em;
+    font-size: 1.34em;
+    font-weight: 400;
+    margin-bottom: 0.5em;
+  }
 }
 
 .field-label {
@@ -335,7 +351,7 @@ a.list-group-item .label{
 }
 
 .field-label input {
-  border-style:  none;
+  border-style: none;
   cursor: pointer !important;
   color: darkblue;
   margin-left: 0;
@@ -344,94 +360,52 @@ a.list-group-item .label{
 .details-field {
   padding-bottom: 3px;
 }
-.details-field .row{
+
+.details-field .row {
   border-left: 0.2em solid crimson;
 }
 
-.details-inline-list .row{
+.details-inline-list .row {
   border-left: 0.2em solid crimson;
 }
 
-input.ng-valid ~ .pattern-validation {
-  display: none;
-}
-
-.viewport {
-  background-color: #222;
-  border: 2px solid blue;
-}
-
-.scrolling {
-  font-size: 1.8em;
-  padding: 0 3em;
-  -webkit-transform: rotateX(45deg);
-  transform: rotateX(45deg);
-  height: 10em;
-  overflow: hidden;
-}
-
-.ui-datepicker.ui-widget{
-  z-index: 100 !important;
-}
-
-.scrolling div {
-  color: #FFD801;
-  font-family: Arial, serif;
-  position: relative;
-}
-
-.panel-heading .glyphicon {
-  font-size: 1.3em;
-}
-
-.details-child-list{
-  padding-left:0;
-  padding-right:0;
+.details-child-list {
+  padding-left: 0;
+  padding-right: 0;
   margin-bottom: 0;
 }
 
-.carousel-control{
-  cursor: pointer;
-}
-
 .inline-list span.label {
-  margin-right:0.5em;
+  margin-right: 0.5em;
 }
 
-.label a{
-  color:#fbfbfb;
-  cursor: pointer;
-  text-decoration: none;
+.inline-list .label {
+  font-weight: 300;
 }
 
-.label a:hover{
-  color: orange;
-  text-decoration: none;
-}
+.edit-inline-list .items-container {
+   padding-top: 0.5em;
+ }
 
-.title-text{
-  font-weight: 600;
-}
-
-.edit-inline-list .items-container{
-  padding-top:0.5em;
-}
-
-.items-container .glyphicon{
+.items-container .glyphicon {
   cursor: hand;
 }
 
-.items-container .label{
+.items-container .label {
   padding: 0.25em;
 }
 
-.items-container span.glyphicon{
+.items-container span.glyphicon {
   cursor: pointer;
   margin-left: 0.35em;
 }
 
-.items-container span.glyphicon:hover{
-  color:orange;
+.items-container span.glyphicon:hover {
+  color: orange;
+}
+
+.carousel-control {
+  cursor: pointer;
 }
 
 .carousel-container {
@@ -440,77 +414,86 @@ input.ng-valid ~ .pattern-validation {
   padding: 0;
 }
 
-.carousel-container .alert{
-  margin-bottom:0;
+.carousel-container .alert {
+  margin-bottom: 0;
 }
 
 .carousel-container img {
-  margin:auto;
+  margin: auto;
 }
 
 .spg-carousel img {
-  height:25em !important;
+  height: 25em !important;
 }
 
-.carousel-container.details-img img{
-  max-width:100%;
-  height:auto;
+.carousel-container.details-img img {
+  max-width: 100%;
+  height: auto;
 }
 
-.image-list{
-  padding-left:0;
-}
-
-.image-list img{
-  max-width:100%;
-  height:auto;
-}
-
-.image-list>li{
-  list-style: none;
-  position: relative;
-  font-size:1.5em;
-}
-
-.image-list>li .glyphicon {
-  position: absolute;
-  cursor: pointer;
-  margin:0.25em;
-}
-
-.image-list>li .glyphicon:hover {
-  color: #23527c;
-}
-
-.edit-image-list input[type="file"]{
-  color:transparent;
-  margin-bottom:1em;
-  margin-top:0.25em;
-}
-
-.carousel-container a{
+.carousel-container a {
   text-decoration: none;
-  display:block;
-
+  display: block;
 }
 
-.carousel-container a:hover{
+.carousel-container a:hover {
   text-decoration: none;
   color: orange;
   font-weight: 500;
 }
 
-.input-group input.form-control{
-  top: 1px;
+.image-list {
+  padding-left: 0;
 }
 
-.input-group.date .form-control{
-  top: 0;
+.image-list img {
+  max-width: 100%;
+  height: auto;
 }
 
-.tab-content {
-  background-color: #fafbfa;
-  border-right: 1px solid #ddd;
+.image-list > li {
+  list-style: none;
+  position: relative;
+  font-size: 1.5em;
+}
+
+.image-list > li .glyphicon {
+  position: absolute;
+  cursor: pointer;
+  margin: 0.25em;
+}
+
+.image-list > li .glyphicon:hover {
+  color: #23527c;
+}
+
+.edit-image-list input[type="file"] {
+  color: transparent;
+  margin-bottom: 1em;
+  margin-top: 0.25em;
+}
+
+.input-group {
+  input.form-control {
+    top: 1px;
+  }
+
+  &.date .form-control {
+    top: 0;
+  }
+
+  .input-group-addon .glyphicon {
+    padding-left: 0;
+  }
+
+  > .selectpicker {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+.ui-datepicker.ui-widget {
+  z-index: 100 !important;
 }
 
 .panel-body .panel-body {
@@ -521,35 +504,40 @@ input.ng-valid ~ .pattern-validation {
   background-color: #fafbfa !important;
 }
 
-.list-group-item {
-  background-color: transparent;
+input.ng-valid ~ .pattern-validation {
+  display: none;
 }
 
 input.ng-invalid.ng-dirty {
   border-color: red;
 }
 
-
-.input-group > .selectpicker {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+.tab-content {
+  background-color: #fafbfa;
+  border-right: 1px solid #ddd;
 }
 
-
-//////////////////////////////////////// FOOTER //////////////////////////////////////////////
-footer>.col-xs-8 {
-  text-align:center;
+.pager {
+  margin-top: 0;
 }
+//endregion
 
-footer hr {
-  border: 0;
-  height: 1pt;
-  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+//region FOOTER
+footer {
+  > .col-xs-8 {
+    text-align: center;
+  }
+
+  hr {
+    border: 0;
+    height: 1pt;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+  }
+
 }
+//endregion
 
-
-//////////////////////////////////////// SPECIAL //////////////////////////////////////////////
-
+//region SPECIAL
 .bg-glow {
   -webkit-animation: glow-frames 0.8s infinite; /* Chrome, Safari, Opera */
   animation: glow-frames 0.8s infinite;
@@ -582,7 +570,7 @@ footer hr {
   }
 }
 
-@mixin arrow-common{
+@mixin arrow-common {
   margin-top: 5px;
   width: 0;
   height: 0;
@@ -616,3 +604,25 @@ footer hr {
   border-bottom: 10px solid transparent;
   border-right: 10px solid $color-arrow;
 }
+
+//star wars widget
+.viewport {
+  background-color: #222;
+  border: 2px solid blue;
+}
+
+.scrolling {
+  font-size: 1.8em;
+  padding: 0 3em;
+  -webkit-transform: rotateX(45deg);
+  transform: rotateX(45deg);
+  height: 10em;
+  overflow: hidden;
+}
+
+.scrolling div {
+  color: #FFD801;
+  font-family: Arial, serif;
+  position: relative;
+}
+//endregion

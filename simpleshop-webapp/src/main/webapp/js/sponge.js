@@ -1350,9 +1350,13 @@
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
-                $(element).click(function(){
+                var button = $(element);
+                button.click(function(){
+                    button.attr("disabled", true);
                     var productId = parseInt(attrs["spgCartAdd"]);
-                    spongeService.addToCart(productId);
+                    spongeService.addToCart(productId).finally(function(){
+                        button.attr("disabled", false);
+                    });
                 });
             }
         };
@@ -2092,9 +2096,38 @@
 
     //endregion
 
+    //project specific service
+    spongeApp.factory("appInit", ["$http", "site", function($http, site){
+
+        return {
+            init: initSimpleShop
+        };
+
+        function initSimpleShop($scope){
+
+            $http.get(site.getCartUrl()).then(function(response){
+                $scope.cart = response.data.content;
+            }).catch(site.reportError);
+
+            $scope.itemQuantity = function(){
+                var cart = $scope.cart;
+                if(!angular.isObject(cart)){
+                    return -1;
+                }
+
+                var quantity = 0;
+                for(var i=0; i<cart.items.length; i++){
+                    quantity += cart.items[i].quantity;
+                }
+                return quantity;
+            }
+        }
+
+    }]);
+
     //region controllers
 
-    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "site", function ($scope, $http, spongeService, site) {
+    spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "site", "appInit", function ($scope, $http, spongeService, site, appInit) {
 
         /**
          * Update search model cache.
@@ -2231,10 +2264,7 @@
 
         $scope.loadMetadata();
 
-        $http.get(site.getCartUrl()).then(function(response){
-            $scope.cart = response.data.content;
-        }).catch(site.reportError);
-
+        appInit.init($scope);
     }]);
 
     spongeApp.controller("viewController", ["$scope", "$element", "site", function ($scope, $element, site) {
