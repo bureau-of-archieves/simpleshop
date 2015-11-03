@@ -47,16 +47,16 @@
         <div class="collapse navbar-collapse" id="navbar-collapse">
             <ul class="nav navbar-nav">
 
-                <li ><a href="#" data-toggle="collapse" data-target="#navbar-collapse" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
+                <li ><a href="#" data-spg-list='{"modelName":"Category", "variant":"main"}'>Categories</a></li>
 
                 <comm:hasRole role="ADMIN" >
                     <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Search <span class="caret"></span>
+                        <a href="#" >Search <span class="caret"></span>
                         </a>
 
                         <ul role="menu" class="dropdown-menu">
                             <li data-ng-repeat="item in menu">
-                                <a href="#" class="icon" data-toggle="collapse" data-target="#navbar-collapse"
+                                <a href="#" class="icon"
                                    data-spg-search="{{item.name}}">
                                     <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
                             </li>
@@ -65,7 +65,7 @@
                 </comm:hasRole>
 
                 <li class="dropdown result ng-cloak" data-ng-show="getViewIds().length">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Views <span class="caret"></span>
+                    <a href="#" >Views <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
 
@@ -73,7 +73,7 @@
                             <a href="javascript:void(0);" data-ng-click="closeOthers('')">
                                 <div class="row">
                                     <table>
-                                        <tr><td><span data-toggle="collapse" data-target="#navbar-collapse" >Close All</span></td></tr>
+                                        <tr><td><span>Close All</span></td></tr>
                                     </table>
                                 </div>
 
@@ -81,13 +81,13 @@
                         </li>
 
                         <li class="ng-scope" data-ng-repeat="resultName in getViewIds()">
-                            <a class="ng-binding result-menu-item" data-toggle="collapse" data-target="#navbar-collapse" href="javascript:void(0);">
+                            <a class="ng-binding result-menu-item" href="javascript:void(0);">
 
                                 <div class="row">
 
                                     <table>
                                         <tr>
-                                            <td data-toggle="collapse" data-target="#navbar-collapse"  >
+                                            <td>
                                                 <span data-ng-click="scrollTo(resultName)" style="display:inline-block; margin-right:4.5em;">{{resultName | pascal}}</span>
 
                                                 <div class="btn-group btn-group-xs" style="position:absolute; right:0.5em" role="menuitem" aria-label="Menu item options">
@@ -111,7 +111,7 @@
                 </li>
 
                 <li class="dropdown">
-                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                    <a href="#" >
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">

@@ -30,7 +30,7 @@
         <version.simpleshop>${project.version}</version.simpleshop>
 
         <!--Java EE 7 web profile, see http://en.wikipedia.org/wiki/Java_EE_version_history -->
-        <version.jdk>1.7.0_45</version.jdk>
+        <version.jdk>1.8.0_60</version.jdk>
         <version.servlet>3.0.1</version.servlet>
         <version.jsp>2.2</version.jsp>
         <version.jstl>1.2</version.jstl>
@@ -437,7 +437,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
+                <version>3.3</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
