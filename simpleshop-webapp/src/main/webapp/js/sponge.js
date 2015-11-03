@@ -506,6 +506,9 @@
 
         return function (val, separator,delta) {
 
+            if(val == null)
+                return val;
+
             var count = val.split(separator).length - 1;
             count += delta;
             if(count < 0)

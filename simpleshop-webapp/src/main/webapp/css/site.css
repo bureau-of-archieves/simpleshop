@@ -1,44 +1,8 @@
 html {
   overflow-y: scroll; }
 
-.arrow-up {
-  margin-top: 5px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  cursor: pointer;
-  border-bottom: 10px solid #262626; }
-
-.arrow-down {
-  margin-top: 5px;
-  width: 0;
-  height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  cursor: pointer;
-  border-top: 10px solid #262626; }
-
-.arrow-right {
-  margin-right: 5px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  cursor: pointer;
-  border-left: 10px solid #262626; }
-
-.arrow-left {
-  margin-right: 5px;
-  width: 0;
-  height: 0;
-  border-top: 10px solid transparent;
-  border-bottom: 10px solid transparent;
-  cursor: pointer;
-  border-right: 10px solid #262626; }
-
-.well-bright {
-  background-color: #b9dcc8; }
+body {
+  background: #fafafd url("../img/bg_main.jpg"); }
 
 .cursor-pointer {
   cursor: pointer;
@@ -54,21 +18,104 @@ html {
 .visibility-hidden {
   visibility: hidden; }
 
-.page-header a:hover, .page-header a:focus {
-  text-decoration: none; }
-
 .hide-children > *:not(.display) {
   display: none; }
 
 .display ~ .no-display-predecessor {
   display: none; }
 
-.input-group .input-group-addon .glyphicon {
-  padding-left: 0; }
+.pager {
+  margin-top: 0; }
 
-.field-label {
-  font-weight: normal;
-  font-size: 1.2em; }
+.margin-top-1em {
+  margin-top: 1em; }
+
+.margin-bottom-0 {
+  margin-bottom: 0; }
+
+.padding-top-1em {
+  padding-top: 1em; }
+
+.padding-bottom-1em {
+  padding-bottom: 1em; }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important; }
+
+.errors p {
+  color: red; }
+
+.caption a:hover {
+  text-decoration: none; }
+
+body.in-progress {
+  cursor: progress; }
+
+#messageNoView {
+  background-image: url("../img/title_bg.png"); }
+
+/*fix bug in ui-bootstrap*/
+.modal-backdrop {
+  bottom: 0;
+  position: fixed; }
+
+.msgbox {
+  margin-top: 1.5em; }
+
+.page-header a:hover, .page-header a:focus {
+  text-decoration: none; }
+
+.navbar-brand {
+  font-family: Oswald, Arial, sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  letter-spacing: 0.04em; }
+
+@media (min-width: 768px) {
+  #topNav .container-fluid {
+    background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
+@media (max-width: 767px) {
+  #topNav .navbar-header {
+    background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
+
+.dropdown-menu.result li.ng-scope {
+  width: 15em; }
+
+.dropdown-menu.result li.ng-scope a {
+  overflow: hidden;
+  border-top: 1px solid #ccc;
+  padding-right: 5px; }
+
+.dropdown-menu.result li.ng-scope span {
+  float: left; }
+
+.dropdown-menu.result li.ng-scope span.glyphicon {
+  float: right;
+  margin-left: 0.8em; }
+
+.dropdown-menu.result li.ng-scope span.glyphicon:hover {
+  text-shadow: 0.2em 0.1em 0.3em #777;
+  position: relative;
+  left: -0.2em;
+  top: -0.1em;
+  border-radius: 0.5em; }
+
+#pageHeader {
+  background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
+  border-radius: 0.5em;
+  padding-left: 2em;
+  padding-bottom: 12px;
+  margin-bottom: 10px; }
+
+.page-header small {
+  color: #555;
+  font-size: 0.9em; }
+
+.page-header small:hover {
+  position: relative;
+  left: -1px;
+  top: -1px;
+  text-shadow: #aaa 0.07em 0.04em 0.02em; }
 
 #notification_list {
   position: fixed;
@@ -78,33 +125,6 @@ html {
 
 #notification_list li {
   background-color: floralwhite; }
-
-.field-label input {
-  border-style: none;
-  cursor: pointer !important;
-  color: darkblue;
-  margin-left: 0; }
-
-.ui-datepicker.ui-widget {
-  z-index: 100 !important; }
-
-.bg-info {
-  padding: 1.5em; }
-
-.details-field {
-  padding-bottom: 3px; }
-
-.details-field .row {
-  border-left: 0.2em solid crimson; }
-
-.details-inline-list .row {
-  border-left: 0.2em solid crimson; }
-
-input.ng-valid ~ .pattern-validation {
-  display: none; }
-
-.view {
-  padding: 0.1em; }
 
 @media (min-width: 1600px) {
   .col-xl-4 {
@@ -149,30 +169,108 @@ input.ng-valid ~ .pattern-validation {
 .panel {
   margin-bottom: 1em; }
 
+.view {
+  padding: 0.1em; }
+
 .view > .panel {
   padding-bottom: 4px; }
 
-.dropdown-menu.result li.ng-scope {
-  width: 15em; }
+.view > .panel > .panel-heading {
+  background-image: url("../img/title_bg.png"); }
 
-.dropdown-menu.result li.ng-scope a {
-  overflow: hidden;
-  border-top: 1px solid #ccc;
-  padding-right: 5px; }
+.view > .panel {
+  box-shadow: 5px 3px 4px rgba(128, 128, 128, 0.85); }
 
-.dropdown-menu.result li.ng-scope span {
-  float: left; }
+.panel {
+  background: #ffffff;
+  background: -moz-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(47%, #fffffd), color-stop(100%, #effffd));
+  background: -webkit-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+  background: -o-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+  background: -ms-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
+  background: linear-gradient(to bottom, #ffffff 0%, #fffffd 47%, #effffd 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#effffd', GradientType=0); }
 
-.dropdown-menu.result li.ng-scope span.glyphicon {
-  float: right;
-  margin-left: 0.8em; }
+.panel-body {
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f3f3f3+31,ededed+36,ffffff+100 */
+  background: #ffffff;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
+  /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(31%, #f3f3f3), color-stop(36%, #ededed), color-stop(100%, #ffffff));
+  /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
+  /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
+  /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
+  /* IE10+ */
+  background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
+  /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 );
+  /* IE6-9 */ }
 
-.dropdown-menu.result li.ng-scope span.glyphicon:hover {
-  text-shadow: 0.2em 0.1em 0.3em #777;
+.tile-main .caption {
   position: relative;
-  left: -0.2em;
-  top: -0.1em;
-  border-radius: 0.5em; }
+  top: -2.5em;
+  right: 2em;
+  float: right; }
+
+.combo-list .list-group-item:hover {
+  cursor: pointer;
+  color: #23527c; }
+
+a.list-group-item:hover {
+  color: #428bca; }
+
+a.list-group-item .label {
+  font-weight: 300; }
+
+.inline-list .label {
+  font-weight: 300; }
+
+.combo-list .list-group-item {
+  cursor: pointer; }
+
+.combo-list a:hover {
+  text-decoration: none; }
+
+.panel-body > fieldset {
+  clear: both; }
+
+.panel-body > fieldset > legend {
+  margin-top: 0.5em;
+  font-size: 1.34em;
+  font-weight: 400;
+  margin-bottom: 0.5em; }
+
+.bg-info {
+  padding: 1.5em; }
+
+.input-group .input-group-addon .glyphicon {
+  padding-left: 0; }
+
+.field-label {
+  font-weight: normal;
+  font-size: 1.2em; }
+
+.field-label input {
+  border-style: none;
+  cursor: pointer !important;
+  color: darkblue;
+  margin-left: 0; }
+
+.details-field {
+  padding-bottom: 3px; }
+
+.details-field .row {
+  border-left: 0.2em solid crimson; }
+
+.details-inline-list .row {
+  border-left: 0.2em solid crimson; }
+
+input.ng-valid ~ .pattern-validation {
+  display: none; }
 
 .viewport {
   background-color: #222;
@@ -186,9 +284,12 @@ input.ng-valid ~ .pattern-validation {
   height: 10em;
   overflow: hidden; }
 
+.ui-datepicker.ui-widget {
+  z-index: 100 !important; }
+
 .scrolling div {
   color: #FFD801;
-  font-family: Arial;
+  font-family: Arial, serif;
   position: relative; }
 
 .panel-heading .glyphicon {
@@ -198,24 +299,6 @@ input.ng-valid ~ .pattern-validation {
   padding-left: 0;
   padding-right: 0;
   margin-bottom: 0; }
-
-.pager {
-  margin-top: 0; }
-
-.margin-top-1em {
-  margin-top: 1em; }
-
-.margin-bottom-0 {
-  margin-bottom: 0; }
-
-.padding-top-1em {
-  padding-top: 1em; }
-
-.padding-bottom-1em {
-  padding-bottom: 1em; }
-
-.msgbox {
-  margin-top: 1.5em; }
 
 .carousel-control {
   cursor: pointer; }
@@ -309,56 +392,9 @@ input.ng-valid ~ .pattern-validation {
 .input-group.date .form-control {
   top: 0; }
 
-footer > .col-xs-8 {
-  text-align: center; }
-
-.combo-list .list-group-item:hover {
-  cursor: pointer;
-  color: #23527c; }
-
-.panel-body > fieldset {
-  clear: both; }
-
-.panel-body > fieldset > legend {
-  margin-top: 0.5em;
-  font-size: 1.34em;
-  font-weight: 400;
-  margin-bottom: 0.5em; }
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important; }
-
-body {
-  background: #fafafd url("../img/bg_main.jpg"); }
-
-.navbar-brand {
-  font-family: Oswald, Arial, sans-serif;
-  font-size: 1.1em;
-  font-weight: 300;
-  letter-spacing: 0.04em; }
-
-@media (min-width: 768px) {
-  #topNav .container-fluid {
-    background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
-@media (max-width: 767px) {
-  #topNav .navbar-header {
-    background: linear-gradient(to bottom, #f6f8f9 0%, #e5ebee 50%, #d7dee3 51%, #f5f7f9 100%); } }
-
-.errors p {
-  color: red; }
-
-.caption a:hover {
-  text-decoration: none; }
-
-body.in-progress {
-  cursor: progress; }
-
 .tab-content {
   background-color: #fafbfa;
   border-right: 1px solid #ddd; }
-
-.view > .panel {
-  box-shadow: 5px 3px 4px rgba(128, 128, 128, 0.85); }
 
 .panel-body .panel-body {
   background-color: #fafbfa; }
@@ -371,6 +407,18 @@ body.in-progress {
 
 input.ng-invalid.ng-dirty {
   border-color: red; }
+
+.input-group > .selectpicker {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px; }
+
+footer > .col-xs-8 {
+  text-align: center; }
+
+footer hr {
+  border: 0;
+  height: 1pt;
+  background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.75), transparent); }
 
 .bg-glow {
   -webkit-animation: glow-frames 0.8s infinite;
@@ -396,85 +444,40 @@ input.ng-invalid.ng-dirty {
     -webkit-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
     -moz-box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7);
     box-shadow: inset 0 0 8px 6px rgba(175, 209, 88, 0.7); } }
-.input-group > .selectpicker {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; }
+.arrow-up {
+  margin-top: 5px;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid #262626; }
 
-#pageHeader {
-  background: url("../img/header_bg.png") repeat scroll 0 0 #ebeaef;
-  border-radius: 0.5em;
-  padding-left: 2em;
-  padding-bottom: 12px;
-  margin-bottom: 10px; }
+.arrow-down {
+  margin-top: 5px;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid #262626; }
 
-.page-header small {
-  color: #555;
-  font-size: 0.9em; }
+.arrow-right {
+  margin-top: 5px;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid #262626; }
 
-.page-header small:hover {
-  position: relative;
-  left: -1px;
-  top: -1px;
-  text-shadow: #aaa 0.07em 0.04em 0.02em; }
-
-#messageNoView {
-  background-image: url("../img/title_bg.png"); }
-
-.view > .panel > .panel-heading {
-  background-image: url("../img/title_bg.png"); }
-
-.panel {
-  background: #ffffff;
-  background: -moz-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(47%, #fffffd), color-stop(100%, #effffd));
-  background: -webkit-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: -ms-linear-gradient(top, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  background: linear-gradient(to bottom, #ffffff 0%, #fffffd 47%, #effffd 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#effffd', GradientType=0); }
-
-footer hr {
-  border: 0;
-  height: 1pt;
-  background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.75), transparent); }
-
-/*fix bug in ui-bootstrap*/
-.modal-backdrop {
-  bottom: 0;
-  position: fixed; }
-
-.panel-body {
-  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,f3f3f3+31,ededed+36,ffffff+100 */
-  background: #ffffff;
-  /* Old browsers */
-  background: -moz-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
-  /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #ffffff), color-stop(31%, #f3f3f3), color-stop(36%, #ededed), color-stop(100%, #ffffff));
-  /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
-  /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
-  /* Opera 11.10+ */
-  background: -ms-linear-gradient(top, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
-  /* IE10+ */
-  background: linear-gradient(to bottom, #ffffff 0%, #f3f3f3 31%, #ededed 36%, #ffffff 100%);
-  /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ffffff',GradientType=0 );
-  /* IE6-9 */ }
-
-a.list-group-item:hover {
-  color: #428bca; }
-
-a.list-group-item .label {
-  font-weight: 300; }
-
-.inline-list .label {
-  font-weight: 300; }
-
-.combo-list .list-group-item {
-  cursor: pointer; }
-
-.combo-list a:hover {
-  text-decoration: none; }
+.arrow-left {
+  margin-top: 5px;
+  width: 0;
+  height: 0;
+  cursor: pointer;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 10px solid #262626; }
 
 /*# sourceMappingURL=site.css.map */
