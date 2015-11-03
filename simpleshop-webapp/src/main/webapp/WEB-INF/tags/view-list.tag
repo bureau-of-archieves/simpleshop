@@ -8,13 +8,17 @@
 <%--########################## ATTRIBUTES ################################--%>
 <%--bootstrap view frame css class--%>
 <%@attribute name="frameClass" %>
+<%@attribute name="title" %>
 
 <%--########################## TAG CONTENT ################################--%>
+<c:if test="${empty title}" >
+    <c:set var="title" value="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)} List" />
+</c:if>
 <t:view>
     <comm:push value="&${f:uuid()};" var="viewId" />
     <comm:push value="${viewId}" var="replace_id_marker" />
 
-    <t:view-frame id="${viewId}" title="${f:friendlyModelNameFromUrl(pageContext.request.requestURL)}" frameClass="${frameClass}" cssClass="list-view">
+    <t:view-frame id="${viewId}" title="${title}" frameClass="${frameClass}" cssClass="list-view">
         <jsp:attribute name="header">
         </jsp:attribute>
 

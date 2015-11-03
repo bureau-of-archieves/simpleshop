@@ -117,7 +117,7 @@
                     <ul role="menu" class="dropdown-menu">
                         <li><a href="javascript:alert('Not implemented yet.')">Options</a>
                         </li>
-                        <li><a href="javascript:showMessage('Modal message box test.')">About</a>
+                        <li><a href="javascript:showMessage({title:'SimpleShop Demo SPA Web App', message: 'A UI experiment project by zhy2002.'})"><spring:message code="jsp.literal.about" /></a>
                         </li>
                         <li><a href="json.jsp">Test</a>
                         </li>
@@ -127,7 +127,10 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span> <span class="badge ng-cloak" data-ng-show="itemQuantity() >= 0" >{{itemQuantity() |number:0}}</span></a></li>
+                <li><a href="#" >
+                    <span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span>
+                    <span class="badge ng-cloak" data-ng-bind="itemQuantity() | number:0"></span></a>
+                </li>
 
                 <comm:hasUser>
                     <jsp:attribute name="isFalse">

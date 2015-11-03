@@ -2112,7 +2112,7 @@
             $scope.itemQuantity = function(){
                 var cart = $scope.cart;
                 if(!angular.isObject(cart)){
-                    return -1;
+                    return 0;
                 }
 
                 var quantity = 0;

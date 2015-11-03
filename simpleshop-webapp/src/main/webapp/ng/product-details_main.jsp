@@ -3,8 +3,8 @@
 <t:page>
     <t:view-details frameClass="col-xs-12">
         <comm:push var="fieldCss" value="col-lg-6" />
-        <comm:push var="labelCss" value="col-sm-3" />
-        <comm:push var="detailsCss" value="col-sm-9" />
+        <comm:push var="labelCss" value="col-sm-4 col-xl-3" />
+        <comm:push var="detailsCss" value="col-sm-8 col-xl-9" />
 
         <div class="row">
             <div class="col-lg-6 clearfix">

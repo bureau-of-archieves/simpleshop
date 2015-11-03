@@ -79,6 +79,13 @@ body {
 }
 
 @media (min-width: 1600px) {
+  .col-xl-9 {
+    @include col-xl;
+    width: 75%;
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
   .col-xl-4 {
     @include col-xl;
     width: 33.33333333%;
@@ -519,6 +526,10 @@ input.ng-invalid.ng-dirty {
 
 .pager {
   margin-top: 0;
+}
+
+.view .well {
+  margin:1em;
 }
 //endregion
 

@@ -1,7 +1,7 @@
 <%@include file="../WEB-INF/_header.jspf" %>
 
 <t:page>
-    <t:view-list frameClass="col-xs-12">
+    <t:view-list title="All Categories" frameClass="col-xs-12">
 
         <comm:peek var="imgBase" />
         <c:set var="actionDirective" value=' ' />
