@@ -12,7 +12,7 @@
      */
     var viewMap = {};
 
-    var spongeApp = angular.module("spongeApp", ['ui.bootstrap'], null);
+    var spongeApp = angular.module("spongeApp", ['ui.bootstrap', 'ngAnimate'], null);
 
     //todo externalize this service - at load time we get the one for the current locale.
     spongeApp.constant("message", {

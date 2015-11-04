@@ -49,9 +49,9 @@ public class CategoryServiceImpl extends CategoryBaseService implements Category
         searchParams.addSortInfo(new SortInfo("prefix"));
 
         List<Category> categories = super.search(searchParams);
-
-        boolean leaveIdOnly = StringUtils.isNullOrEmpty(searchParams.getName());
-        stripParent(categories, leaveIdOnly);
+        categories.forEach(category -> category.setParent(null));
+//        boolean leaveIdOnly = StringUtils.isNullOrEmpty(searchParams.getName());
+//        stripParent(categories, leaveIdOnly);
         return categories;
     }
 
@@ -74,18 +74,18 @@ public class CategoryServiceImpl extends CategoryBaseService implements Category
      * Null out parent's fields..
      * @param categories list of category.
      */
-    private void stripParent(List<Category> categories, boolean leaveIdOnly) {
-        for(Category category : categories){
-            Category parent = category.getParent();
-            if(parent != null){
-                category.setParent(new Category());
-                category.getParent().setId(parent.getId());
-                if(!leaveIdOnly){
-                    category.getParent().setName(parent.getName());
-                    category.getParent().setDescription(parent.getDescription());
-                    category.getParent().setImagePath(parent.getImagePath());
-                }
-            }
-        }
-    }
+//    private void stripParent(List<Category> categories, boolean leaveIdOnly) {
+//        for(Category category : categories){
+//            Category parent = category.getParent();
+//            if(parent != null){
+//                category.setParent(new Category());
+//                category.getParent().setId(parent.getId());
+//                if(!leaveIdOnly){
+//                    category.getParent().setName(parent.getName());
+//                    category.getParent().setDescription(parent.getDescription());
+//                    category.getParent().setImagePath(parent.getImagePath());
+//                }
+//            }
+//        }
+//    }
 }

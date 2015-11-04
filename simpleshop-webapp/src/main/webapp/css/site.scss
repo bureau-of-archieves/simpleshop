@@ -1,3 +1,16 @@
+@charset "UTF-8";
+
+/* Include this file in your html if you are using the CSP mode. */
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak],
+.ng-cloak, .x-ng-cloak,
+.ng-hide:not(.ng-hide-animate) {
+  display: none !important;
+}
+
+ng\:form {
+  display: block;
+}
+
 //region COLOURS
 $color-arrow: #262626;
 //endregion
@@ -58,10 +71,6 @@ body {
 
 .display ~ .no-display-predecessor {
   display: none;
-}
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
 }
 
 .errors p {

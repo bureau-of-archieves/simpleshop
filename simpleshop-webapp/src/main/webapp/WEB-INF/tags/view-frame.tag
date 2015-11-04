@@ -97,7 +97,7 @@
 
             <jsp:invoke fragment="header"/>
         </div>
-        <div id="${id}-body" class="panel-body" data-ng-hide="hideBody">
+        <div id="${id}-body" class="panel-body open close" data-ng-hide="hideBody">
             <jsp:doBody/>
         </div>
     </div>

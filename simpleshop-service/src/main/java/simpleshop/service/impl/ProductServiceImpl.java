@@ -1,6 +1,7 @@
 package simpleshop.service.impl;
 
 import org.springframework.stereotype.Service;
+import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Product;
 import simpleshop.domain.model.component.ProductSupplier;
 import simpleshop.service.ProductService;
@@ -15,6 +16,10 @@ public class ProductServiceImpl extends ProductBaseService implements ProductSer
     protected void initialize(@NotNull Product model) {
         productDAO.initialize(model.getImages());
         productDAO.initialize(model.getProductSuppliers());
+
+        for(Category category : model.getCategories()){
+            category.setParent(null);
+        }
     }
 
     @Override

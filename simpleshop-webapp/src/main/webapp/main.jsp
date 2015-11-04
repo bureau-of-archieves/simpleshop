@@ -197,9 +197,9 @@
 <script src="js/jquery.fileupload.js"></script>
 <script src="components/moment/min/moment.min.js"></script>
 <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="components/angular/angular.js"></script>
+<script src="components/angular/angular.min.js"></script>
 <script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
-<%--<script src="js/angular-animate.js"></script>--%>
+<script src="js/angular-animate.min.js"></script>
 <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script src="components/toastr/toastr.min.js" ></script>
@@ -210,6 +210,7 @@
 <script>
      zcl.removeAnchor();
 
+     //collapse bootstrap menu when item is clicked
      $(function(){
          $(document).on('click','.navbar-collapse.in',function(e) {
              if( $(e.target).is('a') || $(e.target).is('span')) {
