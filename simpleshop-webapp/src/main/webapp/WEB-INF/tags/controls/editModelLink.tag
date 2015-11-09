@@ -93,7 +93,7 @@
             </c:if>
 
             <c:if test="${showClear}">
-                <span class="input-group-addon glyphicon glyphicon-remove cursor-pointer" title="<spring:message code="jsp.literal.clearSelection" />" data-ng-click="${fieldRef} = null"></span>
+                <span class="input-group-addon glyphicon glyphicon-remove cursor-pointer" title="<spring:message code="jsp.literal.clearSelection" />" data-ng-click="clearView()"></span>
             </c:if>
         <c:if test="${showInputGroup}">
         </div>

@@ -1876,7 +1876,7 @@
             link: function (scope, element, attrs, ngModel) {
 
                 scope.ngModel = ngModel;
-                var config = {delay: 500, validationErrorKey: "spg-combo"};
+                var config = {delay: 300, validationErrorKey: "spg-combo"};
                 var configOverride = JSON.parse(attrs["spgCombo"]);
                 $.extend(config, configOverride);
                 var input = $(element).find("input");
@@ -1958,6 +1958,10 @@
                     if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
                         scope.$digest();
                     ngModel.$setValidity(config.validationErrorKey, true);
+                };
+
+                scope.clearView = function(){
+                    scope.updateView(null);
                 };
 
                 input.blur(function () {
