@@ -44,7 +44,7 @@ public abstract class CustomerBaseController extends BaseJsonController<Customer
         return modelSave(customer, bindingResult, customerService);
     }
 
-    @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Customer> customerDetails(@PathVariable int id) {
         return modelDetails(id, customerService);
     }

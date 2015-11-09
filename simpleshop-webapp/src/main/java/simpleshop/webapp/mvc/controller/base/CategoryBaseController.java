@@ -44,7 +44,7 @@ public abstract class CategoryBaseController extends BaseJsonController<Category
         return modelSave(category, bindingResult, categoryService);
     }
 
-    @RequestMapping(value = "/category/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/category/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Category> categoryDetails(@PathVariable int id) {
         return modelDetails(id, categoryService);
     }

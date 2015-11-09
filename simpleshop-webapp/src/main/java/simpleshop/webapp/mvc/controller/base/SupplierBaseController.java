@@ -44,7 +44,7 @@ public abstract class SupplierBaseController extends BaseJsonController<Supplier
         return modelSave(supplier, bindingResult, supplierService);
     }
 
-    @RequestMapping(value = "/supplier/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/supplier/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Supplier> supplierDetails(@PathVariable int id) {
         return modelDetails(id, supplierService);
     }

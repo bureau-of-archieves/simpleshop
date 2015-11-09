@@ -1543,7 +1543,7 @@
         };
     }]);
 
-    spongeApp.directive("spgSelect", ["$parse", "site", function ($parse, site) {
+    spongeApp.directive("spgSelect", ["$parse", "site","$http", function ($parse, site, $http) {
 
         return {
             restrict: 'A',
@@ -1868,7 +1868,7 @@
         };
     }]);
 
-    spongeApp.directive("spgCombo", ["site", function (site) {
+    spongeApp.directive("spgCombo", ["site", "$parse", function (site, $parse) {
         return {
             restrict: 'A',
             require: 'ngModel',
@@ -1960,8 +1960,14 @@
                     ngModel.$setValidity(config.validationErrorKey, true);
                 };
 
-                scope.clearView = function(){
-                    scope.updateView(null);
+                var setter = null;
+
+                scope.clearView = function(strProp){
+                    if(setter == null){
+                        var getter = $parse(strProp);
+                        setter = getter.assign;
+                    }
+                    setter(scope, null);
                 };
 
                 input.blur(function () {

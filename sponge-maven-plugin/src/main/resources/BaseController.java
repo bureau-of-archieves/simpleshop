@@ -47,7 +47,7 @@ public abstract class @(modelName)BaseController extends BaseJsonController<@mod
         return modelSave(@(modelNameCamel), bindingResult, @(modelNameCamel)Service);
     }
 
-    @@RequestMapping(value = "/@(modelNameUrl)/{id}", method = RequestMethod.GET)
+    @@RequestMapping(value = "/@(modelNameUrl)/{id:\\d+}", method = RequestMethod.GET)
     public @@ResponseBody JsonResponse<@(modelName)> @(modelNameCamel)Details(@@PathVariable int id) {
         return modelDetails(id, @(modelNameCamel)Service);
     }

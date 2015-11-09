@@ -44,7 +44,7 @@ public abstract class EmployeeBaseController extends BaseJsonController<Employee
         return modelSave(employee, bindingResult, employeeService);
     }
 
-    @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/employee/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Employee> employeeDetails(@PathVariable int id) {
         return modelDetails(id, employeeService);
     }

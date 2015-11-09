@@ -44,7 +44,7 @@ public abstract class SuburbBaseController extends BaseJsonController<Suburb> {
         return modelSave(suburb, bindingResult, suburbService);
     }
 
-    @RequestMapping(value = "/suburb/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/suburb/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Suburb> suburbDetails(@PathVariable int id) {
         return modelDetails(id, suburbService);
     }

@@ -44,7 +44,7 @@ public abstract class ShipperBaseController extends BaseJsonController<Shipper> 
         return modelSave(shipper, bindingResult, shipperService);
     }
 
-    @RequestMapping(value = "/shipper/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/shipper/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Shipper> shipperDetails(@PathVariable int id) {
         return modelDetails(id, shipperService);
     }

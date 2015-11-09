@@ -44,7 +44,7 @@ public abstract class ProductBaseController extends BaseJsonController<Product> 
         return modelSave(product, bindingResult, productService);
     }
 
-    @RequestMapping(value = "/product/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/product/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Product> productDetails(@PathVariable int id) {
         return modelDetails(id, productService);
     }

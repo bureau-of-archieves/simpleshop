@@ -44,7 +44,7 @@ public abstract class OrderBaseController extends BaseJsonController<Order> {
         return modelSave(order, bindingResult, orderService);
     }
 
-    @RequestMapping(value = "/order/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/order/{id:\\d+}", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Order> orderDetails(@PathVariable int id) {
         return modelDetails(id, orderService);
     }

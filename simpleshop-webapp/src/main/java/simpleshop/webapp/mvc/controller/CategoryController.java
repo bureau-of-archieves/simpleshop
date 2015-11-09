@@ -12,7 +12,7 @@ import simpleshop.webapp.mvc.controller.base.CategoryBaseController;
 @RequestMapping(produces = "application/json")
 public class CategoryController extends CategoryBaseController {
 
-    @RequestMapping(value = "/category/dropdown", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/category/dropdown", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody JsonResponse<Iterable<Category>> categoryDropdown(){
         return JsonResponse.createSuccess(categoryService.getDropdownItems());
     }
