@@ -55,7 +55,7 @@
 <%--########################## TAG CONTENT  ################################--%>
 <comm:peekIfEmpty var="modelName" value="${modelName}" />
 
-<div id="${id}" class="view ng-cloak display ${frameClass}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
+<div id="${id}" class="view ng-cloak ${frameClass}" data-ng-init="modelName='${modelName}'; viewId='${id}';"
      data-ng-controller="${controllerName}Controller">
 
     <comm:push value="${id}" var="parentId" />
@@ -97,7 +97,7 @@
 
             <jsp:invoke fragment="header"/>
         </div>
-        <div id="${id}-body" class="panel-body ng-cloak" data-ng-hide="hideBody">
+        <div id="${id}-body" class="panel-body" data-ng-hide="hideBody">
             <jsp:doBody/>
         </div>
     </div>

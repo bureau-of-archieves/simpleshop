@@ -375,7 +375,13 @@
          * @returns {boolean} true if the operation is successful.
          */
         this.display = function (id, show) {
-            var elem = document.getElementById(id);
+            var elem;
+            if (typeof id == "string") {
+                elem = document.getElementById(id);
+            } else {
+                elem = id;
+            }
+
             if (!elem)
                 return false;
 
@@ -949,7 +955,6 @@
                         try {
                             nextElement.before(parseResult.domElements);
                             $compile(parseResult.domElements)(site.getBodyScope());
-                            site.layout();
                         }
                         catch (ex) {
                             delete viewMap[viewKey];
@@ -2277,7 +2282,7 @@
         appInit.init($scope);
     }]);
 
-    spongeApp.controller("viewController", ["$scope", "$element", "site", function ($scope, $element, site) {
+    spongeApp.controller("viewController", ["$scope", "$element", "site", "$interval", function ($scope, $element, site, $interval) {
 
         /**
          * Update the global new model cache.
@@ -2417,6 +2422,10 @@
         };
 
         $scope.reset();
+
+        $interval(function(){
+            site.display($element, true);
+        }, 100, 1);
     }]);
 
     spongeApp.controller('messageBoxController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
