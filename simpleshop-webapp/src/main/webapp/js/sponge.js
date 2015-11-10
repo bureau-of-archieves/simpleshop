@@ -1598,7 +1598,7 @@
                     return;
                 var url = site.dropdownJsonUrl(modelName);
                 $http.get(url).then(function (result) {
-                    var list = result.content;
+                    var list = result.data.content;
                     if(list == null){
                         list = [];
                     }
