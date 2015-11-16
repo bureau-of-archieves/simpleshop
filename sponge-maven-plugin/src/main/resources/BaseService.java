@@ -2,7 +2,7 @@
 @{String basePackage = projectName.toLowerCase()}
 @{String modelNameCamel = modelName.substring(0,1).toLowerCase() + modelName.substring(1)}
 
-package simpleshop.service.impl.base;
+package @(basePackage).service.impl.base;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import @(basePackage).data.@(modelName)DAO;

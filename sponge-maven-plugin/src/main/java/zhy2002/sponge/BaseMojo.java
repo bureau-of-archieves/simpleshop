@@ -10,6 +10,7 @@ import simpleshop.domain.metadata.Icon;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -92,12 +93,13 @@ public abstract class BaseMojo extends AbstractMojo {
         return template;
     }
 
-    protected void generateModelFile(File domainClassFile,String templateFileName, String outputDir, ClassLoader dirClassLoader) {
+    protected void generateModelFile(File domainClassFile,String templateFileName, String outputDir, ClassLoader dirClassLoader){
+        generateModelFile(domainClassFile, templateFileName, outputDir, dirClassLoader, true);
+    }
+
+    protected void generateModelFile(File domainClassFile,String templateFileName, String outputDir, ClassLoader dirClassLoader, boolean overwrite) {
         if(!domainClassFile.getName().endsWith(".class"))
             return;
-
-        //load the resource
-        String template = getClassPathResource(templateFileName);
 
         //generate file
         String className = domainClassFile.getName().substring(0, domainClassFile.getName().length() - 6);
@@ -106,15 +108,25 @@ public abstract class BaseMojo extends AbstractMojo {
         try {
             getLog().debug("Loading class: " + fullClassName);
             Class<?> domainClass = dirClassLoader.loadClass(fullClassName);
+            String modelName = domainClass.getSimpleName();
+            String fileName = modelName + templateFileName;
+            String targetFilePath = Paths.get(outputDir, fileName).toString();
+            if(new File(targetFilePath).exists() && !overwrite){
+                getLog().info("File '" + targetFilePath + "' exists; will not overwrite.");
+                return;
+            }
+
             if(domainClass.getAnnotation(Icon.class) == null){
+                getLog().info("Domain class '" + domainClass.getName() + "' is not marked with @Icon, will by pass.");
                 return; //bypass the ones without icon.
             }
 
-            String modelName = domainClass.getSimpleName();
+            //load the resource
+            String template = getClassPathResource(templateFileName);
             String result = rythmEngine.render(template, projectName, modelName);
 
-            String fileName = modelName + templateFileName;
-            saveTo(Paths.get(outputDir, fileName).toString(), result);
+
+            saveTo(targetFilePath, result);
             getLog().info(fileName + " is created.");
 
         }catch (ClassNotFoundException ex){

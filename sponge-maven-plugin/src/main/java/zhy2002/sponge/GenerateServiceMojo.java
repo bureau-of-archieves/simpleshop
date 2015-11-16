@@ -59,6 +59,8 @@ public class GenerateServiceMojo extends BaseMojo {
         getLog().debug("Generating source files in: " + outputDirPath);
         for(File file : domainClassFiles){
             generateModelFile(file, "BaseService.java", outputDirPath.toString(), dirClassLoader);
+            generateModelFile(file, "ServiceImpl.java", outputDirPath.getParent().toString(), dirClassLoader, false);
+            generateModelFile(file, "Service.java", outputDirPath.getParent().getParent().toString(), dirClassLoader, false);
         }
     }
 
