@@ -12,7 +12,6 @@ import simpleshop.data.metadata.ModelMetadata;
 import simpleshop.data.metadata.ModelType;
 import simpleshop.data.metadata.PropertyMetadata;
 import simpleshop.service.MetadataService;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -99,7 +98,7 @@ public class Functions {
             }
         }
 
-        throw new NotImplementedException();//do not support id fieldType.
+        throw new UnsupportedOperationException("Id field type cannot be " + fieldType);//do not support id fieldType.
 
     }
 

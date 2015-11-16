@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import simpleshop.data.test.TestConstants;
 import simpleshop.data.test.TransactionalTest;
+import simpleshop.domain.model.Contact;
 import simpleshop.domain.model.Shipper;
 import simpleshop.domain.model.Suburb;
 import simpleshop.domain.model.component.Address;
@@ -75,6 +76,7 @@ public class ShipperDAOImplTest extends TransactionalTest {
         assertNotNull(shipper.getContact().getAddress().getSuburb());
         assertEquals("Wollongong", shipper.getContact().getAddress().getSuburb().getSuburb());
 
+        Contact contact = shipper.getContact();
         shipper.getContact().getContactNumbers().put("QQ", "32131232154");
         shipper.getContact().getContactNumbers().put("email", "abc@web.net");
         shipperDAO.sessionFlush();

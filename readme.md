@@ -57,6 +57,7 @@ Future Todo List
  * Support full internationalization - in jsp and angular.
  * Separate template and data. This way a type of template can be cached by the client.
  * drag and drop swap view positions.
+ * catch error when parsing embedded json data fails
  
 Limitations
 -----------

@@ -37,7 +37,7 @@
         <version.el>3.0.0</version.el>
 
         <!--3rd libs-->
-        <version.spring>4.2.2.RELEASE</version.spring>
+        <version.spring>4.2.3.RELEASE</version.spring>
         <version.hibernate>4.3.6.Final</version.hibernate>
         <version.hibernate-validator>5.1.1.Final</version.hibernate-validator>
         <version.jpa21>1.0.0.Final</version.jpa21>
@@ -115,14 +115,6 @@
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.1</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.drools</groupId>
-                <artifactId>drools-bom</artifactId>
-                <type>pom</type>
-                <version>${version.drools}</version>
-                <scope>import</scope>
             </dependency>
 
             <dependency>
