@@ -12,7 +12,7 @@ import simpleshop.webapp.mvc.controller.base.SuburbBaseController;
 @RequestMapping(produces = "application/json")
 public class SuburbController extends SuburbBaseController {
 
-    @RequestMapping(value = "/countries", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/countries", method = RequestMethod.GET)
     public @ResponseBody JsonResponse<Iterable<Country>> countryList(){
         return JsonResponse.createSuccess(suburbService.getCountries());
     }

@@ -2282,7 +2282,7 @@
         appInit.init($scope);
     }]);
 
-    spongeApp.controller("viewController", ["$scope", "$element", "site", "$interval", function ($scope, $element, site, $interval) {
+    spongeApp.controller("viewController", ["$scope", "$element", "site", "$interval", "$http", function ($scope, $element, site, $interval, $http) {
 
         /**
          * Update the global new model cache.
@@ -2308,7 +2308,7 @@
 
             //get from server
             var url = site.newJsonUrl(modelName);
-            return $http(url).then(function (response) {
+            return $http.get(url).then(function (response) {
                 response = response.data;
                 if (response.status == "OK") {
                     bodyScope.newModel[modelName] = response.content;
@@ -2374,6 +2374,7 @@
             promise.then(function () {
                 var prototype = site.getBodyScope().newModel[modelName];
                 collection.push(angular.copy(prototype));
+                window.setTimeout(function(){site.layout();},1);
             });
         };
 
@@ -2382,6 +2383,7 @@
                 var index = collection.indexOf(item);
                 if (index >= 0) {
                     collection.splice(index, 1);
+                    window.setTimeout(function(){site.layout();},1);
                 }
             }
         };

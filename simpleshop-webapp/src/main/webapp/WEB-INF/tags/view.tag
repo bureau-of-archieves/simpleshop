@@ -3,6 +3,7 @@
 <%@ taglib prefix="f" uri="sponge/functions" %>
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 
 <%--########################## TAG CONTENT  ################################--%>
@@ -35,7 +36,8 @@
 <c:if test="${not empty dataUrl}">
     <script id="embeddedData">
         <c:catch var="importException" >
-            <c:import url="${dataUrl}" />
+            <c:import var="jsonData" url="${dataUrl}" />
+            ${fn:replace(jsonData, "/", "\\/")}
         </c:catch>
         ${f:throwIfNotNull(importException)}
     </script>
