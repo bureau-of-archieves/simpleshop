@@ -1,6 +1,10 @@
 package simpleshop.business;
 dialect  "java"
 
+/*
+    Preload objects from database for validation.
+*/
+
 import simpleshop.dto.CartItem;
 import simpleshop.domain.model.Product;
 global simpleshop.data.ProductDAO productDAO;

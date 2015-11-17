@@ -1,6 +1,10 @@
 package simpleshop.business;
 dialect  "java"
 
+/*
+    Validation rules.
+*/
+
 import simpleshop.domain.model.Product;
 import simpleshop.dto.CartItem;
 global simpleshop.data.ProductDAO productDAO;
@@ -14,5 +18,5 @@ when
     CartItem($productId : productId != null)
     not Product(id == $productId)
 then
-    errors.rejectValue("productId", drools.getRule().getName());
+    errors.reject("cartItem.productId", drools.getRule().getName());
 end

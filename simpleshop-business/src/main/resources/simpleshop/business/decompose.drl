@@ -1,0 +1,20 @@
+package simpleshop.business;
+dialect  "java"
+
+/*
+  Dump the nested objects of a business object for easy access in validation rules.
+*/
+
+import simpleshop.dto.ShoppingCart
+import simpleshop.dto.CartItem;
+
+rule "insertCartItems"
+    salience 1000
+    ruleflow-group "decompose"
+when
+      $cart : ShoppingCart(items != null)
+      $cartItem : CartItem() from $cart.items
+      not CartItem(this == $cartItem) //not already added
+then
+    insert($cartItem);
+end

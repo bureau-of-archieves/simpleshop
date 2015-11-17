@@ -1,13 +1,13 @@
 package simpleshop.webapp.mvc.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import simpleshop.business.BusinessValidator;
 import simpleshop.dto.CartItem;
 import simpleshop.dto.JsonResponse;
 import simpleshop.dto.ShoppingCart;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -18,8 +18,8 @@ import javax.validation.Valid;
 @RequestMapping("/cart")
 public class CartController {
 
-    @Autowired
-    private BusinessValidator businessValidator;
+    @Resource(name = "businessValidator")
+    private Validator businessValidator;
 
     public static final String SHOPPING_CART_SESSION_KEY = "shoppingCart";
 

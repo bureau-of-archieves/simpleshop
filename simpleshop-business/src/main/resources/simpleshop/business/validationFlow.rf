@@ -5,15 +5,17 @@
 
     <nodes>
         <start      id="10000" name="Start" />
-        <ruleSet    id="20000" name="Preload" ruleFlowGroup="preload"/>
-        <ruleSet    id="30000" name="Validation" ruleFlowGroup="validation"/>
-        <end        id="40000" name="End" />
+        <ruleSet    id="20000" name="Decompose" ruleFlowGroup="decompose"/>
+        <ruleSet    id="30000" name="Preload" ruleFlowGroup="preload"/>
+        <ruleSet    id="40000" name="Validation" ruleFlowGroup="validation"/>
+        <end        id="50000" name="End" />
     </nodes>
 
     <connections>
         <connection from="10000" to="20000"/>
         <connection from="20000" to="30000"/>
         <connection from="30000" to="40000"/>
+        <connection from="40000" to="50000"/>
     </connections>
 
 </process>
