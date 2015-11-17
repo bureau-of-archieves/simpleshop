@@ -2111,7 +2111,7 @@
     //endregion
 
     //project specific service
-    spongeApp.factory("appInit", ["$http", "site", function($http, site){
+    spongeApp.factory("appInit", ["$http", "site", "$uibModal", function($http, site, $uibModal){
 
         return {
             init: initSimpleShop
@@ -2134,7 +2134,26 @@
                     quantity += cart.items[i].quantity;
                 }
                 return quantity;
-            }
+            };
+
+            $scope.checkout = function(){
+
+                if($scope.itemQuantity() == 0){
+
+                    window.showMessage({title: "Oh wait", message: "Your shopping cart is empty."});
+                    return;
+                }
+
+                var instance = $uibModal.open({
+                    backdrop: true,
+                    templateUrl: "shoppingCart.html", //defined in main.jsp
+                    size: "lg",
+                    windowClass: "checkout-box",
+                    controller: 'shoppingCartController'
+                });
+
+                instance.data = {cart : $scope.cart};
+            };
         }
 
     }]);
@@ -2434,6 +2453,19 @@
 
         $scope.title = $uibModalInstance.data.title;
         $scope.message = $uibModalInstance.data.message;
+
+        $scope.ok = function () {
+            $uibModalInstance.close(null);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+    }]);
+
+    spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+
+        $scope.cart = $uibModalInstance.data.cart;
 
         $scope.ok = function () {
             $uibModalInstance.close(null);

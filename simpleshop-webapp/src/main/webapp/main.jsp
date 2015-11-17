@@ -140,7 +140,7 @@
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#" >
+                <li><a href="#" data-ng-click="checkout()" >
                     <span style="position:relative;top:1px;left:-2px"><spring:message code="jsp.literal.shoppingCart" /></span>
                     <span class="badge ng-cloak" data-ng-bind="itemQuantity() | number:0"></span></a>
                 </li>
@@ -199,6 +199,49 @@
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" type="button" data-ng-click="ok()">OK</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="shoppingCart.html">
+    <div class="modal-content">
+        <div class="modal-header ng-scope">
+            <h3 class="modal-title">My Shopping Cart</h3>
+        </div>
+        <div class="modal-body ng-scope">
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-ng-repeat="item in cart.items">
+                        <td>
+                            <span data-ng-bind="item.productId"></span>
+                        </td>
+                        <td>?</td>
+                        <td>
+                            <span data-ng-bind="item.quantity"></span>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">
+                            Total: <b>N/A</b>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        </div>
+        <div class="modal-footer ng-scope">
+            <button class="btn btn-primary" type="button" data-ng-click="ok()">Checkout</button>
+            <button class="btn btn-warning" type="button" data-ng-click="cancel()">Continue Shopping</button>
+        </div>
     </div>
 </script>
 
