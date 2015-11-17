@@ -12,8 +12,9 @@
 <html data-ng-app="spongeApp" data-ng-controller="spongeController">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/png"  href="img/favicon.png" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" type="image/png"  href="img/favicon.png" >
     <sec:csrfMetaTags/>
 
     <title><spring:message code="jsp.literal.appName" /></title>
@@ -58,6 +59,18 @@
                             <li data-ng-repeat="item in menu">
                                 <a href="#" class="icon"
                                    data-spg-search="{{item.name}}">
+                                    <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Create <span class="caret"></span>
+                        </a>
+
+                        <ul role="menu" class="dropdown-menu">
+                            <li data-ng-repeat="item in menu">
+                                <a href="#" class="icon"
+                                   data-spg-create="{{item.name}}">
                                     <ctrl:icon value="{{item.icon}}"/>&nbsp; {{item.name}} </a>
                             </li>
                         </ul>
