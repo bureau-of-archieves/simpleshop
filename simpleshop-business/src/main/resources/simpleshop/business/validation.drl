@@ -2,7 +2,8 @@ package simpleshop.business;
 dialect  "java"
 
 /*
-    Validation rules.
+    Rules that validates dto prior to process OR
+    domain objects prior to saving.
 */
 
 import simpleshop.domain.model.Product;
@@ -11,6 +12,7 @@ global simpleshop.data.ProductDAO productDAO;
 global org.springframework.validation.Errors errors;
 
 
+//////////////////////// DTO Validation ///////////////////////////
 rule "cartItemShouldHaveValidProductId"
     salience 1000
     ruleflow-group "validation"
@@ -20,3 +22,6 @@ when
 then
     errors.reject("cartItem.productId", drools.getRule().getName());
 end
+
+
+//////////////////////// Domain Validation ///////////////////////////

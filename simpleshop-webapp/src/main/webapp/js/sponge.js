@@ -967,7 +967,6 @@
                 }
 
                 initViewElements(viewMap[viewKey]);
-                site.scrollTo(viewId);
                 return site.createPromise(null);
             };
 
@@ -2427,6 +2426,7 @@
 
         $interval(function(){
             site.display($element, true);
+            site.scrollTo(id);
         }, 100, 1);
     }]);
 
