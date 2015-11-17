@@ -21,8 +21,10 @@
     <logger name="sponge" level="INFO">
     </logger>
 
+    <logger name="org.springframework" level="INFO" >
+    </logger>
+
     <logger name="org.hibernate.tool.hbm2ddl" level="DEBUG" >
-        <appender-ref ref="console"/>
     </logger>
 
     <!--<logger name="org.hibernate.SQL" level="DEBUG">-->
