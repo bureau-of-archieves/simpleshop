@@ -45,7 +45,7 @@
 <div class="form-group edit-image-list">
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
     <div class="col-sm-9">
-        <input id="${id}" type="file" name="images" data-url="${url}" multiple data-spg-upload-list="${fieldRef}" >
+        <input id="${id}" type="file" accept="image/*" name="images" data-url="${url}" multiple data-spg-upload-list="${fieldRef}" >
 
         <ol data-spg-removable-collection="${fieldRef}" class="image-list">
             <li data-ng-repeat="item in ${fieldRef}" >

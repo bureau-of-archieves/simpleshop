@@ -60,6 +60,7 @@
                         <goal>descriptor</goal>
                     </goals>
                     <phase>process-classes</phase>
+                    <configuration></configuration>
                 </execution>
                 <execution>
                     <id>help-descriptor</id>

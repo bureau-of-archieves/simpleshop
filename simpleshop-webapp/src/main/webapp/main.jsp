@@ -147,10 +147,10 @@
 
                 <comm:hasUser>
                     <jsp:attribute name="isFalse">
-                        <li><a href="login.do">Login</a></li>
+                        <li><a href="login.do"><spring:message code="jsp.literal.login" /></a></li>
                     </jsp:attribute>
                     <jsp:body>
-                        <li><a href="logout.do">Logout</a></li>
+                        <li><a href="logout.do"><spring:message code="jsp.literal.logout" /></a></li>
                         <li><a href="#">${username}</a></li>
                     </jsp:body>
                 </comm:hasUser>
@@ -171,7 +171,7 @@
             <section style="min-height: 40em" id="resultSection" class="hide-children row">
                 <%--views--%>
                 <div id="messageNoView" class="alert alert-info display no-display-predecessor" role="alert">
-                    There is no open view.
+                    <spring:message code="jsp.literal.noOpenView" />
                 </div>
             </section>
 
@@ -239,8 +239,8 @@
 
         </div>
         <div class="modal-footer ng-scope">
-            <button class="btn btn-primary" type="button" data-ng-click="ok()">Checkout</button>
-            <button class="btn btn-warning" type="button" data-ng-click="cancel()">Continue Shopping</button>
+            <button class="btn btn-primary" type="button" data-ng-click="cancel()"><spring:message code="jsp.literal.continueShopping" /></button>
+            <button class="btn btn-warning" type="button" data-ng-click="ok()"><spring:message code="jsp.literal.checkout" /></button>
         </div>
     </div>
 </script>
