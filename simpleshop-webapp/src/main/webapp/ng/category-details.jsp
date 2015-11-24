@@ -1,4 +1,5 @@
-<%@include file="../WEB-INF/_header.jspf" %>
+<%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:page>
     <t:view-details>
@@ -9,5 +10,4 @@
         <ctrl:detailsModelLink path="parent" />
 
     </t:view-details>
-
 </t:page>

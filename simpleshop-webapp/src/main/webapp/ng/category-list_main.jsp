@@ -1,4 +1,6 @@
-<%@include file="../WEB-INF/_header.jspf" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 <t:page>
     <t:view-list title="All Categories" frameClass="col-xs-12">

@@ -1,5 +1,5 @@
-<%@include file="../WEB-INF/_header.jspf" %>
-
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@ taglib prefix="d" tagdir="/WEB-INF/tags/domain" %>
 <t:page>
     <t:view-create>
         <d:product-form />

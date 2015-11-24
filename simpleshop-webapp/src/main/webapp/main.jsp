@@ -191,14 +191,24 @@
 </ul>
 
 <script type="text/ng-template" id="messageBox.html">
-    <div class="modal-header">
-        <h3 class="modal-title">{{title}}</h3>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">{{title}}</h3>
+        </div>
+        <div class="modal-body">
+            <p>{{message}}</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" type="button" data-ng-click="ok()">OK</button>
+        </div>
     </div>
-    <div class="modal-body">
-        <p>{{message}}</p>
-    </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" type="button" data-ng-click="ok()">OK</button>
+</script>
+
+<script type="text/ng-template" id="checkout.html">
+    <div class="modal-content">
+        <div class="modal-header"></div>
+        <div class="modal-body">Checkout</div>
+        <div class="modal-footer"></div>
     </div>
 </script>
 
@@ -246,19 +256,18 @@
 </script>
 
 <%--scripts some scripts are not bundled as they might refer to resources using relative path or prone to change--%>
-<script src="js/bundle.js" ></script>
-<%--<script src="components/jquery/dist/jquery.min.js"></script>--%>
+<script src="components/jquery/dist/jquery.min.js"></script>
 <script src="components/jquery-ui/jquery-ui.min.js"></script>
-<%--<script src="js/jquery.iframe-transport.js"></script>--%>
+<script src="js/jquery.iframe-transport.js"></script>
 <script src="js/jquery.fileupload.js"></script>
-<%--<script src="components/moment/min/moment.min.js"></script>--%>
+<script src="components/moment/min/moment.min.js"></script>
 <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
-<%--<script src="components/angular/angular.min.js"></script>--%>
+<script src="components/angular/angular.min.js"></script>
 <script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
-<%--<script src="js/angular-animate.min.js"></script>--%>
+<script src="js/angular-animate.min.js"></script>
 <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-<%--<script src="components/toastr/toastr.min.js" ></script>--%>
+<script src="components/toastr/toastr.min.js" ></script>
 <script src="js/zcl.js"></script>
 <script src="js/sponge.js"></script>
 

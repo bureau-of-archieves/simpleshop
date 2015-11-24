@@ -1,4 +1,6 @@
-<%@include file="../WEB-INF/_header.jspf"%>
+<%@ taglib prefix="ctrl" tagdir="/WEB-INF/tags/controls"  %>
+<%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
+<%@ taglib prefix="t" tagdir="/WEB-INF/tags" %>
 
 
 <t:page>

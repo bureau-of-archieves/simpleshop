@@ -2153,6 +2153,9 @@
                 });
 
                 instance.data = {cart : $scope.cart};
+                instance.result.then(function(args){
+                    alert(JSON.toLocaleString(args));
+                });
             };
         }
 
