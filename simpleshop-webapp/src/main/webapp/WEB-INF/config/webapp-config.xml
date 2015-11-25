@@ -46,15 +46,25 @@
 
     <security:authentication-manager>
 
-        <security:authentication-provider >
-            <!-- <security:password-encoder hash="bcrypt" />hash="md5"-->
-            <!--xml based users  -->
+        <security:authentication-provider user-service-ref="userDetailsService" >
+            <security:password-encoder hash="bcrypt" /> <!--hash="md5" -->
+            <!--xml based users
             <security:user-service>
                 <security:user name="zhy2002" password="zhy2002" authorities="ROLE_USER" />
                 <security:user name="zhy2003" password="zhy2003" authorities="ROLE_USER,ROLE_ADMIN" />
-            </security:user-service>
-
+            </security:user-service>-->
         </security:authentication-provider>
     </security:authentication-manager>
 
+    <bean id="userDetailsService" class="simpleshop.service.infrastructure.impl.UserDetailsServiceImpl" />
+
+    <security:global-method-security pre-post-annotations="enabled" >
+        <security:expression-handler ref="fitnessTrackerExpressionHandler" />
+    </security:global-method-security>
+
+    <bean id="fitnessTrackerExpressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+        <property name="permissionEvaluator" >
+            <bean class="simpleshop.webapp.infrastructure.SimpleshopPermissionEvaluator" />
+        </property>
+    </bean>
 </beans>

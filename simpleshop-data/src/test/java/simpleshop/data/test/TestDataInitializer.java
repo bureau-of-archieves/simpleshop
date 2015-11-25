@@ -3,6 +3,11 @@ package simpleshop.data.test;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import simpleshop.domain.model.*;
 import simpleshop.domain.model.component.Address;
 import simpleshop.domain.model.component.OrderItem;
@@ -16,15 +21,15 @@ import java.util.Map;
 
 /**
  * Ensure test data is present.
+ * This bean is defined in xml to ensure order.
  */
-public class TestDataInitializer {
+@Component
+public class TestDataInitializer implements Ordered {
 
-
+    @Autowired
     private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostConstruct
     public void init() {
@@ -51,6 +56,9 @@ public class TestDataInitializer {
      * @param session an opened session.
      */
     private void seedData(Session session) {
+
+        createUser(session, "zhy2002", "zhy2002", null, "ROLE_USER");
+        createUser(session, "zhy2003", "zhy2003", null, "ROLE_USER", "ROLE_ADMIN");
 
         createCountry("AUS", "Australia", "AUD", session);
         createCountry("USA", "United States", "USD", session);
@@ -87,7 +95,7 @@ public class TestDataInitializer {
         Employee employee1 = createEmployee(TestConstants.EMPLOYEE_NAME_1, "Mr. Ballmer", null, null, session);
         session.flush();
 
-        Employee employee2 = createEmployee(TestConstants.EMPLOYEE_NAME_2, "Mr. Drake", null, null, session);
+        createEmployee(TestConstants.EMPLOYEE_NAME_2, "Mr. Drake", null, null, session);
         session.flush();
 
         Category allProducts = createCategory(TestConstants.ROOT_CATEGORY, null, null, session);
@@ -315,5 +323,35 @@ public class TestDataInitializer {
     @SuppressWarnings("unchecked")
     private List<Supplier> getSupplierListByName(String name, Session session) {
         return session.createCriteria(Supplier.class).createCriteria("contact").add(Restrictions.like("name", "%" + name + "%")).list();
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<User> getUserListByUsername(String username, Session session) {
+        return session.createCriteria(User.class).add(Restrictions.like("username", "%" + username + "%")).list();
+    }
+
+    private void createUser(Session session, String username, String password, Map<String, String> permissions, String... roles) {
+
+        List<User> result = getUserListByUsername(username, session);
+        if (result.size() > 0) {
+            return;
+        }
+
+        String pwdHash = passwordEncoder.encode(password);
+        User user = new User();
+        user.setUsername(username);
+        user.setPassword(pwdHash);
+        user.setPermissions(permissions);
+        if (roles != null) {
+            for (String role : roles)
+                user.addAuthority(role);
+        }
+
+        session.save(user);
+    }
+
+    @Override
+    public int getOrder() {
+        return 0;
     }
 }

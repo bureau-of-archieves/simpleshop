@@ -18,6 +18,8 @@ public class TestConstants {
     public static final String WORK_PHONE_NUMBER_1 = "2 8876 7432";
     public static final String WORK_PHONE_NUMBER_2 = "3 5433 4321";
     public static final String RAMBO = "Rambo";
+    public static final String ADMIN_USER = "zhy2003";
+    public static final String USER_NAME = "zhy2002";
     public static final String SUBURB_AUS_1 = "Hurstville";
     public static final String SUBURB_AUS_2 = "Wollongong";
     public static final String SUBURB_AUS_1_POSTCODE = "2200";
@@ -38,6 +40,7 @@ public class TestConstants {
     public static final String CATEGORY_MARK = "CAT_TEST";
     public static final String COUNTRY_MARK = "XX";
     public static final String SUPPLIER_MARK = "SUP_TEST";
+    public static final String USER_MARK = "USR_TEST";
     public static final String SHIPPER_MARK = "SHP_TEST";
     public static final String SUBURB_MARK = "SUB_TEST";
     public static final String PRODUCT_MARK = "PRD_TEST";

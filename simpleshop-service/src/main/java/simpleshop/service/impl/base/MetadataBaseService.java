@@ -24,7 +24,8 @@ public abstract class MetadataBaseService extends BaseServiceImpl implements Met
     public MetadataBaseService() {
 
         this.classes = new Class<?>[]{
-Category.class
+Authority.class
+,Category.class
 ,Address.class
 ,OrderItem.class
 ,ProductSupplier.class
@@ -38,6 +39,7 @@ Category.class
 ,Shipper.class
 ,Suburb.class
 ,Supplier.class
+,User.class
 ,CategorySearch.class
 ,ContactSearch.class
 ,CustomerSearch.class

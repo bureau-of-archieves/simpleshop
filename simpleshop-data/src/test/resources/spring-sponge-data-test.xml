@@ -3,11 +3,6 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!--This bean must be defined before import of other beans to ensure data initialisation -->
-    <bean class="simpleshop.data.test.TestDataInitializer">
-        <property name="sessionFactory" ref="sessionFactory" />
-    </bean>
-
     <import resource="spring-simpleshop-data.xml" />
 
 </beans>

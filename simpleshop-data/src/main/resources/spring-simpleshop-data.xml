@@ -11,6 +11,7 @@
 
     <ctx:component-scan base-package="simpleshop">
         <ctx:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <ctx:exclude-filter type="assignable" expression="org.springframework.security.access.PermissionEvaluator" />
     </ctx:component-scan>
     <ctx:annotation-config/>
 
