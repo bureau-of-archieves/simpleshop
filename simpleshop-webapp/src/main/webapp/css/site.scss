@@ -542,6 +542,16 @@ input.ng-invalid.ng-dirty {
 }
 //endregion
 
+//region DIALOG
+
+.loading {
+  text-align: center;
+  padding-top:5em;
+  padding-bottom:5em;
+}
+
+//endregion
+
 //region FOOTER
 footer {
   > .col-xs-8 {

@@ -2152,11 +2152,12 @@
                     controller: 'shoppingCartController'
                 });
 
-                instance.data = {cart : $scope.cart};
-                instance.result.then(function(args){
-                    alert(JSON.toLocaleString(args));
-                });
+                instance.data = {cart : $scope.cart, view : 'cart'};
+                //instance.result.then(function(args){
+                //    alert(JSON.toLocaleString(args));
+                //});
             };
+
         }
 
     }]);
@@ -2469,6 +2470,7 @@
     spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
 
         $scope.cart = $uibModalInstance.data.cart;
+        $scope.view = $uibModalInstance.data.view;
 
         $scope.ok = function () {
             $uibModalInstance.close(null);
@@ -2477,6 +2479,10 @@
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
         };
+
+        $scope.createOrder = function(){
+            $scope.view = "checkout";
+        }
     }]);
 
     //endregion

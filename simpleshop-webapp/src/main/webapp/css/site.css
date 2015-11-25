@@ -380,6 +380,11 @@ input.ng-invalid.ng-dirty {
 .view .well {
   margin: 1em; }
 
+.loading {
+  text-align: center;
+  padding-top: 5em;
+  padding-bottom: 5em; }
+
 footer > .col-xs-8 {
   text-align: center; }
 footer hr {
