@@ -14,6 +14,7 @@
 <%@attribute name="parentId" required="false" %>
 <%@attribute name="label" required="false" %>
 <%@attribute name="itemName" required="false" %>
+<%@attribute name="readonly" required="false" type="java.lang.Boolean" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <comm:peekIfEmpty var="modelName" value="${modelName}" />
@@ -57,9 +58,11 @@
                             <comm:pop var="modelName" />
                             <comm:pop var="parentId" />
                         </dl>
-                        <button type="submit" class="btn btn-primary" data-ng-click="removeFromCollection(${fieldRef}, ${itemName})">
-                            <spring:message code="jsp.literal.remove" />
-                        </button>
+                        <c:if test="${not readonly}" >
+                            <button type="submit" class="btn btn-primary" data-ng-click="removeFromCollection(${fieldRef}, ${itemName})">
+                                <spring:message code="jsp.literal.remove" />
+                            </button>
+                        </c:if>
                     </div>
                 </div>
 

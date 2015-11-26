@@ -297,10 +297,10 @@ body {
     float: right;
   }
 }
+
 //endregion
 
 //region CONTROLS
-
 
 .bg-info {
   padding: 1.5em;
@@ -400,8 +400,8 @@ a.list-group-item {
 }
 
 .edit-inline-list .items-container {
-   padding-top: 0.5em;
- }
+  padding-top: 0.5em;
+}
 
 .items-container .glyphicon {
   cursor: hand;
@@ -538,16 +538,42 @@ input.ng-invalid.ng-dirty {
 }
 
 .view .well {
-  margin:1em;
+  margin: 1em;
 }
+
 //endregion
 
 //region DIALOG
 
-.loading {
-  text-align: center;
-  padding-top:5em;
-  padding-bottom:5em;
+.dialog-view {
+  .loading {
+    text-align: center;
+    padding-top: 5em;
+    padding-bottom: 5em;
+  }
+
+  .loaded {
+    overflow: hidden;
+  }
+
+  .view {
+    width: 100%;
+
+    >.panel {
+      margin-bottom:0;
+    }
+  }
+
+  .input-group input {
+    top:0;
+  }
+
+}
+
+.hide-panel-heading {
+  .panel-heading {
+    display: none;
+  }
 }
 
 //endregion
@@ -565,6 +591,7 @@ footer {
   }
 
 }
+
 //endregion
 
 //region SPECIAL
@@ -655,4 +682,5 @@ footer {
   font-family: Arial, serif;
   position: relative;
 }
+
 //endregion

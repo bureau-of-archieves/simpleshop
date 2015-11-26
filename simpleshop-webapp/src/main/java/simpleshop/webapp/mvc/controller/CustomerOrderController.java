@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import simpleshop.data.CustomerDAO;
+import simpleshop.domain.model.Customer;
 import simpleshop.domain.model.Order;
 import simpleshop.domain.model.Product;
 import simpleshop.domain.model.User;
@@ -16,6 +18,7 @@ import simpleshop.dto.CartItem;
 import simpleshop.dto.CustomerOrder;
 import simpleshop.dto.JsonResponse;
 import simpleshop.dto.ShoppingCart;
+import simpleshop.service.CustomerService;
 import simpleshop.service.ProductService;
 import simpleshop.service.UserService;
 
@@ -32,6 +35,12 @@ public class CustomerOrderController {
 
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private CustomerDAO customerDAO;
 
     public static final String NO_SHOPPING_CART_FOUND = "Not shopping cart found";
     public static final String NO_SHOPPING_CART_ITEM_FOUND = "Not shopping cart item found";
@@ -61,9 +70,14 @@ public class CustomerOrderController {
         if(user.getCustomer() != null){
             if(user.getCustomer().getContact().getContactName() == null){
                 user.getCustomer().getContact().setContactName(user.getCustomer().getContact().getName());
+                customerDAO.evict(user.getCustomer());
             }
+
+            customerOrder.setCustomer(user.getCustomer());
+        } else {
+            customerOrder.setCustomer(customerService.create());
         }
-        customerOrder.setCustomer(user.getCustomer());
+
 
         Order order = new Order();
         for(CartItem cartItem : cart.getItems()){
@@ -75,7 +89,7 @@ public class CustomerOrderController {
             orderItem.setSellPrice(BigDecimal.TEN); //todo decide price
             order.getOrderItems().add(orderItem);
         }
-
+        order.setFreight(new BigDecimal("15.50")); //todo decide freight
         customerOrder.setOrder(order);
         return JsonResponse.createSuccess(customerOrder);
     }

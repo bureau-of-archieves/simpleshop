@@ -36,6 +36,8 @@ Bugs
 
 Todo List
 -----------
+ * Allow adjust order item quantity before checking out.
+ * Add default employee and shipper.
  * Direct error messages to each field as well as the whole model.
  * create a model after searching will copy certain search parameters
  * Display search criteria in the list view.

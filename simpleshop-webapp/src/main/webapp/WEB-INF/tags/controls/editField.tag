@@ -15,6 +15,8 @@
 <%@attribute name="label" required="false" %>
 <%@attribute name="parentId" required="false" %>
 <%@attribute name="id" required="false" %>
+<%@attribute name="readonly" type="java.lang.Boolean" required="false" %>
+<%@attribute name="currency" type="java.lang.Boolean" required="false" %>
 <%-- true if this field can accept an empty string --%>
 <%@attribute name="emptyStringAllowed" required="false" type="java.lang.Boolean" %>
 
@@ -54,10 +56,16 @@
     <label for="${id}" class="col-sm-3 control-label">${label}</label>
 
     <div class="col-sm-9">
+        <c:if test="${currency}" >
+        <div class='input-group'>
+            <span class="input-group-addon">
+                <ctrl:icon value="usd" />
+            </span>
+        </c:if>
         <c:if test="${f:isDateTimeType(propertyType)}">
         <div class='input-group date'>
         </c:if>
-            <input id="${id}" type="text" class="form-control" name="${path}"
+            <input id="${id}" type="text" class="form-control" name="${path}" ${readonly ? " readonly " : ""}
                 data-ng-model="${fieldRef}"
                 <c:choose>
                     <c:when test="${f:isDateTimeType(propertyType)}">
@@ -79,11 +87,13 @@
              >
         <c:if test="${f:isDateTimeType(propertyType)}">
             <span class="input-group-addon">
-                <span class="glyphicon glyphicon-time"></span>
+                <ctrl:icon value="time" />
             </span>
         </div>
         </c:if>
-
+        <c:if test="${currency}" >
+        </div>
+        </c:if>
         <ctrl:fieldErrorGroup>
             <c:if test="${not empty minLength}"><p data-ng-show="${formItemRef}.$error.minlength"><spring:message code="editField.minLength" arguments="${path},${minLength}" /></p></c:if>
             <c:if test="${not empty maxLength}"><p data-ng-show="${formItemRef}.$error.maxlength"><spring:message code="editField.maxLength" arguments="${path},${maxLength}" /></p></c:if>

@@ -12,6 +12,10 @@
 <%@attribute name="title"%>
 <%--name of the icon to use.--%>
 <%@attribute name="icon"%>
+<%@attribute name="controllerName" %>
+<%--the css class for the panel--%>
+<%@attribute name="cssClass" %>
+<%@attribute name="noButtons" type="java.lang.Boolean" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
 <c:if test="${empty title}">
@@ -25,12 +29,12 @@
     <comm:push value="&${f:uuid()};" var="viewId" />
     <comm:push value="${viewId}" var="replace_id_marker" />
 
-    <t:view-frame id="${viewId}" title="${title}" cssClass="create-view" >
+    <t:view-frame id="${viewId}" title="${title}" cssClass="create-view ${cssClass}" controllerName="${controllerName}" >
         <jsp:attribute name="header">
 
         </jsp:attribute>
         <jsp:body>
-            <ctrl:form name="${viewId}-form" editForm="true">
+            <ctrl:form name="${viewId}-form" editForm="${not noButtons}">
 
                 <jsp:doBody/>
 

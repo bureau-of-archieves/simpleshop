@@ -263,8 +263,11 @@
             </div>
         </div>
         <div id="checkoutView" class="dialog-view" data-ng-show="view == 'checkout'">
-          <div class="loading">
+          <div class="loading" data-ng-show="loading">
               <img src="img/spinning-wheel.gif" alt="Loading...">
+          </div>
+          <div class="loaded" data-ng-show="!loading">
+
           </div>
         </div>
     </div>

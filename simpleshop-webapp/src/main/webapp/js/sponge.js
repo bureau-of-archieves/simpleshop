@@ -19,7 +19,7 @@
         "requestFailed": "Failed to send request to server.",
         "errorOccurred": "An error has occurred.",
         "operationInProgress": "Operation is in progress, please wait.",
-        "operationNotInProgress":"Operation '{0}' is not in progress.",
+        "operationNotInProgress": "Operation '{0}' is not in progress.",
         "cannotFindViewInsertionPosition": "Could not determine the insert position for the view being created.",
         "viewCompilationFailed": "View compilation failed: {0}",
         "cannotBeginOperation": "Cannot begin operation.",
@@ -29,7 +29,7 @@
         "propertyNameArgMissing": "propertyValue pre-post processor requires a property name argument.",
         "discardUnsavedChanges": "Do you want to discard un-saved changes in the form?",
         "failedToLoadMetadata": "Failed to load application metadata, please retry later. Error: {0}",
-        "closeAllViewConfirmation" : "Do you want to close all {0} views? All unsaved changes will be lost.",
+        "closeAllViewConfirmation": "Do you want to close all {0} views? All unsaved changes will be lost.",
         "cartInitFailed": "Failed to initialize the shopping cart. Please refresh page later.",
         "itemAddedToCart": "Selected item is successfully added to cart."
     });
@@ -259,7 +259,7 @@
         var bodyScope = null;
 
         //passed in from the controller
-        this.setBodyScope = function(scope){
+        this.setBodyScope = function (scope) {
             bodyScope = scope;
         };
 
@@ -291,13 +291,13 @@
          */
         this.reportError = function (error) {
 
-            if(error instanceof Object){
+            if (error instanceof Object) {
                 error = JSON.stringify(error);
             }
 
             var showMessageArgs = {
-                title : site.getMessage("errorOccurred"),
-                message : error
+                title: site.getMessage("errorOccurred"),
+                message: error
             };
 
             window.showMessage(showMessageArgs);
@@ -421,7 +421,7 @@
             return deferred.promise;
         };
 
-        window.showMessage = function(args){
+        window.showMessage = function (args) {
             if (!args)
                 return;
 
@@ -476,7 +476,7 @@
 
     spongeApp.filter("defaultImage", function () {
         return function (input) {
-            if(input && input.length > 0){
+            if (input && input.length > 0) {
                 return input[0];
             }
             return "";
@@ -508,16 +508,16 @@
     });
 
     //{{item.prefix|indent:'_':-1}}
-    spongeApp.filter("indent", [function(){
+    spongeApp.filter("indent", [function () {
 
-        return function (val, separator,delta) {
+        return function (val, separator, delta) {
 
-            if(val == null)
+            if (val == null)
                 return val;
 
             var count = val.split(separator).length - 1;
             count += delta;
-            if(count < 0)
+            if (count < 0)
                 count = 0;
 
             return zcl.repeat("M", count);
@@ -550,7 +550,7 @@
 
     spongeApp.filter('yesno', function () {
         return function (input) {
-            return input && input !== 'N'  ? 'Yes' : 'No';
+            return input && input !== 'N' ? 'Yes' : 'No';
         };
     });
 
@@ -606,11 +606,11 @@
     spongeApp.filter('concat', function () {
         return function () {
             var input = arguments[0];
-            if(angular.isUndefined(input) || input === null)
+            if (angular.isUndefined(input) || input === null)
                 return null;
 
             var result = "";
-            if(angular.equals({}, input))
+            if (angular.equals({}, input))
                 return result;
             var prevIsProp = false;
             for (var i = 1; i < arguments.length; i++) {
@@ -637,7 +637,7 @@
     spongeApp.filter('interpolate', ['$interpolate', "site", function ($interpolate, site) {
         return function (input, modelName) {
 
-            if(angular.isUndefined(input) || input === null){
+            if (angular.isUndefined(input) || input === null) {
                 return null;
             }
 
@@ -684,18 +684,18 @@
          * @param refresh re-retrieve the list if already cached.
          * @param callback function (loadedList)
          */
-        var loadList = function(url, refresh, callback){
+        var loadList = function (url, refresh, callback) {
 
-            if(!refresh && loadedLists.hasOwnProperty(url)){
+            if (!refresh && loadedLists.hasOwnProperty(url)) {
                 callback(loadedLists[url].content);
                 return;
             }
 
             return $http({url: url}).then(success, error);
 
-            function success (response){
+            function success(response) {
                 var data = response.data;
-                if(data["status"] == "OK"){
+                if (data["status"] == "OK") {
                     loadedLists[url] = data;
                     callback(loadedLists[url].content);
                 } else {
@@ -703,7 +703,7 @@
                 }
             }
 
-            function error (response){
+            function error(response) {
                 site.reportError(response.status + " - " + response.statusText);
             }
         };
@@ -718,7 +718,7 @@
             if ($.inArray(token, bodyScope.operationLocks) >= 0)
                 return site.createPromise(site.getMessage("operationInProgress"));
 
-            return site.createPromise(null).then(function(){
+            return site.createPromise(null).then(function () {
                 bodyScope.operationLocks.push(token); //trigger ui change, e.g. spinning wheel.
             });
         };
@@ -734,7 +734,7 @@
             if (index < 0)
                 return site.createPromise(site.getMessage("operationNotInProgress", [token]));
 
-            return site.createPromise(null).then(function(){
+            return site.createPromise(null).then(function () {
                 bodyScope.operationLocks.splice(index, 1);
             });
         };
@@ -816,26 +816,26 @@
             var json = null;
             for (var i = elements.length - 1; i >= 0; i--) {
                 var element = $(elements[i]);
-                if(!element.is("*")){
+                if (!element.is("*")) {
                     continue; //continue is not element
                 }
 
                 var dataContainer = null;
-                if(element.is("script#embeddedData")){
+                if (element.is("script#embeddedData")) {
                     dataContainer = element;
                     json = dataContainer.html();
                     elements.splice(i, 1);
                     break;
                 } else {
                     var result = element.find("script#embeddedData");
-                    if(result.length > 0){
+                    if (result.length > 0) {
                         dataContainer = $(result.get(0));
                         json = dataContainer.html();
                         dataContainer.remove();
                     }
                 }
 
-                if(dataContainer != null){
+                if (dataContainer != null) {
                     break;
                 }
             }
@@ -865,6 +865,26 @@
          */
         var getViewName = function (modelName, viewType) {
             return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
+        };
+
+        var getDialogView = function (modelName, viewType, dialogId, parentScope) {
+            var viewName = getViewName(modelName, viewType);
+            var viewUrl = site.viewUrl(viewName);
+            return $q.when($.get(viewUrl)).then(function (viewHtml) {
+                var parseResult = parseViewHtml(viewHtml, dialogId + "-view");
+                if (parseResult.dataObject.status == "ERROR") {
+                    return site.createPromise(parseResult.dataObject);
+                }
+                $("#" + dialogId + " .loaded").html("").append(parseResult.domElements);
+                if(!parentScope) {
+                    parentScope = site.getBodyScope();
+                }
+                parentScope.dialogData = parseResult.dataObject;
+                site.safeApply(function () {
+                    $compile(parseResult.domElements)(parentScope);
+                });
+                return site.createPromise(null);
+            });
         };
 
         /**
@@ -1103,8 +1123,8 @@
             if (noOpenAnother || site.isSubtypeOf(viewType, "create") && !model)
                 return close(viewId);
 
-            if (site.isSubtypeOf(viewType, "create")){
-                return close(viewId).then(function(){
+            if (site.isSubtypeOf(viewType, "create")) {
+                return close(viewId).then(function () {
                     var modelId = zcl.toString(model[site.getMetadata(modelName)["idPropertyName"]]);
                     getView(modelName, "details" + viewType.substr(6), modelId, {modelId: modelId}, null, {removeExisting: true});
                 });
@@ -1168,7 +1188,7 @@
          */
         var close = function (viewId) {
 
-            return site.createPromise(null).then(function(){
+            return site.createPromise(null).then(function () {
                 var viewKey = site.findViewKey(viewId);
                 if (viewKey)
                     delete viewMap[viewKey];
@@ -1244,35 +1264,35 @@
 
         };
 
-        var addToCart = function(productId){
+        var addToCart = function (productId) {
 
-            function addToCartSuccess(){
+            function addToCartSuccess() {
                 var bodyScope = site.getBodyScope();
-                if(!bodyScope["cart"]){
-                    bodyScope["cart"] = {items:[]};
+                if (!bodyScope["cart"]) {
+                    bodyScope["cart"] = {items: []};
                 }
 
                 var items = bodyScope["cart"]["items"];
                 var added = false;
-                for(var i=0; i<items.length; i++){
-                    if(items[i].productId == productId){
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].productId == productId) {
                         items[i].quantity++;
                         added = true;
                         break;
                     }
                 }
-                if(!added){
+                if (!added) {
                     items.push({productId: productId, quantity: 1});
                 }
                 toastr["success"](site.getMessage("itemAddedToCart"));
 
             }
 
-            return beginOp("addToCart").then(function(){
-                return createRequest(site.addToCartUrl(), {productId : productId})
+            return beginOp("addToCart").then(function () {
+                return createRequest(site.addToCartUrl(), {productId: productId})
                     .then(addToCartSuccess)
                     .catch(handleFailedRequest)
-                    .finally(function(){
+                    .finally(function () {
                         return endOp("addToCart");
                     });
             }).catch(handleFailedOperation);
@@ -1289,6 +1309,7 @@
             close: close,
             addToCart: addToCart,
             prePost: prePostHandler,
+            getDialogView: getDialogView,
             sequenceNumbers: {}
         };
 
@@ -1349,16 +1370,16 @@
         };
     }]);
 
-    spongeApp.directive("spgCartAdd", ["spongeService", function(spongeService){
+    spongeApp.directive("spgCartAdd", ["spongeService", function (spongeService) {
 
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
                 var button = $(element);
-                button.click(function(){
+                button.click(function () {
                     button.attr("disabled", true);
                     var productId = parseInt(attrs["spgCartAdd"]);
-                    spongeService.addToCart(productId).finally(function(){
+                    spongeService.addToCart(productId).finally(function () {
                         button.attr("disabled", false);
                     });
                 });
@@ -1423,24 +1444,24 @@
         };
     }]);
 
-    spongeApp.directive("spgRemovableCollection", ["$parse",function($parse){
+    spongeApp.directive("spgRemovableCollection", ["$parse", function ($parse) {
 
         return {
             restrict: 'A',
             scope: true,
             link: function (scope, element, attrs) {
                 var collectionPath = attrs["spgRemovableCollection"];
-                if(!collectionPath)
+                if (!collectionPath)
                     return;
 
                 var getter = $parse(collectionPath);
-                scope.remove = function(item){
+                scope.remove = function (item) {
                     var collection = getter(scope);
-                    if(!collection)
+                    if (!collection)
                         return;
 
-                    for(var i=0; i<collection.length; i++){
-                        if(angular.equals(collection[i], item)){
+                    for (var i = 0; i < collection.length; i++) {
+                        if (angular.equals(collection[i], item)) {
                             collection.splice(i, 1);
                             return;
                         }
@@ -1453,17 +1474,17 @@
     }]);
 
     //data-spg-load-list="${itemsVariableName},${url}"
-    spongeApp.directive("spgLoadList", ["spongeService", function(spongeService){
+    spongeApp.directive("spgLoadList", ["spongeService", function (spongeService) {
 
         return {
             restrict: 'A',
             scope: true,
             link: function (scope, element, attrs) {
                 var args = attrs["spgLoadList"];
-                if(!args)
+                if (!args)
                     return;
                 args = args.split(",");
-                if(args.length < 2)
+                if (args.length < 2)
                     return;//configuration error
 
                 var listPropertyName = args[0];
@@ -1471,7 +1492,7 @@
                 var refresh = args.length > 2 ? args[2] : false;
 
                 scope[listPropertyName] = [];
-                spongeService.loadList(listUrl, refresh, function(loadedList){
+                spongeService.loadList(listUrl, refresh, function (loadedList) {
                     scope[listPropertyName] = loadedList;
                 });
             }
@@ -1479,14 +1500,14 @@
     }]);
 
     //data-spg-upload
-    spongeApp.directive("spgUpload", ["spongeService", "site", function(spongeService, site){
+    spongeApp.directive("spgUpload", ["spongeService", "site", function (spongeService, site) {
 
         return {
             restrict: 'A',
             link: function (scope, element, attrs) {
 
                 var fileElement = $(element);
-                fileElement.css("position", "absolute").css("width", "0").css("height","0").css("overflow","hidden").css("opacity","0");
+                fileElement.css("position", "absolute").css("width", "0").css("height", "0").css("overflow", "hidden").css("opacity", "0");
                 var viewId = fileElement.closest(".view[data-ng-controller='viewController']").attr("id");
                 fileElement.fileupload({
                     dataType: 'json',
@@ -1495,7 +1516,7 @@
                         data.submit();
                     },
                     done: function (e, data) {
-                        if(data.result["status"] == "OK"){
+                        if (data.result["status"] == "OK") {
                             spongeService.refresh(viewId, 0);
                         } else {
                             site.reportError(data.result["description"]);
@@ -1512,7 +1533,7 @@
     }]);
 
     //data-spg-upload-list="${fieldRef}" <- upload result is put into this collection
-    spongeApp.directive("spgUploadList", ["$parse", "site", function($parse, site){
+    spongeApp.directive("spgUploadList", ["$parse", "site", function ($parse, site) {
 
         return {
             restrict: 'A',
@@ -1525,14 +1546,14 @@
                 fileElement.fileupload({
                     dataType: 'json',
                     done: function (e, data) {
-                        if(data.result["status"] == "OK"){
+                        if (data.result["status"] == "OK") {
                             var collection = getter(scope);
-                            if(!collection){
+                            if (!collection) {
                                 setter(scope, []);
                             }
                             collection = getter(scope);
 
-                            site.safeApply(function(){
+                            site.safeApply(function () {
                                 zcl.addAll(collection, data.result["content"]);
                             });
                         } else {
@@ -1547,7 +1568,7 @@
         };
     }]);
 
-    spongeApp.directive("spgSelect", ["$parse", "site","$http", function ($parse, site, $http) {
+    spongeApp.directive("spgSelect", ["$parse", "site", "$http", function ($parse, site, $http) {
 
         return {
             restrict: 'A',
@@ -1558,33 +1579,33 @@
                     return;
 
                 var collectionPath = args["collectionPath"];
-                if(!collectionPath)
+                if (!collectionPath)
                     return;
 
                 var getter = $parse(collectionPath);
                 var setter = getter.assign;
 
-                scope.add = function(item){
-                    if(angular.equals(item, {}))
+                scope.add = function (item) {
+                    if (angular.equals(item, {}))
                         return;
 
                     var collection = getter(scope);
-                    if(!collection){
+                    if (!collection) {
                         setter(scope, []);
                     }
                     collection = getter(scope);
-                    for(var i=0; i<collection.length; i++){
-                        if(angular.equals(collection[i], item))
+                    for (var i = 0; i < collection.length; i++) {
+                        if (angular.equals(collection[i], item))
                             return;
                     }
                     collection.push(item);
                 };
 
-                $(element).change(function(){
+                $(element).change(function () {
 
-                    site.safeApply(function(){
+                    site.safeApply(function () {
                         var val = $(element).val();
-                        if(!val)
+                        if (!val)
                             return;
 
                         var item = scope.dropdownList[parseInt(val)];
@@ -1598,7 +1619,7 @@
                 var url = site.dropdownJsonUrl(modelName);
                 $http.get(url).then(function (result) {
                     var list = result.data.content;
-                    if(list == null){
+                    if (list == null) {
                         list = [];
                     }
                     list.unshift({});
@@ -1818,7 +1839,7 @@
                 ngModel.$formatters.push(dateFormatter);
                 $(element).data("update", update);
 
-                setTimeout(function(){
+                setTimeout(function () {
                     var input = $(element);
                     var dateFormat = input.data("spgDate");
                     input.closest(".date")
@@ -1966,8 +1987,8 @@
 
                 var setter = null;
 
-                scope.clearView = function(strProp){
-                    if(setter == null){
+                scope.clearView = function (strProp) {
+                    if (setter == null) {
                         var getter = $parse(strProp);
                         setter = getter.assign;
                     }
@@ -1978,14 +1999,14 @@
                     setTimeout(closeComboList, config.delay);
                 });
 
-                var handleSpecialKeys = function(event){
+                var handleSpecialKeys = function (event) {
                     var keyCode = event.keyCode;
-                    if(keyCode == 32)
+                    if (keyCode == 32)
                         return true;
 
-                    if(scope.showList && !scope.loadingList){
-                        if(keyCode == 39 || keyCode == 40){
-                            if(scope.comboList.length > 0){
+                    if (scope.showList && !scope.loadingList) {
+                        if (keyCode == 39 || keyCode == 40) {
+                            if (scope.comboList.length > 0) {
                                 scope.selectedIndex = (scope.selectedIndex + 1) % scope.comboList.length;
                                 if (scope.$$phase != "$digest" && scope.$$phase != "$apply")
                                     scope.$digest();
@@ -1993,9 +2014,9 @@
                             return true;
                         }
 
-                        if(keyCode == 37 || keyCode == 38){
-                            if(scope.comboList.length > 0){
-                                if(scope.selectedIndex > 0){
+                        if (keyCode == 37 || keyCode == 38) {
+                            if (scope.comboList.length > 0) {
+                                if (scope.selectedIndex > 0) {
                                     scope.selectedIndex--;
                                 } else {
                                     scope.selectedIndex = scope.comboList.length - 1;
@@ -2006,9 +2027,9 @@
                             return true;
                         }
 
-                        if(keyCode == 9 || keyCode == 13){
+                        if (keyCode == 9 || keyCode == 13) {
 
-                            if(scope.selectedIndex >= 0){
+                            if (scope.selectedIndex >= 0) {
                                 scope.updateView(scope.comboList[scope.selectedIndex]);
                                 closeComboList();
                                 site.safeApply(zcl.emptyFunc);
@@ -2016,7 +2037,7 @@
                             return true;
                         }
 
-                        if(keyCode == 27){
+                        if (keyCode == 27) {
                             closeComboList();
                             return true;
                         }
@@ -2027,7 +2048,7 @@
 
                 input.keypress(function (event) {
 
-                    if(handleSpecialKeys(event)){
+                    if (handleSpecialKeys(event)) {
                         return;
                     }
 
@@ -2111,48 +2132,48 @@
     //endregion
 
     //project specific service
-    spongeApp.factory("appInit", ["$http", "site", "$uibModal", function($http, site, $uibModal){
+    spongeApp.factory("appInit", ["$http", "site", "$uibModal", function ($http, site, $uibModal) {
 
         return {
             init: initSimpleShop
         };
 
-        function initSimpleShop($scope){
+        function initSimpleShop($scope) {
 
-            $http.get(site.getCartUrl()).then(function(response){
+            $http.get(site.getCartUrl()).then(function (response) {
                 $scope.cart = response.data.content;
             }).catch(site.reportError);
 
-            $scope.itemQuantity = function(){
+            $scope.itemQuantity = function () {
                 var cart = $scope.cart;
-                if(!angular.isObject(cart)){
+                if (!angular.isObject(cart)) {
                     return 0;
                 }
 
                 var quantity = 0;
-                for(var i=0; i<cart.items.length; i++){
+                for (var i = 0; i < cart.items.length; i++) {
                     quantity += cart.items[i].quantity;
                 }
                 return quantity;
             };
 
-            $scope.checkout = function(){
+            $scope.checkout = function () {
 
-                if($scope.itemQuantity() == 0){
+                if ($scope.itemQuantity() == 0) {
 
                     window.showMessage({title: "Oh wait", message: "Your shopping cart is empty."});
                     return;
                 }
 
                 var instance = $uibModal.open({
-                    backdrop: true,
+                    backdrop: 'static',
                     templateUrl: "shoppingCart.html", //defined in main.jsp
                     size: "lg",
                     windowClass: "checkout-box",
                     controller: 'shoppingCartController'
                 });
 
-                instance.data = {cart : $scope.cart, view : 'cart'};
+                instance.data = {cart: $scope.cart, view: 'cart'};
                 //instance.result.then(function(args){
                 //    alert(JSON.toLocaleString(args));
                 //});
@@ -2214,14 +2235,14 @@
                 //init metadata
                 var metadata = data.content;
                 $scope.metadata = metadata;
-                site.getMetadata = function(modelName){
+                site.getMetadata = function (modelName) {
                     return metadata[modelName];
                 };
 
                 //init menu
                 var menu = [];
                 for (var modelName in metadata) {
-                    if(metadata.hasOwnProperty(modelName)){
+                    if (metadata.hasOwnProperty(modelName)) {
                         var model = metadata[modelName];
                         if (model["searchable"]) {
                             menu.push(model);
@@ -2278,7 +2299,7 @@
                 var otherName = resultNames[i];
                 if (otherName != resultName) {
                     if (!alertShown) {
-                        if(!confirm(site.getMessage("closeAllViewConfirmation", [(resultName ? "other" : "")]))){
+                        if (!confirm(site.getMessage("closeAllViewConfirmation", [(resultName ? "other" : "")]))) {
                             return;
                         } else {
                             alertShown = true;
@@ -2348,12 +2369,12 @@
         $scope.master = viewDetails.model["content"];
 
         //copy sort properties from initiating view.
-        if(viewDetails.getViewOptions.initiatingViewId){
+        if (viewDetails.getViewOptions.initiatingViewId) {
             var initiatingViewDetails = site.findViewDetails(viewDetails.getViewOptions.initiatingViewId);
-            if(initiatingViewDetails && initiatingViewDetails.model["tags"]["sortProperties"]){  //not closed yet and has sortProperties
+            if (initiatingViewDetails && initiatingViewDetails.model["tags"]["sortProperties"]) {  //not closed yet and has sortProperties
                 $scope.sortProperties = initiatingViewDetails.model["tags"]["sortProperties"];
                 $scope.selectedSortProperties = [];
-                if(viewDetails.postData && viewDetails.postData["pageSize"]) {
+                if (viewDetails.postData && viewDetails.postData["pageSize"]) {
                     viewDetails.postData["sortInfoList"] = $scope.selectedSortProperties;//wire up with the selected sort
                 }
             }
@@ -2396,7 +2417,9 @@
             promise.then(function () {
                 var prototype = site.getBodyScope().newModel[modelName];
                 collection.push(angular.copy(prototype));
-                window.setTimeout(function(){site.layout();},1);
+                window.setTimeout(function () {
+                    site.layout();
+                }, 1);
             });
         };
 
@@ -2405,7 +2428,9 @@
                 var index = collection.indexOf(item);
                 if (index >= 0) {
                     collection.splice(index, 1);
-                    window.setTimeout(function(){site.layout();},1);
+                    window.setTimeout(function () {
+                        site.layout();
+                    }, 1);
                 }
             }
         };
@@ -2447,7 +2472,7 @@
 
         $scope.reset();
 
-        $interval(function(){
+        $interval(function () {
             site.display($element, true);
             site.scrollTo(id);
         }, 100, 1);
@@ -2467,7 +2492,17 @@
         };
     }]);
 
-    spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', function ($scope, $uibModalInstance) {
+    spongeApp.controller("dialogViewController", ['$scope', function($scope){
+
+        $scope.model = $scope.dialogData.content;
+
+        $scope.submit = function(){
+            alert("Not implemented");
+        };
+
+    }]);
+
+    spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', "spongeService", "site", function ($scope, $uibModalInstance, spongeService, site) {
 
         $scope.cart = $uibModalInstance.data.cart;
         $scope.view = $uibModalInstance.data.view;
@@ -2480,14 +2515,26 @@
             $uibModalInstance.dismiss('cancel');
         };
 
-        $scope.createOrder = function(){
+        $scope.createOrder = function () {
             $scope.view = "checkout";
-        }
+            $scope.loading = true;
+            spongeService.getDialogView("CustomerOrder", "create_main", "checkoutView", $scope).then(function () {
+                $scope.loading = false;
+            }).catch(function (ex) {
+                $uibModalInstance.dismiss('cancel');
+                site.reportError(ex);
+            });
+        };
+
     }]);
 
     //endregion
 
     //region jq plugins
+
+    toastr.options = {
+        "positionClass": "toast-bottom-left"
+    };
 
     $.fn.starwars = function () {
 

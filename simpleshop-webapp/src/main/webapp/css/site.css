@@ -380,10 +380,21 @@ input.ng-invalid.ng-dirty {
 .view .well {
   margin: 1em; }
 
-.loading {
+.dialog-view .loading {
   text-align: center;
   padding-top: 5em;
   padding-bottom: 5em; }
+.dialog-view .loaded {
+  overflow: hidden; }
+.dialog-view .view {
+  width: 100%; }
+  .dialog-view .view > .panel {
+    margin-bottom: 0; }
+.dialog-view .input-group input {
+  top: 0; }
+
+.hide-panel-heading .panel-heading {
+  display: none; }
 
 footer > .col-xs-8 {
   text-align: center; }
