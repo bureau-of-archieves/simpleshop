@@ -1,6 +1,10 @@
 package simpleshop.domain.model;
 
+import org.hibernate.annotations.*;
+
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.*;
@@ -89,6 +93,7 @@ public class User {
         this.permissions = permissions;
     }
 
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     @OneToOne(optional = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", unique = true)
     public Customer getCustomer() {

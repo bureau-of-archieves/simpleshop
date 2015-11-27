@@ -139,6 +139,10 @@
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
+                        <li><a href="javascript:alert('Not implemented yet.')">Order History</a>
+                        </li>
+                        <li><a href="javascript:alert('Not implemented yet.')">Profile</a>
+                        </li>
                         <li><a href="javascript:alert('Not implemented yet.')">Options</a>
                         </li>
                         <li>
@@ -263,12 +267,25 @@
             </div>
         </div>
         <div id="checkoutView" class="dialog-view" data-ng-show="view == 'checkout'">
-          <div class="loading" data-ng-show="loading">
-              <img src="img/spinning-wheel.gif" alt="Loading...">
-          </div>
-          <div class="loaded" data-ng-show="!loading">
+            <div class="loading" data-ng-show="loading">
+                <img src="img/spinning-wheel.gif" alt="Loading...">
+            </div>
+            <div class="loaded" data-ng-show="!loading">
 
-          </div>
+            </div>
+        </div>
+        <div id="summaryView" class="dialog-view" data-ng-show="view == 'summary'">
+            <div class="loading" data-ng-show="loading">
+                <img src="img/spinning-wheel.gif" alt="Loading...">
+            </div>
+            <div class="loaded" data-ng-show="!loading">
+                <div class="modal-header">Thank you for shopping with us</div>
+                <div class="modal-body">You order has been successfully submitted. You can see details in your order history.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" data-ng-click="ok()"><spring:message
+                            code="jsp.literal.ok"/></button>
+                </div>
+            </div>
         </div>
     </div>
 </script>

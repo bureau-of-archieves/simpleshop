@@ -127,13 +127,7 @@
             return jsonPath + "metadata";
         };
 
-        this.addToCartUrl = function () {
-            return jsonPath + "cart/add";
-        };
-
-        this.getCartUrl = function () {
-            return jsonPath + "cart/get";
-        };
+        site.jsonPath = jsonPath;
 
         //endregion
 
@@ -1163,9 +1157,8 @@
             }
 
             var refreshSuccess = function (response) {
-                var json = response.data;
                 //refresh result
-                viewDetails.model = json;
+                viewDetails.model = response.data;
                 viewDetails.scope.master = viewDetails.model["content"];
                 viewDetails.scope.reset();
                 return site.createPromise(null);
@@ -1264,36 +1257,14 @@
 
         };
 
-        var addToCart = function (productId) {
+        var post = function(opKey, url, data, successCallback){
 
-            function addToCartSuccess() {
-                var bodyScope = site.getBodyScope();
-                if (!bodyScope["cart"]) {
-                    bodyScope["cart"] = {items: []};
-                }
-
-                var items = bodyScope["cart"]["items"];
-                var added = false;
-                for (var i = 0; i < items.length; i++) {
-                    if (items[i].productId == productId) {
-                        items[i].quantity++;
-                        added = true;
-                        break;
-                    }
-                }
-                if (!added) {
-                    items.push({productId: productId, quantity: 1});
-                }
-                toastr["success"](site.getMessage("itemAddedToCart"));
-
-            }
-
-            return beginOp("addToCart").then(function () {
-                return createRequest(site.addToCartUrl(), {productId: productId})
-                    .then(addToCartSuccess)
+            return beginOp(opKey).then(function () {
+                return createRequest(url, data)
+                    .then(successCallback)
                     .catch(handleFailedRequest)
                     .finally(function () {
-                        return endOp("addToCart");
+                        return endOp(opKey);
                     });
             }).catch(handleFailedOperation);
 
@@ -1307,9 +1278,9 @@
             cancel: cancel,
             refresh: refresh,
             close: close,
-            addToCart: addToCart,
             prePost: prePostHandler,
             getDialogView: getDialogView,
+            post: post,
             sequenceNumbers: {}
         };
 
@@ -1365,23 +1336,6 @@
                     var modelId = args["modelId"];
                     spongeService.getView(args["modelName"], "update", modelId, {modelId: args["modelId"]}, null, {removeExisting: true}).catch(site.reportError);
                     //$event.preventDefault();
-                });
-            }
-        };
-    }]);
-
-    spongeApp.directive("spgCartAdd", ["spongeService", function (spongeService) {
-
-        return {
-            restrict: 'A',
-            link: function (scope, element, attrs) {
-                var button = $(element);
-                button.click(function () {
-                    button.attr("disabled", true);
-                    var productId = parseInt(attrs["spgCartAdd"]);
-                    spongeService.addToCart(productId).finally(function () {
-                        button.attr("disabled", false);
-                    });
                 });
             }
         };
@@ -2131,58 +2085,6 @@
 
     //endregion
 
-    //project specific service
-    spongeApp.factory("appInit", ["$http", "site", "$uibModal", function ($http, site, $uibModal) {
-
-        return {
-            init: initSimpleShop
-        };
-
-        function initSimpleShop($scope) {
-
-            $http.get(site.getCartUrl()).then(function (response) {
-                $scope.cart = response.data.content;
-            }).catch(site.reportError);
-
-            $scope.itemQuantity = function () {
-                var cart = $scope.cart;
-                if (!angular.isObject(cart)) {
-                    return 0;
-                }
-
-                var quantity = 0;
-                for (var i = 0; i < cart.items.length; i++) {
-                    quantity += cart.items[i].quantity;
-                }
-                return quantity;
-            };
-
-            $scope.checkout = function () {
-
-                if ($scope.itemQuantity() == 0) {
-
-                    window.showMessage({title: "Oh wait", message: "Your shopping cart is empty."});
-                    return;
-                }
-
-                var instance = $uibModal.open({
-                    backdrop: 'static',
-                    templateUrl: "shoppingCart.html", //defined in main.jsp
-                    size: "lg",
-                    windowClass: "checkout-box",
-                    controller: 'shoppingCartController'
-                });
-
-                instance.data = {cart: $scope.cart, view: 'cart'};
-                //instance.result.then(function(args){
-                //    alert(JSON.toLocaleString(args));
-                //});
-            };
-
-        }
-
-    }]);
-
     //region controllers
 
     spongeApp.controller("spongeController", ["$scope", "$http", "spongeService", "site", "appInit", function ($scope, $http, spongeService, site, appInit) {
@@ -2492,42 +2394,6 @@
         };
     }]);
 
-    spongeApp.controller("dialogViewController", ['$scope', function($scope){
-
-        $scope.model = $scope.dialogData.content;
-
-        $scope.submit = function(){
-            alert("Not implemented");
-        };
-
-    }]);
-
-    spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', "spongeService", "site", function ($scope, $uibModalInstance, spongeService, site) {
-
-        $scope.cart = $uibModalInstance.data.cart;
-        $scope.view = $uibModalInstance.data.view;
-
-        $scope.ok = function () {
-            $uibModalInstance.close(null);
-        };
-
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss('cancel');
-        };
-
-        $scope.createOrder = function () {
-            $scope.view = "checkout";
-            $scope.loading = true;
-            spongeService.getDialogView("CustomerOrder", "create_main", "checkoutView", $scope).then(function () {
-                $scope.loading = false;
-            }).catch(function (ex) {
-                $uibModalInstance.dismiss('cancel');
-                site.reportError(ex);
-            });
-        };
-
-    }]);
-
     //endregion
 
     //region jq plugins
@@ -2605,4 +2471,159 @@
 
     //endregion
 
+
+    //region project specific logic
+
+    //project specific service
+
+    spongeApp.directive("spgCartAdd", ["spongeService", function (spongeService) {
+
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var button = $(element);
+                button.click(function () {
+                    button.attr("disabled", true);
+                    var productId = parseInt(attrs["spgCartAdd"]);
+                    spongeService.addToCart(productId).finally(function () {
+                        button.attr("disabled", false);
+                    });
+                });
+            }
+        };
+    }]);
+
+    spongeApp.factory("appInit", ["$http", "site", "$uibModal", "spongeService", function ($http, site, $uibModal, spongeService) {
+
+        site.addToCartUrl = function () {
+            return site.jsonPath + "cart/add";
+        };
+
+        site.getCartUrl = function () {
+            return site.jsonPath + "cart/get";
+        };
+
+        site.processOrderUrl = function(){
+            return site.jsonPath + "customer_order/submit";
+        };
+
+        spongeService.addToCart = function (productId) {
+
+            function addToCartSuccess() {
+                var bodyScope = site.getBodyScope();
+                if (!bodyScope["cart"]) {
+                    bodyScope["cart"] = {items: []};
+                }
+
+                var items = bodyScope["cart"]["items"];
+                var added = false;
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].productId == productId) {
+                        items[i].quantity++;
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    items.push({productId: productId, quantity: 1});
+                }
+                toastr["success"](site.getMessage("itemAddedToCart"));
+            }
+
+            return spongeService.post("addToCart", site.addToCartUrl(), {productId: productId}, addToCartSuccess);
+        };
+
+        return {
+            init: initSimpleShop
+        };
+
+        function initSimpleShop($scope) {
+
+            $http.get(site.getCartUrl()).then(function (response) {
+                $scope.cart = response.data.content;
+            }).catch(site.reportError);
+
+            $scope.itemQuantity = function () {
+                var cart = $scope.cart;
+                if (!angular.isObject(cart)) {
+                    return 0;
+                }
+
+                var quantity = 0;
+                for (var i = 0; i < cart.items.length; i++) {
+                    quantity += cart.items[i].quantity;
+                }
+                return quantity;
+            };
+
+            $scope.checkout = function () {
+
+                if ($scope.itemQuantity() == 0) {
+
+                    window.showMessage({title: "Oh wait", message: "Your shopping cart is empty."});
+                    return;
+                }
+
+                var instance = $uibModal.open({
+                    backdrop: 'static',
+                    templateUrl: "shoppingCart.html", //defined in main.jsp
+                    size: "lg",
+                    windowClass: "checkout-box",
+                    controller: 'shoppingCartController'
+                });
+
+                instance.data = {cart: $scope.cart, view: 'cart'};
+            };
+
+        }
+
+    }]);
+
+    spongeApp.controller('shoppingCartController', ['$scope', '$uibModalInstance', "spongeService", "site", "$http", function ($scope, $uibModalInstance, spongeService, site, $http) {
+
+        $scope.cart = $uibModalInstance.data.cart;
+        $scope.view = $uibModalInstance.data.view;
+
+        $scope.ok = function () {
+            $uibModalInstance.close(null);
+        };
+
+        $scope.cancel = function () {
+            $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.createOrder = function () {
+            $scope.view = "checkout";
+            $scope.loading = true;
+            spongeService.getDialogView("CustomerOrder", "create_main", "checkoutView", $scope).then(function () {
+                $scope.loading = false;
+            }).catch(function (ex) {
+                $uibModalInstance.dismiss('cancel');
+                site.reportError(ex);
+            });
+        };
+
+
+
+    }]);
+
+    spongeApp.controller("dialogViewController", ['$scope', "site", "$http", function($scope, site, $http){
+
+        $scope.model = $scope.dialogData.content;
+
+        $scope.submit = function(){
+            $scope.view = "summary";
+            $scope.loading = true;
+            $http.post(site.processOrderUrl(), $scope.model).then(function(){
+                $scope.loading = false;
+            }).catch(function (ex) {
+                $scope.cancel();
+                site.reportError(ex);
+            });
+        };
+
+    }]);
+
+
+    //endregion
 })();
