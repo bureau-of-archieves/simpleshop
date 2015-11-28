@@ -6,4 +6,5 @@ import simpleshop.service.infrastructure.ModelService;
 
 public interface EmployeeService extends ModelService<Employee, EmployeeSearch> {
 
+    Employee getDefaultEmployee();
 }

@@ -33,19 +33,14 @@ public class UserDAOImplTest extends TransactionalTest {
 
     @Test
     public void createTest(){
-
-        List<Customer> customerList = customerDAO.quickSearch(TestConstants.CUSTOMER_NAME_1, new PageInfo());
-        assertThat(customerList.size(), greaterThan(0));
-
-        Customer customer = customerList.get(0);
-
+        Customer customer = new Customer();
+        customer.getContact().setName("User1 customer");
         User user = new User();
         user.setUsername(TestConstants.USER_MARK + "_1");
         user.setPassword("guess what");
         user.setCustomer(customer);
 
         userDAO.save(user);
-
         userDAO.sessionFlush();
     }
 

@@ -7,6 +7,7 @@ import simpleshop.domain.model.Order;
 public class CustomerOrder {
 
     private Customer customer;
+    private String email;
     private Order order;
 
     public Customer getCustomer() {
@@ -15,6 +16,14 @@ public class CustomerOrder {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Order getOrder() {

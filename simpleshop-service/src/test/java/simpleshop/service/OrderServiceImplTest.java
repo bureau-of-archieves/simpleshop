@@ -24,7 +24,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Unit tests for Order service.
  */
-public class OrderServiceTest extends ServiceTransactionTest{
+public class OrderServiceImplTest extends ServiceTransactionTest{
 
     @Autowired
     private OrderService orderService;

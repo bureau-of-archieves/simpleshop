@@ -31,7 +31,8 @@
         "failedToLoadMetadata": "Failed to load application metadata, please retry later. Error: {0}",
         "closeAllViewConfirmation": "Do you want to close all {0} views? All unsaved changes will be lost.",
         "cartInitFailed": "Failed to initialize the shopping cart. Please refresh page later.",
-        "itemAddedToCart": "Selected item is successfully added to cart."
+        "itemAddedToCart": "Selected item is successfully added to cart.",
+        "itemRemovedFromCart": "Selected item is removed from cart."
     });
 
     //client side service methods
@@ -2499,6 +2500,10 @@
             return site.jsonPath + "cart/add";
         };
 
+        site.removeFromCartUrl = function(){
+            return site.jsonPath + "cart/remove";
+        };
+
         site.getCartUrl = function () {
             return site.jsonPath + "cart/get";
         };
@@ -2507,8 +2512,38 @@
             return site.jsonPath + "customer_order/submit";
         };
 
-        spongeService.addToCart = function (productId) {
+        site.orderProductsUrl = function(){
+            return site.jsonPath + "customer_order/products";
+        };
 
+        spongeService.clearCart = function(){
+            var bodyScope = site.getBodyScope();
+            bodyScope["cart"] = {items: []};
+        };
+
+        spongeService.removeFromCart = function(productId){
+            function removeFromCartSuccess() {
+                var bodyScope = site.getBodyScope();
+                if (!bodyScope["cart"]) {
+                    bodyScope["cart"] = {items: []};
+                }
+
+                var items = bodyScope["cart"]["items"];
+                for (var i = 0; i < items.length; i++) {
+                    if (items[i].productId == productId) {
+                        items[i].quantity--;
+                        if(items[i].quantity == 0){
+                            items.splice(i, 1);
+                        }
+                        break;
+                    }
+                }
+                toastr["success"](site.getMessage("itemRemovedFromCart"));
+            }
+            return spongeService.post("removeFromCart", site.removeFromCartUrl(), {productId: productId}, removeFromCartSuccess);
+        };
+
+        spongeService.addToCart = function (productId) {
             function addToCartSuccess() {
                 var bodyScope = site.getBodyScope();
                 if (!bodyScope["cart"]) {
@@ -2559,7 +2594,6 @@
             $scope.checkout = function () {
 
                 if ($scope.itemQuantity() == 0) {
-
                     window.showMessage({title: "Oh wait", message: "Your shopping cart is empty."});
                     return;
                 }
@@ -2571,7 +2605,6 @@
                     windowClass: "checkout-box",
                     controller: 'shoppingCartController'
                 });
-
                 instance.data = {cart: $scope.cart, view: 'cart'};
             };
 
@@ -2583,6 +2616,15 @@
 
         $scope.cart = $uibModalInstance.data.cart;
         $scope.view = $uibModalInstance.data.view;
+        $scope.loading = true;
+
+        $http.get(site.orderProductsUrl()).then(function(response){
+            $scope.products = response.data.content;
+            $scope.loading = false;
+        }).catch(function (ex) {
+            $uibModalInstance.dismiss('cancel');
+            site.reportError(ex);
+        });
 
         $scope.ok = function () {
             $uibModalInstance.close(null);
@@ -2590,6 +2632,14 @@
 
         $scope.cancel = function () {
             $uibModalInstance.dismiss('cancel');
+        };
+
+        $scope.setView = function(view){
+            $scope.view = view;
+        };
+
+        $scope.setLoading = function(loading){
+            $scope.loading = loading;
         };
 
         $scope.createOrder = function () {
@@ -2603,19 +2653,43 @@
             });
         };
 
+        $scope.increaseQuantity = function(item) {
 
+            spongeService.addToCart(item.productId);
+        };
+
+        $scope.decreaseQuantity = function(item) {
+            spongeService.removeFromCart(item.productId);
+        };
+
+        $scope.totalPrice = function (cart, products) {
+            if(!products)
+                return null;
+
+            var total = 0;
+            for(var i=0; i<cart.items.length; i++){
+                var item = cart.items[i];
+                var product = products[item.productId];
+                if(!product || product["sellPrice"] == null){
+                    return null;
+                }
+                total += product["sellPrice"] * item.quantity;
+            }
+            return total;
+        };
 
     }]);
 
-    spongeApp.controller("dialogViewController", ['$scope', "site", "$http", function($scope, site, $http){
+    spongeApp.controller("dialogViewController", ['$scope', "site", "$http", "spongeService", function($scope, site, $http, spongeService){
 
         $scope.model = $scope.dialogData.content;
 
         $scope.submit = function(){
-            $scope.view = "summary";
-            $scope.loading = true;
+            $scope.setView("summary");
+            $scope.setLoading(true);
             $http.post(site.processOrderUrl(), $scope.model).then(function(){
-                $scope.loading = false;
+                $scope.setLoading(false);
+                spongeService.clearCart();
             }).catch(function (ex) {
                 $scope.cancel();
                 site.reportError(ex);
@@ -2623,7 +2697,6 @@
         };
 
     }]);
-
 
     //endregion
 })();

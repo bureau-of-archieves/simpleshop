@@ -10,6 +10,12 @@ public class CartItem {
     private Integer productId;
     private Integer quantity = 1;
 
+    public CartItem(){}
+
+    public CartItem(Integer productId){
+        this.productId = productId;
+    }
+
     @NotNull
     public Integer getProductId() {
         return productId;

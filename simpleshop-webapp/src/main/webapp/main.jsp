@@ -225,45 +225,63 @@
 <script type="text/ng-template" id="shoppingCart.html">
     <div class="modal-content">
         <div id="shoppingCartView" class="dialog-view" data-ng-show="view == 'cart'">
-            <div class="modal-header ng-scope">
-                <h3 class="modal-title">My Shopping Cart</h3>
+            <div class="loading" data-ng-show="loading">
+                <img src="img/spinning-wheel.gif" alt="Loading...">
             </div>
-            <div class="modal-body ng-scope">
+            <div class="loaded" data-ng-show="!loading">
+                <div class="modal-header">
+                    <h3 class="modal-title">My Shopping Cart</h3>
+                </div>
+                <div class="modal-body">
 
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr data-ng-repeat="item in cart.items">
-                        <td>
-                            <span data-ng-bind="item.productId"></span>
-                        </td>
-                        <td>?</td>
-                        <td>
-                            <span data-ng-bind="item.quantity"></span>
-                        </td>
-                    </tr>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <td colspan="3">
-                            Total: <b>N/A</b>
-                        </td>
-                    </tr>
-                    </tfoot>
-                </table>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-ng-repeat="item in cart.items">
+                            <td>
+                                <span data-ng-bind="item.productId"></span> - <span
+                                    data-ng-bind="products[item.productId].name"></span> (<span
+                                    data-ng-bind="products[item.productId].quantityPerUnit"></span>)
+                            </td>
+                            <td><span data-ng-bind="products[item.productId].sellPrice | currency | na"></span></td>
+                            <td>
+                                <div class="btn-toolbar">
+                                    <div class="btn-group btn-group-xs">
+                                        <span style="line-height:100%; vertical-align:middle;"
+                                              data-ng-bind="item.quantity"></span>
+                                    </div>
+                                    <div class="btn-group btn-group-xs">
+                                        <button class="btn btn-default" data-ng-click="increaseQuantity(item)">
+                                            <ctrl:icon value="plus"/></button>
+                                        <button class="btn btn-default" data-ng-click="decreaseQuantity(item)">
+                                            <ctrl:icon value="minus"/></button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="3">
+                                Total: <b data-ng-bind="totalPrice(cart, products) | currency | na"></b>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
 
-            </div>
-            <div class="modal-footer ng-scope">
-                <button class="btn btn-primary" type="button" data-ng-click="cancel()"><spring:message
-                        code="jsp.literal.continueShopping"/></button>
-                <button class="btn btn-warning" type="button" data-ng-click="createOrder()"><spring:message
-                        code="jsp.literal.checkout"/></button>
+                </div>
+                <div class="modal-footer ng-scope">
+                    <button class="btn btn-primary" type="button" data-ng-click="cancel()"><spring:message
+                            code="jsp.literal.continueShopping"/></button>
+                    <button class="btn btn-warning" type="button" data-ng-click="createOrder()"><spring:message
+                            code="jsp.literal.checkout"/></button>
+                </div>
             </div>
         </div>
         <div id="checkoutView" class="dialog-view" data-ng-show="view == 'checkout'">
@@ -280,7 +298,9 @@
             </div>
             <div class="loaded" data-ng-show="!loading">
                 <div class="modal-header">Thank you for shopping with us</div>
-                <div class="modal-body">You order has been successfully submitted. You can see details in your order history.</div>
+                <div class="modal-body">You order has been successfully submitted. You can see details in your order
+                    history.
+                </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" type="button" data-ng-click="ok()"><spring:message
                             code="jsp.literal.ok"/></button>

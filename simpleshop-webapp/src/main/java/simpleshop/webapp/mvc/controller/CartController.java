@@ -24,39 +24,60 @@ public class CartController {
     public static final String SHOPPING_CART_SESSION_KEY = "shoppingCart";
 
     @InitBinder("cartItem")
-    public void initBinder(WebDataBinder binder){
+    public void initBinder(WebDataBinder binder) {
         binder.addValidators(businessValidator);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public JsonResponse<String> addToCart(HttpSession session, @Valid @RequestBody final CartItem cartItem){
+    public JsonResponse<String> addToCart(HttpSession session, @Valid @RequestBody final CartItem cartItem) {
 
-        ShoppingCart cart = (ShoppingCart)session.getAttribute(SHOPPING_CART_SESSION_KEY);
-        if(cart == null){
+        ShoppingCart cart = (ShoppingCart) session.getAttribute(SHOPPING_CART_SESSION_KEY);
+        if (cart == null) {
             cart = new ShoppingCart();
             session.setAttribute(SHOPPING_CART_SESSION_KEY, cart);
         }
-        synchronized (cart){
+        synchronized (cart) {
             boolean added = false;
-            for(CartItem item : cart.getItems()){
-                if(item.getProductId().equals(cartItem.getProductId())){
+            for (CartItem item : cart.getItems()) {
+                if (item.getProductId().equals(cartItem.getProductId())) {
                     item.setQuantity(item.getQuantity() + cartItem.getQuantity());
                     added = true;
                     break;
                 }
             }
-            if(!added)
+            if (!added)
                 cart.getItems().add(cartItem);
 
         }
         return JsonResponse.createSuccess("OK");
+    }
 
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    public JsonResponse<String> removeFromCart(HttpSession session, @Valid @RequestBody final CartItem cartItem) {
+
+        ShoppingCart cart = (ShoppingCart) session.getAttribute(SHOPPING_CART_SESSION_KEY);
+        if (cart != null) {
+            synchronized (cart) {
+                CartItem affectedItem = null;
+                for (CartItem item : cart.getItems()) {
+                    if (item.getProductId().equals(cartItem.getProductId())) {
+                        item.setQuantity(item.getQuantity() - cartItem.getQuantity());
+                        affectedItem = item;
+                        break;
+                    }
+                }
+                if(affectedItem != null && affectedItem.getQuantity() <= 0){
+                    cart.getItems().remove(affectedItem);
+                }
+            }
+        }
+        return JsonResponse.createSuccess("OK");
     }
 
     @RequestMapping(value = "/get", method = RequestMethod.GET)
-    public JsonResponse<ShoppingCart> getCart(HttpSession session){
-        ShoppingCart cart = (ShoppingCart)session.getAttribute(SHOPPING_CART_SESSION_KEY);
-        if(cart == null){
+    public JsonResponse<ShoppingCart> getCart(HttpSession session) {
+        ShoppingCart cart = (ShoppingCart) session.getAttribute(SHOPPING_CART_SESSION_KEY);
+        if (cart == null) {
             cart = new ShoppingCart();
             session.setAttribute(SHOPPING_CART_SESSION_KEY, cart);
         }

@@ -1,6 +1,5 @@
 package simpleshop.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
 import simpleshop.domain.metadata.AutoLoad;
@@ -8,12 +7,13 @@ import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.component.ProductSupplier;
 import javax.persistence.*;
+import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 
 @AutoLoad({"categories", "images"})
 @Entity
@@ -25,6 +25,7 @@ public class Product {
     private String name;
     private List<String> images = new ArrayList<>();
     private String quantityPerUnit;
+    private BigDecimal sellPrice;
     private Set<Category> categories = new HashSet<>();
     private Set<ProductSupplier> productSuppliers = new HashSet<>();
     private Integer stock = 0;
@@ -53,6 +54,7 @@ public class Product {
     @ElementCollection
     @CollectionTable(name="product_images", joinColumns=@JoinColumn(name="product_id"))
     @Column(name="image_name", length = Constants.MID_STRING_LENGTH, nullable = false)
+    @BatchSize(size = Constants.BATCH_SIZE)
     public List<String> getImages() {
         return images;
     }
@@ -69,6 +71,17 @@ public class Product {
 
     public void setQuantityPerUnit(String quantityPerUnit) {
         this.quantityPerUnit = quantityPerUnit;
+    }
+
+    @Column(name = "sell_price", precision = Constants.CURRENCY_PRECISION, scale = Constants.CURRENCY_SCALE)
+    @DecimalMin(value = "0.0", inclusive = false)
+    @DisplayFormat("currency")
+    public BigDecimal getSellPrice() {
+        return sellPrice;
+    }
+
+    public void setSellPrice(BigDecimal sellPrice) {
+        this.sellPrice = sellPrice;
     }
 
     //@JsonIgnoreProperties("parent")

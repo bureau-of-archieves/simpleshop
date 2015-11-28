@@ -7,6 +7,7 @@ import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.model.Category;
 import simpleshop.domain.model.Supplier;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,8 @@ public class ProductSearch extends ModelSearch {
     private List<Category> categories;
     private CategorySearch categoryPrefix;
     private Supplier supplier;
+    private List<Integer> productIds;
+    private BigDecimal minSellPrice;
 
     @PropertyFilter(operator = PropertyFilter.Operator.LIKE)
     public String getName() {
@@ -64,6 +67,21 @@ public class ProductSearch extends ModelSearch {
         this.supplier = supplier;
     }
 
+    @PropertyFilter(property = "id", operator = PropertyFilter.Operator.IN)
+    public List<Integer> getProductIds() {
+        return productIds;
+    }
 
+    public void setProductIds(List<Integer> productIds) {
+        this.productIds = productIds;
+    }
 
+    @PropertyFilter(property = "sellPrice", negate = true, operator = PropertyFilter.Operator.LESS)
+    public BigDecimal getMinSellPrice() {
+        return minSellPrice;
+    }
+
+    public void setMinSellPrice(BigDecimal minSellPrice) {
+        this.minSellPrice = minSellPrice;
+    }
 }
