@@ -1,6 +1,5 @@
 package simpleshop.dto;
 
-
 import org.hibernate.validator.constraints.Email;
 import simpleshop.domain.model.Customer;
 import simpleshop.domain.model.Order;

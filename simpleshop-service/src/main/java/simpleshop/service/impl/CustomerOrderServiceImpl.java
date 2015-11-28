@@ -56,6 +56,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService{
 
         Customer customer = user.getCustomer();
         if(customer != null){
+            customer = customerService.getById(customer.getId());
             if(customer.getContact().getContactName() == null){
                 customerDAO.evict(customer); //do not persist this change
                 customer.getContact().setContactName(customer.getContact().getName());
@@ -78,6 +79,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService{
         }
         order.setFreight(new BigDecimal("15.50")); //todo decide freight
         customerOrder.setOrder(order);
+
+        if(customer.getContact().getContactNumbers().containsKey(ContactNumberType.EMAIL.toString())){
+            customerOrder.setEmail(customer.getContact().getContactNumbers().get(ContactNumberType.EMAIL.toString()));
+        }
         return customerOrder;
     }
 
@@ -122,6 +127,10 @@ public class CustomerOrderServiceImpl implements CustomerOrderService{
             }
             user.setCustomer(customerOrder.getCustomer());
             userService.saveUser(user);
+        } else {
+            if(customerOrder.getEmail() != null && !user.getCustomer().getContact().getContactNumbers().containsKey(ContactNumberType.EMAIL.toString())){
+                user.getCustomer().getContact().getContactNumbers().put(ContactNumberType.EMAIL.toString(), customerOrder.getEmail());
+            }
         }
 
         //todo for convenience I'm get the order object from request but the data should come from session for security reasons.
@@ -137,6 +146,8 @@ public class CustomerOrderServiceImpl implements CustomerOrderService{
         order.setEmployee(employeeService.getDefaultEmployee());
 
         orderService.save(order);
+        customerDAO.evict(customer);
+        customer.setOrders(null);
         return order;
     }
 }

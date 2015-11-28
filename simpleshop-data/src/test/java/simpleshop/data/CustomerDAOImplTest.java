@@ -141,14 +141,14 @@ public class CustomerDAOImplTest extends TransactionalTest {
         List<Customer> customerList = customerDAO.search(searchMetadata, customerMetadata, customerSearch);
         assertTrue(customerList.size() >= 3);
         for(int i=1; i<customerList.size(); i++){
-            assertThat(customerList.get(i-1).getContact().getName().toLowerCase(), greaterThanOrEqualTo(customerList.get(i).getContact().getName().toLowerCase()));
+            assertThat(customerList.get(i-1).getContact().getName(), greaterThanOrEqualTo(customerList.get(i).getContact().getName()));
         }
 
         sortInfo.setAscending(true);
         customerList = customerDAO.search(searchMetadata, customerMetadata, customerSearch);
         assertTrue(customerList.size() >= 3);
         for(int i=1; i<customerList.size(); i++){
-            assertThat(customerList.get(i-1).getContact().getName().toLowerCase(), lessThanOrEqualTo(customerList.get(i).getContact().getName().toLowerCase()));
+            assertThat(customerList.get(i-1).getContact().getName(), lessThanOrEqualTo(customerList.get(i).getContact().getName()));
         }
 
         customerSearch.setPageSize(2);
