@@ -14,11 +14,13 @@
       <comm:push value="${base}customer.contact." var="base" />
       <comm:push value="Contact" var="modelName" />
 
-      <ctrl:editField path="contactName" />
-      <d:address-form path="address" />
+      <ctrl:editField path="contactName" required="true" />
+      <d:address-form path="address" required="true" />
 
       <comm:pop var="base" />
       <comm:pop var="modelName" />
+
+      <ctrl:editField path="email" />
 
       <comm:peek var="base" />
       <comm:push value="${base}order." var="base" />
@@ -26,7 +28,7 @@
 
       <ctrl:editChildList path="orderItems" readonly="true" >
           <ctrl:editModelLink path="product" />
-          <ctrl:editField path="quantity" />
+          <ctrl:editField path="quantity" readonly="true" />
           <ctrl:editField path="sellPrice" readonly="true" currency="true" />
       </ctrl:editChildList>
       <ctrl:editField path="freight" readonly="true" currency="true"/>
@@ -36,7 +38,7 @@
 
       <div class="form-group">
           <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary" data-ng-click="submit()">${literal_save}</button>
+              <button type="submit" class="btn btn-primary" data-ng-click="submit($event)">${literal_save}</button>
               <button type="submit" class="btn btn-primary" data-ng-click="cancel()">${literal_cancel}</button>
           </div>
       </div>

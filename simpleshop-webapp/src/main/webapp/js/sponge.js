@@ -2684,7 +2684,17 @@
 
         $scope.model = $scope.dialogData.content;
 
-        $scope.submit = function(){
+        $scope.submit = function($event){
+
+            var element = $event.currentTarget;
+            if ($(element).closest("form").hasClass("ng-invalid")) {
+                site.reportError("Please correct error(s) in the form first.");
+                site.safeApply(function () {
+                    $scope.showError = true;
+                });
+                return false;
+            }
+
             $scope.setView("summary");
             $scope.setLoading(true);
             $http.post(site.processOrderUrl(), $scope.model).then(function(){

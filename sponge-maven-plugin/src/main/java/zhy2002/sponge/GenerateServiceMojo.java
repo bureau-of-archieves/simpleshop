@@ -38,7 +38,7 @@ public class GenerateServiceMojo extends BaseMojo {
         ArrayList<String> modelNames = new ArrayList<>();
         domainClassFiles.forEach(f -> modelNames.add(f.getName()));
 
-        List<File> dtoClassFiles = MojoUtils.getFilesUnderDirectory(dtoClassLocation, "Search.class", null);
+        List<File> dtoClassFiles = MojoUtils.getFilesUnderDirectory(dtoClassLocation, ".class", null);
         dtoClassFiles.forEach(f -> modelNames.add(f.getName()));
 
         String result = rythmEngine.render(template, projectName, modelNames);

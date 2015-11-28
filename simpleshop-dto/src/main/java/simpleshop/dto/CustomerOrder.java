@@ -1,8 +1,11 @@
 package simpleshop.dto;
 
 
+import org.hibernate.validator.constraints.Email;
 import simpleshop.domain.model.Customer;
 import simpleshop.domain.model.Order;
+
+import javax.validation.constraints.NotNull;
 
 public class CustomerOrder {
 
@@ -18,6 +21,8 @@ public class CustomerOrder {
         this.customer = customer;
     }
 
+    @Email
+    @NotNull
     public String getEmail() {
         return email;
     }

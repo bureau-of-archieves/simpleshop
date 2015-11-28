@@ -26,6 +26,7 @@
 <%--the path used to reference this property in angular--%>
 <%@attribute name="base" required="false" %>
 <%@attribute name="showLink" type="java.lang.Boolean" required="false" %>
+<%@attribute name="required" type="java.lang.Boolean" required="false" %>
 <%--A function to call to convert this field before posting back to server--%>
 <%@attribute name="prePostProcessor" type="java.lang.String" required="false" %>
 
@@ -59,8 +60,9 @@
     <c:set var="displayFormat" value="${f:smd(targetModelName).displayFormat}" />
 </c:if>
 <c:set var="displayFormat" value="${f:combineDisplayFormat(propertyMetadata, displayFormat)}"/>
-
-<c:set var="required" value="${f:fmd(modelName, path).required}"/>
+<c:if test="${empty required}" >
+    <c:set var="required" value="${f:fmd(modelName, path).required}"/>
+</c:if>
 
 <%--########################## TAG CONTENT ################################--%>
 <%--model update is totally controlled by data-spg-combo directive--%>

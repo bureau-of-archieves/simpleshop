@@ -16,6 +16,7 @@
 <%@attribute name="parentId" required="false" %>
 <%@attribute name="id" required="false" %>
 <%@attribute name="readonly" type="java.lang.Boolean" required="false" %>
+<%@attribute name="required" type="java.lang.Boolean" required="false" %>
 <%@attribute name="currency" type="java.lang.Boolean" required="false" %>
 <%-- true if this field can accept an empty string --%>
 <%@attribute name="emptyStringAllowed" required="false" type="java.lang.Boolean" %>
@@ -44,7 +45,9 @@
 <c:set var="watermark" value="${propertyMetadata.watermark}"/>
 <c:set var="minLength" value="${propertyMetadata.minLength}"/>
 <c:set var="maxLength" value="${propertyMetadata.maxLength}"/>
-<c:set var="required" value="${propertyMetadata.required}"/>
+<c:if test="${empty required}" >
+    <c:set var="required" value="${propertyMetadata.required}"/>
+</c:if>
 <c:set var="min" value="${propertyMetadata.min}"/>
 <c:set var="max" value="${propertyMetadata.max}"/>
 <c:set var="pattern" value="${propertyMetadata.inputFormat}"/>
