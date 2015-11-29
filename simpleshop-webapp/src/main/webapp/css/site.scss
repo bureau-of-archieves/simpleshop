@@ -576,6 +576,19 @@ input.ng-invalid.ng-dirty {
   }
 }
 
+.thumbnail {
+  overflow:hidden;
+
+  >img{
+    transition: all 0.5s ease;
+
+    &:hover {
+      transform-origin: 50% 50%;
+      transform:scale(1.25);
+    }
+  }
+}
+
 //endregion
 
 //region FOOTER
