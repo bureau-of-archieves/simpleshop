@@ -19,30 +19,6 @@
 
 <jsp:doBody/>
 
-<%--########################## Embed view backing object in json  ################################--%>
-<c:set var="modelJsonUrl" value="/json/${f:urlModelNameFromUrl(pageContext.request.requestURL)}" />
-<c:choose>
-    <c:when test="${f:isSubViewTypeOf(viewType, 'search') or f:isSubViewTypeOf(viewType, 'list')}">
-        <c:set var="dataUrl" value="${modelJsonUrl}/search" />
-    </c:when>
-    <c:when test="${f:isSubViewTypeOf(viewType, 'create')}">
-        <c:set var="dataUrl" value="${modelJsonUrl}/new" />
-    </c:when>
-    <c:when test="${f:isSubViewTypeOf(viewType, 'details') or f:isSubViewTypeOf(viewType, 'update')}">
-        <c:set var="dataUrl" value="${modelJsonUrl}/${param.modelId}" />
-    </c:when>
-</c:choose>
-
-<c:if test="${not empty dataUrl}">
-    <script id="embeddedData">
-        <c:catch var="importException" >
-            <c:import var="jsonData" url="${dataUrl}" />
-            ${fn:replace(jsonData, "/", "\\/")}
-        </c:catch>
-        ${f:throwIfNotNull(importException)}
-    </script>
-</c:if>
-
 <comm:pop var="fieldCss" />
 <comm:pop var="labelCss" />
 <comm:pop var="detailsCss" />

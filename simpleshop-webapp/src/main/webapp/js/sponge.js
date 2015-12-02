@@ -806,38 +806,7 @@
             }
 
             var elements = $.parseHTML(viewHtml, null, true);
-
-            //separate view and model
-            var json = null;
-            for (var i = elements.length - 1; i >= 0; i--) {
-                var element = $(elements[i]);
-                if (!element.is("*")) {
-                    continue; //continue is not element
-                }
-
-                var dataContainer = null;
-                if (element.is("script#embeddedData")) {
-                    dataContainer = element;
-                    json = dataContainer.html();
-                    elements.splice(i, 1);
-                    break;
-                } else {
-                    var result = element.find("script#embeddedData");
-                    if (result.length > 0) {
-                        dataContainer = $(result.get(0));
-                        json = dataContainer.html();
-                        dataContainer.remove();
-                    }
-                }
-
-                if (dataContainer != null) {
-                    break;
-                }
-            }
-
-            json = $.trim(json);
-            var newModel = json ? JSON.parse(json) : {};
-            return {domElements: elements, dataObject: newModel};
+            return elements;
         };
 
         /**
@@ -862,7 +831,22 @@
             return zcl.pascalNameToUrlName(modelName) + "-" + viewType;
         };
 
+        var getJsonUrl = function(viewType, modelName, instanceId){
+            var jsonUrl = null;
+            if (site.isSubtypeOf(viewType, "search")) {
+                jsonUrl = site.searchJsonUrl(modelName);
+            } else if (site.isSubtypeOf(viewType, "list")) {
+                jsonUrl = site.searchJsonUrl(modelName);
+            } else  if (site.isSubtypeOf(viewType, "create")){
+                jsonUrl = site.newJsonUrl(modelName);
+            } else {
+                jsonUrl = site.modelJsonUrl(modelName, instanceId);
+            }
+            return jsonUrl;
+        };
+
         var getDialogView = function (modelName, viewType, dialogId, parentScope) {
+            //todo fix this as embedded data is no longer available
             var viewName = getViewName(modelName, viewType);
             var viewUrl = site.viewUrl(viewName);
             return $q.when($.get(viewUrl)).then(function (viewHtml) {
@@ -881,6 +865,7 @@
                 return site.createPromise(null);
             });
         };
+
 
         /**
          * Get a view with its model (in JSON) embedded from the server.
@@ -917,30 +902,47 @@
             var viewUrl = site.viewUrl(viewName, params);
             var operationKey = "get-" + viewId;
 
+
+
+
             var createRequest = function () {
+
+                var jsonUrl = getJsonUrl(viewType, modelName, instanceId);
+                var dataPromise = null;
                 if (model) { //need to post
 
                     var clone = angular.copy(model);
                     prePostHandler(clone, eventScope);
-
-                    return $.ajax(
-                        viewUrl,
+                    dataPromise = $.ajax(
+                        jsonUrl,
                         {
                             type: "POST",
                             data: JSON.stringify(clone),
                             contentType: "application/json",
-                            dataType: "html"
+                            dataType: "json"
                         }
                     );
                 } else {
-                    return $.get(viewUrl);
+                    dataPromise = $.ajax(
+                        jsonUrl,
+                        {
+                            type: "GET",
+                            dataType: "json"
+                        }
+                    );
                 }
+
+                return $.when($.get(viewUrl), dataPromise);
+
             };
 
-            var createView = function (viewHtml) {
+            var createView = function (viewHtml, dataObject) {
 
-                var parseResult = parseViewHtml(viewHtml, viewId);
+                if(dataObject[0].status != "OK") {
+                    throw dataObject[0];
+                }
 
+                var parseResult = {domElements: parseViewHtml(viewHtml[0], viewId), dataObject: dataObject[0]};
                 var nextElement = existingViewDetails ? $(existingViewDetails.viewElements).last().next() : $("#" + site.noViewElementId);
                 if (!nextElement) {
                     return site.createPromise(site.getMessage("cannotFindViewInsertionPosition"));

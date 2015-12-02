@@ -5,7 +5,6 @@
 <%@ taglib prefix="comm" tagdir="/WEB-INF/tags/common"  %>
 <%@ taglib prefix="f" uri="sponge/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@attribute name="dataUrl" type="java.lang.String" %>
 
 <%--########################## TAG CONTENT  ################################--%>
 <comm:push var="imgBase" value="${pageContext.request.contextPath}assets/img/"  />
