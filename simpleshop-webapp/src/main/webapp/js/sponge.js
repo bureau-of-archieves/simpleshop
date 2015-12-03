@@ -787,9 +787,17 @@
          * The html string will be parsed into a set of dom elements and a data object.
          * @param viewHtml view html returned from the server.
          * @param viewId view id generated on the client side. View id is always created on the client side.
+         * @param dataObject json response.
          * @returns {*} constructed dom elements and the data object to bind to.
          */
-        var parseViewHtml = function (viewHtml, viewId) {
+        var parseViewHtml = function (viewHtml, viewId, dataObject) {
+
+            viewHtml = viewHtml[0];
+            dataObject = dataObject[0];
+
+            if(dataObject.status != "OK"){
+                throw dataObject;
+            }
             if (!viewHtml) {
                 viewHtml = "";
             }
@@ -806,7 +814,7 @@
             }
 
             var elements = $.parseHTML(viewHtml, null, true);
-            return elements;
+            return  {domElements: elements, dataObject: dataObject};
         };
 
         /**
@@ -846,11 +854,17 @@
         };
 
         var getDialogView = function (modelName, viewType, dialogId, parentScope) {
-            //todo fix this as embedded data is no longer available
             var viewName = getViewName(modelName, viewType);
             var viewUrl = site.viewUrl(viewName);
-            return $q.when($.get(viewUrl)).then(function (viewHtml) {
-                var parseResult = parseViewHtml(viewHtml, dialogId + "-view");
+            var jsonPromise = $.ajax(
+                getJsonUrl(viewType, modelName),
+                {
+                    type: "GET",
+                    dataType: "json"
+                }
+            );
+            var jqPromise = $.when($.get(viewUrl), jsonPromise).then(function (viewHtml, dataObject) {
+                var parseResult = parseViewHtml(viewHtml, dialogId + "-view", dataObject);
                 if (parseResult.dataObject.status == "ERROR") {
                     return site.createPromise(parseResult.dataObject);
                 }
@@ -864,6 +878,7 @@
                 });
                 return site.createPromise(null);
             });
+            return $q.when(jqPromise);
         };
 
 
@@ -902,9 +917,6 @@
             var viewUrl = site.viewUrl(viewName, params);
             var operationKey = "get-" + viewId;
 
-
-
-
             var createRequest = function () {
 
                 var jsonUrl = getJsonUrl(viewType, modelName, instanceId);
@@ -938,11 +950,7 @@
 
             var createView = function (viewHtml, dataObject) {
 
-                if(dataObject[0].status != "OK") {
-                    throw dataObject[0];
-                }
-
-                var parseResult = {domElements: parseViewHtml(viewHtml[0], viewId), dataObject: dataObject[0]};
+                var parseResult = parseViewHtml(viewHtml, viewId, dataObject);
                 var nextElement = existingViewDetails ? $(existingViewDetails.viewElements).last().next() : $("#" + site.noViewElementId);
                 if (!nextElement) {
                     return site.createPromise(site.getMessage("cannotFindViewInsertionPosition"));

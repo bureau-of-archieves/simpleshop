@@ -26,6 +26,12 @@
         <property name="registerDefaultFormatters" value="true" />
     </bean>
 
+    <!--exclude these from security chain so the have proper response caching headers-->
+    <security:http pattern="/ng/**" security="none" />
+    <security:http pattern="/components/**" security="none" />
+    <security:http pattern="/css/**" security="none" />
+    <security:http pattern="/js/**" security="none" />
+    <security:http pattern="/img/**" security="none" />
 
     <!--Spring Security config-->
     <security:http auto-config="true" use-expressions="true" >

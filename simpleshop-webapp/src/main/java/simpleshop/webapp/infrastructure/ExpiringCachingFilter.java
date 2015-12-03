@@ -4,7 +4,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 
 /**
@@ -30,8 +29,6 @@ public class ExpiringCachingFilter implements Filter {
 
             httpServletResponse.setHeader("Cache-Control", "private,max-age=" + seconds); //HTTP 1.1
             httpServletResponse.setHeader("Pragma", "private");
-            Date now = new Date();
-            httpServletResponse.setDateHeader("Last-Modified", now.getTime());
             GregorianCalendar calendar = new GregorianCalendar();
             calendar.add(Calendar.SECOND, seconds);
             httpServletResponse.setDateHeader("Expires", calendar.getTimeInMillis());
