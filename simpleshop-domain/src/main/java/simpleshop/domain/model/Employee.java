@@ -1,6 +1,7 @@
 package simpleshop.domain.model;
 
 import org.hibernate.annotations.Cascade;
+import simpleshop.domain.infrastructure.LocalDatePersistenceConverter;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
 import simpleshop.domain.model.type.EmploymentType;
@@ -35,6 +36,7 @@ public class Employee {
         this.id = id;
     }
 
+    @Convert(converter = LocalDatePersistenceConverter.class)
     @Column(name = "hire_date")
     public LocalDate getHireDate() {
         return hireDate;

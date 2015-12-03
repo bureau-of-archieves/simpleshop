@@ -3,14 +3,12 @@ package simpleshop.domain.model.component;
 
 import org.hibernate.validator.constraints.URL;
 import simpleshop.Constants;
+import simpleshop.domain.infrastructure.LocalDateTimePersistenceConverter;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.model.Supplier;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -60,6 +58,7 @@ public class ProductSupplier {
         this.url = url;
     }
 
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @DisplayFormat("| na")
     @Column(name = "out_of_stock_date")
     @Description("The last time this product was out of stock at the supplier")
@@ -80,6 +79,7 @@ public class ProductSupplier {
         this.note = note;
     }
 
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @DisplayFormat("| na")
     @Column(name = "unit_price_date")
     @Description("The last time this record was updated.")

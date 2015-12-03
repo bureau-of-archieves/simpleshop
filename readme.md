@@ -36,7 +36,6 @@ Bugs
 
 Todo List
 -----------
- * Java 8 LocalDateTime not properly mapped to db type therefore date comparison in query is not working.
  * Add default employee and shipper.
  * Direct error messages to each field as well as the whole model.
  * create a model after searching will copy certain search parameters

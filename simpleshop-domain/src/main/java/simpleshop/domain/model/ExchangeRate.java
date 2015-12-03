@@ -1,5 +1,7 @@
 package simpleshop.domain.model;
 
+import simpleshop.domain.infrastructure.LocalDateTimePersistenceConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
@@ -54,6 +56,7 @@ public class ExchangeRate {
     }
 
     //[convention]timezone of all date and time is the timezone of the underlying JVM.
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @Column(name = "record_date", insertable = false, updatable = false, columnDefinition = "datetime default getdate()")
     public LocalDateTime getRecordDate() {
         return recordDate;

@@ -2,6 +2,7 @@ package simpleshop.domain.model;
 
 import org.hibernate.annotations.BatchSize;
 import simpleshop.Constants;
+import simpleshop.domain.infrastructure.LocalDateTimePersistenceConverter;
 import simpleshop.domain.metadata.Description;
 import simpleshop.domain.metadata.DisplayFormat;
 import simpleshop.domain.metadata.Icon;
@@ -73,6 +74,7 @@ public class Order {
         this.employee = employee;
     }
 
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @Column(name = "order_date", nullable = false)
     public LocalDateTime getOrderDate() {
         return orderDate;
@@ -82,6 +84,7 @@ public class Order {
         this.orderDate = orderDate;
     }
 
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @DisplayFormat("| na")
     @Description("The client what this order to be delivered on or before this date.")
     @Column(name = "required_date")
@@ -130,6 +133,7 @@ public class Order {
         this.shipper = shipper;
     }
 
+    @Convert(converter = LocalDateTimePersistenceConverter.class)
     @DisplayFormat("| na")
     @Column(name = "shipped_date")
     @Description("The order is complete when this is populated.")
