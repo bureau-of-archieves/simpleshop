@@ -139,9 +139,9 @@
                         Help <span class="caret"></span>
                     </a>
                     <ul role="menu" class="dropdown-menu">
-                        <li><a href="javascript:alert('Not implemented yet.')">Order History</a>
+                        <li><a href="#" data-ng-click="getUserOrders()">Order History</a>
                         </li>
-                        <li><a href="javascript:alert('Not implemented yet.')">Profile</a>
+                        <li><a href="#" data-ng-click="getUserCustomer()">Profile</a>
                         </li>
                         <li><a href="javascript:alert('Not implemented yet.')">Options</a>
                         </li>

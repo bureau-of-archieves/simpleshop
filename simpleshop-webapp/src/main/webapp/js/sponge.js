@@ -823,10 +823,10 @@
          */
         var initViewElements = function (viewDetails) {
 
-            var elements = viewDetails.viewElements;
+            //var elements = viewDetails.viewElements;
 
             //jquery initialization for the view
-            $(elements).find("ul.nav.nav-tabs").makeTab();
+            //$(elements).find("ul.nav.nav-tabs").makeTab();
         };
 
         /**
@@ -920,6 +920,9 @@
             var createRequest = function () {
 
                 var jsonUrl = getJsonUrl(viewType, modelName, instanceId);
+                if(getViewOptions.jsonUrl) {
+                    jsonUrl = getViewOptions.jsonUrl;
+                }
                 var dataPromise = null;
                 if (model) { //need to post
 
@@ -1159,7 +1162,9 @@
             } else {
                 jsonUrl = site.modelJsonUrl(viewDetails.modelName, viewDetails.instanceId);
             }
-
+            if(viewDetails.getViewOptions.jsonUrl){
+                jsonUrl = viewDetails.getViewOptions.jsonUrl;
+            }
             //change the page.
             var operationKey = "refresh-" + viewId;
             var model = viewDetails.postData;
@@ -2413,73 +2418,6 @@
         "positionClass": "toast-bottom-left"
     };
 
-    $.fn.starwars = function () {
-
-        var scrollingDiv = this.find(".scrolling > div"); //todo find the line-height of 1em here to replace 50
-        var initTop = this.height() + 50 * 2;//delay 2 seconds
-        var endTop = -scrollingDiv.height() - 50 * 2;
-        var duration = (initTop - endTop) / 50 * 1000;//100px per sec
-
-        scrollingDiv.css("top", initTop);
-
-        var replay = function () {
-
-            scrollingDiv.css("top", initTop);
-            scrollingDiv.animate({top: endTop}, {
-                duration: duration,
-                easing: "linear",
-                complete: replay
-            });
-
-        };
-
-        scrollingDiv.animate({top: endTop}, {
-            duration: duration,
-            easing: "linear",
-            complete: replay
-        });
-
-        var perspectiveValue = Math.round(this.height() * 0.667) + "px";
-        this.css("-webkit-perspective", perspectiveValue);
-        this.css("perspective", perspectiveValue);
-    };
-
-
-    $.fn.makeTab = function () {
-        var tabHeaders = this.find("a[data-tab-pane]");
-        var tabContent = this.nextAll(".tab-content");
-
-        var clickHandler = function () {
-            var newLi = $(this).closest("li");
-            if (newLi.hasClass("active"))
-                return false;
-
-            //deactivate old tabpage
-            for (var i = 0; i < tabHeaders.length; i++) {
-                var oldA = $(tabHeaders.get(i));
-                var oldLi = oldA.closest("li");
-                if (!oldLi.hasClass("active"))
-                    continue;
-
-                oldLi.removeClass("active");
-                var oldPaneName = oldA.attr("data-tab-pane");
-                tabContent.find("div[data-tab-pane=" + oldPaneName + "]").removeClass("active");
-                //tabContent.find("div[data-tab-pane=" + oldPaneName + "]").addClass("visibility-hidden");
-                break;
-            }
-
-            //activate new tabpage
-            var newPaneName = $(this).attr("data-tab-pane");
-            tabContent.find("div[data-tab-pane=" + newPaneName + "]").addClass("active");
-            //tabContent.find("div[data-tab-pane=" + newPaneName + "]").removeClass("visibility-hidden");
-            newLi.addClass("active");
-
-            return false;
-        };
-        tabHeaders.click(clickHandler);
-        return this;
-    };
-
     //endregion
 
 
@@ -2524,6 +2462,10 @@
 
         site.orderProductsUrl = function(){
             return site.jsonPath + "customer_order/products";
+        };
+
+        site.userActionUrl = function(actionName){
+            return site.jsonPath + "user/" + actionName;
         };
 
         spongeService.clearCart = function(){
@@ -2616,6 +2558,18 @@
                     controller: 'shoppingCartController'
                 });
                 instance.data = {cart: $scope.cart, view: 'cart'};
+            };
+
+            $scope.getUserOrders = function(){
+
+                var url = site.userActionUrl("orders");
+                spongeService.getView("Order", "list", null, null, null, {viewTypeInViewKey: true, jsonUrl: url}).catch(site.reportError);
+            };
+
+            $scope.getUserCustomer = function(){
+                alert("Not implemented.");
+                //var url = site.userActionUrl("customer");
+                //spongeService.getView("Customer", "details", null, null, null, {jsonUrl: url}).catch(site.reportError);
             };
 
         }

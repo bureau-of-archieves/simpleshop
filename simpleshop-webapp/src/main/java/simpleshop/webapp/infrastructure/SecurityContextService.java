@@ -1,6 +1,7 @@
 package simpleshop.webapp.infrastructure;
 
 import org.springframework.security.core.context.SecurityContext;
+import simpleshop.domain.model.User;
 
 /**
  * Get Spring security context.
@@ -8,4 +9,6 @@ import org.springframework.security.core.context.SecurityContext;
 public interface SecurityContextService {
 
     SecurityContext get();
+
+    User getUser();
 }
