@@ -6,7 +6,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 
 /**
- * Convert to and from JSON.
+ * Convert object to and from JSON.
  */
 public class JsonConverter {
 

@@ -3,14 +3,16 @@ package simpleshop.service.infrastructure.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import simpleshop.common.PropertyReflector;
+import simpleshop.common.ObjectGraphDFS;
 import simpleshop.data.PageInfo;
+import simpleshop.data.infrastructure.HibernateDeProxyStrategy;
 import simpleshop.data.infrastructure.ModelDAO;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.ModelMetadata;
-import simpleshop.data.util.DomainUtils;
 import simpleshop.dto.ModelSearch;
 import simpleshop.service.MetadataService;
+import simpleshop.service.infrastructure.JacksonObjectGraphFilter;
+import simpleshop.service.infrastructure.JsonPreProcessor;
 import simpleshop.service.infrastructure.ModelService;
 
 import javax.validation.constraints.NotNull;
@@ -181,14 +183,16 @@ public abstract class ModelServiceImpl<T, S extends ModelSearch> extends BaseSer
     }
 
     public void resolveLookupValues(Object domainObject){
-        resolveLookupValues(domainObject, null);
+        resolveObjectGraph(domainObject);
+    }
+
+    public void resolveObjectGraph(Object domainObject){
+        resolveObjectGraph(domainObject, null);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void resolveLookupValues(Object domainObject, final Collection<String> exceptProperties) {
-
-        PropertyReflector inspector = new PropertyReflector(new ResolveLookupValuesListener(), DomainUtils::getProxiedClass);
-        inspector.inspect(domainObject);
-
+    public void resolveObjectGraph(Object domainObject, String group) {
+        JsonPreProcessor inspector = new JsonPreProcessor();
+        inspector.process(domainObject, group);
     }
 }

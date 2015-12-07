@@ -64,7 +64,7 @@ public class CategoryServiceImpl extends CategoryBaseService implements Category
 
         List<Category> categories = categoryDAO.getDropdownItems(Constants.MAX_DROPDOWN_LIST_SIZE);
         for (Object obj : categories){
-            resolveLookupValues(obj, null);
+            resolveObjectGraph(obj);
             getModelDAO().detach(obj);
         }
         return categories;

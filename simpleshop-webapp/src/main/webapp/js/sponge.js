@@ -796,7 +796,7 @@
             dataObject = dataObject[0];
 
             if(dataObject.status != "OK"){
-                throw dataObject;
+                return {dataObject: dataObject};
             }
             if (!viewHtml) {
                 viewHtml = "";

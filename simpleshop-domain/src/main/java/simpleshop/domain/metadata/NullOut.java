@@ -3,15 +3,16 @@ package simpleshop.domain.metadata;
 import java.lang.annotation.ElementType;
 
 /**
- * Getters annotated with AutoLoad will be initialised during object graph traversal.
+ * Getters annotated with NullOut will be nulled out before sending to JSON serialization.
  */
 @java.lang.annotation.Target(ElementType.METHOD)
 @java.lang.annotation.Retention(java.lang.annotation.RetentionPolicy.RUNTIME)
 @java.lang.annotation.Documented
-public @interface AutoLoad {
+public @interface NullOut {
 
     /**
-     * @return Groups that activates this AutoLoad.
+     * @return Groups that activates this NullOut.
      */
     String[] groups() default {""};
+
 }

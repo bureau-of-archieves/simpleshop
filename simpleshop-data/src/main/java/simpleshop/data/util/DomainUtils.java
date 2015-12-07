@@ -1,12 +1,12 @@
 package simpleshop.data.util;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.collection.internal.PersistentBag;
 import org.hibernate.collection.internal.PersistentSet;
 import org.hibernate.validator.constraints.URL;
 import simpleshop.common.ReflectionUtils;
 import simpleshop.common.StringUtils;
-import simpleshop.data.SortInfo;
 import simpleshop.data.infrastructure.SpongeConfigurationException;
 import simpleshop.data.metadata.*;
 import simpleshop.domain.metadata.*;
@@ -217,7 +217,6 @@ public final class DomainUtils {
 
         ModelMetadata modelMetadata = new ModelMetadata(clazz);
 
-        setAutoLoadProperties(modelMetadata, clazz); //set auto load properties
         setIcon(modelMetadata, clazz); //set icon
         setDisplayFormat(modelMetadata, clazz);//set display format
         setInterpolateFormat(modelMetadata, clazz);
@@ -235,26 +234,19 @@ public final class DomainUtils {
             if (!ReflectionUtils.isPublicInstanceGetter(method))
                 continue;
 
-            PropertyMetadata propertyMetadata = extraPropertyMetadata(method);
-            if(ignoredProperties.contains(propertyMetadata.getPropertyName()))
+            JsonIgnore jsonIgnore = method.getDeclaredAnnotation(JsonIgnore.class);
+            if(jsonIgnore != null && jsonIgnore.value()){
+                ignoredProperties.add(StringUtils.getPropertyName(method.getName()));
                 continue;
-
+            }
+            if(ignoredProperties.contains(method.getName()))
+                continue;
+            PropertyMetadata propertyMetadata = extraPropertyMetadata(method);
             propertyMap.put(propertyMetadata.getPropertyName(), propertyMetadata);
         }
         modelMetadata.setPropertyMetadataMap(Collections.unmodifiableMap(propertyMap));
+        modelMetadata.setJsonIgnoreProperties(ignoredProperties);
         return modelMetadata;
-    }
-
-    private static void setAutoLoadProperties(ModelMetadata modelMetadata, Class<?> clazz) {
-        HashSet<String> autoLoadProperties = new HashSet<>();
-        while (clazz != null){
-            AutoLoad autoLoad = clazz.getAnnotation(AutoLoad.class);
-            if(autoLoad != null){
-                autoLoadProperties.addAll(Arrays.asList(autoLoad.value()));
-            }
-            clazz = clazz.getSuperclass();
-        }
-        modelMetadata.setAutoLoadProperties(autoLoadProperties);
     }
 
     private static Set<String> getJsonIgnoreProperties(Class<?> clazz) {

@@ -210,6 +210,11 @@ public class ReflectionUtilsTest {
         ReflectionUtils.setProperty(domainNameTestObject, "name", "*invalid*");
     }
 
+    @Test
+    public void test(){
+      assertFalse(Boolean.class.isPrimitive());
+    }
+
 
 
 }

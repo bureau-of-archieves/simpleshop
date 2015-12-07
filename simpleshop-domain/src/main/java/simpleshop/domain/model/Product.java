@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@AutoLoad({"categories", "images"})
 @Entity
 @Table(name = "products")
 @Icon("shopping-cart")
@@ -51,6 +50,7 @@ public class Product {
         this.name = name;
     }
 
+    @AutoLoad
     @ElementCollection
     @CollectionTable(name="product_images", joinColumns=@JoinColumn(name="product_id"))
     @Column(name="image_name", length = Constants.MID_STRING_LENGTH, nullable = false)
@@ -84,7 +84,7 @@ public class Product {
         this.sellPrice = sellPrice;
     }
 
-    //@JsonIgnoreProperties("parent")
+    @AutoLoad
     @ManyToMany()
     @JoinTable(name = "product_categories", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
     @BatchSize(size = Constants.BATCH_SIZE)

@@ -14,7 +14,6 @@ import javax.validation.constraints.Size;
 import java.util.HashMap;
 import java.util.Map;
 
-@AutoLoad("contactNumbers")
 @Entity
 @Table(name = "contacts")
 public class Contact {
@@ -57,6 +56,7 @@ public class Contact {
         this.contactName = contactName;
     }
 
+    @AutoLoad
     @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
     @MapKeyClass(String.class)
     @CollectionTable(name = "contact_numbers", joinColumns=@JoinColumn(name="contact_id"))

@@ -2,7 +2,22 @@ package simpleshop.common;
 
 import org.junit.Test;
 import simpleshop.common.test.EntityTestObject;
+
 import java.lang.reflect.Method;
+
+class TestObjectGraphVisitor implements ObjectGraphVisitor<String> {
+
+    @Override
+    public void beforeInspection(String parameter) {
+
+    }
+
+    @Override
+    public ObjectGraphInspectionResult visit(Object target, Method getter, Object value, Throwable exception, int index) {
+        System.out.printf("target=%s, getter=%s, value=%s,exception=%s, index=%d\n", target, getter == null ? "null" : getter.getName(), value, exception == null ? "null" : exception.getMessage(), index);
+        return ObjectGraphInspectionResult.CONTINUE;
+    }
+}
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,12 +29,7 @@ public class PropertyReflectorTest {
 
     @Test
     public void testInspection() {
-        PropertyReflector inspector = new PropertyReflector(
-                (target, getter, value, exception, index) -> {
-                    System.out.printf("target=%s, getter=%s, value=%s,exception=%s, index=%d\n", target, getter == null ? "null" : getter.getName(), value, exception == null ? "null" : exception.getMessage(), index);
-                    return PropertyReflector.InspectionResult.CONTINUE;
-                }, null
-        );
+        ObjectGraphDFS<String> inspector = new ObjectGraphDFS<>(new TestObjectGraphVisitor(), new AnnotationObjectGraphFilter(), null);
 
         EntityTestObject entityTestObject = new EntityTestObject();
         entityTestObject.setName("John");

@@ -12,7 +12,7 @@ import java.util.Set;
  * Model metadata extracted from the domain model.
  * Some information is only available on the server side (i.e. json ignored).
  */
-@JsonIgnoreProperties({"modelClass", "aliases", "sortProperties", "autoLoadProperties"})
+@JsonIgnoreProperties({"modelClass", "aliases", "sortProperties", "jsonIgnoreProperties"})
 public class ModelMetadata {
 
     public ModelMetadata(){}
@@ -85,7 +85,7 @@ public class ModelMetadata {
     private Class<?> modelClass;
     private Map<String, AliasDeclaration> aliases;
     private List<SortProperty> sortProperties;
-    private Set<String> autoLoadProperties;
+    private Set<String> jsonIgnoreProperties;
 
     //endregion
 
@@ -228,14 +228,14 @@ public class ModelMetadata {
         this.modelClass = modelClass;
     }
 
-    public Set<String> getAutoLoadProperties() {
-        return autoLoadProperties;
+    public Set<String> getJsonIgnoreProperties() {
+        return jsonIgnoreProperties;
     }
 
-    public void setAutoLoadProperties(Set<String> autoLoadProperties) {
-        this.autoLoadProperties = autoLoadProperties;
+    public void setJsonIgnoreProperties(Set<String> jsonIgnoreProperties) {
+        this.jsonIgnoreProperties = jsonIgnoreProperties;
     }
 
-//endregion
+    //endregion
 
 }

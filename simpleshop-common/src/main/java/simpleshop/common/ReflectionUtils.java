@@ -4,7 +4,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Most reflection api calls are encapsulated in this class (as long as the logic does not depend on other parts of the project).
@@ -15,16 +21,37 @@ public final class ReflectionUtils {
 
     private static final HashSet<String> primitiveConversions = new HashSet<>();
 
+    private static final Set<Class<?>> BASIC_VALUE_TYPE = new HashSet<>();
+
     static {
         String[] primitiveTypes = {"short", "Short", "int", "Integer", "long", "Long"};
-
         for(int i=0; i<primitiveTypes.length - 1; i++){
             for(int j=i+1; j<primitiveTypes.length; j++){
-
                 primitiveConversions.add(primitiveTypes[i] + "-" + primitiveTypes[j]);
                 primitiveConversions.add(primitiveTypes[j] + "-" + primitiveTypes[i]);
             }
         }
+
+        BASIC_VALUE_TYPE.add(Date.class);
+        BASIC_VALUE_TYPE.add(LocalDate.class);
+        BASIC_VALUE_TYPE.add(LocalDateTime.class);
+        BASIC_VALUE_TYPE.add(Timestamp.class);
+        BASIC_VALUE_TYPE.add(BigDecimal.class);
+        BASIC_VALUE_TYPE.add(BigInteger.class);
+        BASIC_VALUE_TYPE.add(Boolean.class);
+        BASIC_VALUE_TYPE.add(Character.class);
+        BASIC_VALUE_TYPE.add(Byte.class);
+        BASIC_VALUE_TYPE.add(Short.class);
+        BASIC_VALUE_TYPE.add(Integer.class);
+        BASIC_VALUE_TYPE.add(Long.class);
+        BASIC_VALUE_TYPE.add(Float.class);
+        BASIC_VALUE_TYPE.add(Double.class);
+        BASIC_VALUE_TYPE.add(Void.class);
+        BASIC_VALUE_TYPE.add(String.class);
+    }
+
+    public static boolean isBasicValueType(Class<?> clazz){
+        return BASIC_VALUE_TYPE.contains(clazz);
     }
 
     /**
@@ -76,6 +103,13 @@ public final class ReflectionUtils {
         return toClass.isAssignableFrom(fromClass);
     }
 
+    /**
+     * Parse a String into an object.
+     * @param s the source string.
+     * @param returnType the type to convert to. Must be one of the supported types.
+     * @param <T> type of the target value.
+     * @return converted value.
+     */
      public static <T> T parseString(String s, Class<T> returnType) {
 
          if( returnType == Boolean.class || returnType == Character.class || returnType == Short.class || returnType == Integer.class || returnType == Float.class || returnType == Double.class || returnType == BigDecimal.class || returnType == String.class) {
@@ -109,7 +143,6 @@ public final class ReflectionUtils {
 
     /**
      * Set the value of a deep property.
-     *
      * @param obj      the this object.
      * @param property property path, i.e dot separated properties.
      * @param value    set the property value.

@@ -3,7 +3,7 @@ package simpleshop.common.test;
 import java.util.ArrayList;
 
 /**
- * Used to test PropertyReflector.
+ * Used to test ObjectGraphDFS.
  */
 public class EntityTestObject {
 
