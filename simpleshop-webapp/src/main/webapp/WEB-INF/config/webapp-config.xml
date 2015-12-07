@@ -27,7 +27,6 @@
     </bean>
 
     <!--exclude these from security chain so the have proper response caching headers-->
-    <security:http pattern="/ng/**" security="none" />
     <security:http pattern="/components/**" security="none" />
     <security:http pattern="/css/**" security="none" />
     <security:http pattern="/js/**" security="none" />
@@ -41,6 +40,7 @@
         <!--this has to be the last one-->
         <security:intercept-url pattern="/json/**" access="permitAll()" />
         <security:intercept-url pattern="/**" access="permitAll()" />
+        <security:intercept-url pattern="/ng/**" access="permitAll()" />
 
         <!--<security:http-basic />-->
         <security:form-login login-page="/login.do"  login-processing-url="/j_spring_security_check.do" authentication-failure-url="/loginFailed.do" default-target-url="/" username-parameter="j_username" password-parameter="j_password" />

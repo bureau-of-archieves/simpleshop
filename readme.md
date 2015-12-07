@@ -35,10 +35,11 @@ Configuration data for other locale is not set up in this demo project.
 
 Bugs
 -------------
-Edit button in details view is not showing up. This is because spring security is disabled for the jsp pages. Need to find a work around.
+
 
 Todo List
 -----------
+ * Spring security overwrites the http caching headers for the jsp views.The jsp views should not use spring security
  * Implement get user profile.
  * pricing module - price can depend on purchase or preset supplier price. also implement discount and rebate rules.
  * Add default employee and shipper.
