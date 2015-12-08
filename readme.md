@@ -52,7 +52,7 @@ Todo List
  * allow adding purchase - from supplier, by employee, product list and amount, price per unit
  * calculate stock, pending amount - ordered but not delivered
  * auditing - object created, field changed, object deleted, user logins, top level controller actions
- * shopping cart and watch product. notification when price change or become in stock. check out and record transaction.
+ * watch product notification when price change or become in stock. check out and record transaction.
  * spgCombo - commonly used values when the control is focused but no keywords typed yet.
  * Add proper logging.
 

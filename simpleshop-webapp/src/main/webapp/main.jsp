@@ -24,7 +24,7 @@
     <!--required by the upload js-->
     <link rel="stylesheet" href="components/jquery-ui/themes/smoothness/theme.css">
     <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.min.css">
+    <%--<link rel="stylesheet" href="components/bootstrap/dist/css/bootstrap-theme.min.css">--%>
     <link rel="stylesheet"
           href="components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
     <link rel="stylesheet" href="components/toastr/toastr.min.css">
@@ -318,7 +318,7 @@
 <script src="components/moment/min/moment.min.js"></script>
 <script src="components/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="components/angular/angular.min.js"></script>
-<script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>
+<%--<script src="js/i18n/angular-locale_${f:userLocale()}.js"></script>--%>
 <script src="js/angular-animate.min.js"></script>
 <script src="components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
 <script src="components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>

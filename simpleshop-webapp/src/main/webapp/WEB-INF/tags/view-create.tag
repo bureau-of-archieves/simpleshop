@@ -18,14 +18,15 @@
 <%@attribute name="noButtons" type="java.lang.Boolean" %>
 
 <%--########################## ATTRIBUTE DEFAULT VALUES  ################################--%>
-<c:if test="${empty title}">
-    <comm:peek var="friendlyModelName" />
-    <spring:message var="literal_createNew" code="jsp.literal.createNew" />
-    <c:set var="title" value="${literal_createNew} ${friendlyModelName}" />
-</c:if>
+
 
 <%--########################## TAG CONTENT ################################--%>
 <t:view>
+    <c:if test="${empty title}">
+        <comm:peek var="friendlyModelName" />
+        <spring:message var="literal_createNew" code="jsp.literal.createNew" />
+        <c:set var="title" value="${literal_createNew} ${friendlyModelName}" />
+    </c:if>
     <comm:push value="&${f:uuid()};" var="viewId" />
     <comm:push value="${viewId}" var="replace_id_marker" />
 
