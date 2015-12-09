@@ -2140,7 +2140,7 @@
         };
 
         $scope.operationLocks = []; //in-progress long running operations
-        $scope.scrollTo = scrollTo;
+        $scope.scrollTo = site.scrollTo;
 
         site.setBodyScope($scope);
 

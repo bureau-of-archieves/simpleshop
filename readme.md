@@ -64,6 +64,12 @@ Future Todo List
  * Separate template and data. This way a type of template can be cached by the client.
  * drag and drop swap view positions.
  * catch error when parsing embedded json data fails
+ * email & print
+ * scheduled job
+ * reporting
+ * page notification 
+ * externalize config
+ * 
  
 Limitations
 -----------
